@@ -17,7 +17,7 @@ export class AppComponent {
     config: GridConfiguration = {
         column: [{ name: "ID" }, { name: "Name" }, { name: "Email" }],
         OrderBy: { columnName: "ID", direction: "asc" },
-        withPagination: false,
+        withPagination: true,
     };
 
     data = [
