@@ -19,10 +19,11 @@
     <tr mat-header-row class="header" *matHeaderRowDef="columnNames"></tr>
     <tr mat-row *matRowDef="let row; columns: columnNames"></tr>
 </table>
+
 <mat-paginator
-    *ngIf="config?.withPagination"
-    [pageSize]="5"
-    [pageSizeOptions]="[5, 10, 20]"
-    showFirstLastButtons
+    *ngIf="paginatorConfig"
+    [pageSize]="paginatorConfig.pageSize"
+    [pageSizeOptions]="paginatorConfig.pageSizeOptions"
+    [showFirstLastButtons]="paginatorConfig.showFirstLastButtons ?? true"
 >
 </mat-paginator>

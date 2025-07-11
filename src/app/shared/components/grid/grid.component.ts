@@ -11,7 +11,10 @@ import { CommonModule } from "@angular/common";
 import { MatTableModule } from "@angular/material/table";
 import { MatSort, MatSortModule } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
-import { GridConfiguration } from "../../models/gridConfiguration";
+import {
+    GridConfiguration,
+    PaginationConfig,
+} from "../../models/gridConfiguration";
 import {
     MatPaginator,
     MatPaginatorIntl,
@@ -72,6 +75,13 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
 
     get columnNames(): string[] {
         return this.config?.column?.map((c) => c.name) || [];
+    }
+
+    get paginatorConfig(): PaginationConfig | null {
+        const pagination = this.config?.withPagination;
+        return typeof pagination === "object" && pagination !== null
+            ? pagination
+            : null;
     }
 
     getCellValue(

@@ -1,7 +1,7 @@
 export interface GridConfiguration {
     column: Column[];
     OrderBy: OrderBy;
-    withPagination: boolean;
+    withPagination?: PaginationConfig | false;
 }
 
 export interface Column {
@@ -17,4 +17,10 @@ export interface Icon {
 export interface OrderBy {
     columnName: string;
     direction: "asc" | "desc";
+}
+
+export interface PaginationConfig {
+    pageSize: number;
+    pageSizeOptions: number[];
+    showFirstLastButtons?: true;
 }

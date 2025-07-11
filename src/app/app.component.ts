@@ -17,7 +17,12 @@ export class AppComponent {
     config: GridConfiguration = {
         column: [{ name: "ID" }, { name: "Name" }, { name: "Email" }],
         OrderBy: { columnName: "ID", direction: "asc" },
-        withPagination: true,
+        //withPagination: false // si es false en la grilla mostrar scroll infinito
+        withPagination: {
+            pageSize: 5,
+            pageSizeOptions: [5, 10, 20],
+            showFirstLastButtons: true,
+        },
     };
 
     data = [
