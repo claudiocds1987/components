@@ -22,5 +22,4 @@ export interface OrderBy {
 export interface PaginationConfig {
     pageSize: number;
     pageSizeOptions: number[];
-    showFirstLastButtons?: true;
 }
