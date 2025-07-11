@@ -1,37 +1,49 @@
-import { Component, ViewChild, AfterViewInit } from "@angular/core";
-import { CommonModule, TitleCasePipe } from "@angular/common";
+import {
+    Component,
+    ViewChild,
+    AfterViewInit,
+    Input,
+    OnChanges,
+    SimpleChanges,
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
 import { MatTableModule } from "@angular/material/table";
 import { MatSort, MatSortModule } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
-
-interface GridData {
-    id: number;
-    name: string;
-    email: string;
-}
+import { GridConfiguration } from "../../models/gridConfiguration";
 
 @Component({
     selector: "app-grid",
     standalone: true,
-    imports: [CommonModule, TitleCasePipe, MatTableModule, MatSortModule],
+    imports: [CommonModule, MatTableModule, MatSortModule],
     templateUrl: "./grid.component.html",
     styleUrl: "./grid.component.scss",
 })
-export class GridComponent implements AfterViewInit {
-    displayedColumns: string[] = ["id", "name", "email"];
-    dataSource = new MatTableDataSource<GridData>([
-        { id: 1, name: "Juan Pérez", email: "juan@mail.com" },
-        { id: 2, name: "Ana López", email: "ana@mail.com" },
-        { id: 3, name: "Carlos Ruiz", email: "carlos@mail.com" },
-    ]);
+export class GridComponent implements AfterViewInit, OnChanges {
+    @Input() config!: GridConfiguration;
+    @Input() data: Record<string, string | number>[] = [];
+    dataSource = new MatTableDataSource<Record<string, string | number>>();
+
+    get columnNames(): string[] {
+        return this.config?.column?.map((c) => c.name) || [];
+    }
+
+    getCellValue(
+        row: Record<string, string | number>,
+        colName: string,
+    ): string | number | undefined {
+        return row[colName];
+    }
 
     @ViewChild(MatSort) sort!: MatSort;
 
     ngAfterViewInit() {
-        this.applySort();
+        this.dataSource.sort = this.sort;
     }
 
-    applySort() {
-        this.dataSource.sort = this.sort;
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes["data"] && this.data) {
+            this.dataSource.data = this.data;
+        }
     }
 }

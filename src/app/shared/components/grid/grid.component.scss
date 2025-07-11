@@ -2,8 +2,8 @@
 
 /* Color encabezado de la tabla */
 .header .grid-cell {
-  background-color: $color-blue;
-  color: $color-black;
+  background-color: $blue-color;
+  color: $black-color;
   font-weight: bold;
 }
 
@@ -11,7 +11,7 @@
 /* Separación entre columnas de la tabla */
 .grid-cell {
   padding: 8px 16px;
-  border-right: 1px solid rgb(230, 228, 228);
+  border-right: 1px solid $grey-color;
 }
 
 .grid-cell:last-child {
