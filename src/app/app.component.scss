@@ -1,0 +1,19 @@
+.banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    background: linear-gradient(90deg, #7b2ff2 0%, #f357a8 100%);
+    color: #fff;
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 600;
+    padding: 1rem 0;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    letter-spacing: 1px;
+}
+
+body, .app-root, .main-content {
+    padding-top: 64px;
+}

@@ -1,0 +1,19 @@
+@import '../../../shared/styles/colors.scss';
+
+/* Color encabezado de la tabla */
+.header .grid-cell {
+  background-color: $color-blue;
+  color: $color-black;
+  font-weight: bold;
+}
+
+
+/* Separación entre columnas de la tabla */
+.grid-cell {
+  padding: 8px 16px;
+  border-right: 1px solid rgb(230, 228, 228);
+}
+
+.grid-cell:last-child {
+  border-right: none;
+}
