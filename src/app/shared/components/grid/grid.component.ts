@@ -6,7 +6,6 @@ import {
     OnChanges,
     SimpleChanges,
     OnInit,
-    ChangeDetectorRef,
     inject,
     NgZone,
 } from "@angular/core";
@@ -77,7 +76,10 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     @Input() data: Record<string, string | number>[] = [];
     dataSource = new MatTableDataSource<Record<string, string | number>>();
     isLoading = true;
-    rows25: number[] = Array.from({ length: 25 }, (_, i) => i);
+    //rows25: number[] = Array.from({ length: 25 }, (_, i) => i);
+    rows25: number[] = Array.from({ length: 25 });
+
+    private _ngZone = inject(NgZone);
 
     get columnNames(): string[] {
         return this.config?.columns?.map((c) => c.name) || [];
@@ -89,8 +91,6 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
             ? pagination
             : null;
     }
-
-    private ngZone = inject(NgZone);
 
     getCellValue(
         row: Record<string, string | number>,
@@ -136,7 +136,8 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
         // Uso NgZone.onStable para esperar hasta que Angular termine todos los cambios
         // y asi poder asignar paginator y sort correctamente
         // Esto es necesario para evitar problemas de renderizado en algunos casos
-        this.ngZone.onStable.pipe(take(1)).subscribe(() => {
+        // otra alternativa como changeDetectorRef.detectChanges() no funciona
+        this._ngZone.onStable.pipe(take(1)).subscribe(() => {
             if (this.paginator) {
                 this.dataSource.paginator = this.paginator;
             }
