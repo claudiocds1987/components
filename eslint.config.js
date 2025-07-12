@@ -62,6 +62,17 @@ module.exports = tseslint.config(
                     ],
                 },
             ],
+
+            // ✅ Tipado obligatorio en funciones
+            "@typescript-eslint/explicit-function-return-type": [
+                "error",
+                {
+                    allowExpressions: false,
+                    allowTypedFunctionExpressions: false,
+                    allowHigherOrderFunctions: false,
+                    allowDirectConstAssertionInArrowFunctions: false,
+                },
+            ],
         },
     },
     {

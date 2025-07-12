@@ -42,7 +42,7 @@ import { take } from "rxjs";
     providers: [
         {
             provide: MatPaginatorIntl,
-            useFactory: () => {
+            useFactory: (): MatPaginatorIntl => {
                 // Configuración personalizada para MatPaginator
                 const paginatorIntl = new MatPaginatorIntl();
                 paginatorIntl.itemsPerPageLabel = "Registros por página:";
@@ -55,7 +55,7 @@ import { take } from "rxjs";
                     page: number,
                     pageSize: number,
                     length: number,
-                ) => {
+                ): string => {
                     if (length === 0 || pageSize === 0) {
                         return `Mostrando 0 de ${length}`;
                     }
@@ -82,7 +82,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     private _ngZone = inject(NgZone);
 
     get columnNames(): string[] {
-        return this.config?.columns?.map((c) => c.name) || [];
+        return this.config?.columns?.map((c): string => c.name) || [];
     }
 
     get paginatorConfig(): PaginationConfig | null {
@@ -99,20 +99,21 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
         return row[colName];
     }
 
-    applyFilter(event: Event) {
+    applyFilter(event: Event): void {
         const filterValue = (event.target as HTMLInputElement).value;
         this.dataSource.filter = filterValue.trim().toLowerCase();
     }
 
-    ngOnInit() {
-        this.dataSource.filterPredicate = (data, filter: string) => {
+    ngOnInit(): void {
+        this.dataSource.filterPredicate = (data, filter: string): boolean => {
+            // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
             return Object.values(data).some((value) =>
                 value.toString().toLowerCase().includes(filter),
             );
         };
     }
 
-    ngAfterViewInit() {
+    ngAfterViewInit(): void {
         this.dataSource.sort = this.sort;
 
         if (this.config?.withPagination && this.paginator) {
@@ -120,7 +121,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
         }
     }
 
-    ngOnChanges(changes: SimpleChanges) {
+    ngOnChanges(changes: SimpleChanges): void {
         if (changes["data"] && this.data) {
             this.dataSource.data = this.data;
 
@@ -132,12 +133,12 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
         }
     }
 
-    private _renderPaginatorAndSort() {
+    private _renderPaginatorAndSort(): void {
         // Uso NgZone.onStable para esperar hasta que Angular termine todos los cambios
         // y asi poder asignar paginator y sort correctamente
         // Esto es necesario para evitar problemas de renderizado en algunos casos
         // otra alternativa como changeDetectorRef.detectChanges() no funciona
-        this._ngZone.onStable.pipe(take(1)).subscribe(() => {
+        this._ngZone.onStable.pipe(take(1)).subscribe((): void => {
             if (this.paginator) {
                 this.dataSource.paginator = this.paginator;
             }
