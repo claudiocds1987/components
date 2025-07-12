@@ -6,6 +6,9 @@ import {
     OnChanges,
     SimpleChanges,
     OnInit,
+    ChangeDetectorRef,
+    inject,
+    NgZone,
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { MatTableModule } from "@angular/material/table";
@@ -22,6 +25,7 @@ import {
 } from "@angular/material/paginator";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
+import { take } from "rxjs";
 
 @Component({
     selector: "app-grid",
@@ -86,6 +90,8 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
             : null;
     }
 
+    private ngZone = inject(NgZone);
+
     getCellValue(
         row: Record<string, string | number>,
         colName: string,
@@ -119,6 +125,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
             this.dataSource.data = this.data;
 
             // para que funcione correctamente la renderizacion del sort y paginator
+
             this._renderPaginatorAndSort();
             // Si llegaron datos, ocultamos el skeleton
             this.isLoading = this.data.length === 0;
@@ -126,7 +133,10 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     private _renderPaginatorAndSort() {
-        setTimeout(() => {
+        // Uso NgZone.onStable para esperar hasta que Angular termine todos los cambios
+        // y asi poder asignar paginator y sort correctamente
+        // Esto es necesario para evitar problemas de renderizado en algunos casos
+        this.ngZone.onStable.pipe(take(1)).subscribe(() => {
             if (this.paginator) {
                 this.dataSource.paginator = this.paginator;
             }
