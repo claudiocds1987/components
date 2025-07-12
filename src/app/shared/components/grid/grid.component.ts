@@ -72,9 +72,11 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     @Input() config!: GridConfiguration;
     @Input() data: Record<string, string | number>[] = [];
     dataSource = new MatTableDataSource<Record<string, string | number>>();
+    isLoading = true;
+    rows25: number[] = Array.from({ length: 25 }, (_, i) => i);
 
     get columnNames(): string[] {
-        return this.config?.column?.map((c) => c.name) || [];
+        return this.config?.columns?.map((c) => c.name) || [];
     }
 
     get paginatorConfig(): PaginationConfig | null {
@@ -115,6 +117,17 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     ngOnChanges(changes: SimpleChanges) {
         if (changes["data"] && this.data) {
             this.dataSource.data = this.data;
+
+            // 🔧 REASIGNAMOS el paginator y sort cuando llegan datos
+            /*  if (this.paginator) {
+                this.dataSource.paginator = this.paginator;
+            }
+            if (this.sort) {
+                this.dataSource.sort = this.sort;
+            } */
+
+            // Si llegaron datos, ocultamos el skeleton
+            this.isLoading = this.data.length === 0;
         }
     }
 }

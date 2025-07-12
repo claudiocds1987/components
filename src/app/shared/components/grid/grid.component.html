@@ -1,4 +1,32 @@
-<mat-form-field *ngIf="config?.withInputSearch" appearance="outline">
+<!-- SKELETON MANUAL -->
+<div
+    *ngIf="config?.withInputSearch && isLoading"
+    class="skeleton-search-container"
+>
+    <div class="skeleton-search-label">Buscar</div>
+    <div class="skeleton-search-input"></div>
+</div>
+<div *ngIf="isLoading" class="skeleton-table">
+    <!-- Header -->
+    <div class="skeleton-header-row">
+        <div
+            class="skeleton-header-cell"
+            *ngFor="let col of config?.columns || []"
+        ></div>
+    </div>
+
+    <!-- 25 Rows -->
+    <div class="skeleton-row" *ngFor="let row of rows25">
+        <div class="skeleton-cell" *ngFor="let col of config?.columns || []">
+            <div class="skeleton-line"></div>
+        </div>
+    </div>
+</div>
+
+<mat-form-field
+    *ngIf="config.withInputSearch && !isLoading"
+    appearance="outline"
+>
     <mat-label>Buscar</mat-label>
     <input
         matInput
@@ -6,7 +34,13 @@
         placeholder="Escriba para filtrar"
     />
 </mat-form-field>
-<table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+<table
+    mat-table
+    *ngIf="!isLoading"
+    [dataSource]="dataSource"
+    matSort
+    class="mat-elevation-z8"
+>
     <ng-container *ngFor="let colName of columnNames" [matColumnDef]="colName">
         <th mat-header-cell *matHeaderCellDef mat-sort-header class="grid-cell">
             {{ colName }}
@@ -21,7 +55,7 @@
 </table>
 
 <mat-paginator
-    *ngIf="paginatorConfig"
+    *ngIf="paginatorConfig && !isLoading"
     [pageSize]="paginatorConfig.pageSize"
     [pageSizeOptions]="paginatorConfig.pageSizeOptions"
     [showFirstLastButtons]="true"

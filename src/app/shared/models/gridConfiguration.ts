@@ -1,5 +1,5 @@
 export interface GridConfiguration {
-    column: Column[];
+    columns: Column[];
     OrderBy: OrderBy;
     withPagination: PaginationConfig | false;
     withInputSearch: boolean;
