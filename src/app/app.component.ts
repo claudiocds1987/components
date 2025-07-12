@@ -22,6 +22,7 @@ export class AppComponent {
             pageSize: 5,
             pageSizeOptions: [5, 10, 20],
         },
+        withInputSearch: true,
     };
 
     data = [

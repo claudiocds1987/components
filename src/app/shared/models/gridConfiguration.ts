@@ -1,7 +1,8 @@
 export interface GridConfiguration {
     column: Column[];
     OrderBy: OrderBy;
-    withPagination?: PaginationConfig | false;
+    withPagination: PaginationConfig | false;
+    withInputSearch: boolean;
 }
 
 export interface Column {
