@@ -118,16 +118,21 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
         if (changes["data"] && this.data) {
             this.dataSource.data = this.data;
 
-            // 🔧 REASIGNAMOS el paginator y sort cuando llegan datos
-            /*  if (this.paginator) {
+            // para que funcione correctamente la renderizacion del sort y paginator
+            this._renderPaginatorAndSort();
+            // Si llegaron datos, ocultamos el skeleton
+            this.isLoading = this.data.length === 0;
+        }
+    }
+
+    private _renderPaginatorAndSort() {
+        setTimeout(() => {
+            if (this.paginator) {
                 this.dataSource.paginator = this.paginator;
             }
             if (this.sort) {
                 this.dataSource.sort = this.sort;
-            } */
-
-            // Si llegaron datos, ocultamos el skeleton
-            this.isLoading = this.data.length === 0;
-        }
+            }
+        });
     }
 }
