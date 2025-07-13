@@ -16,16 +16,16 @@ export class AppComponent implements OnInit {
 
     config: GridConfiguration = {
         columns: [
-            { name: "ID" },
-            { name: "Name" },
+            { name: "ID", width: "50px" },
+            { name: "Name", width: "250px" },
             { name: "Email" },
             { name: "Email2" },
             { name: "Email3" },
             { name: "Email4" },
-            { name: "Email5" },
+            { name: "Email5", width: "50px" },
         ],
         OrderBy: { columnName: "ID", direction: "asc" },
-        //withPagination: false // si es false en la grilla mostrar scroll infinito
+        //withPagination: false, // si es false en la grilla mostrar scroll infinito
         withPagination: {
             pageSize: 5,
             pageSizeOptions: [5, 10, 20],
@@ -39,16 +39,20 @@ export class AppComponent implements OnInit {
     ngOnInit(): void {
         // Simulamos llamada al backend
         setTimeout((): void => {
-            this.data = [
-                { ID: 1, Name: "Juan Pérez", Email: "juan@mail.com" },
-                { ID: 2, Name: "Ana López", Email: "ana@mail.com" },
-                { ID: 3, Name: "Carlos Ruiz", Email: "carlos@mail.com" },
-                { ID: 4, Name: "Carlos Ruiz", Email: "carlos@mail.com" },
-                { ID: 5, Name: "Carlos Ruiz", Email: "carlos@mail.com" },
-                { ID: 6, Name: "Carlos Ruiz", Email: "carlos@mail.com" },
-                { ID: 7, Name: "Carlos Ruiz", Email: "carlos@mail.com" },
-            ];
-        }, 2000); // ⏱️ 2 segundos de espera
+            this.data = Array.from(
+                { length: 50 },
+                (
+                    _: unknown,
+                    i: number,
+                ): { ID: number; Name: string; Email: string } => {
+                    return {
+                        ID: i + 1,
+                        Name: `Usuario ${i + 1}`,
+                        Email: `usuario${i + 1}@mail.com`,
+                    };
+                },
+            );
+        }, 2000);
     }
 
     /* data = [

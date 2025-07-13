@@ -6,6 +6,7 @@
     <div class="skeleton-search-label">Buscar</div>
     <div class="skeleton-search-input"></div>
 </div>
+
 <div *ngIf="isLoading" class="skeleton-table">
     <!-- Encabezado -->
     <div class="skeleton-header-row">
@@ -23,6 +24,8 @@
     </div>
 </div>
 <!-- FIN SKELETON -->
+
+<!-- Buscador -->
 <mat-form-field
     *ngIf="config.withInputSearch && !isLoading"
     appearance="outline"
@@ -34,30 +37,51 @@
         placeholder="Escriba para filtrar"
     />
 </mat-form-field>
-<table
-    mat-table
-    *ngIf="!isLoading"
-    [dataSource]="dataSource"
-    matSort
-    class="mat-elevation-z8"
->
-    <ng-container *ngFor="let colName of columnNames" [matColumnDef]="colName">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header class="grid-cell">
-            {{ colName }}
-        </th>
-        <td mat-cell *matCellDef="let row" class="grid-cell">
-            {{ getCellValue(row, colName) }}
-        </td>
-    </ng-container>
 
-    <tr mat-header-row class="header" *matHeaderRowDef="columnNames"></tr>
-    <tr mat-row *matRowDef="let row; columns: columnNames"></tr>
-</table>
+<!-- Contenedor con scroll horizontal -->
+<div class="table-container">
+    <table
+        mat-table
+        *ngIf="!isLoading"
+        [dataSource]="dataSource"
+        matSort
+        class="mat-elevation-z8"
+        style="table-layout: fixed; min-width: 100%"
+    >
+        <!-- Columnas dinámicas -->
+        <ng-container
+            *ngFor="let colName of columnNames; let i = index"
+            [matColumnDef]="colName"
+        >
+            <th
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="grid-cell"
+                [style.width]="columnsWidth[i] || null"
+            >
+                {{ colName }}
+            </th>
 
+            <td
+                mat-cell
+                *matCellDef="let row"
+                class="grid-cell"
+                [style.width]="columnsWidth[i] || null"
+            >
+                {{ getCellValue(row, colName) }}
+            </td>
+        </ng-container>
+
+        <tr mat-header-row class="header" *matHeaderRowDef="columnNames"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnNames"></tr>
+    </table>
+</div>
+
+<!-- Paginador -->
 <mat-paginator
     *ngIf="paginatorConfig && !isLoading"
     [pageSize]="paginatorConfig.pageSize"
     [pageSizeOptions]="paginatorConfig.pageSizeOptions"
     [showFirstLastButtons]="true"
->
-</mat-paginator>
+></mat-paginator>

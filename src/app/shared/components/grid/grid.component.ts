@@ -14,6 +14,7 @@ import { MatTableModule } from "@angular/material/table";
 import { MatSort, MatSortModule } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import {
+    Column,
     GridConfiguration,
     PaginationConfig,
 } from "../../models/gridConfiguration";
@@ -79,11 +80,40 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     //rows25: number[] = Array.from({ length: 25 }, (_, i) => i);
     rows25: number[] = Array.from({ length: 25 });
 
+    // hay que agregarle a GrdiConfiguration en Columns la prop.width
+    // y una funcion que mapee los anchos de las columnas en array columnWidths
+    //columnWidths = [150, 150, 80, 250]; // anchos fijos en px, uno por cada columna
+
     private _ngZone = inject(NgZone);
 
     get columnNames(): string[] {
         return this.config?.columns?.map((c): string => c.name) || [];
     }
+
+    get columnsWidth(): (string | undefined)[] {
+        return (
+            this.config?.columns?.map(
+                (c: Column): string | undefined => c.width,
+            ) ?? []
+        );
+        /* return (
+            this.config?.columns?.map(
+                (c: Column): string => c.width ?? "auto",
+            ) || []
+        ); */
+    }
+
+    /* get columnsWidth(): string[] {
+        // Retorna un array de strings si hay anchos definidos en las columnas
+        return (
+            this.config?.columns
+                ?.map((c: Column): string | undefined => c.width)
+                .filter(
+                    (width: string | undefined): width is string =>
+                        typeof width === "string",
+                ) || []
+        );
+    } */
 
     get paginatorConfig(): PaginationConfig | null {
         const pagination = this.config?.withPagination;

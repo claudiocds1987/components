@@ -7,6 +7,7 @@ export interface GridConfiguration {
 
 export interface Column {
     name: string;
+    width?: string; // opcional, si no se define, se usa el ancho por defecto
     icon?: Icon;
 }
 
