@@ -133,7 +133,16 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
         colName: string,
     ): string {
         const value = row[colName];
-        return value !== undefined && value !== null ? String(value) : "";
+        return value != null ? String(value) : "";
+        //return value !== undefined && value !== null ? String(value) : "";
+    }
+
+    getTruncatedValue(
+        row: Record<string, string | number>,
+        colName: string,
+    ): string {
+        const value = this.getCellValue(row, colName);
+        return value.length > 25 ? value.slice(0, 25) + "..." : value;
     }
 
     applyFilter(event: Event): void {

@@ -88,11 +88,14 @@
                 *matCellDef="let row"
                 class="grid-cell"
                 [style.width]="columnsWidth[i] || 'auto'"
-                [appTruncateTooltip]="
-                    getCellValue(row, colName)?.toString() ?? ''
+                [matTooltip]="
+                    getCellValue(row, colName) &&
+                    getCellValue(row, colName).length > 25
+                        ? getCellValue(row, colName)
+                        : ''
                 "
             >
-                {{ getCellValue(row, colName) }}
+                {{ getTruncatedValue(row, colName) }}
             </td>
         </ng-container>
 
