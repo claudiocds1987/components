@@ -26,6 +26,8 @@ import {
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { take } from "rxjs";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { TruncateTooltipDirective } from "../../directives/truncate-tooltip.directive";
 
 @Component({
     selector: "app-grid",
@@ -37,6 +39,8 @@ import { take } from "rxjs";
         MatPaginatorModule,
         MatFormFieldModule,
         MatInputModule,
+        MatTooltipModule,
+        TruncateTooltipDirective,
     ],
     templateUrl: "./grid.component.html",
     styleUrl: "./grid.component.scss",
@@ -77,12 +81,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     @Input() data: Record<string, string | number>[] = [];
     dataSource = new MatTableDataSource<Record<string, string | number>>();
     isLoading = true;
-    //rows25: number[] = Array.from({ length: 25 }, (_, i) => i);
     rows25: number[] = Array.from({ length: 25 });
-
-    // hay que agregarle a GrdiConfiguration en Columns la prop.width
-    // y una funcion que mapee los anchos de las columnas en array columnWidths
-    //columnWidths = [150, 150, 80, 250]; // anchos fijos en px, uno por cada columna
 
     private _ngZone = inject(NgZone);
 
@@ -90,30 +89,21 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
         return this.config?.columns?.map((c): string => c.name) || [];
     }
 
+    /*  get columnsWidth(): string[] {
+        return (
+            this.config?.columns?.map(
+                (c: Column): string => c.width ?? "auto", // o "auto"
+            ) ?? []
+        );
+    } */
+
     get columnsWidth(): (string | undefined)[] {
         return (
             this.config?.columns?.map(
                 (c: Column): string | undefined => c.width,
             ) ?? []
         );
-        /* return (
-            this.config?.columns?.map(
-                (c: Column): string => c.width ?? "auto",
-            ) || []
-        ); */
     }
-
-    /* get columnsWidth(): string[] {
-        // Retorna un array de strings si hay anchos definidos en las columnas
-        return (
-            this.config?.columns
-                ?.map((c: Column): string | undefined => c.width)
-                .filter(
-                    (width: string | undefined): width is string =>
-                        typeof width === "string",
-                ) || []
-        );
-    } */
 
     get paginatorConfig(): PaginationConfig | null {
         const pagination = this.config?.withPagination;
@@ -122,11 +112,28 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
             : null;
     }
 
-    getCellValue(
+    /* getTooltipValue(
+        row: Record<string, string | number>,
+        colName: string,
+    ): string {
+        const value = row[colName];
+        return value !== undefined && value !== null ? String(value) : "";
+    } */
+
+    /* getCellValue(
+        // truncar aca
         row: Record<string, string | number>,
         colName: string,
     ): string | number | undefined {
         return row[colName];
+    } */
+
+    getCellValue(
+        row: Record<string, string | number>,
+        colName: string,
+    ): string {
+        const value = row[colName];
+        return value !== undefined && value !== null ? String(value) : "";
     }
 
     applyFilter(event: Event): void {
@@ -153,14 +160,36 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes["data"] && this.data) {
+            //const truncateDataTo25Characters = this._truncateData(this.data);
+            //this.data = truncateDataTo25Characters;
             this.dataSource.data = this.data;
+            console.log("data:", this.data);
 
             // para que funcione correctamente la renderizacion del sort y paginator
-
             this._renderPaginatorAndSort();
             // Si llegaron datos, ocultamos el skeleton
             this.isLoading = this.data.length === 0;
         }
+    }
+
+    truncate(text: string | number | undefined, maxLength = 25): string {
+        if (text === undefined || text === null) return "";
+        const str = String(text);
+        return str.length > maxLength ? str.slice(0, maxLength) + "..." : str;
+    }
+
+    getTooltipValue(
+        row: Record<string, string | number>,
+        colName: string,
+    ): string {
+        //console.log("row:", row, "colName:", colName);
+        const val = this.getCellValue(row, colName);
+        console.log("val:", val);
+        if (val === undefined || val === null) return "";
+        const str = val.toString();
+        const tooltip = str.length > 25 ? str : "";
+        console.log(`Tooltip para columna ${colName}:`, tooltip);
+        return tooltip;
     }
 
     private _renderPaginatorAndSort(): void {
@@ -176,5 +205,31 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
                 this.dataSource.sort = this.sort;
             }
         });
+    }
+
+    private _truncateData(
+        inputData: Record<string, string | number>[],
+    ): Record<string, string | number>[] {
+        // si data tiene mas de 25 caracteres, truncamos a 22 y agregamos "..."
+        // para que las columnas tengan un ancho fijo maximo de 25 caracteres  y no se desborden
+        return inputData.map(
+            (
+                row: Record<string, string | number>,
+            ): Record<string, string | number> => {
+                const truncatedRow: Record<string, string | number> = {};
+
+                for (const key in row) {
+                    const value: string | number = row[key];
+
+                    if (typeof value === "string" && value.length > 25) {
+                        truncatedRow[key] = value.slice(0, 22) + "...";
+                    } else {
+                        truncatedRow[key] = value;
+                    }
+                }
+
+                return truncatedRow;
+            },
+        );
     }
 }

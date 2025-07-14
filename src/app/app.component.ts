@@ -17,12 +17,13 @@ export class AppComponent implements OnInit {
     config: GridConfiguration = {
         columns: [
             { name: "ID", width: "50px" },
-            { name: "Name", width: "250px" },
+            { name: "Name" },
             { name: "Email" },
-            { name: "Email2" },
-            { name: "Email3" },
-            { name: "Email4" },
-            { name: "Email5", width: "50px" },
+            { name: "COL1" },
+            { name: "COL2" },
+            { name: "COL3" },
+            { name: "COL4" },
+            { name: "COL5" },
         ],
         OrderBy: { columnName: "ID", direction: "asc" },
         //withPagination: false, // si es false en la grilla mostrar scroll infinito
@@ -40,14 +41,14 @@ export class AppComponent implements OnInit {
         // Simulamos llamada al backend
         setTimeout((): void => {
             this.data = Array.from(
-                { length: 50 },
+                { length: 10 },
                 (
                     _: unknown,
                     i: number,
                 ): { ID: number; Name: string; Email: string } => {
                     return {
                         ID: i + 1,
-                        Name: `Usuario ${i + 1}`,
+                        Name: `JUAN CARLOS ALBERTO JOSE MARIA ${i + 1}`,
                         Email: `usuario${i + 1}@mail.com`,
                     };
                 },
