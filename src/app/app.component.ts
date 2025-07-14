@@ -1,7 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import { MatButtonModule } from "@angular/material/button";
-import { GridConfiguration } from "./shared/models/gridConfiguration";
+import {
+    createDefaultGridConfiguration,
+    GridConfiguration,
+} from "./shared/models/gridConfiguration";
 import { GridComponent } from "./shared/components/grid/grid.component";
 
 @Component({
@@ -14,9 +17,10 @@ import { GridComponent } from "./shared/components/grid/grid.component";
 export class AppComponent implements OnInit {
     title = "components";
 
-    config: GridConfiguration = {
+    config = createDefaultGridConfiguration({
+        //OrderBy: { columnName: "ID", direction: "asc" },
         columns: [
-            { name: "ID", width: "50px" },
+            { name: "ID", width: "70px" },
             { name: "Name" },
             { name: "Email" },
             { name: "COL1" },
@@ -25,14 +29,27 @@ export class AppComponent implements OnInit {
             { name: "COL4" },
             { name: "COL5" },
         ],
+    });
+    /* config: GridConfiguration = {
         OrderBy: { columnName: "ID", direction: "asc" },
+        withInputSearch: true,
+        withExcelDownload: false, // si es true en la grilla mostrar botón de descarga a Excel
         //withPagination: false, // si es false en la grilla mostrar scroll infinito
         withPagination: {
             pageSize: 5,
             pageSizeOptions: [5, 10, 20],
         },
-        withInputSearch: true,
-    };
+        columns: [
+            { name: "ID", width: "80px" },
+            { name: "Name" },
+            { name: "Email" },
+            { name: "COL1" },
+            { name: "COL2" },
+            { name: "COL3" },
+            { name: "COL4" },
+            { name: "COL5" },
+        ],
+    }; */
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: any[] = [];
@@ -41,7 +58,7 @@ export class AppComponent implements OnInit {
         // Simulamos llamada al backend
         setTimeout((): void => {
             this.data = Array.from(
-                { length: 10 },
+                { length: 100 },
                 (
                     _: unknown,
                     i: number,
