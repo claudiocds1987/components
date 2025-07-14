@@ -27,7 +27,7 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { take } from "rxjs";
 import { MatTooltipModule } from "@angular/material/tooltip";
-import { TruncateTooltipDirective } from "../../directives/truncate-tooltip.directive";
+import { TruncatePipe } from "../../pipes/truncate.pipe";
 
 @Component({
     selector: "app-grid",
@@ -40,7 +40,7 @@ import { TruncateTooltipDirective } from "../../directives/truncate-tooltip.dire
         MatFormFieldModule,
         MatInputModule,
         MatTooltipModule,
-        TruncateTooltipDirective,
+        TruncatePipe,
     ],
     templateUrl: "./grid.component.html",
     styleUrl: "./grid.component.scss",
@@ -89,14 +89,6 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
         return this.config?.columns?.map((c): string => c.name) || [];
     }
 
-    /*  get columnsWidth(): string[] {
-        return (
-            this.config?.columns?.map(
-                (c: Column): string => c.width ?? "auto", // o "auto"
-            ) ?? []
-        );
-    } */
-
     get columnsWidth(): (string | undefined)[] {
         return (
             this.config?.columns?.map(
@@ -112,29 +104,12 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
             : null;
     }
 
-    /* getTooltipValue(
-        row: Record<string, string | number>,
-        colName: string,
-    ): string {
-        const value = row[colName];
-        return value !== undefined && value !== null ? String(value) : "";
-    } */
-
-    /* getCellValue(
-        // truncar aca
-        row: Record<string, string | number>,
-        colName: string,
-    ): string | number | undefined {
-        return row[colName];
-    } */
-
     getCellValue(
         row: Record<string, string | number>,
         colName: string,
     ): string {
         const value = row[colName];
         return value != null ? String(value) : "";
-        //return value !== undefined && value !== null ? String(value) : "";
     }
 
     getTruncatedValue(
@@ -169,8 +144,6 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes["data"] && this.data) {
-            //const truncateDataTo25Characters = this._truncateData(this.data);
-            //this.data = truncateDataTo25Characters;
             this.dataSource.data = this.data;
             console.log("data:", this.data);
 
@@ -191,7 +164,6 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
         row: Record<string, string | number>,
         colName: string,
     ): string {
-        //console.log("row:", row, "colName:", colName);
         const val = this.getCellValue(row, colName);
         console.log("val:", val);
         if (val === undefined || val === null) return "";
@@ -214,31 +186,5 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
                 this.dataSource.sort = this.sort;
             }
         });
-    }
-
-    private _truncateData(
-        inputData: Record<string, string | number>[],
-    ): Record<string, string | number>[] {
-        // si data tiene mas de 25 caracteres, truncamos a 22 y agregamos "..."
-        // para que las columnas tengan un ancho fijo maximo de 25 caracteres  y no se desborden
-        return inputData.map(
-            (
-                row: Record<string, string | number>,
-            ): Record<string, string | number> => {
-                const truncatedRow: Record<string, string | number> = {};
-
-                for (const key in row) {
-                    const value: string | number = row[key];
-
-                    if (typeof value === "string" && value.length > 25) {
-                        truncatedRow[key] = value.slice(0, 22) + "...";
-                    } else {
-                        truncatedRow[key] = value;
-                    }
-                }
-
-                return truncatedRow;
-            },
-        );
     }
 }

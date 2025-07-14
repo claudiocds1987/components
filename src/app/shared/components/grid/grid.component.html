@@ -62,40 +62,18 @@
                 {{ colName }}
             </th>
 
-            <!-- <td
-                mat-cell
-                *matCellDef="let row"
-                class="grid-cell"
-                [style.width]="columnsWidth[i] || 'auto'"
-                [appTruncateTooltip]="getTooltipValue(row, colName)"
-                matTooltip=""
-                [matTooltipPosition]="'above'"
-            >
-                {{ getCellValue(row, colName) }}
-            </td> -->
-            <!-- <td
-                mat-cell
-                *matCellDef="let row"
-                class="grid-cell"
-                [style.width]="columnsWidth[i] || 'auto'"
-                [matTooltip]="getTooltipValue(row, colName)"
-                matTooltipPosition="above"
-            >
-                {{ truncate(getCellValue(row, colName)) }}
-            </td> -->
             <td
                 mat-cell
                 *matCellDef="let row"
                 class="grid-cell"
                 [style.width]="columnsWidth[i] || 'auto'"
                 [matTooltip]="
-                    getCellValue(row, colName) &&
                     getCellValue(row, colName).length > 25
                         ? getCellValue(row, colName)
                         : ''
                 "
             >
-                {{ getTruncatedValue(row, colName) }}
+                {{ getCellValue(row, colName) | truncate: 25 : true }}
             </td>
         </ng-container>
 

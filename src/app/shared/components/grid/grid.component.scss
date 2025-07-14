@@ -14,18 +14,12 @@
 .table-container {
   width: 100%;
   overflow-x: auto;
-  /* .table{
-    table-layout: fixed; 
-    min-width: 100%;
-  } */
+ 
 }
 table {
   table-layout: fixed;
   width: 100%;
 }
-/* table.mat-table {
-  width: 100%;
-} */
 
 .grid-cell {
   overflow: hidden;
