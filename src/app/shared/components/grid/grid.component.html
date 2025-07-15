@@ -40,53 +40,52 @@
 </mat-form-field>
 
 <!-- Contenedor con scroll horizontal -->
-<div class="grid-wrapper">
-    <div class="table-container">
-        <table
-            mat-table
-            *ngIf="!isLoading"
-            [dataSource]="dataSource"
-            matSort
-            class="mat-elevation-z8 table"
+
+<div class="table-container">
+    <table
+        mat-table
+        *ngIf="!isLoading"
+        [dataSource]="dataSource"
+        matSort
+        class="mat-elevation-z8 table"
+    >
+        <!-- Columnas dinámicas -->
+        <ng-container
+            *ngFor="let colName of columnNames; let i = index"
+            [matColumnDef]="colName"
         >
-            <!-- Columnas dinámicas -->
-            <ng-container
-                *ngFor="let colName of columnNames; let i = index"
-                [matColumnDef]="colName"
+            <th
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="grid-cell"
+                [style.width]="columnsWidth[i] || 'auto'"
             >
-                <th
-                    mat-header-cell
-                    *matHeaderCellDef
-                    mat-sort-header
-                    class="grid-cell"
-                    [style.width]="columnsWidth[i] || 'auto'"
-                >
-                    {{ colName }}
-                </th>
+                {{ colName }}
+            </th>
 
-                <td
-                    mat-cell
-                    *matCellDef="let row"
-                    class="grid-cell"
-                    [style.width]="columnsWidth[i] || 'auto'"
-                    [matTooltip]="
-                        getCellValue(row, colName).length > 25
-                            ? getCellValue(row, colName)
-                            : ''
-                    "
-                >
-                    {{ getCellValue(row, colName) | truncate: 25 : true }}
-                </td>
-            </ng-container>
+            <td
+                mat-cell
+                *matCellDef="let row"
+                class="grid-cell"
+                [style.width]="columnsWidth[i] || 'auto'"
+                [matTooltip]="
+                    getCellValue(row, colName).length > 25
+                        ? getCellValue(row, colName)
+                        : ''
+                "
+            >
+                {{ getCellValue(row, colName) | truncate: 25 : true }}
+            </td>
+        </ng-container>
 
-            <tr
-                mat-header-row
-                class="header"
-                *matHeaderRowDef="columnNames"
-            ></tr>
-            <tr mat-row *matRowDef="let row; columns: columnNames"></tr>
-        </table>
-    </div>
+        <tr
+            mat-header-row
+            class="header"
+            *matHeaderRowDef="columnNames; sticky: true"
+        ></tr>
+        <tr mat-row *matRowDef="let row; columns: columnNames"></tr>
+    </table>
 </div>
 
 <!-- Paginador -->

@@ -23,33 +23,13 @@ export class AppComponent implements OnInit {
             { name: "ID", width: "70px" },
             { name: "Name" },
             { name: "Email" },
-            { name: "COL1" },
-            { name: "COL2" },
-            { name: "COL3" },
-            { name: "COL4" },
-            { name: "COL5" },
+            { name: "Domicilio" },
+            { name: "CodPostal" },
+            { name: "Puesto" },
+            { name: "Dni" },
+            { name: "Elipsis", width: "70px" },
         ],
     });
-    /* config: GridConfiguration = {
-        OrderBy: { columnName: "ID", direction: "asc" },
-        withInputSearch: true,
-        withExcelDownload: false, // si es true en la grilla mostrar botón de descarga a Excel
-        //withPagination: false, // si es false en la grilla mostrar scroll infinito
-        withPagination: {
-            pageSize: 5,
-            pageSizeOptions: [5, 10, 20],
-        },
-        columns: [
-            { name: "ID", width: "80px" },
-            { name: "Name" },
-            { name: "Email" },
-            { name: "COL1" },
-            { name: "COL2" },
-            { name: "COL3" },
-            { name: "COL4" },
-            { name: "COL5" },
-        ],
-    }; */
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: any[] = [];
@@ -62,11 +42,25 @@ export class AppComponent implements OnInit {
                 (
                     _: unknown,
                     i: number,
-                ): { ID: number; Name: string; Email: string } => {
+                ): {
+                    ID: number;
+                    Name: string;
+                    Email: string;
+                    Domicilio: string;
+                    CodPostal: string;
+                    Puesto: string;
+                    Dni: string;
+                    Elipsis: string;
+                } => {
                     return {
                         ID: i + 1,
                         Name: `JUAN CARLOS ALBERTO JOSE MARIA ${i + 1}`,
                         Email: `usuario${i + 1}@mail.com`,
+                        Domicilio: `Av.Libertador 1${i + 1}`,
+                        CodPostal: `164${i + 1}`,
+                        Puesto: `Administrativo ${i + 1}`,
+                        Dni: `2 ${i + 1}.310.510`,
+                        Elipsis: "...",
                     };
                 },
             );

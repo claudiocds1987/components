@@ -13,20 +13,19 @@
 
 
 
-.grid-wrapper {
-  height: calc(100vh - 120px); // suponiendo que tenés 120px entre header/márgenes
-  overflow-y: auto;
-}
 
 .table-container {
-  width: 100%;
-  overflow-x: auto; // scroll horizontal si la tabla es ancha
+    height: 400px;
+    overflow-y: auto; //scroll vertical
+    overflow-x: auto; // scroll horizontal
 }
 
 
 table {
-  table-layout: fixed;
-  width: 100%;
+    width: 100%;
+    /* min-width: 800px; /* Optional: Set a minimum width for the table if columns are very narrow and you need horizontal scroll */
+    table-layout: fixed; // Garantiza anchos de columna consistentes
+    border-collapse: collapse; // para bordes limpios
 }
 
 .grid-cell {
