@@ -85,16 +85,12 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
 
     private _ngZone = inject(NgZone);
 
-    get columnNames(): string[] {
-        return this.config?.columns?.map((c): string => c.name) || [];
+    get columns(): Column[] {
+        return this.config?.columns ?? [];
     }
 
-    get columnsWidth(): (string | undefined)[] {
-        return (
-            this.config?.columns?.map(
-                (c: Column): string | undefined => c.width,
-            ) ?? []
-        );
+    get columnNames(): string[] {
+        return this.config?.columns?.map((c): string => c.name) || [];
     }
 
     get paginatorConfig(): PaginationConfig | null {

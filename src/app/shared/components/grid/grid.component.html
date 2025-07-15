@@ -1,4 +1,4 @@
-<!-- SKELETON -->
+<!-- Skeleton -->
 <div
     *ngIf="config?.withInputSearch && isLoading"
     class="skeleton-search-container"
@@ -8,7 +8,7 @@
 </div>
 
 <div *ngIf="isLoading" class="skeleton-table">
-    <!-- Encabezado -->
+    <!-- skeleton encabezado -->
     <div class="skeleton-header-row">
         <div
             class="skeleton-header-cell"
@@ -16,14 +16,13 @@
         ></div>
     </div>
 
-    <!-- 25 Rows -->
+    <!-- skeleton filas 25 -->
     <div class="skeleton-row" *ngFor="let row of rows25">
         <div class="skeleton-cell" *ngFor="let col of config?.columns || []">
             <div class="skeleton-line"></div>
         </div>
     </div>
 </div>
-<!-- FIN SKELETON -->
 
 <!-- Buscador -->
 <mat-form-field
@@ -39,7 +38,7 @@
     />
 </mat-form-field>
 
-<!-- Contenedor con scroll horizontal -->
+<!-- Inicio tabla -->
 
 <div class="table-container">
     <table
@@ -49,40 +48,39 @@
         matSort
         class="mat-elevation-z8 table"
     >
-        <!-- Columnas dinámicas -->
-        <ng-container
-            *ngFor="let colName of columnNames; let i = index"
-            [matColumnDef]="colName"
-        >
+        <ng-container *ngFor="let col of columns" [matColumnDef]="col.name">
+            <!-- Cabecera -->
             <th
                 mat-header-cell
                 *matHeaderCellDef
                 mat-sort-header
                 class="grid-cell"
-                [style.width]="columnsWidth[i] || 'auto'"
+                [style.width]="col.width || 'auto'"
             >
-                {{ colName }}
+                {{ col.name }}
             </th>
-
+            <!-- Celdas -->
             <td
                 mat-cell
                 *matCellDef="let row"
                 class="grid-cell"
-                [style.width]="columnsWidth[i] || 'auto'"
+                [style.width]="col.width || 'auto'"
                 [matTooltip]="
-                    getCellValue(row, colName).length > 25
-                        ? getCellValue(row, colName)
+                    getCellValue(row, col.name).length > 25
+                        ? getCellValue(row, col.name)
                         : ''
                 "
             >
-                {{ getCellValue(row, colName) | truncate: 25 : true }}
+                {{ getCellValue(row, col.name) | truncate: 25 : true }}
             </td>
         </ng-container>
 
+        <!-- Filas -->
         <tr
             mat-header-row
             class="header"
-            *matHeaderRowDef="columnNames; sticky: true"
+            *matHeaderRowDef="columnNames"
+            sticky
         ></tr>
         <tr mat-row *matRowDef="let row; columns: columnNames"></tr>
     </table>
