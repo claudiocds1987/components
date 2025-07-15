@@ -142,7 +142,6 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
         if (changes["data"] && this.data) {
             this.dataSource.data = this.data;
             console.log("data:", this.data);
-
             // para que funcione correctamente la renderizacion del sort y paginator
             this._renderPaginatorAndSort();
             // Si llegaron datos, ocultamos el skeleton

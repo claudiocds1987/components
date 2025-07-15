@@ -33,7 +33,7 @@
     <mat-label>Buscar</mat-label>
     <input
         matInput
-        (keyup)="applyFilter($event)"
+        (input)="applyFilter($event)"
         placeholder="Escriba para filtrar"
     />
 </mat-form-field>
@@ -46,7 +46,7 @@
         *ngIf="!isLoading"
         [dataSource]="dataSource"
         matSort
-        class="mat-elevation-z8 table"
+        class="table"
     >
         <ng-container *ngFor="let col of columns" [matColumnDef]="col.name">
             <!-- Cabecera -->
