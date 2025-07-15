@@ -11,11 +11,19 @@
   border-right: none;
 }
 
+
+
+.grid-wrapper {
+  height: calc(100vh - 120px); // suponiendo que tenés 120px entre header/márgenes
+  overflow-y: auto;
+}
+
 .table-container {
   width: 100%;
-  overflow-x: auto;
- 
+  overflow-x: auto; // scroll horizontal si la tabla es ancha
 }
+
+
 table {
   table-layout: fixed;
   width: 100%;
@@ -32,7 +40,6 @@ table {
 
 .search-field{
   width: 200px;
-  //max-width: 300px;
 }
 
 
@@ -98,7 +105,7 @@ table {
 // Skeleton del input de búsqueda
 .skeleton-search-container {
   position: relative;
-  width: 212px;
+  width: 200px;
   height: 56px;
   border: 1px solid rgba(0, 0, 0, 0.23);
   border-radius: 4px;
