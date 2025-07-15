@@ -1,3 +1,12 @@
+/************************************************************************************************** 
+IMPORTANTE:
+
+Este archivo define la configuración de la grilla que se usa en el componente GridComponent.
+Si se agrega una "nueva interface" o una "nueva propiedad" dentro de alguna interface,
+tambien debe agregarse a la funcion createDefaultGridConfiguration() que esta abajo de todo
+para que quede siempre la configuracion actualizada. Caso contrario esa propiedad
+o interface nueva que agregamos no va a ser reconocida por el componente GridComponent 
+***************************************************************************************************/
 export interface GridConfiguration {
     columns: Column[];
     OrderBy: OrderBy;
@@ -11,6 +20,7 @@ export interface Column {
     width?: string; // opcional, si no se define, se usa el ancho por defecto
     icon?: Icon;
     align?: "left" | "right" | "center";
+    sortable?: boolean; // opcional, si se define, se permite ordenar por columnas
 }
 
 export interface Icon {
@@ -39,6 +49,7 @@ export function createDefaultGridConfiguration(
                     name: col.name ?? "",
                     width: col.width,
                     align: col.align ?? "left",
+                    sortable: col.sortable ?? true,
                     icon: col.icon
                         ? {
                               name: col.icon.name ?? "",

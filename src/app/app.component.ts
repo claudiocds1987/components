@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
     config = createDefaultGridConfiguration({
         //OrderBy: { columnName: "ID", direction: "asc" },
         columns: [
-            { name: "ID", width: "70px" },
+            { name: "ID", width: "70px", sortable: false },
             { name: "Name" },
             { name: "Email" },
             { name: "Domicilio" },

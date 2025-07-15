@@ -100,11 +100,6 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
             : null;
     }
 
-    getAlignmentClass(col: Column): string {
-        console.log("col align:", col.align);
-        return col.align ? `align-${col.align}` : "align-left";
-    }
-
     getCellValue(
         row: Record<string, string | number>,
         colName: string,
