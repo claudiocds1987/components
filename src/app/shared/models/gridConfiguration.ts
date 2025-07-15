@@ -10,6 +10,7 @@ export interface Column {
     name: string;
     width?: string; // opcional, si no se define, se usa el ancho por defecto
     icon?: Icon;
+    align?: "left" | "right" | "center"; // opcional, si no se define, se usa el alineamiento por defecto (izquierda)
 }
 
 export interface Icon {
