@@ -55,7 +55,9 @@
                 *matHeaderCellDef
                 mat-sort-header
                 class="grid-cell"
+                [ngClass]="getAlignmentClass(col)"
                 [style.width]="col.width || 'auto'"
+                [style.text-align]="col.align || 'left'"
             >
                 {{ col.name }}
             </th>
@@ -65,6 +67,7 @@
                 *matCellDef="let row"
                 class="grid-cell"
                 [style.width]="col.width || 'auto'"
+                [style.text-align]="col.align || 'left'"
                 [matTooltip]="
                     getCellValue(row, col.name).length > 25
                         ? getCellValue(row, col.name)
@@ -79,8 +82,7 @@
         <tr
             mat-header-row
             class="header"
-            *matHeaderRowDef="columnNames"
-            sticky
+            *matHeaderRowDef="columnNames; sticky: 'sticky'"
         ></tr>
         <tr mat-row *matRowDef="let row; columns: columnNames"></tr>
     </table>

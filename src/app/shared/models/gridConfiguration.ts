@@ -10,7 +10,7 @@ export interface Column {
     name: string;
     width?: string; // opcional, si no se define, se usa el ancho por defecto
     icon?: Icon;
-    align?: "left" | "right" | "center"; // opcional, si no se define, se usa el alineamiento por defecto (izquierda)
+    align?: "left" | "right" | "center";
 }
 
 export interface Icon {
@@ -38,6 +38,7 @@ export function createDefaultGridConfiguration(
                 (col): Column => ({
                     name: col.name ?? "",
                     width: col.width,
+                    align: col.align ?? "left",
                     icon: col.icon
                         ? {
                               name: col.icon.name ?? "",

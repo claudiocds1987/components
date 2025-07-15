@@ -24,10 +24,10 @@ export class AppComponent implements OnInit {
             { name: "Name" },
             { name: "Email" },
             { name: "Domicilio" },
-            { name: "CodPostal" },
+            { name: "CodPostal", align: "center" },
             { name: "Puesto" },
             { name: "Dni" },
-            { name: "Elipsis", width: "70px" },
+            { name: "Elipsis", width: "70px", align: "center" },
         ],
     });
 
