@@ -165,7 +165,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     /***************************************************************************************************
-        En el html trackBy: trackColumnByName.
+        En el html *ngFor="let col of columns; trackBy: trackColumnByName"
         trackBy le dice a Angular cómo identificar de forma única cada elemento en la lista. 
         Al usar trackBy, Angular puede detectar con mayor precisión qué elementos han cambiado, 
         se han agregado o se han eliminado. En lugar de destruir y recrear todos los elementos DOM, 
@@ -179,12 +179,10 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     private _updateFilterPredicate(): void {
         this.dataSource.filterPredicate = (data, filter: string): boolean => {
             const search = filter.trim().toLowerCase();
-
             // Si el filtro está vacío, mostramos todo (sin filtrar)
             if (!search) {
                 return true;
             }
-
             // Filtrar por columna específica si está definida
             if (
                 this.config?.filterByColumn &&
@@ -193,7 +191,6 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
                 const value = data[this.config.filterByColumn];
                 return value?.toString().toLowerCase().includes(search);
             }
-
             // Filtrar en todas las columnas configuradas
             return (
                 this.config?.columns?.some((col): boolean => {
