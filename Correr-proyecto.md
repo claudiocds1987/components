@@ -2,6 +2,8 @@ SE INSTALÓ NVM PARA WINDOWS
 ESTE PROYECTO ESTA EN ANGULAR 17 Y ESTA USANDO LA VERSION DE NODE 20.12.2
 
 NOTA: para paquetes usar "npx i" nombre-libreria, no usar npm i
+para crear un servicio: npx ng g s employee-mock
+para crear un componente: npx ng g c employee
 
 CADA VEZ QUE ABRA EL PROYECTO HAY QUE INDICAR A NVM (NODE VERSION MANAGEMENT)
 LA VERSION DE NODE.JS DE ESTE PROYECTO:
