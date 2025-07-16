@@ -12,6 +12,7 @@ export interface GridConfiguration {
     OrderBy: OrderBy;
     withPagination: PaginationConfig | false;
     withInputSearch: boolean;
+    filterByColumn: string;
     withExcelDownload: boolean; // opcional, si se define, se muestra el botón de descarga a Excel
 }
 
@@ -71,6 +72,7 @@ export function createDefaultGridConfiguration(
                   }
                 : false,
         withInputSearch: config?.withInputSearch ?? true,
+        filterByColumn: config?.filterByColumn ?? "",
         withExcelDownload: config?.withExcelDownload ?? false,
     };
 }

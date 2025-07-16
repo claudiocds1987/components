@@ -122,12 +122,13 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     ngOnInit(): void {
-        this.dataSource.filterPredicate = (data, filter: string): boolean => {
+        /* this.dataSource.filterPredicate = (data, filter: string): boolean => {
             // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
             return Object.values(data).some((value) =>
                 value.toString().toLowerCase().includes(filter),
             );
-        };
+        }; */
+        this._updateFilterPredicate();
     }
 
     ngAfterViewInit(): void {
@@ -141,11 +142,17 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     ngOnChanges(changes: SimpleChanges): void {
         if (changes["data"] && this.data) {
             this.dataSource.data = this.data;
-            console.log("data:", this.data);
-            // para que funcione correctamente la renderizacion del sort y paginator
             this._renderPaginatorAndSort();
-            // Si llegaron datos, ocultamos el skeleton
             this.isLoading = this.data.length === 0;
+        }
+
+        if (changes["config"] && this.config) {
+            this._updateFilterPredicate();
+
+            // 👇 Volver a aplicar el filtro actual si existe
+            /* const currentFilter = this.dataSource.filter;
+            this.dataSource.filter = ""; // forzar re-evaluación
+            this.dataSource.filter = currentFilter; */
         }
     }
 
@@ -166,6 +173,34 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
         const tooltip = str.length > 25 ? str : "";
         console.log(`Tooltip para columna ${colName}:`, tooltip);
         return tooltip;
+    }
+
+    private _updateFilterPredicate(): void {
+        this.dataSource.filterPredicate = (data, filter: string): boolean => {
+            const search = filter.trim().toLowerCase();
+
+            // Si el filtro está vacío, mostramos todo (sin filtrar)
+            if (!search) {
+                return true;
+            }
+
+            // Filtrar por columna específica si está definida
+            if (
+                this.config?.filterByColumn &&
+                this.config.filterByColumn !== ""
+            ) {
+                const value = data[this.config.filterByColumn];
+                return value?.toString().toLowerCase().includes(search);
+            }
+
+            // Filtrar en todas las columnas configuradas
+            return (
+                this.config?.columns?.some((col): boolean => {
+                    const value = data[col.name];
+                    return value?.toString().toLowerCase().includes(search);
+                }) ?? false
+            );
+        };
     }
 
     private _renderPaginatorAndSort(): void {

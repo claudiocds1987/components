@@ -16,6 +16,7 @@ export class AppComponent implements OnInit {
 
     config = createDefaultGridConfiguration({
         //OrderBy: { columnName: "ID", direction: "asc" },
+        //filterByColumn: "CodPostal",
         columns: [
             { name: "ID", width: "70px" },
             { name: "Name" },

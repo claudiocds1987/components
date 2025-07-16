@@ -34,7 +34,7 @@
     <input
         matInput
         (input)="applyFilter($event)"
-        placeholder="Escriba para filtrar"
+        [placeholder]="config.filterByColumn || 'Buscar todo'"
     />
 </mat-form-field>
 
