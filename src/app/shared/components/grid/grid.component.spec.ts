@@ -2,11 +2,11 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { GridComponent } from "./grid.component";
 
-describe("GridComponent", () => {
+describe("GridComponent", (): void => {
     let component: GridComponent;
     let fixture: ComponentFixture<GridComponent>;
 
-    beforeEach(async () => {
+    beforeEach(async (): Promise<void> => {
         await TestBed.configureTestingModule({
             imports: [GridComponent],
         }).compileComponents();
@@ -16,7 +16,7 @@ describe("GridComponent", () => {
         fixture.detectChanges();
     });
 
-    it("should create", () => {
+    it("should create", (): void => {
         expect(component).toBeTruthy();
     });
 });
