@@ -20,7 +20,7 @@ export interface Column {
     width?: string; // opcional, si no se define, se usa el ancho por defecto
     icon?: Icon;
     align?: "left" | "right" | "center";
-    sortable?: boolean; // opcional, si se define, se permite ordenar por columnas
+    isSortable?: boolean; // opcional, si se define, se permite ordenar por columnas
 }
 
 export interface Icon {
@@ -49,7 +49,7 @@ export function createDefaultGridConfiguration(
                     name: col.name ?? "",
                     width: col.width,
                     align: col.align ?? "left",
-                    sortable: col.sortable ?? true,
+                    isSortable: col.isSortable ?? true,
                     icon: col.icon
                         ? {
                               name: col.icon.name ?? "",

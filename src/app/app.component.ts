@@ -1,10 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import { MatButtonModule } from "@angular/material/button";
-import {
-    createDefaultGridConfiguration,
-    GridConfiguration,
-} from "./shared/models/gridConfiguration";
+import { createDefaultGridConfiguration } from "./shared/models/gridConfiguration";
 import { GridComponent } from "./shared/components/grid/grid.component";
 
 @Component({
@@ -20,14 +17,19 @@ export class AppComponent implements OnInit {
     config = createDefaultGridConfiguration({
         //OrderBy: { columnName: "ID", direction: "asc" },
         columns: [
-            { name: "ID", width: "70px", sortable: false },
+            { name: "ID", width: "70px" },
             { name: "Name" },
-            { name: "Email" },
+            { name: "Email", isSortable: false },
             { name: "Domicilio" },
             { name: "CodPostal", align: "center" },
             { name: "Puesto" },
             { name: "Dni" },
-            { name: "Elipsis", width: "70px", align: "center" },
+            {
+                name: "Elipsis",
+                width: "70px",
+                align: "center",
+                isSortable: false,
+            },
         ],
     });
 

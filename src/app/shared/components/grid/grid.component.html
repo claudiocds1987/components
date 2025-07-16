@@ -53,12 +53,16 @@
             <th
                 mat-header-cell
                 *matHeaderCellDef
-                mat-sort-header
                 class="grid-cell"
                 [style.width]="col.width || 'auto'"
                 [style.text-align]="col.align || 'left'"
             >
-                {{ col.name }}
+                <ng-container *ngIf="col.isSortable; else noSorted">
+                    <span [mat-sort-header]="col.name">{{ col.name }}</span>
+                </ng-container>
+                <ng-template #noSorted>
+                    {{ col.name }}
+                </ng-template>
             </th>
             <!-- Celdas -->
             <td
