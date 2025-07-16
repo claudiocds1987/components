@@ -94,7 +94,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     get paginatorConfig(): PaginationConfig | null {
-        const pagination = this.config?.withPagination;
+        const pagination = this.config?.hasPagination;
         return typeof pagination === "object" && pagination !== null
             ? pagination
             : null;
@@ -134,7 +134,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     ngAfterViewInit(): void {
         this.dataSource.sort = this.sort;
 
-        if (this.config?.withPagination && this.paginator) {
+        if (this.config?.hasPagination && this.paginator) {
             this.dataSource.paginator = this.paginator;
         }
     }

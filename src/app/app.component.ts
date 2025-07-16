@@ -30,6 +30,7 @@ export class AppComponent implements OnInit {
                 width: "70px",
                 align: "center",
                 isSortable: false,
+                hasHeaderTooltip: true,
             },
         ],
     });

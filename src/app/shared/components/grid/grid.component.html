@@ -1,6 +1,6 @@
 <!-- Skeleton -->
 <div
-    *ngIf="config?.withInputSearch && isLoading"
+    *ngIf="config?.hasInputSearch && isLoading"
     class="skeleton-search-container"
 >
     <div class="skeleton-search-label">Buscar</div>
@@ -26,7 +26,7 @@
 
 <!-- Buscador -->
 <mat-form-field
-    *ngIf="config.withInputSearch && !isLoading"
+    *ngIf="config.hasInputSearch && !isLoading"
     appearance="outline"
     class="search-field"
 >
@@ -56,6 +56,7 @@
                 class="grid-cell"
                 [style.width]="col.width || 'auto'"
                 [style.text-align]="col.align || 'left'"
+                [matTooltip]="col.hasHeaderTooltip ? col.name : ''"
             >
                 <ng-container *ngIf="col.isSortable; else noSorted">
                     <span [mat-sort-header]="col.name">{{ col.name }}</span>

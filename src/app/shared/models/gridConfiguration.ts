@@ -10,8 +10,8 @@ o interface nueva que agregamos no va a ser reconocida por el componente GridCom
 export interface GridConfiguration {
     columns: Column[];
     OrderBy: OrderBy;
-    withPagination: PaginationConfig | false;
-    withInputSearch: boolean;
+    hasPagination: PaginationConfig | false;
+    hasInputSearch: boolean;
     filterByColumn: string;
     withExcelDownload: boolean; // opcional, si se define, se muestra el botón de descarga a Excel
 }
@@ -21,7 +21,8 @@ export interface Column {
     width?: string; // opcional, si no se define, se usa el ancho por defecto
     icon?: Icon;
     align?: "left" | "right" | "center";
-    isSortable?: boolean; // opcional, si se define, se permite ordenar por columnas
+    isSortable?: boolean;
+    hasHeaderTooltip?: boolean;
 }
 
 export interface Icon {
@@ -51,6 +52,7 @@ export function createDefaultGridConfiguration(
                     width: col.width,
                     align: col.align ?? "left",
                     isSortable: col.isSortable ?? true,
+                    hasHeaderTooltip: col.hasHeaderTooltip ?? false,
                     icon: col.icon
                         ? {
                               name: col.icon.name ?? "",
@@ -63,15 +65,15 @@ export function createDefaultGridConfiguration(
             columnName: config?.OrderBy?.columnName ?? "",
             direction: config?.OrderBy?.direction ?? "asc",
         },
-        withPagination:
-            config?.withPagination !== false
+        hasPagination:
+            config?.hasPagination !== false
                 ? {
-                      pageSize: config?.withPagination?.pageSize ?? 25,
-                      pageSizeOptions: config?.withPagination
+                      pageSize: config?.hasPagination?.pageSize ?? 25,
+                      pageSizeOptions: config?.hasPagination
                           ?.pageSizeOptions ?? [10, 25, 50, 100],
                   }
                 : false,
-        withInputSearch: config?.withInputSearch ?? true,
+        hasInputSearch: config?.hasInputSearch ?? true,
         filterByColumn: config?.filterByColumn ?? "",
         withExcelDownload: config?.withExcelDownload ?? false,
     };
