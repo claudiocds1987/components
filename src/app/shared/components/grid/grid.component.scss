@@ -38,8 +38,7 @@
         width: 100%;
         table-layout: fixed; // Garantiza anchos de columna consistentes
         border-collapse: collapse; // para bordes limpios
-
-      // Color encabezado de la tabla
+      // Color de las celdas del encabezado de la tabla
       .header .grid-cell {
         background-color: $blue-color;
         color: $black-color;
@@ -49,7 +48,7 @@
       .grid-cell:last-child {
         border-right: none;
       }
-
+      // Estilo de las celdas de la tabla
       .grid-cell {
           overflow: hidden;
           white-space: nowrap;
@@ -62,10 +61,7 @@
     
 }
 
-
 // SKELETON
-
-//Simula una tabla con bordes y espacio
 .skeleton-table {
   display: flex;
   flex-direction: column;

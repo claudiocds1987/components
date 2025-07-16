@@ -48,7 +48,10 @@
         matSort
         class="table"
     >
-        <ng-container *ngFor="let col of columns" [matColumnDef]="col.name">
+        <ng-container
+            *ngFor="let col of columns; trackBy: trackColumnByName"
+            [matColumnDef]="col.name"
+        >
             <!-- Cabecera -->
             <th
                 mat-header-cell

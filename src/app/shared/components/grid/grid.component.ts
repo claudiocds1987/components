@@ -122,12 +122,6 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     ngOnInit(): void {
-        /* this.dataSource.filterPredicate = (data, filter: string): boolean => {
-            // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-            return Object.values(data).some((value) =>
-                value.toString().toLowerCase().includes(filter),
-            );
-        }; */
         this._updateFilterPredicate();
     }
 
@@ -148,11 +142,6 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
 
         if (changes["config"] && this.config) {
             this._updateFilterPredicate();
-
-            // 👇 Volver a aplicar el filtro actual si existe
-            /* const currentFilter = this.dataSource.filter;
-            this.dataSource.filter = ""; // forzar re-evaluación
-            this.dataSource.filter = currentFilter; */
         }
     }
 
@@ -173,6 +162,18 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
         const tooltip = str.length > 25 ? str : "";
         console.log(`Tooltip para columna ${colName}:`, tooltip);
         return tooltip;
+    }
+
+    /***************************************************************************************************
+        En el html trackBy: trackColumnByName.
+        trackBy le dice a Angular cómo identificar de forma única cada elemento en la lista. 
+        Al usar trackBy, Angular puede detectar con mayor precisión qué elementos han cambiado, 
+        se han agregado o se han eliminado. En lugar de destruir y recrear todos los elementos DOM, 
+        solo actualizará o recreará los elementos que realmente han cambiado.
+    *****************************************************************************************************/
+    trackColumnByName(index: number, column: Column): string {
+        console.log(index, column.name);
+        return column.name;
     }
 
     private _updateFilterPredicate(): void {
