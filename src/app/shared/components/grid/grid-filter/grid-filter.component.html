@@ -1,0 +1,52 @@
+<div [formGroup]="filterForm">
+    <ng-container [ngSwitch]="config.fieldType">
+        <ng-container *ngSwitchCase="'text'">
+            <mat-form-field appearance="fill">
+                <mat-label>{{ config.label }}</mat-label>
+                <input matInput [formControlName]="config.fieldName" />
+            </mat-form-field>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'date'">
+            <button
+                mat-flat-button
+                [matMenuTriggerFor]="dateMenu"
+                color="primary"
+            >
+                Fechas
+                <mat-icon>calendar_today</mat-icon>
+            </button>
+            <mat-menu #dateMenu="matMenu">
+                <div style="padding: 16px">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Fecha Desde</mat-label>
+                        <input
+                            matInput
+                            [matDatepicker]="pickerFrom"
+                            [formControlName]="config.fieldName + 'From'"
+                        />
+                        <mat-datepicker-toggle
+                            matSuffix
+                            [for]="pickerFrom"
+                        ></mat-datepicker-toggle>
+                        <mat-datepicker #pickerFrom></mat-datepicker>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                        <mat-label>Fecha Hasta</mat-label>
+                        <input
+                            matInput
+                            [matDatepicker]="pickerTo"
+                            [formControlName]="config.fieldName + 'To'"
+                        />
+                        <mat-datepicker-toggle
+                            matSuffix
+                            [for]="pickerTo"
+                        ></mat-datepicker-toggle>
+                        <mat-datepicker #pickerTo></mat-datepicker>
+                    </mat-form-field>
+                </div>
+            </mat-menu>
+        </ng-container>
+    </ng-container>
+</div>

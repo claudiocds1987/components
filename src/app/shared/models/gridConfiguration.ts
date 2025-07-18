@@ -40,6 +40,8 @@ export interface PaginationConfig {
     pageSizeOptions: number[];
 }
 
+export type GridDataItem = Record<string, string | number>;
+
 // Esta función crea una configuración de grilla por defecto
 export function createDefaultGridConfiguration(
     config?: Partial<GridConfiguration>,

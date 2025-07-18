@@ -3,11 +3,17 @@ import { RouterOutlet } from "@angular/router";
 import { MatButtonModule } from "@angular/material/button";
 import { createDefaultGridConfiguration } from "./shared/models/gridConfiguration";
 import { GridComponent } from "./shared/components/grid/grid.component";
+import { EmployeeGridComponent } from "./employee/employee-grid/employee-grid.component";
 
 @Component({
     selector: "app-root",
     standalone: true,
-    imports: [RouterOutlet, MatButtonModule, GridComponent],
+    imports: [
+        RouterOutlet,
+        MatButtonModule,
+        GridComponent,
+        EmployeeGridComponent,
+    ],
     templateUrl: "./app.component.html",
     styleUrl: "./app.component.scss",
 })

@@ -1,0 +1,12 @@
+.employee-grid-container {
+  display: grid;
+  /* Definimos dos columnas:
+     - La primera columna (para el grid-component) tomará la mayor parte del espacio disponible (3 partes).
+     - La segunda columna (para el grid-filter) tomará una parte del espacio.
+     Puedes ajustar los valores '3fr' y '1fr' según cuánto espacio quieres que ocupe cada uno.
+  */
+  grid-template-columns: 5fr 1fr; 
+  gap: 10px; /* Opcional: añade un espacio entre los dos componentes */
+  height: 100vh; /* Opcional: para que el contenedor ocupe toda la altura de la ventana y los hijos se estiren */
+  width: 100%; /* Opcional: para que el contenedor ocupe todo el ancho */
+}
