@@ -1,6 +1,7 @@
 <div class="employee-grid-container">
     <app-grid [config]="gridConfig" [data]="gridData"></app-grid>
     <div class="filter-controls">
+        <!-- a clase filter-controls agregar margin-top si quiero que quede alineado con la grilla -->
         <ng-container *ngIf="gridFilterForm">
             <app-grid-filter
                 *ngFor="let filter of gridFilterConfig"
@@ -9,9 +10,4 @@
             ></app-grid-filter>
         </ng-container>
     </div>
-
-    <!--   <div *ngIf="gridFilterForm">
-        <h3>Valores del filtro:</h3>
-        <pre>{{ gridFilterForm.value | json }}</pre>
-    </div> -->
 </div>

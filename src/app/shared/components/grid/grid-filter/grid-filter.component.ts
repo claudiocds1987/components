@@ -10,6 +10,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatExpansionModule } from "@angular/material/expansion";
 
 @Component({
     selector: "app-grid-filter",
@@ -24,6 +25,7 @@ import { MatFormFieldModule } from "@angular/material/form-field";
         MatIconModule,
         MatMenuModule,
         MatFormFieldModule,
+        MatExpansionModule,
     ],
     templateUrl: "./grid-filter.component.html",
     styleUrl: "./grid-filter.component.scss",

@@ -82,11 +82,11 @@ export class EmployeeGridComponent implements OnInit {
                 label: "Email",
             },
             // Add other filters here if you need them, e.g., a date filter
-            // {
-            //     fieldName: "admissionDate",
-            //     fieldType: "date",
-            //     label: "Admission Date",
-            // },
+            {
+                fieldName: "fecha",
+                fieldType: "date",
+                label: "Rango de fechas",
+            },
         ];
     }
 
@@ -99,16 +99,16 @@ export class EmployeeGridComponent implements OnInit {
             if (filter.fieldType === "date") {
                 this.gridFilterForm.addControl(
                     filter.fieldName + "From",
-                    new FormControl(null), // Use null or default value
+                    new FormControl(null), // Usar null or default value
                 );
                 this.gridFilterForm.addControl(
                     filter.fieldName + "To",
-                    new FormControl(null), // Use null or default value
+                    new FormControl(null), // Usar null or default value
                 );
             } else {
                 this.gridFilterForm.addControl(
                     filter.fieldName,
-                    new FormControl(""), // Use empty string or default value
+                    new FormControl(""), // Usar empty string or default value
                 );
             }
         });

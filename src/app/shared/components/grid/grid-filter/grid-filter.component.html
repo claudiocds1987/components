@@ -1,4 +1,4 @@
-<div [formGroup]="filterForm">
+<div class="form" [formGroup]="filterForm">
     <ng-container [ngSwitch]="config.fieldType">
         <ng-container *ngSwitchCase="'text'">
             <mat-form-field appearance="fill">
@@ -8,16 +8,15 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'date'">
-            <button
-                mat-flat-button
-                [matMenuTriggerFor]="dateMenu"
-                color="primary"
-            >
-                Fechas
-                <mat-icon>calendar_today</mat-icon>
-            </button>
-            <mat-menu #dateMenu="matMenu">
-                <div style="padding: 16px">
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <!-- <mat-icon></mat-icon> -->
+                        {{ config.label || "Rango de Fechas" }}
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <div>
                     <mat-form-field appearance="fill">
                         <mat-label>Fecha Desde</mat-label>
                         <input
@@ -46,7 +45,7 @@
                         <mat-datepicker #pickerTo></mat-datepicker>
                     </mat-form-field>
                 </div>
-            </mat-menu>
+            </mat-expansion-panel>
         </ng-container>
     </ng-container>
 </div>
