@@ -1,78 +1,83 @@
-<!-- grid-filter.component.html -->
 <div class="form" [formGroup]="filterForm">
-    <!-- Aquí agregamos el *ngFor para iterar sobre cada configuración de filtro -->
-    <ng-container *ngFor="let filterConfigItem of config">
-        <ng-container [ngSwitch]="filterConfigItem.fieldType">
-            <ng-container *ngSwitchCase="'text'">
-                <mat-form-field appearance="fill">
-                    <mat-label>{{ filterConfigItem.label }}</mat-label>
-                    <input
-                        matInput
+    <div class="filter-inputs-wrapper">
+        <h1>Filtrar</h1>
+        <ng-container *ngFor="let filterConfigItem of config">
+            <ng-container [ngSwitch]="filterConfigItem.fieldType">
+                <ng-container *ngSwitchCase="'text'">
+                    <mat-form-field appearance="fill">
+                        <mat-label>{{ filterConfigItem.label }}</mat-label>
+                        <input
+                            matInput
+                            [formControlName]="filterConfigItem.fieldName"
+                        />
+                    </mat-form-field>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'select'">
+                    <ng-select
+                        [items]="filterConfigItem.selectItems ?? []"
+                        [bindLabel]="'label'"
+                        [bindValue]="'value'"
+                        [placeholder]="filterConfigItem.label"
                         [formControlName]="filterConfigItem.fieldName"
-                    />
-                </mat-form-field>
-            </ng-container>
+                        [searchable]="true"
+                        [clearable]="true"
+                    >
+                    </ng-select>
+                </ng-container>
 
-            <ng-container *ngSwitchCase="'select'">
-                <ng-select
-                    [items]="filterConfigItem.selectItems ?? []"
-                    [bindLabel]="'label'"
-                    [bindValue]="'value'"
-                    [placeholder]="filterConfigItem.label"
-                    [formControlName]="filterConfigItem.fieldName"
-                    [searchable]="true"
-                    [clearable]="true"
-                >
-                </ng-select>
-            </ng-container>
+                <ng-container *ngSwitchCase="'date'">
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{
+                                    filterConfigItem.label || "Rango de Fechas"
+                                }}
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
 
-            <ng-container *ngSwitchCase="'date'">
-                <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                        <mat-panel-title>
-                            {{ filterConfigItem.label || "Rango de Fechas" }}
-                        </mat-panel-title>
-                    </mat-expansion-panel-header>
+                        <div>
+                            <mat-form-field appearance="fill">
+                                <mat-label>Fecha Desde</mat-label>
+                                <input
+                                    matInput
+                                    [matDatepicker]="pickerFrom"
+                                    [formControlName]="
+                                        filterConfigItem.fieldName + 'From'
+                                    "
+                                />
+                                <mat-datepicker-toggle
+                                    matSuffix
+                                    [for]="pickerFrom"
+                                ></mat-datepicker-toggle>
+                                <mat-datepicker #pickerFrom></mat-datepicker>
+                            </mat-form-field>
 
-                    <div>
-                        <mat-form-field appearance="fill">
-                            <mat-label>Fecha Desde</mat-label>
-                            <input
-                                matInput
-                                [matDatepicker]="pickerFrom"
-                                [formControlName]="
-                                    filterConfigItem.fieldName + 'From'
-                                "
-                            />
-                            <mat-datepicker-toggle
-                                matSuffix
-                                [for]="pickerFrom"
-                            ></mat-datepicker-toggle>
-                            <mat-datepicker #pickerFrom></mat-datepicker>
-                        </mat-form-field>
-
-                        <mat-form-field appearance="fill">
-                            <mat-label>Fecha Hasta</mat-label>
-                            <input
-                                matInput
-                                [matDatepicker]="pickerTo"
-                                [formControlName]="
-                                    filterConfigItem.fieldName + 'To'
-                                "
-                            />
-                            <mat-datepicker-toggle
-                                matSuffix
-                                [for]="pickerTo"
-                            ></mat-datepicker-toggle>
-                            <mat-datepicker #pickerTo></mat-datepicker>
-                        </mat-form-field>
-                    </div>
-                </mat-expansion-panel>
+                            <mat-form-field appearance="fill">
+                                <mat-label>Fecha Hasta</mat-label>
+                                <input
+                                    matInput
+                                    [matDatepicker]="pickerTo"
+                                    [formControlName]="
+                                        filterConfigItem.fieldName + 'To'
+                                    "
+                                />
+                                <mat-datepicker-toggle
+                                    matSuffix
+                                    [for]="pickerTo"
+                                ></mat-datepicker-toggle>
+                                <mat-datepicker #pickerTo></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                    </mat-expansion-panel>
+                </ng-container>
             </ng-container>
         </ng-container>
-    </ng-container>
-    <!-- El botón "Filtrar" va aquí, fuera del *ngFor, pero dentro del div.form -->
-    <button mat-raised-button color="primary" (click)="applyFilter()">
-        Filtrar
-    </button>
+    </div>
+
+    <div class="button-wrapper">
+        <button mat-raised-button color="primary" (click)="applyFilter()">
+            Filtrar
+        </button>
+    </div>
 </div>
