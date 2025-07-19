@@ -1,0 +1,68 @@
+
+ /* Estilos para ng-select similares a mat-select */
+.ng-select .ng-select-container{
+  padding: 0 16px; /* Padding horizontal interno */
+}
+
+.ng-select {
+  display: inline-block;
+  width: 100%; /* ajusta según tus necesidades */
+  font-family: Roboto, Arial, sans-serif;
+  font-size: 16px;
+  position: relative;
+}
+
+/* Estilo para el selector abierto y cerrado */
+.ng-select .ng-control {
+  border: 1px solid rgba(0, 0, 0, 0.38);
+  border-radius: 4px;
+  padding: 10px; /* padding interno para espacio alrededor del texto */
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: box-shadow 0.2s, border-color 0.2s;
+  background-color: #fff;
+  width: 100%;
+  /* No padding left sobreescrito aquí, pero si quieres más control, ajusta en .ng-value */
+}
+
+ .ng-select .ng-select-container .ng-value-container{
+  //padding-left: 16px; /* Espacio interno a la izquierda */
+  flex-grow: 1; /* Permite que el contenedor ocupe el espacio disponible */
+ }
+/* Hover y foco similar a mat-select */
+.ng-select .ng-control:hover {
+  border-color: rgba(0, 0, 0, 0.87);
+}
+
+.ng-select .ng-control:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.12);
+  border-color: rgba(0, 0, 0, 0.87);
+}
+
+/* El texto seleccionado */
+.ng-select .ng-value {
+  font-family: Roboto, Arial, sans-serif;
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.87);
+  //padding-left: 16px
+}
+
+.ng-select .ng-select-container .ng-value-container .ng-input>input {
+ padding-left: 16px !important;
+}
+ 
+/* Icono de flecha (puedes usar un icono de Angular Material o SVG) */
+.ng-select .ng-arrow {
+  margin-left: auto;
+  transition: transform 0.2s;
+}
+
+/* Rotar la flecha si el menú está abierto */
+.ng-select.ng-select-open .ng-arrow {
+  transform: rotate(180deg);
+}
+
+/* Opcional: eliminar estilos por defecto si es necesario */
+/* En este ejemplo, se mantiene el estilo base. */

@@ -70,7 +70,7 @@ export class EmployeeGridComponent implements OnInit {
 
     private _setGridFilter(): void {
         this.gridFilterConfig = [
-            // Ensure this populates the array used in _setGridFilterForm
+            // Configuration del filtrode la grilla
             {
                 fieldName: "id",
                 fieldType: "text",
@@ -80,6 +80,17 @@ export class EmployeeGridComponent implements OnInit {
                 fieldName: "email",
                 fieldType: "text",
                 label: "Email",
+            },
+            {
+                fieldName: "Estados",
+                fieldType: "select",
+                label: "Estado",
+                selectItems: [
+                    { value: "all", label: "Todos" }, // Default option
+                    { value: "active", label: "Activo" },
+                    { value: "inactive", label: "Inactivo" },
+                    { value: "pendient", label: "Pendiente" },
+                ],
             },
             // Add other filters here if you need them, e.g., a date filter
             {
@@ -91,11 +102,26 @@ export class EmployeeGridComponent implements OnInit {
     }
 
     private _setGridFilterForm(): void {
-        // Initialize the FormGroup ONLY ONCE
+        // Inicializa FormGroup
         this.gridFilterForm = new FormGroup({});
-
-        // Now, this.gridFilterConfig should contain both 'id' and 'email' (and any other filters you add)
+        // Creando el formulario en base a la configuración de filtros en funcion setGridFilter()
         this.gridFilterConfig.forEach((filter: GridFilterConfig): void => {
+            if (filter.fieldType === "text") {
+                this.gridFilterForm.addControl(
+                    filter.fieldName,
+                    new FormControl(""), // Usar empty string or default value
+                );
+                return;
+            }
+
+            if (filter.fieldType === "select") {
+                this.gridFilterForm.addControl(
+                    filter.fieldName,
+                    new FormControl(""), // Usar empty string or default value
+                );
+                return;
+            }
+
             if (filter.fieldType === "date") {
                 this.gridFilterForm.addControl(
                     filter.fieldName + "From",
@@ -105,11 +131,7 @@ export class EmployeeGridComponent implements OnInit {
                     filter.fieldName + "To",
                     new FormControl(null), // Usar null or default value
                 );
-            } else {
-                this.gridFilterForm.addControl(
-                    filter.fieldName,
-                    new FormControl(""), // Usar empty string or default value
-                );
+                return;
             }
         });
     }

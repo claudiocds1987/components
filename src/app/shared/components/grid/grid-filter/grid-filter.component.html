@@ -7,6 +7,19 @@
             </mat-form-field>
         </ng-container>
 
+        <ng-container *ngSwitchCase="'select'">
+            <ng-select
+                [items]="config.selectItems ?? []"
+                [bindLabel]="'label'"
+                [bindValue]="'value'"
+                [placeholder]="config.label"
+                [formControlName]="config.fieldName"
+                [searchable]="true"
+                [clearable]="true"
+            >
+            </ng-select>
+        </ng-container>
+
         <ng-container *ngSwitchCase="'date'">
             <mat-expansion-panel>
                 <mat-expansion-panel-header>
