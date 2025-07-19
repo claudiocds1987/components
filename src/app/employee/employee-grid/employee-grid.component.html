@@ -4,8 +4,7 @@
         <!-- a clase filter-controls agregar margin-top si quiero que quede alineado con la grilla -->
         <ng-container *ngIf="gridFilterForm">
             <app-grid-filter
-                *ngFor="let filter of gridFilterConfig"
-                [config]="filter"
+                [config]="gridFilterConfig"
                 [filterForm]="gridFilterForm"
             ></app-grid-filter>
         </ng-container>

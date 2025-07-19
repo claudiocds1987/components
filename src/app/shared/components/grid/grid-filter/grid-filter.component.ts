@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { GridFilterConfig } from "../../../models/grid-filter-config.model";
 import { FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
@@ -36,14 +36,25 @@ import { NgSelectModule } from "@ng-select/ng-select";
     styleUrl: "./grid-filter.component.scss",
 })
 export class GridFilterComponent {
-    @Input() config!: GridFilterConfig;
-    @Input() filterForm!: FormGroup; // El FormGroup lo pasaremos desde el componente padre
-    // hay que hacer output para emitir el valor del filtro al componente padre
+    @Input() config!: GridFilterConfig[]; // Recibe el array completo de configuraciones
+    @Input() filterForm!: FormGroup; // Recibe el FormGroup completo desde el padre
+    @Output() filterApplied = new EventEmitter<any>(); // Opcional: para emitir el evento al padre
+
+    constructor() {
+        console.log(
+            "configuracion filtro en GridFilterComponent:",
+            this.config,
+        );
+    }
+
     applyFilter(): void {
         if (this.filterForm.valid) {
             const filterValues = this.filterForm.value;
-            console.log("Filter values applied:", filterValues);
-            // Aca emitir output al padre con los valores del filtro
+            console.log(
+                "Filter values applied from GridFilterComponent:",
+                filterValues,
+            );
+            this.filterApplied.emit(filterValues); // Emitir los valores al padre
         } else {
             console.warn("Filter form is invalid");
         }
