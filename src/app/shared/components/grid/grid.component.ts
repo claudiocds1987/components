@@ -160,7 +160,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
         if (val === undefined || val === null) return "";
         const str = val.toString();
         const tooltip = str.length > 25 ? str : "";
-        console.log(`Tooltip para columna ${colName}:`, tooltip);
+
         return tooltip;
     }
 
@@ -172,7 +172,6 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
         solo actualizará o recreará los elementos que realmente han cambiado.
     *****************************************************************************************************/
     trackColumnByName(index: number, column: Column): string {
-        console.log(index, column.name);
         return column.name;
     }
 

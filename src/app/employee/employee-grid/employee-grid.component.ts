@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, OnInit } from "@angular/core";
 import { GridFilterConfig } from "../../shared/models/grid-filter-config.model";
 import { FormControl, FormGroup } from "@angular/forms";
@@ -9,6 +10,7 @@ import {
 import { GridComponent } from "../../shared/components/grid/grid.component";
 import { GridFilterComponent } from "../../shared/components/grid/grid-filter/grid-filter.component";
 import { CommonModule } from "@angular/common";
+import { DateTime } from "luxon";
 
 @Component({
     selector: "app-employee-grid",
@@ -44,6 +46,38 @@ export class EmployeeGridComponent implements OnInit {
         //         console.log('Filter values:', filterValues);
         //         // Add your logic to filter the grid data here
         //     });
+    }
+
+    applyFilter(filterValues: unknown): void {
+        const formattedFilterValues = this._formatDatesInObject(filterValues);
+        console.log(
+            "Valores de filtro con fechas formateadas:",
+            formattedFilterValues,
+        );
+
+        // Aquí puedes usar formattedFilterValues para tus operaciones posteriores,
+        // como llamar a un servicio para filtrar datos.
+    }
+
+    private _formatDatesInObject(obj: any): any {
+        // Creando una copia para no modificar el original directamente
+        const newObj: any = { ...obj };
+
+        for (const key in newObj) {
+            if (Object.prototype.hasOwnProperty.call(newObj, key)) {
+                const value = newObj[key];
+
+                // Verificamos si el objeto tiene fecha/fechas de tipo "Date"
+                if (value instanceof Date) {
+                    // Formateando a cadena ISO 8601, con Luxon DateTime.fromJSDate.
+                    newObj[key] = DateTime.fromJSDate(value);
+                } else if (typeof value === "object" && value !== null) {
+                    // Si la propiedad es un objeto (y no null), recursivamente la procesamos
+                    newObj[key] = this._formatDatesInObject(value);
+                }
+            }
+        }
+        return newObj;
     }
 
     private _setGridConfiguration(): GridConfiguration {
@@ -94,7 +128,7 @@ export class EmployeeGridComponent implements OnInit {
             },
             // Add other filters here if you need them, e.g., a date filter
             {
-                fieldName: "fecha",
+                fieldName: "date",
                 fieldType: "date",
                 label: "Rango de fechas",
             },

@@ -6,6 +6,7 @@
             <app-grid-filter
                 [config]="gridFilterConfig"
                 [filterForm]="gridFilterForm"
+                (emitFilterApplied)="applyFilter($event)"
             ></app-grid-filter>
         </ng-container>
     </div>

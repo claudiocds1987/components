@@ -13,6 +13,7 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { MatSelectModule } from "@angular/material/select";
 import { NgSelectModule } from "@ng-select/ng-select";
+import { LuxonModule } from "luxon-angular";
 
 @Component({
     selector: "app-grid-filter",
@@ -31,6 +32,7 @@ import { NgSelectModule } from "@ng-select/ng-select";
         MatSelectModule,
         MatOptionModule,
         NgSelectModule,
+        LuxonModule,
     ],
     templateUrl: "./grid-filter.component.html",
     styleUrl: "./grid-filter.component.scss",
@@ -38,7 +40,7 @@ import { NgSelectModule } from "@ng-select/ng-select";
 export class GridFilterComponent {
     @Input() config!: GridFilterConfig[]; // Recibe el array completo de configuraciones
     @Input() filterForm!: FormGroup; // Recibe el FormGroup completo desde el padre
-    @Output() filterApplied = new EventEmitter<any>(); // Opcional: para emitir el evento al padre
+    @Output() emitFilterApplied = new EventEmitter<unknown>(); // Opcional: para emitir el evento al padre
 
     constructor() {
         console.log(
@@ -47,14 +49,15 @@ export class GridFilterComponent {
         );
     }
 
-    applyFilter(): void {
+    emitFilter(): void {
         if (this.filterForm.valid) {
             const filterValues = this.filterForm.value;
             console.log(
                 "Filter values applied from GridFilterComponent:",
                 filterValues,
             );
-            this.filterApplied.emit(filterValues); // Emitir los valores al padre
+
+            this.emitFilterApplied.emit(filterValues); // Emitir los valores al padre
         } else {
             console.warn("Filter form is invalid");
         }
