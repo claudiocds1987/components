@@ -26,26 +26,18 @@ export class EmployeeGridComponent implements OnInit {
     gridData: GridDataItem[] = [];
 
     constructor() {
-        // 1. FIRST, define the filter configurations so 'gridFilterConfig' is populated.
+        // 1. Definimos/seteamos la configuración para el componente filtro (grid-filter.component)
         this._setGridFilter();
 
-        // 2. THEN, initialize the FormGroup, using the already defined configurations.
+        // 2. Inicializamos el formulario para el componente filtro (grid-filter.component)
         this._setGridFilterForm();
 
-        // 3. Finally, set the grid configuration.
+        // 3. Definimos/seteamos la configuracion para el componente grilla (grid.component).
         this.gridConfig = this._setGridConfiguration();
     }
 
     ngOnInit(): void {
         this._mockGetEmployees();
-
-        // Optional: Subscribe to form value changes here if you want to react to filter changes
-        // this.gridFilterForm.valueChanges
-        //     .pipe(debounceTime(300)) // Add debounceTime if needed to prevent excessive calls
-        //     .subscribe(filterValues => {
-        //         console.log('Filter values:', filterValues);
-        //         // Add your logic to filter the grid data here
-        //     });
     }
 
     applyFilter(filterValues: unknown): void {
@@ -66,7 +58,6 @@ export class EmployeeGridComponent implements OnInit {
         for (const key in newObj) {
             if (Object.prototype.hasOwnProperty.call(newObj, key)) {
                 const value = newObj[key];
-
                 // Verificamos si el objeto tiene fecha/fechas de tipo "Date"
                 if (value instanceof Date) {
                     // Formateando a cadena ISO 8601, con Luxon DateTime.fromJSDate.
@@ -171,7 +162,7 @@ export class EmployeeGridComponent implements OnInit {
     }
 
     private _mockGetEmployees(): void {
-        // Simulates backend call
+        // Seteamos la data en "gridData" para visualizarla en el componente grilla (grid.component)
         setTimeout((): void => {
             this.gridData = Array.from(
                 { length: 100 },
