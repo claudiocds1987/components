@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { GridFilterConfig } from "../../shared/models/grid-filter-config.model";
 import { FormControl, FormGroup } from "@angular/forms";
 import {
@@ -18,6 +18,7 @@ import { DateTime } from "luxon";
     imports: [CommonModule, GridComponent, GridFilterComponent],
     templateUrl: "./employee-grid.component.html",
     styleUrl: "./employee-grid.component.scss",
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmployeeGridComponent implements OnInit {
     gridFilterConfig: GridFilterConfig[] = []; // Changed from 'filtersConfig' to 'gridFilterConfig' to match your provided code

@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+} from "@angular/core";
 import { GridFilterConfig } from "../../../models/grid-filter-config.model";
 import { FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
@@ -36,6 +42,7 @@ import { LuxonModule } from "luxon-angular";
     ],
     templateUrl: "./grid-filter.component.html",
     styleUrl: "./grid-filter.component.scss",
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GridFilterComponent {
     @Input() config!: GridFilterConfig[]; // Recibe el array completo de configuraciones
@@ -57,7 +64,7 @@ export class GridFilterComponent {
                 filterValues,
             );
 
-            this.emitFilterApplied.emit(filterValues); // Emitir los valores al padre
+            this.emitFilterApplied.emit(filterValues);
         } else {
             console.warn("Filter form is invalid");
         }

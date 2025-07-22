@@ -8,6 +8,7 @@ import {
     OnInit,
     inject,
     NgZone,
+    ChangeDetectionStrategy,
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { MatTableModule } from "@angular/material/table";
@@ -44,6 +45,7 @@ import { TruncatePipe } from "../../pipes/truncate.pipe";
     ],
     templateUrl: "./grid.component.html",
     styleUrl: "./grid.component.scss",
+    changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
         {
             provide: MatPaginatorIntl,
@@ -78,8 +80,10 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     @ViewChild(MatSort) sort!: MatSort;
     @ViewChild(MatPaginator) paginator!: MatPaginator;
     @Input() config!: GridConfiguration;
-    @Input() data: Record<string, string | number>[] = [];
-    dataSource = new MatTableDataSource<Record<string, string | number>>();
+    @Input() data: Record<string, string | number | Date>[] = [];
+    dataSource = new MatTableDataSource<
+        Record<string, string | number | Date>
+    >();
     isLoading = true;
     rows25: number[] = Array.from({ length: 25 });
 
@@ -101,7 +105,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     getCellValue(
-        row: Record<string, string | number>,
+        row: Record<string, string | number | Date>,
         colName: string,
     ): string {
         const value = row[colName];
@@ -109,7 +113,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     getTruncatedValue(
-        row: Record<string, string | number>,
+        row: Record<string, string | number | Date>,
         colName: string,
     ): string {
         const value = this.getCellValue(row, colName);
@@ -152,7 +156,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     getTooltipValue(
-        row: Record<string, string | number>,
+        row: Record<string, string | number | Date>,
         colName: string,
     ): string {
         const val = this.getCellValue(row, colName);
