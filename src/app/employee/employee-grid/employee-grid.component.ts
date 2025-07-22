@@ -1,5 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    Component,
+    inject,
+    OnInit,
+} from "@angular/core";
 import { GridFilterConfig } from "../../shared/models/grid-filter-config.model";
 import { FormControl, FormGroup } from "@angular/forms";
 import {
@@ -11,11 +16,22 @@ import { GridComponent } from "../../shared/components/grid/grid.component";
 import { GridFilterComponent } from "../../shared/components/grid/grid-filter/grid-filter.component";
 import { CommonModule } from "@angular/common";
 import { DateTime } from "luxon";
+import { EmployeeService } from "../../shared/services/employee.service";
+import { EmployeeFilterParams } from "../../shared/models/employee-filter-params.model";
+import { PaginatedList } from "../../shared/models/paginated-list.model";
+import { Employee } from "../../shared/models/employee.model";
+import { finalize, map } from "rxjs";
+import { HttpClientModule } from "@angular/common/http";
 
 @Component({
     selector: "app-employee-grid",
     standalone: true,
-    imports: [CommonModule, GridComponent, GridFilterComponent],
+    imports: [
+        CommonModule,
+        HttpClientModule,
+        GridComponent,
+        GridFilterComponent,
+    ],
     templateUrl: "./employee-grid.component.html",
     styleUrl: "./employee-grid.component.scss",
     //changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,6 +41,9 @@ export class EmployeeGridComponent implements OnInit {
     gridFilterForm!: FormGroup;
     gridConfig: GridConfiguration;
     gridData: GridDataItem[] = [];
+    employees: Employee[] = [];
+    private _employeeFilterParams: EmployeeFilterParams = {};
+    private _employeeServices = inject(EmployeeService);
 
     constructor() {
         // 1. Definimos/seteamos la configuración para el componente filtro (grid-filter.component)
@@ -35,10 +54,15 @@ export class EmployeeGridComponent implements OnInit {
 
         // 3. Definimos/seteamos la configuracion para el componente grilla (grid.component).
         this.gridConfig = this._setGridConfiguration();
+
+        // 4. Definimos/seteamos los parametros para el filtro del empleado
+        this._employeeFilterParams.page = 1;
+        this._employeeFilterParams.limit = 25;
     }
 
     ngOnInit(): void {
         this._mockGetEmployees();
+        //this._getEmployees();
     }
 
     applyFilter(filterValues: unknown): void {
@@ -50,6 +74,61 @@ export class EmployeeGridComponent implements OnInit {
 
         // Aquí puedes usar formattedFilterValues para tus operaciones posteriores,
         // como llamar a un servicio para filtrar datos.
+    }
+
+    private _getEmployees(): void {
+        //this.isLoadingData = true;
+
+        this._employeeServices
+            .getEmployees(this._employeeFilterParams)
+            .pipe(
+                map(
+                    (
+                        paginatedList: PaginatedList<Employee>,
+                    ): PaginatedList<GridDataItem> => {
+                        // Aquí es donde tipamos la función flecha del map
+                        const transformedItems: GridDataItem[] =
+                            paginatedList.items.map(
+                                (employee: Employee): GridDataItem => {
+                                    const gridItem: GridDataItem = {};
+                                    for (const key in employee) {
+                                        const value = (employee as any)[key];
+                                        if (
+                                            typeof value === "string" ||
+                                            typeof value === "number"
+                                        ) {
+                                            gridItem[key] = value;
+                                        }
+                                    }
+                                    return gridItem;
+                                },
+                            );
+
+                        return {
+                            ...paginatedList,
+                            items: transformedItems,
+                        };
+                    },
+                ),
+                finalize((): void => {
+                    //this.isLoadingData = false;
+                }),
+            )
+            .subscribe({
+                next: (paginatedList: PaginatedList<GridDataItem>): void => {
+                    this.gridData = paginatedList.items;
+                    console.log(
+                        "Empleados cargados exitosamente (formato GridData):",
+                        this.gridData,
+                    );
+                },
+                error: (error: any): void => {
+                    console.error("Error al obtener empleados:", error);
+                },
+                complete: (): void => {
+                    console.log("Obtención de empleados completada.");
+                },
+            });
     }
 
     private _formatDatesInObject(obj: any): any {
@@ -76,12 +155,10 @@ export class EmployeeGridComponent implements OnInit {
         const config = createDefaultGridConfiguration({
             columns: [
                 { name: "ID", width: "70px" },
-                { name: "Name" },
-                { name: "Email", isSortable: false },
-                { name: "Domicilio" },
-                { name: "CodPostal", align: "center" },
+                { name: "Nombre" },
+                { name: "Apellido", isSortable: false },
+                { name: "Nacimiento" },
                 { name: "Puesto" },
-                { name: "Dni" },
                 {
                     name: "Elipsis",
                     width: "70px",
@@ -172,22 +249,18 @@ export class EmployeeGridComponent implements OnInit {
                     i: number,
                 ): {
                     ID: number;
-                    Name: string;
-                    Email: string;
-                    Domicilio: string;
-                    CodPostal: string;
+                    Nombre: string;
+                    Apellido: string;
+                    //Nacimiento:
                     Puesto: string;
-                    Dni: string;
                     Elipsis: string;
                 } => {
                     return {
                         ID: i + 1,
-                        Name: `JUAN CARLOS ALBERTO JOSE MARIA ${i + 1}`,
-                        Email: `usuario${i + 1}@mail.com`,
-                        Domicilio: `Av.Libertador 1${i + 1}`,
-                        CodPostal: `164${i + 1}`,
+                        Nombre: `JUAN CARLOS ALBERTO JOSE MARIA ${i + 1}`,
+                        Apellido: `usuario${i + 1}@mail.com`,
+                        //Nacimiento:
                         Puesto: `Administrativo ${i + 1}`,
-                        Dni: `2 ${i + 1}.310.510`,
                         Elipsis: "...",
                     };
                 },

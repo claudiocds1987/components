@@ -8,7 +8,7 @@ import { EmployeeFilterParams } from "../models/employee-filter-params.model";
 @Injectable({
     providedIn: "root",
 })
-export class EmployeesService {
+export class EmployeeService {
     private apiUrl = "http://localhost:3000/employees";
 
     // eslint-disable-next-line @angular-eslint/prefer-inject

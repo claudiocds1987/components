@@ -1,7 +1,7 @@
 export interface EmployeeFilterParams {
-    id: number;
+    id?: number;
     name?: string;
-    surname: string;
+    surname?: string;
     dateOfBirth?: Date;
     position?: string;
     page?: number;
