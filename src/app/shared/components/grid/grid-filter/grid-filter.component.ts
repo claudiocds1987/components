@@ -42,7 +42,7 @@ import { LuxonModule } from "luxon-angular";
     ],
     templateUrl: "./grid-filter.component.html",
     styleUrl: "./grid-filter.component.scss",
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    //changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GridFilterComponent {
     @Input() config!: GridFilterConfig[]; // Recibe el array completo de configuraciones

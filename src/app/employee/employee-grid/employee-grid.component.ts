@@ -18,7 +18,7 @@ import { DateTime } from "luxon";
     imports: [CommonModule, GridComponent, GridFilterComponent],
     templateUrl: "./employee-grid.component.html",
     styleUrl: "./employee-grid.component.scss",
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    //changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmployeeGridComponent implements OnInit {
     gridFilterConfig: GridFilterConfig[] = []; // Changed from 'filtersConfig' to 'gridFilterConfig' to match your provided code

@@ -45,7 +45,7 @@ import { TruncatePipe } from "../../pipes/truncate.pipe";
     ],
     templateUrl: "./grid.component.html",
     styleUrl: "./grid.component.scss",
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    //changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
         {
             provide: MatPaginatorIntl,
