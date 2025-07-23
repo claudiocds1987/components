@@ -4,8 +4,8 @@ Y COMO BASE DE DATOS ESTA USANDO JSON-SERVER archivo "db.json"
 
 PARA CORRER JSON-SERVER:
 
-- Haber instalado json-server de forma global: npm install -g json-server
-- para correrlo: json-server --watch db.json --port 3000
+- Haber instalado json-server version 0.17.4 de forma global: npm install -g json-server@0.17.4
+- para correrlo: json-server --watch db.json --port 3000 --cors
 - checkeamos data empleados: http://localhost:3000/employees
 
 NOTA: para paquetes usar "npx i" nombre-libreria, no usar npm i
