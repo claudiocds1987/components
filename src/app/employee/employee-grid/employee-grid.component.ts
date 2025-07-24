@@ -122,8 +122,10 @@ export class EmployeeGridComponent implements OnInit {
             this._employeeFilterParams.page = 1;
         }
         if (!this._employeeFilterParams.limit) {
-            // 25 registros en la pagina 1
-            this._employeeFilterParams.limit = 25;
+            // aca la cantidad de registros que va a mostrar en la 1er pagina (ej 25)
+            // se define en la funcion _defaultPaginatorOptions()
+            this._employeeFilterParams.limit =
+                this._defaultPaginatorOptions.pageSize;
         }
         if (!this._employeeFilterParams.sortColumn) {
             // aca establece por defecto que la grillapor default la ordena por id
