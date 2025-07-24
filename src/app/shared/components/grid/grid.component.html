@@ -46,6 +46,9 @@
         *ngIf="!isLoading"
         [dataSource]="dataSource"
         matSort
+        [matSortActive]="config.OrderBy.columnName"
+        [matSortDirection]="config.OrderBy.direction"
+        (matSortChange)="sortChange.emit($event)"
         class="table"
     >
         <ng-container
@@ -101,4 +104,7 @@
     [pageSize]="paginatorConfig.pageSize"
     [pageSizeOptions]="paginatorConfig.pageSizeOptions"
     [showFirstLastButtons]="true"
+    [length]="paginatorConfig.totalCount"
+    [pageIndex]="paginatorConfig.pageIndex"
+    (page)="onPaginatorPageChange($event)"
 ></mat-paginator>
