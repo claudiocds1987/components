@@ -93,8 +93,6 @@ export class EmployeeGridComponent implements OnInit {
     }
 
     onGridSortChange(sortEvent: Sort): void {
-        //console.trace();
-
         this._employeeFilterParams = {
             ...this._employeeFilterParams,
             sortColumn: sortEvent.active,
@@ -102,28 +100,7 @@ export class EmployeeGridComponent implements OnInit {
             page: 1,
         };
 
-        let basePaginationConfig: PaginationConfig;
-
-        if (this.gridConfig.hasPagination === false) {
-            basePaginationConfig = this._defaultPaginatorOptions;
-        } else if (this.gridConfig.hasPagination) {
-            basePaginationConfig = this.gridConfig.hasPagination;
-        } else {
-            basePaginationConfig = this._defaultPaginatorOptions;
-        }
-
-        this.gridConfig = {
-            ...this.gridConfig,
-            OrderBy: {
-                columnName: sortEvent.active,
-                direction: sortEvent.direction,
-            },
-            hasPagination: {
-                ...basePaginationConfig,
-                pageIndex: 0,
-            },
-        };
-
+        this._updateGridConfigOnSortChange(sortEvent); // Nueva función para la actualización de config
         this._getEmployees();
     }
 
@@ -160,47 +137,18 @@ export class EmployeeGridComponent implements OnInit {
 
     private _getEmployees(): void {
         this.isLoadingData = true;
+        console.log(
+            "EmployeeGridComponent: Solicitando empleados con parámetros:",
+            this._employeeFilterParams,
+        );
 
         this._employeeServices
             .getEmployees(this._employeeFilterParams)
             .pipe(
-                map(
-                    (
-                        paginatedList: PaginatedList<Employee>,
-                    ): PaginatedList<GridDataItem> => {
-                        const transformedItems: GridDataItem[] =
-                            paginatedList.items.map(
-                                (employee: Employee): GridDataItem => {
-                                    const gridItem: GridDataItem = {};
-                                    for (const key in employee) {
-                                        const value = (employee as any)[key];
-
-                                        if (value instanceof Date) {
-                                            gridItem[key] =
-                                                DateTime.fromJSDate(
-                                                    value,
-                                                ).toISODate() || "";
-                                        } else if (
-                                            typeof value === "string" ||
-                                            typeof value === "number" ||
-                                            typeof value === "boolean"
-                                        ) {
-                                            gridItem[key] = value;
-                                        }
-                                    }
-                                    return gridItem;
-                                },
-                            );
-
-                        return {
-                            ...paginatedList,
-                            items: transformedItems,
-                            pageIndex: paginatedList.page - 1,
-                        };
-                    },
-                ),
+                map(this._transformPaginatedListToGridData.bind(this)), // Usamos la nueva función de transformación
                 finalize((): void => {
-                    // Handled in next/error
+                    this.isLoadingData = false; // Manejamos el estado de carga aquí
+                    this._cdr.markForCheck();
                 }),
             )
             .subscribe({
@@ -208,66 +156,133 @@ export class EmployeeGridComponent implements OnInit {
                     paginatedListGridData: PaginatedList<GridDataItem>,
                 ): void => {
                     this.gridData = paginatedListGridData.items;
-
-                    if (this.gridConfig) {
-                        let basePaginationConfig: PaginationConfig;
-                        if (this.gridConfig.hasPagination === false) {
-                            basePaginationConfig =
-                                this._defaultPaginatorOptions;
-                        } else if (this.gridConfig.hasPagination) {
-                            basePaginationConfig =
-                                this.gridConfig.hasPagination;
-                        } else {
-                            basePaginationConfig =
-                                this._defaultPaginatorOptions;
-                        }
-
-                        const currentOrderBy = this.gridConfig.OrderBy;
-
-                        const newTotalCount = paginatedListGridData.totalCount;
-                        const newPageIndex = paginatedListGridData.pageIndex;
-                        const newPageSize = paginatedListGridData.pageSize;
-                        const newSortColumn =
-                            this._employeeFilterParams.sortColumn || "";
-                        const newSortDirection = (this._employeeFilterParams
-                            .sortOrder || "") as "asc" | "desc" | "";
-
-                        const paginationChanged =
-                            basePaginationConfig.totalCount !== newTotalCount ||
-                            basePaginationConfig.pageIndex !== newPageIndex ||
-                            basePaginationConfig.pageSize !== newPageSize;
-
-                        const orderByChanged =
-                            currentOrderBy.columnName !== newSortColumn ||
-                            currentOrderBy.direction !== newSortDirection;
-
-                        if (paginationChanged || orderByChanged) {
-                            this.gridConfig = {
-                                ...this.gridConfig,
-                                hasPagination: {
-                                    ...basePaginationConfig,
-                                    totalCount: newTotalCount,
-                                    pageSize: newPageSize,
-                                    pageIndex: newPageIndex,
-                                },
-                                OrderBy: {
-                                    columnName: newSortColumn,
-                                    direction: newSortDirection,
-                                },
-                            };
-                        }
-                    }
-
-                    this.isLoadingData = false;
-
-                    this._cdr.markForCheck();
+                    this._updateGridConfigOnDataReceived(paginatedListGridData); // Nueva función para actualizar config
+                    console.log(
+                        "EmployeeGridComponent: Datos de empleados recibidos y procesados.",
+                    );
                 },
                 error: (error: any): void => {
-                    console.error("Error al obtener empleados:", error);
-                    this.isLoadingData = false;
-                    this._cdr.markForCheck();
+                    console.error(
+                        "EmployeeGridComponent: Error al obtener empleados:",
+                        error,
+                    );
+                    console.log("EmployeeGridComponent: API call error.");
                 },
             });
+    }
+
+    private _transformPaginatedListToGridData(
+        paginatedList: PaginatedList<Employee>,
+    ): PaginatedList<GridDataItem> {
+        /* Esta función toma la información que viene del backend (que son ojetos Employee)
+           y "transforma" esa data para que el componente grilla (GridComponent) 
+           la pueda entender y mostrar. */
+        const transformedItems: GridDataItem[] = paginatedList.items.map(
+            (employee: Employee): GridDataItem => {
+                const gridItem: GridDataItem = {};
+                for (const key in employee) {
+                    const value = (employee as any)[key];
+
+                    if (value instanceof Date) {
+                        gridItem[key] =
+                            DateTime.fromJSDate(value).toISODate() || "";
+                    } else if (
+                        typeof value === "string" ||
+                        typeof value === "number" ||
+                        typeof value === "boolean"
+                    ) {
+                        gridItem[key] = value;
+                    }
+                }
+                return gridItem;
+            },
+        );
+
+        return {
+            ...paginatedList,
+            items: transformedItems,
+            pageIndex: paginatedList.page - 1, // Ajuste para MatPaginator
+        };
+    }
+
+    private _updateGridConfigOnSortChange(sortEvent: Sort): void {
+        let basePaginationConfig: PaginationConfig;
+        if (this.gridConfig.hasPagination === false) {
+            basePaginationConfig = this._defaultPaginatorOptions;
+        } else if (this.gridConfig.hasPagination) {
+            basePaginationConfig = this.gridConfig.hasPagination;
+        } else {
+            basePaginationConfig = this._defaultPaginatorOptions;
+        }
+
+        this.gridConfig = {
+            ...this.gridConfig,
+            OrderBy: {
+                columnName: sortEvent.active,
+                direction: sortEvent.direction,
+            },
+            hasPagination: {
+                ...basePaginationConfig,
+                pageIndex: 0,
+            },
+        };
+        console.log(
+            "EmployeeGridComponent: gridConfig.OrderBy actualizado después de sort:",
+            this.gridConfig.OrderBy,
+        );
+    }
+
+    private _updateGridConfigOnDataReceived(
+        paginatedListGridData: PaginatedList<GridDataItem>,
+    ): void {
+        let basePaginationConfig: PaginationConfig;
+        if (this.gridConfig.hasPagination === false) {
+            basePaginationConfig = this._defaultPaginatorOptions;
+        } else if (this.gridConfig.hasPagination) {
+            basePaginationConfig = this.gridConfig.hasPagination;
+        } else {
+            basePaginationConfig = this._defaultPaginatorOptions;
+        }
+
+        const currentOrderBy = this.gridConfig.OrderBy;
+        const newTotalCount = paginatedListGridData.totalCount;
+        const newPageIndex = paginatedListGridData.pageIndex;
+        const newPageSize = paginatedListGridData.pageSize;
+        const newSortColumn = this._employeeFilterParams.sortColumn || "";
+        const newSortDirection = (this._employeeFilterParams.sortOrder ||
+            "") as "asc" | "desc" | "";
+
+        const paginationChanged =
+            basePaginationConfig.totalCount !== newTotalCount ||
+            basePaginationConfig.pageIndex !== newPageIndex ||
+            basePaginationConfig.pageSize !== newPageSize;
+
+        const orderByChanged =
+            currentOrderBy.columnName !== newSortColumn ||
+            currentOrderBy.direction !== newSortDirection;
+
+        if (paginationChanged || orderByChanged) {
+            this.gridConfig = {
+                ...this.gridConfig,
+                hasPagination: {
+                    ...basePaginationConfig,
+                    totalCount: newTotalCount,
+                    pageSize: newPageSize,
+                    pageIndex: newPageIndex,
+                },
+                OrderBy: {
+                    columnName: newSortColumn,
+                    direction: newSortDirection,
+                },
+            };
+            console.log(
+                "EmployeeGridComponent: gridConfig actualizado para reflejar paginación/sort.",
+            );
+        } else {
+            console.log(
+                "EmployeeGridComponent: gridConfig no necesita actualización.",
+            );
+        }
     }
 
     private _formatDatesInObject(obj: any): any {
