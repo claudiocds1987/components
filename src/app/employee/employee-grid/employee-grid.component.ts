@@ -71,25 +71,24 @@ export class EmployeeGridComponent implements OnInit {
     }
 
     applyFilter(filterValues: unknown): void {
-        const formattedFilterValues = this._formatDatesInObject(filterValues);
-        console.log(
-            "Valores de filtro con fechas formateadas:",
-            formattedFilterValues,
-        );
-
+        this._employeeFilterParams =
+            this._mapToEmployeeFilterParams(filterValues);
         this._employeeFilterParams.page = 1;
+        console.log(
+            "employee filter params mapeado: ",
+            this._employeeFilterParams,
+        );
         if (this.gridConfig.hasPagination) {
             this.gridConfig.hasPagination.pageIndex = 0;
         }
 
-        // Aquí deberías mapear `formattedFilterValues` a `this._employeeFilterParams`
-        // Por ejemplo:
-        this._employeeFilterParams.id = formattedFilterValues.id;
+        // Aca  mapeamos `formattedFilterValues` a `this._employeeFilterParams`
+        /* this._employeeFilterParams.id = formattedFilterValues.id;
         this._employeeFilterParams.name = formattedFilterValues.name;
         this._employeeFilterParams.surname = formattedFilterValues.surname;
         this._employeeFilterParams.position = formattedFilterValues.position;
-        this._employeeFilterParams.dateOfBirth =
-            formattedFilterValues.dateOfBirth;
+        this._employeeFilterParams.birthDate =
+            formattedFilterValues.birthDate; */
 
         this._getEmployees();
     }
@@ -289,7 +288,32 @@ export class EmployeeGridComponent implements OnInit {
         }
     }
 
-    private _formatDatesInObject(obj: any): any {
+    private _mapToEmployeeFilterParams(obj: unknown): EmployeeFilterParams {
+        const newObj: Partial<EmployeeFilterParams> = {
+            ...(obj as Record<string, unknown>),
+        };
+
+        for (const key in newObj) {
+            if (Object.prototype.hasOwnProperty.call(newObj, key)) {
+                const value =
+                    newObj[key as keyof Partial<EmployeeFilterParams>]; // Aseguramos el acceso por clave
+
+                if (value instanceof Date) {
+                    (newObj as any)[key] = DateTime.fromJSDate(value); // Asignación a 'any' para evitar error de tipo en asignación
+                } else if (
+                    typeof value === "object" &&
+                    value !== null &&
+                    !Array.isArray(value)
+                ) {
+                    (newObj as any)[key] =
+                        this._mapToEmployeeFilterParams(value);
+                }
+            }
+        }
+        return newObj as EmployeeFilterParams;
+    }
+
+    /* private _formatDatesInObject(obj: any): any {
         const newObj: any = { ...obj };
 
         for (const key in newObj) {
@@ -303,7 +327,7 @@ export class EmployeeGridComponent implements OnInit {
             }
         }
         return newObj;
-    }
+    } */
 
     private _setGridConfiguration(): GridConfiguration {
         const config = createDefaultGridConfiguration({
@@ -311,7 +335,7 @@ export class EmployeeGridComponent implements OnInit {
                 { name: "id", width: "70px" },
                 { name: "name" },
                 { name: "surname" /*isSortable: false*/ },
-                { name: "dateOfBirth" },
+                { name: "birthDate" },
                 { name: "position" },
                 {
                     name: "elipsis",
@@ -350,21 +374,40 @@ export class EmployeeGridComponent implements OnInit {
                 label: "Id",
             },
             {
-                fieldName: "Estados",
-                fieldType: "select",
-                label: "Estado",
-                selectItems: [
-                    { value: "all", label: "Todos" },
-                    { value: "active", label: "Activo" },
-                    { value: "inactive", label: "Inactivo" },
-                    { value: "pendient", label: "Pendiente" },
-                ],
+                fieldName: "name",
+                fieldType: "text",
+                label: "Nombre",
             },
             {
-                fieldName: "dateOfBirth",
+                fieldName: "surname",
+                fieldType: "text",
+                label: "Apellido",
+            },
+            {
+                fieldName: "birthDate",
                 fieldType: "date",
                 label: "Fecha de nacimiento",
             },
+            {
+                fieldName: "position",
+                fieldType: "select",
+                label: "Puesto",
+                selectItems: [
+                    { value: "all", label: "Todos" },
+                    {
+                        value: "Desarrollador Senior",
+                        label: "Desarrollador Senior",
+                    },
+                    {
+                        value: "Desarrollador Junior",
+                        label: "Desarrollador Junior",
+                    },
+                    { value: "Diseñador UX/UI", label: "Diseñador UX/UI" },
+                    { value: "Soporte Técnico", label: "Soporte Técnico" },
+                ],
+            },
+
+            // se puede seguir agregando mas campos de tipo text, date, select.
         ];
     }
 
