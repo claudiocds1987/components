@@ -74,21 +74,10 @@ export class EmployeeGridComponent implements OnInit {
         this._employeeFilterParams =
             this._mapToEmployeeFilterParams(filterValues);
         this._employeeFilterParams.page = 1;
-        console.log(
-            "employee filter params mapeado: ",
-            this._employeeFilterParams,
-        );
+
         if (this.gridConfig.hasPagination) {
             this.gridConfig.hasPagination.pageIndex = 0;
         }
-
-        // Aca  mapeamos `formattedFilterValues` a `this._employeeFilterParams`
-        /* this._employeeFilterParams.id = formattedFilterValues.id;
-        this._employeeFilterParams.name = formattedFilterValues.name;
-        this._employeeFilterParams.surname = formattedFilterValues.surname;
-        this._employeeFilterParams.position = formattedFilterValues.position;
-        this._employeeFilterParams.birthDate =
-            formattedFilterValues.birthDate; */
 
         this._getEmployees();
     }
@@ -106,7 +95,6 @@ export class EmployeeGridComponent implements OnInit {
     }
 
     onGridPageChange(event: PageEvent): void {
-        console.log("onGridPageChange called.");
         console.trace();
         this._employeeFilterParams = {
             ...this._employeeFilterParams,
@@ -140,11 +128,6 @@ export class EmployeeGridComponent implements OnInit {
 
     private _getEmployees(): void {
         this.isLoadingData = true;
-        console.log(
-            "EmployeeGridComponent: Solicitando empleados con parámetros:",
-            this._employeeFilterParams,
-        );
-
         this._employeeServices
             .getEmployees(this._employeeFilterParams)
             .pipe(
@@ -160,16 +143,12 @@ export class EmployeeGridComponent implements OnInit {
                 ): void => {
                     this.gridData = paginatedListGridData.items;
                     this._updateGridConfigOnDataReceived(paginatedListGridData); // Nueva función para actualizar config
-                    console.log(
-                        "EmployeeGridComponent: Datos de empleados recibidos y procesados.",
-                    );
                 },
                 error: (error: any): void => {
                     console.error(
                         "EmployeeGridComponent: Error al obtener empleados:",
                         error,
                     );
-                    console.log("EmployeeGridComponent: API call error.");
                 },
             });
     }
@@ -229,10 +208,6 @@ export class EmployeeGridComponent implements OnInit {
                 pageIndex: 0,
             },
         };
-        console.log(
-            "EmployeeGridComponent: gridConfig.OrderBy actualizado después de sort:",
-            this.gridConfig.OrderBy,
-        );
     }
 
     private _updateGridConfigOnDataReceived(
@@ -278,13 +253,6 @@ export class EmployeeGridComponent implements OnInit {
                     direction: newSortDirection,
                 },
             };
-            console.log(
-                "EmployeeGridComponent: gridConfig actualizado para reflejar paginación/sort.",
-            );
-        } else {
-            console.log(
-                "EmployeeGridComponent: gridConfig no necesita actualización.",
-            );
         }
     }
 
