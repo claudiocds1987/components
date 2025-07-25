@@ -12,7 +12,6 @@ import {
     createDefaultGridConfiguration,
     GridConfiguration,
     GridDataItem,
-    OrderBy,
     PaginationConfig,
 } from "../../shared/models/gridConfiguration";
 import { GridComponent } from "../../shared/components/grid/grid.component"; // Correct path for GridComponent

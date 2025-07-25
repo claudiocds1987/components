@@ -35,7 +35,7 @@ CASO DE ERROR:
 5. where node (Indica la ruta donde esta apuntando la instalación de nvm-windows "NVM para Windows")
    deberia mostrar esta ruta: C:\nvm4w\nodejs\node.exe
 6. nvm ls (Para listar las distintas versiones de node que tiene nvm)
-   Tiene que aparecer con un "\*" la version que se esta ejecutando.
+   Tiene que aparecer con un asterisco "\*" la version que se esta ejecutando.
     - 20.12.2 (Currently using 64-bit executable)
 
 7. Abrir proyecto de Angular 17 volver a correr nvm use 20.12.2

@@ -79,10 +79,12 @@ export const createDefaultGridConfiguration = (
     }
 
     // Procesar las columnas para establecer isSortable por defecto
-    const processedColumns: Column[] = (config.columns || []).map((col) => ({
-        ...col,
-        isSortable: col.isSortable ?? true, // Si isSortable es undefined o null, se establece en true
-    }));
+    const processedColumns: Column[] = (config.columns || []).map(
+        (col: Column): Column => ({
+            ...col,
+            isSortable: col.isSortable ?? true, // Si isSortable es undefined o null, se establece en true
+        }),
+    );
 
     return {
         //columns: config.columns || [],

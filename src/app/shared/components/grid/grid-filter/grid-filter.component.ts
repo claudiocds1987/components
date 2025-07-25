@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core";
+import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -28,17 +28,13 @@ import { GridFilterConfig } from "../../../models/grid-filter-config.model";
         MatNativeDateModule,
         MatButtonModule,
     ],
-    templateUrl: "./grid-filter.component.html", // !!! CAMBIO CLAVE: URL del template correcta para GridFilterComponent
+    templateUrl: "./grid-filter.component.html",
     styleUrls: ["./grid-filter.component.scss"],
 })
-export class GridFilterComponent implements OnInit {
+export class GridFilterComponent {
     @Input() config: GridFilterConfig[] = [];
     @Input() filterForm!: FormGroup;
-    @Output() emitFilterApplied = new EventEmitter<any>(); // Considera un tipo más específico para los valores del filtro
-
-    ngOnInit(): void {
-        // Lógica de inicialización si es necesaria
-    }
+    @Output() emitFilterApplied = new EventEmitter<unknown>(); // Considerar un tipo más específico para los valores del filtro
 
     applyFilter(): void {
         this.emitFilterApplied.emit(this.filterForm.value);
