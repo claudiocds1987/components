@@ -84,9 +84,12 @@ export class EmployeeGridComponent implements OnInit {
 
         // Aquí deberías mapear `formattedFilterValues` a `this._employeeFilterParams`
         // Por ejemplo:
-        // this._employeeFilterParams.name = formattedFilterValues.name;
-        // this._employeeFilterParams.email = formattedFilterValues.email;
-        // ... (añade lógica para tus otros filtros) ...
+        this._employeeFilterParams.id = formattedFilterValues.id;
+        this._employeeFilterParams.name = formattedFilterValues.name;
+        this._employeeFilterParams.surname = formattedFilterValues.surname;
+        this._employeeFilterParams.position = formattedFilterValues.position;
+        this._employeeFilterParams.dateOfBirth =
+            formattedFilterValues.dateOfBirth;
 
         this._getEmployees();
     }
@@ -347,11 +350,6 @@ export class EmployeeGridComponent implements OnInit {
                 label: "Id",
             },
             {
-                fieldName: "email",
-                fieldType: "text",
-                label: "Email",
-            },
-            {
                 fieldName: "Estados",
                 fieldType: "select",
                 label: "Estado",
@@ -363,9 +361,9 @@ export class EmployeeGridComponent implements OnInit {
                 ],
             },
             {
-                fieldName: "date",
+                fieldName: "dateOfBirth",
                 fieldType: "date",
-                label: "Rango de fechas",
+                label: "Fecha de nacimiento",
             },
         ];
     }
@@ -391,14 +389,9 @@ export class EmployeeGridComponent implements OnInit {
 
             if (filter.fieldType === "date") {
                 this.gridFilterForm.addControl(
-                    filter.fieldName + "From",
+                    filter.fieldName,
                     new FormControl(null),
                 );
-                this.gridFilterForm.addControl(
-                    filter.fieldName + "To",
-                    new FormControl(null),
-                );
-                return;
             }
         });
     }

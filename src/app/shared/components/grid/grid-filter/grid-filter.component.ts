@@ -7,13 +7,7 @@ import { MatSelectModule } from "@angular/material/select";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { MatButtonModule } from "@angular/material/button";
-// !!! CAMBIO CLAVE: Ajuste la ruta para grid-filter-config.model
-// Asumo que 'grid-filter-config.model.ts' está en 'src/app/shared/models/'
 import { GridFilterConfig } from "../../../models/grid-filter-config.model";
-// !!! IMPORTANTE: Si GridFilterComponent no usa directamente Column o TruncatePipe, ELIMINA estas importaciones.
-// Si las usara, la ruta sería algo como:
-// import { Column } from '../../../models/gridConfiguration';
-// import { TruncatePipe } from '../../pipes/truncate.pipe';
 
 @Component({
     selector: "app-grid-filter",

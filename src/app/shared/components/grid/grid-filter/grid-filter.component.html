@@ -25,31 +25,17 @@
 
         <ng-container *ngIf="filter.fieldType === 'date'">
             <mat-form-field appearance="outline">
-                <mat-label>{{ filter.label }} (Desde)</mat-label>
+                <mat-label>{{ filter.label }}</mat-label>
                 <input
                     matInput
                     [matDatepicker]="pickerFrom"
-                    [formControlName]="filter.fieldName + 'From'"
+                    [formControlName]="filter.fieldName"
                 />
                 <mat-datepicker-toggle
                     matSuffix
                     [for]="pickerFrom"
                 ></mat-datepicker-toggle>
                 <mat-datepicker #pickerFrom></mat-datepicker>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-                <mat-label>{{ filter.label }} (Hasta)</mat-label>
-                <input
-                    matInput
-                    [matDatepicker]="pickerTo"
-                    [formControlName]="filter.fieldName + 'To'"
-                />
-                <mat-datepicker-toggle
-                    matSuffix
-                    [for]="pickerTo"
-                ></mat-datepicker-toggle>
-                <mat-datepicker #pickerTo></mat-datepicker>
             </mat-form-field>
         </ng-container>
     </ng-container>
