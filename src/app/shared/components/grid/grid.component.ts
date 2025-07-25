@@ -34,8 +34,8 @@ import { take } from "rxjs";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { TruncatePipe } from "../../pipes/truncate.pipe";
 
-// --- Nueva función para el paginador internacionalizado ---
-export function getSpanishPaginatorIntl(): MatPaginatorIntl {
+// --- función para el setear paginador ---
+export function getPaginatorIntl(): MatPaginatorIntl {
     const paginatorIntl = new MatPaginatorIntl();
     paginatorIntl.itemsPerPageLabel = "Registros por página:";
     paginatorIntl.nextPageLabel = "Siguiente";
@@ -58,7 +58,6 @@ export function getSpanishPaginatorIntl(): MatPaginatorIntl {
 
     return paginatorIntl;
 }
-// --- Fin de la nueva función ---
 
 @Component({
     selector: "app-grid",
@@ -78,9 +77,8 @@ export function getSpanishPaginatorIntl(): MatPaginatorIntl {
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
         {
-            // Usamos la función separada para el proveedor
             provide: MatPaginatorIntl,
-            useFactory: getSpanishPaginatorIntl,
+            useFactory: getPaginatorIntl,
         },
     ],
 })
