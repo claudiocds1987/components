@@ -95,7 +95,6 @@ export class EmployeeGridComponent implements OnInit {
     }
 
     onGridPageChange(event: PageEvent): void {
-        console.trace();
         this._employeeFilterParams = {
             ...this._employeeFilterParams,
             page: event.pageIndex + 1,
@@ -240,6 +239,7 @@ export class EmployeeGridComponent implements OnInit {
             currentOrderBy.direction !== newSortDirection;
 
         if (paginationChanged || orderByChanged) {
+            // aca creo nueva referencia del objeto gridConfig para que ChangeDetectionStrategy.OnPush detecte el cambio
             this.gridConfig = {
                 ...this.gridConfig,
                 hasPagination: {
@@ -264,15 +264,25 @@ export class EmployeeGridComponent implements OnInit {
         for (const key in newObj) {
             if (Object.prototype.hasOwnProperty.call(newObj, key)) {
                 const value =
-                    newObj[key as keyof Partial<EmployeeFilterParams>]; // Aseguramos el acceso por clave
+                    newObj[key as keyof Partial<EmployeeFilterParams>];
 
                 if (value instanceof Date) {
-                    (newObj as any)[key] = DateTime.fromJSDate(value); // Asignación a 'any' para evitar error de tipo en asignación
+                    // Convertir la fecha JavaScript a un objeto DateTime de Luxon
+                    const luxonDate = DateTime.fromJSDate(value);
+
+                    // --- ¡CAMBIO CLAVE AQUÍ! ---
+                    // Si la clave es 'birthDate' (o la clave que uses para ese campo en params),
+                    // la formateamos al formato "MM/DD/YYYY" que usa tu db.json.
+                    if (key === "birthDate") {
+                        (newObj as any)[key] = luxonDate.toFormat("dd/MM/yyyy"); // Formato "05/10/1993"
+                    }
+                    // --- FIN CAMBIO CLAVE ---
                 } else if (
                     typeof value === "object" &&
                     value !== null &&
                     !Array.isArray(value)
                 ) {
+                    // Llamada recursiva para objetos anidados
                     (newObj as any)[key] =
                         this._mapToEmployeeFilterParams(value);
                 }
@@ -280,22 +290,6 @@ export class EmployeeGridComponent implements OnInit {
         }
         return newObj as EmployeeFilterParams;
     }
-
-    /* private _formatDatesInObject(obj: any): any {
-        const newObj: any = { ...obj };
-
-        for (const key in newObj) {
-            if (Object.prototype.hasOwnProperty.call(newObj, key)) {
-                const value = newObj[key];
-                if (value instanceof Date) {
-                    newObj[key] = DateTime.fromJSDate(value);
-                } else if (typeof value === "object" && value !== null) {
-                    newObj[key] = this._formatDatesInObject(value);
-                }
-            }
-        }
-        return newObj;
-    } */
 
     private _setGridConfiguration(): GridConfiguration {
         const config = createDefaultGridConfiguration({

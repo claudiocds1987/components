@@ -1,12 +1,16 @@
 SE INSTALÓ NVM PARA WINDOWS
+NOTA: PARA QUE NVM FUNCIONE CORRECTAMENTE PREVIAMENTE A INSTALAR NVM DESINSTALAR
+LA VERSION DE NODE.JS QUE TENEMOS INSTALADA, IR A ARCHIVOS DE PROGRAMAS BUSCAR
+node.js y la desinstalamos.
 ESTE PROYECTO ESTA EN ANGULAR 17 Y ESTA USANDO LA VERSION DE NODE 20.12.2
 Y COMO BASE DE DATOS ESTA USANDO JSON-SERVER archivo "db.json"
 
 PARA CORRER JSON-SERVER:
 
 - Haber instalado json-server version 0.17.4 de forma global: npm install -g json-server@0.17.4
-- para correrlo: json-server --watch db.json --port 3000 --cors
+- para correrlo abrir una nueva terminal y tipiar: json-server --watch db.json --port 3000 --cors
 - checkeamos data empleados: http://localhost:3000/employees
+- la base de datos de json-server esta en el archivo db.json
 
 NOTA: para paquetes usar "npx i" nombre-libreria, no usar npm i
 para crear un servicio: npx ng g s employee-mock

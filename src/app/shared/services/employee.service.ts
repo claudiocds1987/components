@@ -14,64 +14,6 @@ export class EmployeeService {
     // eslint-disable-next-line @angular-eslint/prefer-inject
     constructor(private _http: HttpClient) {}
 
-    /* getEmployees(
-        params: EmployeeFilterParams,
-    ): Observable<PaginatedList<Employee>> {
-        let httpParams = new HttpParams();
-
-        // Accede a las propiedades directamente desde el objeto 'params'
-        if (params.id) {
-            httpParams = httpParams.set("id", params.id.toString()); // busqueda exacta sensitive
-        }
-
-        if (params.name) {
-            httpParams = httpParams.set("name_like", params.name);
-        }
-
-        if (params.surname) {
-            httpParams = httpParams.set("surname_like", params.surname);
-        }
-
-        if (params.position) {
-            httpParams = httpParams.set("position", params.position);
-        }
-
-        // Usa valores por defecto si no se proporcionan en el objeto
-        const page = params.page !== undefined ? params.page : 1;
-        const limit = params.limit !== undefined ? params.limit : 25;
-
-        httpParams = httpParams.set("_page", page.toString());
-        httpParams = httpParams.set("_limit", limit.toString());
-
-        return this._http
-            .get<
-                Employee[]
-            >(this.apiUrl, { params: httpParams, observe: "response" })
-            .pipe(
-                map(
-                    (
-                        response: HttpResponse<Employee[]>,
-                    ): PaginatedList<Employee> => {
-                        const totalCount = parseInt(
-                            response.headers.get("X-Total-Count") || "0",
-                            10,
-                        );
-                        const totalPages = Math.ceil(totalCount / limit);
-                        const items = response.body || [];
-
-                        return {
-                            items: items,
-                            totalCount: totalCount,
-                            pageIndex: page,
-                            pageSize: limit,
-                            totalPages: totalPages,
-                            hasPreviousPage: page > 1,
-                            hasNextPage: page < totalPages,
-                        };
-                    },
-                ),
-            );
-    } */
     getEmployees(
         params: EmployeeFilterParams,
     ): Observable<PaginatedList<Employee>> {
@@ -105,17 +47,18 @@ export class EmployeeService {
             httpParams = httpParams.set("surname_like", params.surname);
         }
 
-        if (params.position) {
-            httpParams = httpParams.set("position", params.position);
+        if (params.position && params.position !== "all") {
+            httpParams = httpParams.set("position", params.position); // O el nombre de la propiedad real en tu db.json
         }
 
         // Aca añadir los restantes campos del componente grid-filter
-        /*    if (params.dateOfBirth) {
-            httpParams = httpParams.append("dateOfBirth", params.dateOfBirth.toString());
+        if (params.birthDate) {
+            httpParams = httpParams.append(
+                "birthDate",
+                params.birthDate.toString(),
+            );
         }
-        if (params.email) {
-            httpParams = httpParams.append("email", params.email);
-        } */
+
         // ... otros filtros
 
         // Usa valores por defecto si no se proporcionan en el objeto

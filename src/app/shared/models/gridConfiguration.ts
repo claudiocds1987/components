@@ -19,9 +19,9 @@ export interface OrderBy {
     direction: "asc" | "desc" | "";
 }
 
-// !!! NEW: Define and export GridDataItem interface !!!
-// This interface represents a single row of data in your grid.
-// It's typically a simple key-value pair, where the key is the column name.
+// Define y exporta la interfaz GridDataItem !!!
+// Esta interfaz representa una sola fila de datos de la grilla.
+// Es generalmente un par simple clave-valor, donde la clave es el nombre de la columna.
 export type GridDataItem = Record<
     string,
     string | number | boolean | Date | null | undefined
@@ -29,17 +29,17 @@ export type GridDataItem = Record<
 
 export interface GridConfiguration {
     columns: Column[];
-    hasPagination?: PaginationConfig | false; // Can be a config object or false
-    hasInputSearch?: boolean; // Controls the visibility of the search input
-    filterByColumn?: string; // If searching only applies to a specific column
-    withExcelDownload?: boolean; // Controls the visibility of an Excel download button
-    OrderBy: OrderBy; // Initial sorting state
+    hasPagination?: PaginationConfig | false; // "false" porque puede no tener paginacion la grilla
+    hasInputSearch?: boolean; // Para mostrar o no el input search arriba de la grilla
+    filterByColumn?: string; // indica a el input search en que columna hacer la búsqueda
+    withExcelDownload?: boolean; // Muestra o no el boton para descargar el excel
+    OrderBy: OrderBy;
     hasSorting?: {
         isServerSide: boolean;
     };
 }
 
-// Function updated to create the default configuration
+// Function para crear la configuracion de la grilla por default
 export const createDefaultGridConfiguration = (
     config: Partial<GridConfiguration>,
 ): GridConfiguration => {
