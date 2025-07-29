@@ -36,6 +36,11 @@ export class DateInputComponent implements ControlValueAccessor, OnInit {
      * tener un campo de fecha con matInput y matDatepicker, manejando su estado interno con un FormControl,
      * y añadiendo una lógica inteligente para que la entrada de fechas manual funcione bien y se convierta
      * a un objeto Date para el resto de tu aplicación.
+     * En resumen: Este componente se hizo para permitir la entrada de fechas tanto por selección del calendario
+     * como por escritura manual (soportando formatos dd/MM/yyyy y dd-MM-yyyy).
+     * Se integra con Angular Reactive Forms para manejar su estado y validación.
+     * NOTA: Para que el mat-picker trabaje con el formato dd/MM/aaaa, se utiliza "LuxonDateAdapter"
+     * Esta configuración esta hecha en el archivo app.config.ts
      *******************************************************************************************************/
 
     @Input() label = "Fecha";
