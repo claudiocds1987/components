@@ -169,9 +169,20 @@ export class EmployeeGridComponent implements OnInit {
                 for (const key in employee) {
                     const value = (employee as any)[key];
 
-                    if (value instanceof Date) {
-                        gridItem[key] =
-                            DateTime.fromJSDate(value).toISODate() || "";
+                    // --- CAMBIO CLAVE AQUÍ ---
+                    // Si la propiedad es 'birthDate' (o cualquier otra fecha que venga del backend)
+                    // y su valor es un string (como lo será desde db.json)
+                    if (key === "birthDate" && typeof value === "string") {
+                        // Intentamos parsear el string YYYY-MM-DD a un objeto DateTime
+                        const luxonDate = DateTime.fromISO(value); // fromISO es ideal para YYYY-MM-DD
+
+                        if (luxonDate.isValid) {
+                            // Si es una fecha válida, la formateamos en dd/MM/yyyy para la visualización en la grilla
+                            gridItem[key] = luxonDate.toFormat("dd/MM/yyyy");
+                        } else {
+                            // Si no es una fecha válida, mantenemos el valor original o lo dejamos vacío
+                            gridItem[key] = value;
+                        }
                     } else if (
                         typeof value === "string" ||
                         typeof value === "number" ||
@@ -179,6 +190,8 @@ export class EmployeeGridComponent implements OnInit {
                     ) {
                         gridItem[key] = value;
                     }
+                    // Puedes añadir un 'else if (value instanceof Date)' o 'else if (value instanceof DateTime)'
+                    // si por alguna razón el backend te enviara esos tipos directamente, aunque es menos común.
                 }
                 return gridItem;
             },
@@ -284,9 +297,13 @@ export class EmployeeGridComponent implements OnInit {
                 }
                 // Si se logró obtener un objeto Luxon DateTime válido
                 if (luxonDate && luxonDate.isValid) {
+                    // Formatear a YYYY-MM-DD para el backend (json-server)
+                    (newObj as any)[key] = luxonDate.toFormat("yyyy-MM-dd");
+                }
+                /* if (luxonDate && luxonDate.isValid) {
                     // Formatea *cualquier* fecha detectada al formato "dd/MM/yyyy"
                     (newObj as any)[key] = luxonDate.toFormat("dd/MM/yyyy");
-                }
+                } */
                 // 4. Manejo de otros tipos (objetos anidados, null, undefined, string, number, boolean)
                 else if (
                     typeof value === "object" &&

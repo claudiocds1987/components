@@ -4,1400 +4,1400 @@
       "id": 1,
       "name": "Juan",
       "surname": "Perez",
-      "birthDate": "10/05/1985",
+      "birthDate": "1985-05-10",
       "position": "Desarrollador Senior"
     },
     {
       "id": 2,
       "name": "Maria",
       "surname": "Gomez",
-      "birthDate": "15/03/1990",
+      "birthDate": "1990-03-15",
       "position": "Analista de Datos"
     },
     {
       "id": 3,
       "name": "Pedro",
       "surname": "Rodriguez",
-      "birthDate": "20/11/1988",
+      "birthDate": "1988-11-20",
       "position": "Gerente de Proyecto"
     },
     {
       "id": 4,
       "name": "Ana",
       "surname": "López",
-      "birthDate": "25/07/1992",
+      "birthDate": "1992-07-25",
       "position": "Diseñador UX/UI"
     },
     {
       "id": 5,
       "name": "Carlos",
       "surname": "Sanchez",
-      "birthDate": "30/01/1987",
+      "birthDate": "1987-01-30",
       "position": "Desarrollador Junior"
     },
     {
       "id": 6,
       "name": "Laura",
       "surname": "Fernandez",
-      "birthDate": "01/09/1995",
+      "birthDate": "1995-09-01",
       "position": "Especialista QA"
     },
     {
       "id": 7,
       "name": "Diego",
       "surname": "Garcia",
-      "birthDate": "12/04/1983",
+      "birthDate": "1983-04-12",
       "position": "Desarrollador Senior"
     },
     {
       "id": 8,
       "name": "Sofia",
       "surname": "Martinez",
-      "birthDate": "18/06/1991",
+      "birthDate": "1991-06-18",
       "position": "Analista de Negocios"
     },
     {
       "id": 9,
       "name": "Pablo",
       "surname": "Diaz",
-      "birthDate": "28/02/1989",
+      "birthDate": "1989-02-28",
       "position": "Desarrollador Mobile"
     },
     {
       "id": 10,
       "name": "Lucia",
       "surname": "Hernandez",
-      "birthDate": "05/10/1993",
+      "birthDate": "1993-10-05",
       "position": "Soporte Técnico"
     },
     {
       "id": 11,
       "name": "Jose",
       "surname": "Perez",
-      "birthDate": "01/08/1980",
+      "birthDate": "1980-08-01",
       "position": "Desarrollador Senior"
     },
     {
       "id": 12,
       "name": "Sofia",
       "surname": "Gomez",
-      "birthDate": "18/06/1991",
+      "birthDate": "1991-06-18",
       "position": "Analista de Datos"
     },
     {
       "id": 13,
       "name": "Martin",
       "surname": "Rodriguez",
-      "birthDate": "20/11/1988",
+      "birthDate": "1988-11-20",
       "position": "Desarrollador Junior"
     },
     {
       "id": 14,
       "name": "Maria",
       "surname": "López",
-      "birthDate": "25/07/1992",
+      "birthDate": "1992-07-25",
       "position": "Desarrollador Senior"
     },
     {
       "id": 15,
       "name": "Carlos",
       "surname": "Sanchez",
-      "birthDate": "30/01/1987",
+      "birthDate": "1987-01-30",
       "position": "Gerente de Proyecto"
     },
     {
       "id": 16,
       "name": "Ana",
       "surname": "Fernandez",
-      "birthDate": "01/09/1995",
+      "birthDate": "1995-09-01",
       "position": "Especialista QA"
     },
     {
       "id": 17,
       "name": "Juan",
       "surname": "Garcia",
-      "birthDate": "12/04/1983",
+      "birthDate": "1983-04-12",
       "position": "Desarrollador Senior"
     },
     {
       "id": 18,
       "name": "Pedro",
       "surname": "Martinez",
-      "birthDate": "18/06/1991",
+      "birthDate": "1991-06-18",
       "position": "Analista de Negocios"
     },
     {
       "id": 19,
       "name": "Laura",
       "surname": "Diaz",
-      "birthDate": "28/02/1989",
+      "birthDate": "1989-02-28",
       "position": "Desarrollador Mobile"
     },
     {
       "id": 20,
       "name": "Juan",
       "surname": "Hernandez",
-      "birthDate": "05/10/1993",
+      "birthDate": "1993-10-05",
       "position": "Soporte Técnico"
     },
     {
       "id": 21,
       "name": "Lucas",
       "surname": "Perez",
-      "birthDate": "15/03/1990",
+      "birthDate": "1990-03-15",
       "position": "Desarrollador Senior"
     },
     {
       "id": 22,
       "name": "Maria",
       "surname": "Perez",
-      "birthDate": "10/05/1985",
+      "birthDate": "1985-05-10",
       "position": "Analista de Datos"
     },
     {
       "id": 23,
       "name": "Pedro",
       "surname": "Perez",
-      "birthDate": "20/11/1988",
+      "birthDate": "1988-11-20",
       "position": "Gerente de Proyecto"
     },
     {
       "id": 24,
       "name": "Juan",
       "surname": "López",
-      "birthDate": "25/07/1992",
+      "birthDate": "1992-07-25",
       "position": "Diseñador UX/UI"
     },
     {
       "id": 25,
       "name": "Carlos",
       "surname": "Diaz",
-      "birthDate": "30/01/1987",
+      "birthDate": "1987-01-30",
       "position": "Desarrollador Junior"
     },
     {
       "id": 26,
       "name": "Laura",
       "surname": "Garcia",
-      "birthDate": "01/09/1995",
+      "birthDate": "1995-09-01",
       "position": "Especialista QA"
     },
     {
       "id": 27,
       "name": "Diego",
       "surname": "Hernandez",
-      "birthDate": "12/04/1983",
+      "birthDate": "1983-04-12",
       "position": "Desarrollador Senior"
     },
     {
       "id": 28,
       "name": "Sofia",
       "surname": "Sanchez",
-      "birthDate": "18/06/1991",
+      "birthDate": "1991-06-18",
       "position": "Analista de Negocios"
     },
     {
       "id": 29,
       "name": "Pablo",
       "surname": "Martinez",
-      "birthDate": "28/02/1989",
+      "birthDate": "1989-02-28",
       "position": "Desarrollador Mobile"
     },
     {
       "id": 30,
       "name": "Lucia",
       "surname": "Gomez",
-      "birthDate": "05/10/1993",
+      "birthDate": "1993-10-05",
       "position": "Soporte Técnico"
     },
     {
       "id": 31,
       "name": "Juan",
       "surname": "Perez",
-      "birthDate": "10/05/1985",
+      "birthDate": "1985-05-10",
       "position": "Analista de Datos"
     },
     {
       "id": 32,
       "name": "Maria",
       "surname": "Gomez",
-      "birthDate": "15/03/1990",
+      "birthDate": "1990-03-15",
       "position": "Desarrollador Senior"
     },
     {
       "id": 33,
       "name": "Pedro",
       "surname": "Rodriguez",
-      "birthDate": "20/11/1988",
+      "birthDate": "1988-11-20",
       "position": "Gerente de Proyecto"
     },
     {
       "id": 34,
       "name": "Ana",
       "surname": "López",
-      "birthDate": "25/07/1992",
+      "birthDate": "1992-07-25",
       "position": "Diseñador UX/UI"
     },
     {
       "id": 35,
       "name": "Carlos",
       "surname": "Sanchez",
-      "birthDate": "30/01/1987",
+      "birthDate": "1987-01-30",
       "position": "Desarrollador Junior"
     },
     {
       "id": 36,
       "name": "Laura",
       "surname": "Fernandez",
-      "birthDate": "01/09/1995",
+      "birthDate": "1995-09-01",
       "position": "Especialista QA"
     },
     {
       "id": 37,
       "name": "Diego",
       "surname": "Garcia",
-      "birthDate": "12/04/1983",
+      "birthDate": "1983-04-12",
       "position": "Desarrollador Senior"
     },
     {
       "id": 38,
       "name": "Sofia",
       "surname": "Martinez",
-      "birthDate": "18/06/1991",
+      "birthDate": "1991-06-18",
       "position": "Analista de Negocios"
     },
     {
       "id": 39,
       "name": "Pablo",
       "surname": "Diaz",
-      "birthDate": "28/02/1989",
+      "birthDate": "1989-02-28",
       "position": "Desarrollador Mobile"
     },
     {
       "id": 40,
       "name": "Lucia",
       "surname": "Hernandez",
-      "birthDate": "05/10/1993",
+      "birthDate": "1993-10-05",
       "position": "Soporte Técnico"
     },
     {
       "id": 41,
       "name": "Maria",
       "surname": "Perez",
-      "birthDate": "01/08/1980",
+      "birthDate": "1980-08-01",
       "position": "Desarrollador Senior"
     },
     {
       "id": 42,
       "name": "Juan",
       "surname": "Gomez",
-      "birthDate": "18/06/1991",
+      "birthDate": "1991-06-18",
       "position": "Analista de Datos"
     },
     {
       "id": 43,
       "name": "Sofia",
       "surname": "Rodriguez",
-      "birthDate": "20/11/1988",
+      "birthDate": "1988-11-20",
       "position": "Desarrollador Junior"
     },
     {
       "id": 44,
       "name": "Pedro",
       "surname": "López",
-      "birthDate": "25/07/1992",
+      "birthDate": "1992-07-25",
       "position": "Desarrollador Senior"
     },
     {
       "id": 45,
       "name": "Laura",
       "surname": "Sanchez",
-      "birthDate": "30/01/1987",
+      "birthDate": "1987-01-30",
       "position": "Gerente de Proyecto"
     },
     {
       "id": 46,
       "name": "Carlos",
       "surname": "Fernandez",
-      "birthDate": "01/09/1995",
+      "birthDate": "1995-09-01",
       "position": "Especialista QA"
     },
     {
       "id": 47,
       "name": "Ana",
       "surname": "Garcia",
-      "birthDate": "12/04/1983",
+      "birthDate": "1983-04-12",
       "position": "Desarrollador Senior"
     },
     {
       "id": 48,
       "name": "Diego",
       "surname": "Martinez",
-      "birthDate": "18/06/1991",
+      "birthDate": "1991-06-18",
       "position": "Analista de Negocios"
     },
     {
       "id": 49,
       "name": "Jose",
       "surname": "Diaz",
-      "birthDate": "28/02/1989",
+      "birthDate": "1989-02-28",
       "position": "Desarrollador Mobile"
     },
     {
       "id": 50,
       "name": "Pablo",
       "surname": "Hernandez",
-      "birthDate": "05/10/1993",
+      "birthDate": "1993-10-05",
       "position": "Soporte Técnico"
     },
     {
       "id": 51,
       "name": "Juan",
       "surname": "Perez",
-      "birthDate": "15/03/1990",
+      "birthDate": "1990-03-15",
       "position": "Desarrollador Junior"
     },
     {
       "id": 52,
       "name": "Maria",
       "surname": "Gomez",
-      "birthDate": "10/05/1985",
+      "birthDate": "1985-05-10",
       "position": "Analista de Datos"
     },
     {
       "id": 53,
       "name": "Pedro",
       "surname": "Rodriguez",
-      "birthDate": "20/11/1988",
+      "birthDate": "1988-11-20",
       "position": "Gerente de Proyecto"
     },
     {
       "id": 54,
       "name": "Ana",
       "surname": "López",
-      "birthDate": "25/07/1992",
+      "birthDate": "1992-07-25",
       "position": "Diseñador UX/UI"
     },
     {
       "id": 55,
       "name": "Carlos",
       "surname": "Sanchez",
-      "birthDate": "30/01/1987",
+      "birthDate": "1987-01-30",
       "position": "Desarrollador Junior"
     },
     {
       "id": 56,
       "name": "Laura",
       "surname": "Fernandez",
-      "birthDate": "01/09/1995",
+      "birthDate": "1995-09-01",
       "position": "Especialista QA"
     },
     {
       "id": 57,
       "name": "Diego",
       "surname": "Garcia",
-      "birthDate": "12/04/1983",
+      "birthDate": "1983-04-12",
       "position": "Desarrollador Senior"
     },
     {
       "id": 58,
       "name": "Sofia",
       "surname": "Martinez",
-      "birthDate": "18/06/1991",
+      "birthDate": "1991-06-18",
       "position": "Analista de Negocios"
     },
     {
       "id": 59,
       "name": "Pablo",
       "surname": "Diaz",
-      "birthDate": "28/02/1989",
+      "birthDate": "1989-02-28",
       "position": "Desarrollador Mobile"
     },
     {
       "id": 60,
       "name": "Lucia",
       "surname": "Hernandez",
-      "birthDate": "05/10/1993",
+      "birthDate": "1993-10-05",
       "position": "Soporte Técnico"
     },
     {
       "id": 61,
       "name": "Juan",
       "surname": "Perez",
-      "birthDate": "01/08/1980",
+      "birthDate": "1980-08-01",
       "position": "Desarrollador Senior"
     },
     {
       "id": 62,
       "name": "Sofia",
       "surname": "Gomez",
-      "birthDate": "18/06/1991",
+      "birthDate": "1991-06-18",
       "position": "Analista de Datos"
     },
     {
       "id": 63,
       "name": "Martin",
       "surname": "Rodriguez",
-      "birthDate": "20/11/1988",
+      "birthDate": "1988-11-20",
       "position": "Desarrollador Junior"
     },
     {
       "id": 64,
       "name": "Maria",
       "surname": "López",
-      "birthDate": "25/07/1992",
+      "birthDate": "1992-07-25",
       "position": "Desarrollador Senior"
     },
     {
       "id": 65,
       "name": "Carlos",
       "surname": "Sanchez",
-      "birthDate": "30/01/1987",
+      "birthDate": "1987-01-30",
       "position": "Gerente de Proyecto"
     },
     {
       "id": 66,
       "name": "Ana",
       "surname": "Fernandez",
-      "birthDate": "01/09/1995",
+      "birthDate": "1995-09-01",
       "position": "Especialista QA"
     },
     {
       "id": 67,
       "name": "Juan",
       "surname": "Garcia",
-      "birthDate": "12/04/1983",
+      "birthDate": "1983-04-12",
       "position": "Desarrollador Senior"
     },
     {
       "id": 68,
       "name": "Pedro",
       "surname": "Martinez",
-      "birthDate": "18/06/1991",
+      "birthDate": "1991-06-18",
       "position": "Analista de Negocios"
     },
     {
       "id": 69,
       "name": "Laura",
       "surname": "Diaz",
-      "birthDate": "28/02/1989",
+      "birthDate": "1989-02-28",
       "position": "Desarrollador Mobile"
     },
     {
       "id": 70,
       "name": "Juan",
       "surname": "Hernandez",
-      "birthDate": "05/10/1993",
+      "birthDate": "1993-10-05",
       "position": "Soporte Técnico"
     },
     {
       "id": 71,
       "name": "Lucas",
       "surname": "Perez",
-      "birthDate": "15/03/1990",
+      "birthDate": "1990-03-15",
       "position": "Desarrollador Senior"
     },
     {
       "id": 72,
       "name": "Maria",
       "surname": "Perez",
-      "birthDate": "10/05/1985",
+      "birthDate": "1985-05-10",
       "position": "Analista de Datos"
     },
     {
       "id": 73,
       "name": "Pedro",
       "surname": "Perez",
-      "birthDate": "20/11/1988",
+      "birthDate": "1988-11-20",
       "position": "Gerente de Proyecto"
     },
     {
       "id": 74,
       "name": "Juan",
       "surname": "López",
-      "birthDate": "25/07/1992",
+      "birthDate": "1992-07-25",
       "position": "Diseñador UX/UI"
     },
     {
       "id": 75,
       "name": "Carlos",
       "surname": "Diaz",
-      "birthDate": "30/01/1987",
+      "birthDate": "1987-01-30",
       "position": "Desarrollador Junior"
     },
     {
       "id": 76,
       "name": "Laura",
       "surname": "Garcia",
-      "birthDate": "01/09/1995",
+      "birthDate": "1995-09-01",
       "position": "Especialista QA"
     },
     {
       "id": 77,
       "name": "Diego",
       "surname": "Hernandez",
-      "birthDate": "12/04/1983",
+      "birthDate": "1983-04-12",
       "position": "Desarrollador Senior"
     },
     {
       "id": 78,
       "name": "Sofia",
       "surname": "Sanchez",
-      "birthDate": "18/06/1991",
+      "birthDate": "1991-06-18",
       "position": "Analista de Negocios"
     },
     {
       "id": 79,
       "name": "Pablo",
       "surname": "Martinez",
-      "birthDate": "28/02/1989",
+      "birthDate": "1989-02-28",
       "position": "Desarrollador Mobile"
     },
     {
       "id": 80,
       "name": "Lucia",
       "surname": "Gomez",
-      "birthDate": "05/10/1993",
+      "birthDate": "1993-10-05",
       "position": "Soporte Técnico"
     },
     {
       "id": 81,
       "name": "Juan",
       "surname": "Perez",
-      "birthDate": "10/05/1985",
+      "birthDate": "1985-05-10",
       "position": "Desarrollador Senior"
     },
     {
       "id": 82,
       "name": "Maria",
       "surname": "Gomez",
-      "birthDate": "15/03/1990",
+      "birthDate": "1990-03-15",
       "position": "Analista de Datos"
     },
     {
       "id": 83,
       "name": "Pedro",
       "surname": "Rodriguez",
-      "birthDate": "20/11/1988",
+      "birthDate": "1988-11-20",
       "position": "Gerente de Proyecto"
     },
     {
       "id": 84,
       "name": "Ana",
       "surname": "López",
-      "birthDate": "25/07/1992",
+      "birthDate": "1992-07-25",
       "position": "Diseñador UX/UI"
     },
     {
       "id": 85,
       "name": "Carlos",
       "surname": "Sanchez",
-      "birthDate": "30/01/1987",
+      "birthDate": "1987-01-30",
       "position": "Desarrollador Junior"
     },
     {
       "id": 86,
       "name": "Laura",
       "surname": "Fernandez",
-      "birthDate": "01/09/1995",
+      "birthDate": "1995-09-01",
       "position": "Especialista QA"
     },
     {
       "id": 87,
       "name": "Diego",
       "surname": "Garcia",
-      "birthDate": "12/04/1983",
+      "birthDate": "1983-04-12",
       "position": "Desarrollador Senior"
     },
     {
       "id": 88,
       "name": "Sofia",
       "surname": "Martinez",
-      "birthDate": "18/06/1991",
+      "birthDate": "1991-06-18",
       "position": "Analista de Negocios"
     },
     {
       "id": 89,
       "name": "Pablo",
       "surname": "Diaz",
-      "birthDate": "28/02/1989",
+      "birthDate": "1989-02-28",
       "position": "Desarrollador Mobile"
     },
     {
       "id": 90,
       "name": "Lucia",
       "surname": "Hernandez",
-      "birthDate": "05/10/1993",
+      "birthDate": "1993-10-05",
       "position": "Soporte Técnico"
     },
     {
       "id": 91,
       "name": "Maria",
       "surname": "Perez",
-      "birthDate": "01/08/1980",
+      "birthDate": "1980-08-01",
       "position": "Desarrollador Senior"
     },
     {
       "id": 92,
       "name": "Juan",
       "surname": "Gomez",
-      "birthDate": "18/06/1991",
+      "birthDate": "1991-06-18",
       "position": "Analista de Datos"
     },
     {
       "id": 93,
       "name": "Sofia",
       "surname": "Rodriguez",
-      "birthDate": "20/11/1988",
+      "birthDate": "1988-11-20",
       "position": "Desarrollador Junior"
     },
     {
       "id": 94,
       "name": "Pedro",
       "surname": "López",
-      "birthDate": "25/07/1992",
+      "birthDate": "1992-07-25",
       "position": "Desarrollador Senior"
     },
     {
       "id": 95,
       "name": "Laura",
       "surname": "Sanchez",
-      "birthDate": "30/01/1987",
+      "birthDate": "1987-01-30",
       "position": "Gerente de Proyecto"
     },
     {
       "id": 96,
       "name": "Carlos",
       "surname": "Fernandez",
-      "birthDate": "01/09/1995",
+      "birthDate": "1995-09-01",
       "position": "Especialista QA"
     },
     {
       "id": 97,
       "name": "Ana",
       "surname": "Garcia",
-      "birthDate": "12/04/1983",
+      "birthDate": "1983-04-12",
       "position": "Desarrollador Senior"
     },
     {
       "id": 98,
       "name": "Diego",
       "surname": "Martinez",
-      "birthDate": "18/06/1991",
+      "birthDate": "1991-06-18",
       "position": "Analista de Negocios"
     },
     {
       "id": 99,
       "name": "Jose",
       "surname": "Diaz",
-      "birthDate": "28/02/1989",
+      "birthDate": "1989-02-28",
       "position": "Desarrollador Mobile"
     },
     {
       "id": 100,
       "name": "Pablo",
       "surname": "Hernandez",
-      "birthDate": "05/10/1993",
+      "birthDate": "1993-10-05",
       "position": "Soporte Técnico"
     },
     {
       "id": 101,
       "name": "Juan",
       "surname": "Perez",
-      "birthDate": "15/03/1990",
+      "birthDate": "1990-03-15",
       "position": "Desarrollador Junior"
     },
     {
       "id": 102,
       "name": "Maria",
       "surname": "Gomez",
-      "birthDate": "10/05/1985",
+      "birthDate": "1985-05-10",
       "position": "Analista de Datos"
     },
     {
       "id": 103,
       "name": "Pedro",
       "surname": "Rodriguez",
-      "birthDate": "20/11/1988",
+      "birthDate": "1988-11-20",
       "position": "Gerente de Proyecto"
     },
     {
       "id": 104,
       "name": "Ana",
       "surname": "López",
-      "birthDate": "25/07/1992",
+      "birthDate": "1992-07-25",
       "position": "Diseñador UX/UI"
     },
     {
       "id": 105,
       "name": "Carlos",
       "surname": "Sanchez",
-      "birthDate": "30/01/1987",
+      "birthDate": "1987-01-30",
       "position": "Desarrollador Junior"
     },
     {
       "id": 106,
       "name": "Laura",
       "surname": "Fernandez",
-      "birthDate": "01/09/1995",
+      "birthDate": "1995-09-01",
       "position": "Especialista QA"
     },
     {
       "id": 107,
       "name": "Diego",
       "surname": "Garcia",
-      "birthDate": "12/04/1983",
+      "birthDate": "1983-04-12",
       "position": "Desarrollador Senior"
     },
     {
       "id": 108,
       "name": "Sofia",
       "surname": "Martinez",
-      "birthDate": "18/06/1991",
+      "birthDate": "1991-06-18",
       "position": "Analista de Negocios"
     },
     {
       "id": 109,
       "name": "Pablo",
       "surname": "Diaz",
-      "birthDate": "28/02/1989",
+      "birthDate": "1989-02-28",
       "position": "Desarrollador Mobile"
     },
     {
       "id": 110,
       "name": "Lucia",
       "surname": "Hernandez",
-      "birthDate": "05/10/1993",
+      "birthDate": "1993-10-05",
       "position": "Soporte Técnico"
     },
     {
       "id": 111,
       "name": "Maria",
       "surname": "Perez",
-      "birthDate": "01/08/1980",
+      "birthDate": "1980-08-01",
       "position": "Desarrollador Senior"
     },
     {
       "id": 112,
       "name": "Juan",
       "surname": "Gomez",
-      "birthDate": "18/06/1991",
+      "birthDate": "1991-06-18",
       "position": "Analista de Datos"
     },
     {
       "id": 113,
       "name": "Sofia",
       "surname": "Rodriguez",
-      "birthDate": "20/11/1988",
+      "birthDate": "1988-11-20",
       "position": "Desarrollador Junior"
     },
     {
       "id": 114,
       "name": "Pedro",
       "surname": "López",
-      "birthDate": "25/07/1992",
+      "birthDate": "1992-07-25",
       "position": "Desarrollador Senior"
     },
     {
       "id": 115,
       "name": "Laura",
       "surname": "Sanchez",
-      "birthDate": "30/01/1987",
+      "birthDate": "1987-01-30",
       "position": "Gerente de Proyecto"
     },
     {
       "id": 116,
       "name": "Carlos",
       "surname": "Fernandez",
-      "birthDate": "01/09/1995",
+      "birthDate": "1995-09-01",
       "position": "Especialista QA"
     },
     {
       "id": 117,
       "name": "Ana",
       "surname": "Garcia",
-      "birthDate": "12/04/1983",
+      "birthDate": "1983-04-12",
       "position": "Desarrollador Senior"
     },
     {
       "id": 118,
       "name": "Diego",
       "surname": "Martinez",
-      "birthDate": "18/06/1991",
+      "birthDate": "1991-06-18",
       "position": "Analista de Negocios"
     },
     {
       "id": 119,
       "name": "Jose",
       "surname": "Diaz",
-      "birthDate": "28/02/1989",
+      "birthDate": "1989-02-28",
       "position": "Desarrollador Mobile"
     },
     {
       "id": 120,
       "name": "Pablo",
       "surname": "Hernandez",
-      "birthDate": "05/10/1993",
+      "birthDate": "1993-10-05",
       "position": "Soporte Técnico"
     },
     {
       "id": 121,
       "name": "Juan",
       "surname": "Perez",
-      "birthDate": "15/03/1990",
+      "birthDate": "1990-03-15",
       "position": "Desarrollador Junior"
     },
     {
       "id": 122,
       "name": "Maria",
       "surname": "Perez",
-      "birthDate": "10/05/1985",
+      "birthDate": "1985-05-10",
       "position": "Analista de Datos"
     },
     {
       "id": 123,
       "name": "Pedro",
       "surname": "Perez",
-      "birthDate": "20/11/1988",
+      "birthDate": "1988-11-20",
       "position": "Gerente de Proyecto"
     },
     {
       "id": 124,
       "name": "Juan",
       "surname": "López",
-      "birthDate": "25/07/1992",
+      "birthDate": "1992-07-25",
       "position": "Diseñador UX/UI"
     },
     {
       "id": 125,
       "name": "Carlos",
       "surname": "Diaz",
-      "birthDate": "30/01/1987",
+      "birthDate": "1987-01-30",
       "position": "Desarrollador Junior"
     },
     {
       "id": 126,
       "name": "Laura",
       "surname": "Garcia",
-      "birthDate": "01/09/1995",
+      "birthDate": "1995-09-01",
       "position": "Especialista QA"
     },
     {
       "id": 127,
       "name": "Diego",
       "surname": "Hernandez",
-      "birthDate": "12/04/1983",
+      "birthDate": "1983-04-12",
       "position": "Desarrollador Senior"
     },
     {
       "id": 128,
       "name": "Sofia",
       "surname": "Sanchez",
-      "birthDate": "18/06/1991",
+      "birthDate": "1991-06-18",
       "position": "Analista de Negocios"
     },
     {
       "id": 129,
       "name": "Pablo",
       "surname": "Martinez",
-      "birthDate": "28/02/1989",
+      "birthDate": "1989-02-28",
       "position": "Desarrollador Mobile"
     },
     {
       "id": 130,
       "name": "Lucia",
       "surname": "Gomez",
-      "birthDate": "05/10/1993",
+      "birthDate": "1993-10-05",
       "position": "Soporte Técnico"
     },
     {
       "id": 131,
       "name": "Juan",
       "surname": "Perez",
-      "birthDate": "10/05/1985",
+      "birthDate": "1985-05-10",
       "position": "Desarrollador Senior"
     },
     {
       "id": 132,
       "name": "Maria",
       "surname": "Gomez",
-      "birthDate": "15/03/1990",
+      "birthDate": "1990-03-15",
       "position": "Analista de Datos"
     },
     {
       "id": 133,
       "name": "Pedro",
       "surname": "Rodriguez",
-      "birthDate": "20/11/1988",
+      "birthDate": "1988-11-20",
       "position": "Gerente de Proyecto"
     },
     {
       "id": 134,
       "name": "Ana",
       "surname": "López",
-      "birthDate": "25/07/1992",
+      "birthDate": "1992-07-25",
       "position": "Diseñador UX/UI"
     },
     {
       "id": 135,
       "name": "Carlos",
       "surname": "Sanchez",
-      "birthDate": "30/01/1987",
+      "birthDate": "1987-01-30",
       "position": "Desarrollador Junior"
     },
     {
       "id": 136,
       "name": "Laura",
       "surname": "Fernandez",
-      "birthDate": "01/09/1995",
+      "birthDate": "1995-09-01",
       "position": "Especialista QA"
     },
     {
       "id": 137,
       "name": "Diego",
       "surname": "Garcia",
-      "birthDate": "12/04/1983",
+      "birthDate": "1983-04-12",
       "position": "Desarrollador Senior"
     },
     {
       "id": 138,
       "name": "Sofia",
       "surname": "Martinez",
-      "birthDate": "18/06/1991",
+      "birthDate": "1991-06-18",
       "position": "Analista de Negocios"
     },
     {
       "id": 139,
       "name": "Pablo",
       "surname": "Diaz",
-      "birthDate": "28/02/1989",
+      "birthDate": "1989-02-28",
       "position": "Desarrollador Mobile"
     },
     {
       "id": 140,
       "name": "Lucia",
       "surname": "Hernandez",
-      "birthDate": "05/10/1993",
+      "birthDate": "1993-10-05",
       "position": "Soporte Técnico"
     },
     {
       "id": 141,
       "name": "Maria",
       "surname": "Perez",
-      "birthDate": "01/08/1980",
+      "birthDate": "1980-08-01",
       "position": "Desarrollador Senior"
     },
     {
       "id": 142,
       "name": "Juan",
       "surname": "Gomez",
-      "birthDate": "18/06/1991",
+      "birthDate": "1991-06-18",
       "position": "Analista de Datos"
     },
     {
       "id": 143,
       "name": "Sofia",
       "surname": "Rodriguez",
-      "birthDate": "20/11/1988",
+      "birthDate": "1988-11-20",
       "position": "Desarrollador Junior"
     },
     {
       "id": 144,
       "name": "Pedro",
       "surname": "López",
-      "birthDate": "25/07/1992",
+      "birthDate": "1992-07-25",
       "position": "Desarrollador Senior"
     },
     {
       "id": 145,
       "name": "Laura",
       "surname": "Sanchez",
-      "birthDate": "30/01/1987",
+      "birthDate": "1987-01-30",
       "position": "Gerente de Proyecto"
     },
     {
       "id": 146,
       "name": "Carlos",
       "surname": "Fernandez",
-      "birthDate": "01/09/1995",
+      "birthDate": "1995-09-01",
       "position": "Especialista QA"
     },
     {
       "id": 147,
       "name": "Ana",
       "surname": "Garcia",
-      "birthDate": "12/04/1983",
+      "birthDate": "1983-04-12",
       "position": "Desarrollador Senior"
     },
     {
       "id": 148,
       "name": "Diego",
       "surname": "Martinez",
-      "birthDate": "18/06/1991",
+      "birthDate": "1991-06-18",
       "position": "Analista de Negocios"
     },
     {
       "id": 149,
       "name": "Jose",
       "surname": "Diaz",
-      "birthDate": "28/02/1989",
+      "birthDate": "1989-02-28",
       "position": "Desarrollador Mobile"
     },
     {
       "id": 150,
       "name": "Pablo",
       "surname": "Hernandez",
-      "birthDate": "05/10/1993",
+      "birthDate": "1993-10-05",
       "position": "Soporte Técnico"
     },
     {
       "id": 151,
       "name": "Juan",
       "surname": "Perez",
-      "birthDate": "15/03/1990",
+      "birthDate": "1990-03-15",
       "position": "Desarrollador Junior"
     },
     {
       "id": 152,
       "name": "Maria",
       "surname": "Perez",
-      "birthDate": "10/05/1985",
+      "birthDate": "1985-05-10",
       "position": "Analista de Datos"
     },
     {
       "id": 153,
       "name": "Pedro",
       "surname": "Perez",
-      "birthDate": "20/11/1988",
+      "birthDate": "1988-11-20",
       "position": "Gerente de Proyecto"
     },
     {
       "id": 154,
       "name": "Juan",
       "surname": "López",
-      "birthDate": "25/07/1992",
+      "birthDate": "1992-07-25",
       "position": "Diseñador UX/UI"
     },
     {
       "id": 155,
       "name": "Carlos",
       "surname": "Diaz",
-      "birthDate": "30/01/1987",
+      "birthDate": "1987-01-30",
       "position": "Desarrollador Junior"
     },
     {
       "id": 156,
       "name": "Laura",
       "surname": "Garcia",
-      "birthDate": "01/09/1995",
+      "birthDate": "1995-09-01",
       "position": "Especialista QA"
     },
     {
       "id": 157,
       "name": "Diego",
       "surname": "Hernandez",
-      "birthDate": "12/04/1983",
+      "birthDate": "1983-04-12",
       "position": "Desarrollador Senior"
     },
     {
       "id": 158,
       "name": "Sofia",
       "surname": "Sanchez",
-      "birthDate": "18/06/1991",
+      "birthDate": "1991-06-18",
       "position": "Analista de Negocios"
     },
     {
       "id": 159,
       "name": "Pablo",
       "surname": "Martinez",
-      "birthDate": "28/02/1989",
+      "birthDate": "1989-02-28",
       "position": "Desarrollador Mobile"
     },
     {
       "id": 160,
       "name": "Lucia",
       "surname": "Gomez",
-      "birthDate": "05/10/1993",
+      "birthDate": "1993-10-05",
       "position": "Soporte Técnico"
     },
     {
       "id": 161,
       "name": "Juan",
       "surname": "Perez",
-      "birthDate": "10/05/1985",
+      "birthDate": "1985-05-10",
       "position": "Desarrollador Senior"
     },
     {
       "id": 162,
       "name": "Maria",
       "surname": "Gomez",
-      "birthDate": "15/03/1990",
+      "birthDate": "1990-03-15",
       "position": "Analista de Datos"
     },
     {
       "id": 163,
       "name": "Pedro",
       "surname": "Rodriguez",
-      "birthDate": "20/11/1988",
+      "birthDate": "1988-11-20",
       "position": "Gerente de Proyecto"
     },
     {
       "id": 164,
       "name": "Ana",
       "surname": "López",
-      "birthDate": "25/07/1992",
+      "birthDate": "1992-07-25",
       "position": "Diseñador UX/UI"
     },
     {
       "id": 165,
       "name": "Carlos",
       "surname": "Sanchez",
-      "birthDate": "30/01/1987",
+      "birthDate": "1987-01-30",
       "position": "Desarrollador Junior"
     },
     {
       "id": 166,
       "name": "Laura",
       "surname": "Fernandez",
-      "birthDate": "01/09/1995",
+      "birthDate": "1995-09-01",
       "position": "Especialista QA"
     },
     {
       "id": 167,
       "name": "Diego",
       "surname": "Garcia",
-      "birthDate": "12/04/1983",
+      "birthDate": "1983-04-12",
       "position": "Desarrollador Senior"
     },
     {
       "id": 168,
       "name": "Sofia",
       "surname": "Martinez",
-      "birthDate": "18/06/1991",
+      "birthDate": "1991-06-18",
       "position": "Analista de Negocios"
     },
     {
       "id": 169,
       "name": "Pablo",
       "surname": "Diaz",
-      "birthDate": "28/02/1989",
+      "birthDate": "1989-02-28",
       "position": "Desarrollador Mobile"
     },
     {
       "id": 170,
       "name": "Lucia",
       "surname": "Hernandez",
-      "birthDate": "05/10/1993",
+      "birthDate": "1993-10-05",
       "position": "Soporte Técnico"
     },
     {
       "id": 171,
       "name": "Maria",
       "surname": "Perez",
-      "birthDate": "01/08/1980",
+      "birthDate": "1980-08-01",
       "position": "Desarrollador Senior"
     },
     {
       "id": 172,
       "name": "Juan",
       "surname": "Gomez",
-      "birthDate": "18/06/1991",
+      "birthDate": "1991-06-18",
       "position": "Analista de Datos"
     },
     {
       "id": 173,
       "name": "Sofia",
       "surname": "Rodriguez",
-      "birthDate": "20/11/1988",
+      "birthDate": "1988-11-20",
       "position": "Desarrollador Junior"
     },
     {
       "id": 174,
       "name": "Pedro",
       "surname": "López",
-      "birthDate": "25/07/1992",
+      "birthDate": "1992-07-25",
       "position": "Desarrollador Senior"
     },
     {
       "id": 175,
       "name": "Laura",
       "surname": "Sanchez",
-      "birthDate": "30/01/1987",
+      "birthDate": "1987-01-30",
       "position": "Gerente de Proyecto"
     },
     {
       "id": 176,
       "name": "Carlos",
       "surname": "Fernandez",
-      "birthDate": "01/09/1995",
+      "birthDate": "1995-09-01",
       "position": "Especialista QA"
     },
     {
       "id": 177,
       "name": "Ana",
       "surname": "Garcia",
-      "birthDate": "12/04/1983",
+      "birthDate": "1983-04-12",
       "position": "Desarrollador Senior"
     },
     {
       "id": 178,
       "name": "Diego",
       "surname": "Martinez",
-      "birthDate": "18/06/1991",
+      "birthDate": "1991-06-18",
       "position": "Analista de Negocios"
     },
     {
       "id": 179,
       "name": "Jose",
       "surname": "Diaz",
-      "birthDate": "28/02/1989",
+      "birthDate": "1989-02-28",
       "position": "Desarrollador Mobile"
     },
     {
       "id": 180,
       "name": "Pablo",
       "surname": "Hernandez",
-      "birthDate": "05/10/1993",
+      "birthDate": "1993-10-05",
       "position": "Soporte Técnico"
     },
     {
       "id": 181,
       "name": "Juan",
       "surname": "Perez",
-      "birthDate": "15/03/1990",
+      "birthDate": "1990-03-15",
       "position": "Desarrollador Junior"
     },
     {
       "id": 182,
       "name": "Maria",
       "surname": "Perez",
-      "birthDate": "10/05/1985",
+      "birthDate": "1985-05-10",
       "position": "Analista de Datos"
     },
     {
       "id": 183,
       "name": "Pedro",
       "surname": "Perez",
-      "birthDate": "20/11/1988",
+      "birthDate": "1988-11-20",
       "position": "Gerente de Proyecto"
     },
     {
       "id": 184,
       "name": "Juan",
       "surname": "López",
-      "birthDate": "25/07/1992",
+      "birthDate": "1992-07-25",
       "position": "Diseñador UX/UI"
     },
     {
       "id": 185,
       "name": "Carlos",
       "surname": "Diaz",
-      "birthDate": "30/01/1987",
+      "birthDate": "1987-01-30",
       "position": "Desarrollador Junior"
     },
     {
       "id": 186,
       "name": "Laura",
       "surname": "Garcia",
-      "birthDate": "01/09/1995",
+      "birthDate": "1995-09-01",
       "position": "Especialista QA"
     },
     {
       "id": 187,
       "name": "Diego",
       "surname": "Hernandez",
-      "birthDate": "12/04/1983",
+      "birthDate": "1983-04-12",
       "position": "Desarrollador Senior"
     },
     {
       "id": 188,
       "name": "Sofia",
       "surname": "Sanchez",
-      "birthDate": "18/06/1991",
+      "birthDate": "1991-06-18",
       "position": "Analista de Negocios"
     },
     {
       "id": 189,
       "name": "Pablo",
       "surname": "Martinez",
-      "birthDate": "28/02/1989",
+      "birthDate": "1989-02-28",
       "position": "Desarrollador Mobile"
     },
     {
       "id": 190,
       "name": "Lucia",
       "surname": "Gomez",
-      "birthDate": "05/10/1993",
+      "birthDate": "1993-10-05",
       "position": "Soporte Técnico"
     },
     {
       "id": 191,
       "name": "Juan",
       "surname": "Perez",
-      "birthDate": "10/05/1985",
+      "birthDate": "1985-05-10",
       "position": "Desarrollador Senior"
     },
     {
       "id": 192,
       "name": "Maria",
       "surname": "Gomez",
-      "birthDate": "15/03/1990",
+      "birthDate": "1990-03-15",
       "position": "Analista de Datos"
     },
     {
       "id": 193,
       "name": "Pedro",
       "surname": "Rodriguez",
-      "birthDate": "20/11/1988",
+      "birthDate": "1988-11-20",
       "position": "Gerente de Proyecto"
     },
     {
       "id": 194,
       "name": "Ana",
       "surname": "López",
-      "birthDate": "25/07/1992",
+      "birthDate": "1992-07-25",
       "position": "Diseñador UX/UI"
     },
     {
       "id": 195,
       "name": "Carlos",
       "surname": "Sanchez",
-      "birthDate": "30/01/1987",
+      "birthDate": "1987-01-30",
       "position": "Desarrollador Junior"
     },
     {
       "id": 196,
       "name": "Laura",
       "surname": "Fernandez",
-      "birthDate": "01/09/1995",
+      "birthDate": "1995-09-01",
       "position": "Especialista QA"
     },
     {
       "id": 197,
       "name": "Diego",
       "surname": "Garcia",
-      "birthDate": "12/04/1983",
+      "birthDate": "1983-04-12",
       "position": "Desarrollador Senior"
     },
     {
       "id": 198,
       "name": "Sofia",
       "surname": "Martinez",
-      "birthDate": "18/06/1991",
+      "birthDate": "1991-06-18",
       "position": "Analista de Negocios"
     },
     {
       "id": 199,
       "name": "Pablo",
       "surname": "Diaz",
-      "birthDate": "28/02/1989",
+      "birthDate": "1989-02-28",
       "position": "Desarrollador Mobile"
     },
     {
       "id": 200,
       "name": "Lucia",
       "surname": "Hernandez",
-      "birthDate": "05/10/1993",
+      "birthDate": "1993-10-05",
       "position": "Soporte Técnico"
     }
   ]
