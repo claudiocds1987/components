@@ -32,11 +32,11 @@ import { MatLuxonDateModule } from "@angular/material-luxon-adapter";
 })
 export class DateInputComponent implements ControlValueAccessor, OnInit {
     /******************************************************************************************************
-    Este componente DateInputComponent es un componente de formulario personalizado que te permite 
-    tener un campo de fecha con matInput y matDatepicker, manejando su estado interno con un FormControl, 
-    y añadiendo una lógica inteligente para que la entrada de fechas manual funcione bien y se convierta 
-    a un objeto Date para el resto de tu aplicación.
-    *******************************************************************************************************/
+     * Este componente DateInputComponent es un componente de formulario personalizado que te permite
+     * tener un campo de fecha con matInput y matDatepicker, manejando su estado interno con un FormControl,
+     * y añadiendo una lógica inteligente para que la entrada de fechas manual funcione bien y se convierta
+     * a un objeto Date para el resto de tu aplicación.
+     *******************************************************************************************************/
 
     @Input() label = "Fecha";
     @Input() placeholder = "";
@@ -185,13 +185,13 @@ export class DateInputComponent implements ControlValueAccessor, OnInit {
                 month >= 1 &&
                 month <= 12 &&
                 !isNaN(year) &&
-                year >= 1000 && // Puedes ajustar estos rangos si lo necesitas
+                year >= 1000 &&
                 year <= 9999
             ) {
                 // Intenta crear la fecha con Luxon
                 const candidateDate = DateTime.fromObject(
                     { year: year, month: month, day: day },
-                    { locale: "es-AR" }, // Asegúrate de que tu locale es correcto para parsing si no es UTC
+                    { locale: "es-AR" },
                 );
 
                 if (candidateDate.isValid) {
@@ -199,7 +199,7 @@ export class DateInputComponent implements ControlValueAccessor, OnInit {
                     if (
                         candidateDate.day === day &&
                         candidateDate.month === month &&
-                        candidateDate.year === year // Añadir comprobación de año también
+                        candidateDate.year === year
                     ) {
                         finalParsedDate = candidateDate;
                     } else {
