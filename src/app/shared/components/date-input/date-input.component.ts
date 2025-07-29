@@ -115,26 +115,45 @@ export class DateInputComponent implements ControlValueAccessor, OnInit {
         }
     }
 
-    /*-----------------------------------------------------------------------------------------------------
-     *  "onInputBlur": Esta funcion se dispara cuando el usuario
-     *  sale del campo de texto (evento blur) o presiona "Enter" (keydown.enter).
-     *  1. Obtiene el texto que el usuario escribió (inputValue).
-     *  2. Si el campo está vacío, lo resetea a null y notifica al formulario padre
-     *  que se tocó el campo.
-     *  3.Intenta "parsear" (convertir de texto a fecha) el inputValue. Espera un formato dd/MM/yyyy.
-     *     - Divide el string por / para obtener el día, mes y año.
-     *     - Convierte esas partes a números (parseInt).
-     *     - Realiza varias validaciones básicas (que sean números, que estén dentro de rangos
-     *       razonables para días, meses y años).
-     *     - Si los números son válidos, usa DateTime.fromObject de Luxon para crear un objeto fecha.
-     *     - Tiene una validación extra para evitar fechas ambiguas o inválidas que Luxon podría
-     *       "corregir" automáticamente (ej. 31/02/2024 no es una fecha real, Luxon podría convertirlo
-     *        a 02/03/2024). Se asegura que el día y mes parseados sean los mismos que los originales.
-     *  4. Si logra parsear una fecha válida (finalParsedDate.isValid), entonces establece ese objeto
-     *        Date nativo de JavaScript (obtenido con finalParsedDate.toJSDate()) en tu internalControl.
-     *  5. Si no pudo parsear una fecha válida, establece internalControl a null.
-     *  6. Finalmente, llama a this.onTouched() para notificar al formulario padre.
-     *-----------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------------------------
+     *  "onInputBlur": Esta funcion se dispara cuando el usuario sale del campo de texto (evento blur)
+     *  o presiona "Enter" (keydown.enter).
+     *
+     *  Su propósito es tomar lo que el usuario escribió manualmente en el campo, intentar entenderlo como
+     *  una fecha y convertirlo en un formato que Angular pueda manejar.
+     *
+     *  1. Obtiene el texto ingresado:
+     *     Consigue el valor actual del campo de texto (inputValue).
+     *
+     *  2. Manejo de campo vacío: Si inputValue está vacío, el campo se reinicia a null (sin fecha) y notifica
+     *     al formulario padre que se interactuó con el campo.
+     *
+     *  3. Normalización del formato:
+     *     Antes de intentar dividir la fecha, reemplaza cualquier guion (-) por una barra (/).
+     *     Esto significa que si el usuario escribe 10-05-1985 o 10/05/1985, ambos se convertirán internamente a 10/05/1985.
+     *     Así, el resto de la lógica solo necesita manejar un formato.
+     *
+     *  4. Intenta "parsear" la fecha:
+     *      - Divide la cadena normalizada (10/05/1985) por el / para obtener las partes del día, mes y año.
+     *      - Convierte esas partes en números (parseInt).
+     *      - Realiza varias validaciones básicas para asegurar que los números sean válidos
+     *        (ej. el día entre 1 y 31, el mes entre 1 y 12, el año entre 1000 y 9999).
+     *      - Si los números parecen válidos, usa DateTime.fromObject de la librería Luxon para
+     *        intentar crear un objeto de fecha.
+     *      - Incluye una validación extra (candidateDate.day === day && candidateDate.month === month && candidateDate.year === year)
+     *        para evitar que Luxon "corrija" fechas imposibles (como el 31/02/2024 que se convertiría a 02/03/2024).
+     *        Esta comprobación asegura que la fecha parseada por Luxon coincida exactamente con lo que el usuario pretendía.
+     *
+     *  5. Actualiza el control interno:
+     *      - Si logra parsear una fecha válida (finalParsedDate.isValid), convierte ese objeto Luxon a
+     *        un objeto Date nativo de JavaScript (finalParsedDate.toJSDate()) y lo establece como el valor
+     *        de internalControl.
+     *      - Si no se pudo parsear o la fecha no es válida, internalControl se establece a null.
+     *
+     *  6. Notifica al formulario padre:
+     *      - Finalmente, llama a this.onTouched() para indicarle al FormGroup o FormControl superior
+     *        que el usuario interactuó con este campo.
+     *-----------------------------------------------------------------------------------------------------------------------------------------*/
     onInputBlur(event: Event): void {
         const inputElement = event.target as HTMLInputElement;
         const inputValue = inputElement.value;
@@ -146,8 +165,8 @@ export class DateInputComponent implements ControlValueAccessor, OnInit {
         }
 
         let finalParsedDate: DateTime | null = null;
-
-        const parts = inputValue.split("/");
+        const normalizedInputValue = inputValue.replace(/-/g, "/"); // Reemplaza todos los '-' por '/'
+        const parts = normalizedInputValue.split("/"); // Ahora usa la cadena normalizada
 
         if (parts.length === 3) {
             const dayStr = parts[0];
@@ -166,23 +185,27 @@ export class DateInputComponent implements ControlValueAccessor, OnInit {
                 month >= 1 &&
                 month <= 12 &&
                 !isNaN(year) &&
-                year >= 1000 &&
+                year >= 1000 && // Puedes ajustar estos rangos si lo necesitas
                 year <= 9999
             ) {
+                // Intenta crear la fecha con Luxon
                 const candidateDate = DateTime.fromObject(
                     { year: year, month: month, day: day },
-                    { locale: "es-AR" },
+                    { locale: "es-AR" }, // Asegúrate de que tu locale es correcto para parsing si no es UTC
                 );
 
                 if (candidateDate.isValid) {
+                    // Verificación extra para evitar conversiones no deseadas (ej. 31/02 -> 02/03)
                     if (
                         candidateDate.day === day &&
-                        candidateDate.month === month
+                        candidateDate.month === month &&
+                        candidateDate.year === year // Añadir comprobación de año también
                     ) {
                         finalParsedDate = candidateDate;
                     } else {
+                        // Opcional: loguear una advertencia si la fecha no coincide exactamente
                         console.warn(
-                            `onInputBlur - Ambiguity detected or invalid date components for ${inputValue}. Luxon interpreted as ${candidateDate.toISODate()}. Original Day: ${day}, Original Month: ${month}.`,
+                            `onInputBlur - Fecha ambigua o inválida para ${inputValue}. Luxon interpretó como ${candidateDate.toISODate()}.`,
                         );
                     }
                 }
@@ -190,11 +213,13 @@ export class DateInputComponent implements ControlValueAccessor, OnInit {
         }
 
         if (finalParsedDate && finalParsedDate.isValid) {
+            // Establece el valor en el control interno como un Date nativo
             this.internalControl.setValue(finalParsedDate.toJSDate());
         } else {
+            // Si no se pudo parsear o es inválida, establece a null
             this.internalControl.setValue(null);
         }
-        this.onTouched();
+        this.onTouched(); // Notifica al formulario padre que el campo fue tocado
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function

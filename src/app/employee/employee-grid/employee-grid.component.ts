@@ -387,6 +387,7 @@ export class EmployeeGridComponent implements OnInit {
                     },
                     { value: "Diseñador UX/UI", label: "Diseñador UX/UI" },
                     { value: "Soporte Técnico", label: "Soporte Técnico" },
+                    { value: "Analista de Datos", label: "Analista de Datos" },
                 ],
             },
 
