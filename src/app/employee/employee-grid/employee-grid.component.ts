@@ -160,38 +160,29 @@ export class EmployeeGridComponent implements OnInit {
     private _transformPaginatedListToGridData(
         paginatedList: PaginatedList<Employee>,
     ): PaginatedList<GridDataItem> {
-        /* Esta función toma la información que viene del backend (que son ojetos Employee)
-           y "transforma" esa data para que el componente grilla (GridComponent) 
-           la pueda entender y mostrar. */
         const transformedItems: GridDataItem[] = paginatedList.items.map(
             (employee: Employee): GridDataItem => {
                 const gridItem: GridDataItem = {};
                 for (const key in employee) {
-                    const value = (employee as any)[key];
-
-                    // --- CAMBIO CLAVE AQUÍ ---
-                    // Si la propiedad es 'birthDate' (o cualquier otra fecha que venga del backend)
-                    // y su valor es un string (como lo será desde db.json)
-                    if (key === "birthDate" && typeof value === "string") {
-                        // Intentamos parsear el string YYYY-MM-DD a un objeto DateTime
-                        const luxonDate = DateTime.fromISO(value); // fromISO es ideal para YYYY-MM-DD
+                    const value = (employee as any)[key]; // Valor tal como viene del backend
+                    // Verifica si el valor es un string y si puede ser parseado como una fecha YYYY-MM-DD (ISO)
+                    if (typeof value === "string") {
+                        // Intenta parsear como ISO (YYYY-MM-DD es ISO 8601)
+                        const luxonDate = DateTime.fromISO(value);
 
                         if (luxonDate.isValid) {
-                            // Si es una fecha válida, la formateamos en dd/MM/yyyy para la visualización en la grilla
-                            gridItem[key] = luxonDate.toFormat("dd/MM/yyyy");
+                            // Si se parseó con éxito, significa que es una fecha que queremos formatear
+                            gridItem[key] = luxonDate.toFormat("dd/MM/yyyy"); // Formato para la UI
                         } else {
-                            // Si no es una fecha válida, mantenemos el valor original o lo dejamos vacío
+                            // Si no es una fecha ISO válida, mantenemos el string original (ej. un nombre, un texto)
                             gridItem[key] = value;
                         }
-                    } else if (
-                        typeof value === "string" ||
-                        typeof value === "number" ||
-                        typeof value === "boolean"
-                    ) {
+                    }
+                    // Si no es un string, simplemente asigna el valor tal cual
+                    else {
                         gridItem[key] = value;
                     }
-                    // Puedes añadir un 'else if (value instanceof Date)' o 'else if (value instanceof DateTime)'
-                    // si por alguna razón el backend te enviara esos tipos directamente, aunque es menos común.
+                    // --- FIN CAMBIO CLAVE ---
                 }
                 return gridItem;
             },
@@ -200,7 +191,7 @@ export class EmployeeGridComponent implements OnInit {
         return {
             ...paginatedList,
             items: transformedItems,
-            pageIndex: paginatedList.page - 1, // Ajuste para MatPaginator
+            pageIndex: paginatedList.page - 1,
         };
     }
 
