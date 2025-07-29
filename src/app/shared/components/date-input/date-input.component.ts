@@ -31,13 +31,29 @@ import { MatLuxonDateModule } from "@angular/material-luxon-adapter";
     styleUrl: "./date-input.component.scss",
 })
 export class DateInputComponent implements ControlValueAccessor, OnInit {
+    /******************************************************************************************************
+    Este componente DateInputComponent es un componente de formulario personalizado que te permite 
+    tener un campo de fecha con matInput y matDatepicker, manejando su estado interno con un FormControl, 
+    y añadiendo una lógica inteligente para que la entrada de fechas manual funcione bien y se convierta 
+    a un objeto Date para el resto de tu aplicación.
+    *******************************************************************************************************/
+
     @Input() label = "Fecha";
     @Input() placeholder = "";
     @Input() isDisabled = false;
 
+    /*-----------------------------------------------------------------------------------------------------
+     *  "internalControl" es el cerebro del componente. Es un FormControl de Angular que maneja el valor
+     *  interno de este campo de fecha. Guarda la fecha como un objeto Date de JavaScript
+     *  (o null si no hay fecha).
+     *---------------------------------------------------------------------------------------------------*/
     internalControl = new FormControl<Date | null>(null);
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
+    /*-----------------------------------------------------------------------------------------------------
+     * "ngControl" permite que el componente se conecte con el sistema de formularios reactivos de Angular
+     * (como FormGroup y FormControl en un componente padre). Al "inyectarlo" (usando inject),
+     * le dice a Angular: "Quiero que este componente se comporte como un control de formulario".
+     *----------------------------------------------------------------------------------------------------*/
     public ngControl: NgControl | null = inject(NgControl, {
         optional: true,
         self: true,
@@ -45,30 +61,51 @@ export class DateInputComponent implements ControlValueAccessor, OnInit {
 
     constructor() {
         if (this.ngControl) {
+            // "this" es el encargado de manejar los valores del FormControl al que esté asociado en el formulario padre
             this.ngControl.valueAccessor = this;
         }
     }
 
     ngOnInit(): void {
         this.internalControl.valueChanges.subscribe((value) => {
-            console.log("internalControl valueChanges (to parent):", value); // DEBUG
             this.onChange(value);
         });
     }
 
+    // Al implementar la interfaz "ControlValueAccessor" Angular me obliga a implementar los metodos
+    // "writeValue", "registerOnChange", "registerOnTouched", "setDisabledState"
+    // para que Angular Forms sepa cómo hablar con mi componente
+
+    /*-----------------------------------------------------------------------------------------------------
+     *  "writeValue": Angular llama a esta función cuando necesita escribir un valor
+     *  Por ejemplo, si en el componente padre cuando se hace miForm.get('miCampoFecha').setValue(new Date())
+     *  Angular le pasa ese new Date() a esta función writeValue.
+     *  emitEvent: false (para evitar que un setValue interno dispare un bucle de eventos).
+     *-----------------------------------------------------------------------------------------------------*/
     writeValue(obj: Date | null): void {
-        console.log("writeValue (from parent):", obj); // DEBUG
         this.internalControl.setValue(obj, { emitEvent: false });
     }
 
+    /*-----------------------------------------------------------------------------------------------------
+     *  "registerOnChange": Angular te pasa una función (fn) a través de este método.
+     *  Esta función (fn) es la que debes llamar cada vez que el valor de tu componente
+     *  cambie internamente y quieras notificar al FormControl padre.
+     *  vos la guardas en tu onChange privado para usarla después.
+     *-----------------------------------------------------------------------------------------------------*/
     registerOnChange(fn: (value: Date | null) => void): void {
         this.onChange = fn;
     }
 
+    /*-----------------------------------------------------------------------------------------------------
+     *  "registerOnTouched": Angular te pasa una función (fn) para que la llames cuando el usuario
+     *  haya "tocado" o interactuado con tu campo (por ejemplo, al salir del foco).
+     *  vos la guardas en onTouched.
+     *----------------------------------------------------------------------------------------------------*/
     registerOnTouched(fn: () => void): void {
         this.onTouched = fn;
     }
 
+    /* setDisabledState: para habilitar o deshabilitar el input*/
     setDisabledState(isDisabled: boolean): void {
         this.isDisabled = isDisabled;
         if (isDisabled) {
@@ -78,10 +115,29 @@ export class DateInputComponent implements ControlValueAccessor, OnInit {
         }
     }
 
+    /*-----------------------------------------------------------------------------------------------------
+     *  "onInputBlur": Esta funcion se dispara cuando el usuario
+     *  sale del campo de texto (evento blur) o presiona "Enter" (keydown.enter).
+     *  1. Obtiene el texto que el usuario escribió (inputValue).
+     *  2. Si el campo está vacío, lo resetea a null y notifica al formulario padre
+     *  que se tocó el campo.
+     *  3.Intenta "parsear" (convertir de texto a fecha) el inputValue. Espera un formato dd/MM/yyyy.
+     *     - Divide el string por / para obtener el día, mes y año.
+     *     - Convierte esas partes a números (parseInt).
+     *     - Realiza varias validaciones básicas (que sean números, que estén dentro de rangos
+     *       razonables para días, meses y años).
+     *     - Si los números son válidos, usa DateTime.fromObject de Luxon para crear un objeto fecha.
+     *     - Tiene una validación extra para evitar fechas ambiguas o inválidas que Luxon podría
+     *       "corregir" automáticamente (ej. 31/02/2024 no es una fecha real, Luxon podría convertirlo
+     *        a 02/03/2024). Se asegura que el día y mes parseados sean los mismos que los originales.
+     *  4. Si logra parsear una fecha válida (finalParsedDate.isValid), entonces establece ese objeto
+     *        Date nativo de JavaScript (obtenido con finalParsedDate.toJSDate()) en tu internalControl.
+     *  5. Si no pudo parsear una fecha válida, establece internalControl a null.
+     *  6. Finalmente, llama a this.onTouched() para notificar al formulario padre.
+     *-----------------------------------------------------------------------------------------------------*/
     onInputBlur(event: Event): void {
         const inputElement = event.target as HTMLInputElement;
         const inputValue = inputElement.value;
-        console.log("onInputBlur - Input Value CAPTURADO:", inputValue); // ¡DEBUG CLAVE!
 
         if (!inputValue) {
             this.internalControl.setValue(null);
@@ -117,12 +173,6 @@ export class DateInputComponent implements ControlValueAccessor, OnInit {
                     { year: year, month: month, day: day },
                     { locale: "es-AR" },
                 );
-                console.log(
-                    "onInputBlur - Candidate Date fromObject (DD/MM/YYYY):",
-                    candidateDate.isValid
-                        ? candidateDate.toISODate()
-                        : "Invalid",
-                );
 
                 if (candidateDate.isValid) {
                     if (
@@ -130,10 +180,6 @@ export class DateInputComponent implements ControlValueAccessor, OnInit {
                         candidateDate.month === month
                     ) {
                         finalParsedDate = candidateDate;
-                        console.log(
-                            "onInputBlur - Final Parsed Date (DD/MM/YYYY confirmed):",
-                            finalParsedDate.toISODate(),
-                        );
                     } else {
                         console.warn(
                             `onInputBlur - Ambiguity detected or invalid date components for ${inputValue}. Luxon interpreted as ${candidateDate.toISODate()}. Original Day: ${day}, Original Month: ${month}.`,
@@ -144,13 +190,9 @@ export class DateInputComponent implements ControlValueAccessor, OnInit {
         }
 
         if (finalParsedDate && finalParsedDate.isValid) {
-            // reviasar aca creo que tansofrma a fri May 10 1985
             this.internalControl.setValue(finalParsedDate.toJSDate());
         } else {
             this.internalControl.setValue(null);
-            console.log(
-                "onInputBlur - Failed to parse date correctly, setting to null.",
-            );
         }
         this.onTouched();
     }

@@ -182,7 +182,6 @@ export class EmployeeGridComponent implements OnInit {
                     else {
                         gridItem[key] = value;
                     }
-                    // --- FIN CAMBIO CLAVE ---
                 }
                 return gridItem;
             },
