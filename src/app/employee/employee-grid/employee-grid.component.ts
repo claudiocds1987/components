@@ -71,9 +71,14 @@ export class EmployeeGridComponent implements OnInit {
     }
 
     applyFilter(filterValues: unknown): void {
-        this._employeeFilterParams =
+        // 1. Mapeamos `filterValues` a `EmployeeFilterParams`
+        const filterParamsForBackend =
             this._mapToEmployeeFilterParams(filterValues);
         this._employeeFilterParams.page = 1;
+        // 2. con Object.assign() Copiamos los valores de filterParamsForBackend
+        // (donde tiene las fecha formateadas a dd/mm/yyyy con los otros datos que vienen del filtro) a `_employeeFilterParams`,
+        //"_employeeFilterParams" es lo que se envía al servicio.
+        Object.assign(this._employeeFilterParams, filterParamsForBackend);
 
         if (this.gridConfig.hasPagination) {
             this.gridConfig.hasPagination.pageIndex = 0;
@@ -263,28 +268,37 @@ export class EmployeeGridComponent implements OnInit {
 
         for (const key in newObj) {
             if (Object.prototype.hasOwnProperty.call(newObj, key)) {
-                const value =
-                    newObj[key as keyof Partial<EmployeeFilterParams>];
+                const value = newObj[
+                    key as keyof Partial<EmployeeFilterParams>
+                ] as unknown;
 
+                let luxonDate: DateTime | null = null;
+
+                // 1. Verifica si es un Date nativo
                 if (value instanceof Date) {
-                    // Convertir la fecha JavaScript a un objeto DateTime de Luxon
-                    const luxonDate = DateTime.fromJSDate(value);
-
-                    // --- ¡CAMBIO CLAVE AQUÍ! ---
-                    // Si la clave es 'birthDate' (o la clave que uses para ese campo en params),
-                    // la formateamos al formato "MM/DD/YYYY" que usa tu db.json.
-                    if (key === "birthDate") {
-                        (newObj as any)[key] = luxonDate.toFormat("dd/MM/yyyy"); // Formato "05/10/1993"
-                    }
-                    // --- FIN CAMBIO CLAVE ---
-                } else if (
+                    luxonDate = DateTime.fromJSDate(value);
+                }
+                // 2. Si no es un Date nativo, verifica si es un objeto DateTime de Luxon
+                else if (value instanceof DateTime) {
+                    luxonDate = value;
+                }
+                // Si se logró obtener un objeto Luxon DateTime válido
+                if (luxonDate && luxonDate.isValid) {
+                    // Formatea *cualquier* fecha detectada al formato "dd/MM/yyyy"
+                    (newObj as any)[key] = luxonDate.toFormat("dd/MM/yyyy");
+                }
+                // 4. Manejo de otros tipos (objetos anidados, null, undefined, string, number, boolean)
+                else if (
                     typeof value === "object" &&
                     value !== null &&
                     !Array.isArray(value)
                 ) {
-                    // Llamada recursiva para objetos anidados
+                    // Llamada recursiva para objetos anidados que podrían contener más fechas
                     (newObj as any)[key] =
                         this._mapToEmployeeFilterParams(value);
+                } else {
+                    // Para valores nulos, indefinidos, strings, numbers, booleans, etc. Se asigna el valor tal cual.
+                    (newObj as any)[key] = value;
                 }
             }
         }

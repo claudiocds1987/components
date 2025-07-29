@@ -1,4 +1,4 @@
-<form [formGroup]="filterForm" class="grid-filter-form">
+<!-- <form [formGroup]="filterForm" class="grid-filter-form">
     <ng-container *ngFor="let filter of config">
         <mat-form-field
             appearance="outline"
@@ -30,6 +30,8 @@
                     matInput
                     [matDatepicker]="pickerFrom"
                     [formControlName]="filter.fieldName"
+                    (blur)="onDateBlur($event, filter.fieldName)"
+                    (dateChange)="onDateChange(filter.fieldName)"
                 />
                 <mat-datepicker-toggle
                     matSuffix
@@ -38,6 +40,53 @@
                 <mat-datepicker #pickerFrom></mat-datepicker>
             </mat-form-field>
         </ng-container>
+    </ng-container>
+
+    <div class="filter-actions">
+        <button mat-raised-button color="primary" (click)="applyFilter()">
+            Aplicar Filtro
+        </button>
+        <button mat-button (click)="clearFilter()">Limpiar Filtro</button>
+    </div>
+</form>
+ -->
+<form [formGroup]="filterForm" class="grid-filter-form">
+    <ng-container *ngFor="let filter of config">
+        <!-- Campo de texto -->
+        <mat-form-field
+            appearance="outline"
+            *ngIf="filter.fieldType === 'text'"
+        >
+            <mat-label>{{ filter.label }}</mat-label>
+            <input matInput [formControlName]="filter.fieldName" />
+        </mat-form-field>
+
+        <!-- Campo de selección -->
+        <mat-form-field
+            appearance="outline"
+            *ngIf="filter.fieldType === 'select'"
+        >
+            <mat-label>{{ filter.label }}</mat-label>
+            <mat-select [formControlName]="filter.fieldName">
+                <mat-option
+                    *ngFor="let item of filter.selectItems"
+                    [value]="item.value"
+                >
+                    {{ item.label }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <!-- ¡CAMBIO CLAVE AQUÍ: Usamos app-date-input para el tipo 'date'! -->
+        <ng-container *ngIf="filter.fieldType === 'date'">
+            <app-date-input
+                [formControlName]="filter.fieldName"
+                [label]="filter.label"
+                [placeholder]="filter.label"
+                [isDisabled]="false"
+            ></app-date-input>
+        </ng-container>
+        <!-- FIN CAMBIO CLAVE -->
     </ng-container>
 
     <div class="filter-actions">
