@@ -1,4 +1,3 @@
-// src/app/employee-grid/employee-grid.component.ts
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
     ChangeDetectionStrategy,
@@ -14,7 +13,7 @@ import {
     GridConfiguration,
     GridDataItem,
     PaginationConfig,
-    ElipsisAction, // Importamos la nueva interfaz
+    ElipsisAction,
 } from "../../shared/models/gridConfiguration";
 import { GridComponent } from "../../shared/components/grid/grid.component"; // Correct path for GridComponent
 import { GridFilterComponent } from "../../shared/components/grid/grid-filter/grid-filter.component"; // Correct path for GridFilterComponent
@@ -35,8 +34,8 @@ import { Sort } from "@angular/material/sort";
     imports: [
         CommonModule,
         HttpClientModule,
-        GridComponent, // Ensure GridComponent is imported correctly
-        GridFilterComponent, // Ensure GridFilterComponent is imported correctly
+        GridComponent,
+        GridFilterComponent,
     ],
     templateUrl: "./employee-grid.component.html",
     styleUrl: "./employee-grid.component.scss",
@@ -407,7 +406,7 @@ export class EmployeeGridComponent implements OnInit {
                     isSortable: false,
                     isElipsisColumn: true, // ¡Indica que es la columna de elipsis!
                     hasHeaderTooltip: true,
-                    headerIcon: "more_vert", // Icono para el encabezado de la columna de acciones
+                    //headerIcon: "settings", // Icono para el encabezado de la columna de acciones
                 },
             ],
             hasPagination: {

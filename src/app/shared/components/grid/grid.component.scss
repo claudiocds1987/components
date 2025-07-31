@@ -40,8 +40,8 @@
         border-collapse: collapse; // para bordes limpios
       // Color de las celdas del encabezado de la tabla
       .header .grid-cell {
-        background-color: $blue-color;
-        color: $black-color;
+        background-color: $primary-color-material;
+        color: white;
         font-weight: bold;
       }
 
@@ -55,7 +55,7 @@
           text-overflow: ellipsis;
           box-sizing: border-box;
           padding: 8px 16px;
-          border-right: 1px solid $grey-color;
+          //border-right: 1px solid $grey-color;
         }
     }
     

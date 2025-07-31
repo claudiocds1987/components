@@ -32,10 +32,10 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { take } from "rxjs";
 import { MatTooltipModule } from "@angular/material/tooltip";
-import { TruncatePipe } from "../../pipes/truncate.pipe";
-import { MatMenuModule } from "@angular/material/menu"; // <-- Importar MatMenuModule
-import { MatIconModule } from "@angular/material/icon"; // <-- Importar MatIconModule
-import { MatButtonModule } from "@angular/material/button"; // <-- Importar MatButtonModule
+
+import { MatMenuModule } from "@angular/material/menu";
+import { MatIconModule } from "@angular/material/icon";
+import { MatButtonModule } from "@angular/material/button";
 
 // --- función para el setear paginador ---
 export function getPaginatorIntl(): MatPaginatorIntl {
@@ -73,10 +73,9 @@ export function getPaginatorIntl(): MatPaginatorIntl {
         MatFormFieldModule,
         MatInputModule,
         MatTooltipModule,
-        TruncatePipe,
-        MatMenuModule, // Añadir aquí
-        MatIconModule, // Añadir aquí
-        MatButtonModule, // Añadir aquí
+        MatMenuModule,
+        MatIconModule,
+        MatButtonModule,
     ],
     templateUrl: "./grid.component.html",
     styleUrl: "./grid.component.scss",

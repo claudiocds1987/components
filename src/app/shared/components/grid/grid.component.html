@@ -64,9 +64,6 @@
                     <mat-icon *ngIf="col.headerIcon">{{
                         col.headerIcon
                     }}</mat-icon>
-                    <ng-container *ngIf="!col.headerIcon">{{
-                        col.label || "Acciones"
-                    }}</ng-container>
                 </ng-container>
                 <!-- Si es una columna normal, mostrar texto y sortable -->
                 <ng-container *ngIf="!col.isElipsisColumn">
@@ -92,7 +89,6 @@
                     'text-overflow': col.isElipsisColumn ? 'clip' : 'ellipsis',
                 }"
             >
-                <!-- NUEVO: Contenedor único con un *ngIf y un 'else' -->
                 <ng-container *ngIf="col.isElipsisColumn; else defaultCell">
                     <button
                         mat-icon-button

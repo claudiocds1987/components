@@ -1,53 +1,26 @@
-/* grid-filter.component.scss */
-
 :host {
     display: flex; /* Make the host element a flex container */
     flex-direction: column; /* Stack its content vertically */
     height: 100%; /* Important: This makes grid-filter take the full height provided by the parent Grid layout */
 }
 
-
-
 .form {
     display: flex;
     flex-direction: column;
     height: 100%; /* Makes the form container fill the height of the :host */
-    padding: 15px; /* Add some padding for the content */
-    background-color: #f8f8f8; /* Background color for the filter panel */
-    border-radius: 8px; /* Optional: rounded corners */
-    box-sizing: border-box; /* Include padding in the element's total width and height */
+    padding: 15px; 
+    background-color: #f8f8f8; 
+    border-radius: 8px; 
+    box-sizing: border-box; 
 }
 
-.filter-inputs-wrapper {
-    flex-grow: 1; /* This makes the filter inputs take up all available space */
-    display: flex; /* Organize inputs horizontally or vertically if needed */
-    flex-direction: column; /* Stack inputs vertically */
-    gap: 15px; /* Space between filter inputs */
-    overflow-y: auto; /* Add scroll if filters exceed available height */
-    padding-bottom: 15px; /* Space before the button container */
 
-     // Estilos opcionales para el título
-     h1 {
-        margin-top: 0;
-        margin-bottom: 20px;
-        color: #333;
-        font-size: 1.8em;
-        font-weight: bold; 
-        text-align: center;
-    }
-}
 
-.button-wrapper {
-    margin-top: auto; /* This pushes the button-wrapper to the bottom of the .form flex container */
-    padding-top: 15px; /* Space above the button */
-    border-top: 1px solid #eee; /* Optional: a separator line */
-    text-align: center; /* Center the button */
-    flex-shrink: 0; /* Prevents the button from shrinking if space is limited */
-}
-
-.button-wrapper button {
-    width: 100%;
-    max-width: 200px; // ancho maximo del boton
+.filter-actions{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px; 
 }
 
 mat-form-field, ng-select {

@@ -13,9 +13,9 @@ export interface Column {
     align?: "left" | "center" | "right";
     isSortable?: boolean;
     hasHeaderTooltip?: boolean;
-    // Nueva propiedad para indicar que esta columna es de elipsis
+    // propiedad para indicar que esta columna es de elipsis
     isElipsisColumn?: boolean;
-    // Nueva propiedad para el icono de la cabecera de la columna (si aplica, ej. 'more_vert')
+    // propiedad para el icono de la cabecera de la columna (si aplica, ej. 'more_vert')
     headerIcon?: string;
     label?: string; // Añadido para etiquetas de columna personalizadas
 }
