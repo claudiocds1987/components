@@ -424,7 +424,7 @@ export class EmployeeGridComponent implements OnInit {
             },
             filterByColumn: "", // Valor por defecto
             withExcelDownload: false, // Valor por defecto
-            hasInputSearch: true, // Valor por defecto
+            hasInputSearch: true, // true para que aparezca
         });
         return config;
     }
@@ -441,6 +441,11 @@ export class EmployeeGridComponent implements OnInit {
                 fieldType: "text",
                 label: "Nombre",
             },
+            /* {
+                fieldName: "domicilio",
+                fieldType: "text",
+                label: "domicilio",
+            }, */
             {
                 fieldName: "surname",
                 fieldType: "text",
@@ -468,6 +473,7 @@ export class EmployeeGridComponent implements OnInit {
                     { value: "Diseñador UX/UI", label: "Diseñador UX/UI" },
                     { value: "Soporte Técnico", label: "Soporte Técnico" },
                     { value: "Analista de Datos", label: "Analista de Datos" },
+                    { value: "Especialista QA", label: "Especialista QA" },
                 ],
             },
 

@@ -1,40 +1,45 @@
 <form [formGroup]="filterForm" class="form">
     <h3 class="title">FILTRO</h3>
-    <ng-container *ngFor="let filter of config">
-        <!-- Campo de texto -->
-        <mat-form-field
-            appearance="outline"
-            *ngIf="filter.fieldType === 'text'"
-        >
-            <mat-label>{{ filter.label }}</mat-label>
-            <input matInput [formControlName]="filter.fieldName" />
-        </mat-form-field>
 
-        <!-- Campo de selección -->
-        <mat-form-field
-            appearance="outline"
-            *ngIf="filter.fieldType === 'select'"
-        >
-            <mat-label>{{ filter.label }}</mat-label>
-            <mat-select [formControlName]="filter.fieldName">
-                <mat-option
-                    *ngFor="let item of filter.selectItems"
-                    [value]="item.value"
-                >
-                    {{ item.label }}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
+    <div class="form-fields">
+        <ng-container *ngFor="let filter of config">
+            <!-- Campo de texto -->
+            <mat-form-field
+                class="width"
+                appearance="outline"
+                *ngIf="filter.fieldType === 'text'"
+            >
+                <mat-label>{{ filter.label }}</mat-label>
+                <input matInput [formControlName]="filter.fieldName" />
+            </mat-form-field>
 
-        <ng-container *ngIf="filter.fieldType === 'date'">
-            <app-date-input
-                [formControlName]="filter.fieldName"
-                [label]="filter.label"
-                [placeholder]="filter.label"
-                [isDisabled]="false"
-            ></app-date-input>
+            <!-- Campo de selección -->
+            <mat-form-field
+                class="width"
+                appearance="outline"
+                *ngIf="filter.fieldType === 'select'"
+            >
+                <mat-label>{{ filter.label }}</mat-label>
+                <mat-select [formControlName]="filter.fieldName">
+                    <mat-option
+                        *ngFor="let item of filter.selectItems"
+                        [value]="item.value"
+                    >
+                        {{ item.label }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <ng-container *ngIf="filter.fieldType === 'date'">
+                <app-date-input
+                    [formControlName]="filter.fieldName"
+                    [label]="filter.label"
+                    [placeholder]="filter.label"
+                    [isDisabled]="false"
+                ></app-date-input>
+            </ng-container>
         </ng-container>
-    </ng-container>
+    </div>
 
     <div class="filter-actions">
         <button mat-raised-button color="primary" (click)="applyFilter()">

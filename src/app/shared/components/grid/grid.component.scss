@@ -1,153 +1,55 @@
-@import '../../../shared/styles/colors.scss';
-
-
-
-.search-field{
-  width: 200px;
+:host {
+    display: flex; /* Hace que el elemento host sea un contenedor flex */
+    flex-direction: column; /* Apila su contenido verticalmente */
+    flex: 1; /* Ocupa todo el espacio disponible del padre */
+    min-height: 0; /* Permite que se reduzca si es necesario */
+    overflow: hidden; /* Evita el desbordamiento */
 }
 
+.grid-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* Ocupa todo el espacio disponible */
+    min-height: 0; /* Permite que se reduzca si es necesario */
+}
 
 .table-container {
-    height: 570px;
-    overflow-y: auto; // scroll vertical
-    overflow-x: auto; // scroll horizontal
-    // Estilos para el scrollbar en navegadores basados en Webkit (Chrome, Edge, Safari, etc.)
+    flex: 1; /* La tabla ocupa la mayor parte del espacio */
+    overflow: auto; /* Permite scroll en la tabla si es necesario */
+    min-height: 0; /* Permite que se reduzca si es necesario */
+    
+    /* Estilos para barra de scroll más fina */
     &::-webkit-scrollbar {
-        width: 4px; // Ancho del scrollbar vertical
-        height: 8px; // Alto del scrollbar horizontal
-    }
-
-    &::-webkit-scrollbar-thumb {
-        background-color: #888;       
-        //Cambiando color al pasar el mouse por encima
-        &:hover {
-            background-color: #555;
-        }
-    }
-
-    &::-webkit-scrollbar-track {
-        background-color: #f1f1f1;
-      
-    }
-    // Estilo para las esquinas del scrollbar (donde se encuentran el horizontal y vertical)
-    &::-webkit-scrollbar-corner {
-        background-color: #f1f1f1;
-    }
-
-    table {
-        width: 100%;
-        table-layout: fixed; // Garantiza anchos de columna consistentes
-        border-collapse: collapse; // para bordes limpios
-      // Color de las celdas del encabezado de la tabla
-      .header .grid-cell {
-        background-color: $primary-color-material;
-        color: white;
-        font-weight: bold;
-      }
-
-      .grid-cell:last-child {
-        border-right: none;
-      }
-      // Estilo de las celdas de la tabla
-      .grid-cell {
-          overflow: hidden;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          box-sizing: border-box;
-          padding: 8px 16px;
-          //border-right: 1px solid $grey-color;
-        }
+        width: 6px; /* Ancho de la barra de scroll vertical */
+        height: 6px; /* Alto de la barra de scroll horizontal */
     }
     
+    &::-webkit-scrollbar-track {
+        background: #f1f1f1; /* Color del track de la barra de scroll */
+        border-radius: 3px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+        background: #c1c1c1; /* Color del thumb de la barra de scroll */
+        border-radius: 3px;
+    }
+    
+    &::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8; /* Color del thumb al hacer hover */
+    }
+    
+    /* Para Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: #c1c1c1 #f1f1f1;
 }
 
-// SKELETON
-.skeleton-table {
-  display: flex;
-  flex-direction: column;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  overflow: hidden;
-  margin-bottom: 16px;
+.paginator-container {
+    flex-shrink: 0; /* El paginador no se encoge */
+    padding: 10px 0; /* Espacio arriba y abajo del paginador */
 }
 
-.skeleton-header-row,
-.skeleton-row {
-  display: flex;
+.search-field{
+  margin-top: 5px;
+  width: auto; 
+  max-width: 300px;    
 }
-
-// Simula un th
-.skeleton-header-cell {
-  flex: 1;
-  height: 48px;
-  background-color: #f0f0f0;
-  border-right: 1px solid #ddd;
-}
-
-.skeleton-header-cell:last-child {
-  border-right: none;
-}
-
-// Simula una td
-.skeleton-cell {
-  flex: 1;
-  padding: 12px 16px;
-  border-top: 1px solid #eee;
-  border-right: 1px solid #eee;
-}
-
-.skeleton-cell:last-child {
-  border-right: none;
-}
-
-.skeleton-line {
-  height: 16px;
-  width: 100%;
-  background: linear-gradient(90deg, #eeeeee 25%, #dddddd 50%, #eeeeee 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.2s infinite;
-  border-radius: 4px;
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
-}
-
-// Skeleton del input de búsqueda
-.skeleton-search-container {
-  position: relative;
-  width: 200px;
-  height: 56px;
-  border: 1px solid rgba(0, 0, 0, 0.23);
-  border-radius: 4px;
-  margin-bottom: 20px;
-  padding: 0 12px;
-  box-sizing: border-box;
-}
-
-.skeleton-search-label {
-  position: absolute;
-  top: -8px;
-  left: 8px;
-  background-color: white;
-  font-size: 12px;
-  color: #999;
-  padding: 0 4px;
-}
-
-.skeleton-search-input {
-  margin-top: 16px;
-  height: 20px;
-  background: linear-gradient(90deg, #eeeeee 25%, #dddddd 50%, #eeeeee 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.2s infinite;
-  border-radius: 4px;
-}
-
-
-

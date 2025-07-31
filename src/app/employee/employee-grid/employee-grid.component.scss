@@ -1,11 +1,22 @@
-.employee-grid-container {
-  display: grid;
-  grid-template-columns: 5fr 1fr; // Se define 2 columnas la 1ra toma la mayor parte (5 partes) y la 2da toma una parte (1 parte)
-  gap: 10px; /* Opcional: añade un espacio entre los dos componentes */
-  height: 100vh; /* Opcional: para que el contenedor ocupe toda la altura de la ventana y los hijos se estiren */
-  width: 100%; /* Opcional: para que el contenedor ocupe todo el ancho */
+:host {
+    flex: 1; /* Permite que employee-grid ocupe todo el espacio disponible del padre */
+    display: flex; /* Hace que el host sea un contenedor flex */
+    min-height: 0; /* Permite que el contenido se reduzca si es necesario */
+}
 
-  .filter-container{
-    width: 100%;
-  }
+.employee-grid-container {
+    display: grid;
+    grid-template-columns: 5fr 1fr; /* Se define 2 columnas la 1ra toma la mayor parte (5 partes) y la 2da toma una parte (1 parte) */
+    gap: 10px; /* Espacio entre los dos componentes */
+    width: 100%; /* Ocupa todo el ancho disponible */
+    flex: 1; /* Ocupa todo el espacio disponible del host */
+    min-height: 0; /* Permite que el grid se reduzca si es necesario */
+     align-items: stretch; /* Hace que ambos elementos tengan la misma altura */
+
+    .filter-container {
+        width: 100%;
+        min-height: 0; /* Permite que el contenedor se reduzca si es necesario */
+        display: flex; /* Hace que el contenedor sea flex */
+        flex-direction: column; /* Organiza el contenido verticalmente */
+    }
 }
