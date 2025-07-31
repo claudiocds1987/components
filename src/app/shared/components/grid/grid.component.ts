@@ -33,6 +33,9 @@ import { MatInputModule } from "@angular/material/input";
 import { take } from "rxjs";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { TruncatePipe } from "../../pipes/truncate.pipe";
+import { MatMenuModule } from "@angular/material/menu"; // <-- Importar MatMenuModule
+import { MatIconModule } from "@angular/material/icon"; // <-- Importar MatIconModule
+import { MatButtonModule } from "@angular/material/button"; // <-- Importar MatButtonModule
 
 // --- función para el setear paginador ---
 export function getPaginatorIntl(): MatPaginatorIntl {
@@ -71,6 +74,9 @@ export function getPaginatorIntl(): MatPaginatorIntl {
         MatInputModule,
         MatTooltipModule,
         TruncatePipe,
+        MatMenuModule, // Añadir aquí
+        MatIconModule, // Añadir aquí
+        MatButtonModule, // Añadir aquí
     ],
     templateUrl: "./grid.component.html",
     styleUrl: "./grid.component.scss",
@@ -87,10 +93,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     @ViewChild(MatPaginator) paginator!: MatPaginator;
 
     @Input() config!: GridConfiguration;
-    @Input() data: Record<
-        string,
-        string | number | boolean | Date | null | undefined
-    >[] = [];
+    @Input() data: GridDataItem[] = [];
     @Input() isLoading = false;
     @Output() pageChange = new EventEmitter<PageEvent>();
     @Output() sortChange = new EventEmitter<Sort>();
@@ -142,6 +145,10 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
 
     getCellValue(row: GridDataItem, colName: string): string {
         const value = row[colName];
+        // Si la columna es la de elipsis, no intentamos convertir el array de acciones a string
+        if (colName === "elipsisActions" && Array.isArray(value)) {
+            return ""; // La celda de elipsis se renderiza con el botón, no con el texto del array
+        }
         return value != null ? String(value) : "";
     }
 

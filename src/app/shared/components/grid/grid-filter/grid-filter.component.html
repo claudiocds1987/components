@@ -77,7 +77,6 @@
             </mat-select>
         </mat-form-field>
 
-        <!-- ¡CAMBIO CLAVE AQUÍ: Usamos app-date-input para el tipo 'date'! -->
         <ng-container *ngIf="filter.fieldType === 'date'">
             <app-date-input
                 [formControlName]="filter.fieldName"
@@ -86,7 +85,6 @@
                 [isDisabled]="false"
             ></app-date-input>
         </ng-container>
-        <!-- FIN CAMBIO CLAVE -->
     </ng-container>
 
     <div class="filter-actions">

@@ -1,3 +1,4 @@
+// src/app/employee-grid/employee-grid.component.ts
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
     ChangeDetectionStrategy,
@@ -13,6 +14,7 @@ import {
     GridConfiguration,
     GridDataItem,
     PaginationConfig,
+    ElipsisAction, // Importamos la nueva interfaz
 } from "../../shared/models/gridConfiguration";
 import { GridComponent } from "../../shared/components/grid/grid.component"; // Correct path for GridComponent
 import { GridFilterComponent } from "../../shared/components/grid/grid-filter/grid-filter.component"; // Correct path for GridFilterComponent
@@ -137,6 +139,7 @@ export class EmployeeGridComponent implements OnInit {
             .pipe(
                 map(this._transformPaginatedListToGridData.bind(this)), // Usamos la nueva función de transformación
                 finalize((): void => {
+                    // Tipo explícito para finalize
                     this.isLoadingData = false; // Manejamos el estado de carga aquí
                     this._cdr.markForCheck();
                 }),
@@ -145,10 +148,12 @@ export class EmployeeGridComponent implements OnInit {
                 next: (
                     paginatedListGridData: PaginatedList<GridDataItem>,
                 ): void => {
+                    // Tipo explícito para next
                     this.gridData = paginatedListGridData.items;
                     this._updateGridConfigOnDataReceived(paginatedListGridData); // Nueva función para actualizar config
                 },
                 error: (error: any): void => {
+                    // Tipo explícito para error
                     console.error(
                         "EmployeeGridComponent: Error al obtener empleados:",
                         error,
@@ -162,8 +167,12 @@ export class EmployeeGridComponent implements OnInit {
     ): PaginatedList<GridDataItem> {
         const transformedItems: GridDataItem[] = paginatedList.items.map(
             (employee: Employee): GridDataItem => {
-                const gridItem: GridDataItem = {};
+                // Aseguramos que 'id' exista y sea un número para GridDataItem
+                const gridItem: GridDataItem = { id: employee.id as number };
                 for (const key in employee) {
+                    // No copiar la propiedad 'id' directamente si ya la asignamos arriba
+                    if (key === "id") continue;
+
                     const value = (employee as any)[key]; // Valor tal como viene del backend
                     // Verifica si el valor es un string y si puede ser parseado como una fecha YYYY-MM-DD (ISO)
                     if (typeof value === "string") {
@@ -183,6 +192,11 @@ export class EmployeeGridComponent implements OnInit {
                         gridItem[key] = value;
                     }
                 }
+
+                // Aca se añaden las acciones de elipsis
+                // Pasa el `employee` completo para que la función `_setElipsisActions` pueda acceder a todas sus propiedades
+                gridItem["elipsisActions"] = this._setElipsisActions(employee);
+
                 return gridItem;
             },
         );
@@ -192,6 +206,74 @@ export class EmployeeGridComponent implements OnInit {
             items: transformedItems,
             pageIndex: paginatedList.page - 1,
         };
+    }
+
+    private _setElipsisActions(employee: Employee): ElipsisAction[] {
+        return [
+            {
+                id: "edit",
+                label: "Editar",
+                icon: "edit",
+                action: (id: number): void => this._editEmployee(id),
+                // Condición de ejemplo: usa employeeData capturado por el closure
+                condition: (): boolean => (employee.id as number) % 2 !== 0,
+            },
+            {
+                id: "delete",
+                label: "Eliminar",
+                icon: "delete_forever",
+                action: (id: number): void => this._deleteEmployee(id),
+
+                // Condición de ejemplo: solo eliminable si el ID es par
+                condition: (): boolean => (employee.id as number) % 2 === 0,
+            },
+            // Puedes agregar más opciones aquí
+            // {
+            //     id: 'view',
+            //     label: 'Ver Detalles',
+            //     icon: 'visibility',
+            //     action: (id: number): void => console.log(`Ver detalles de ${id}`),
+            //     condition: (row: GridDataItem): boolean => true // Siempre visible
+            // }
+        ];
+    }
+
+    private _editEmployee(id: number): void {
+        console.log(`Editando empleado con ID: ${id}`);
+        // Aquí iría tu lógica para navegar a la página de edición o abrir un modal
+        // Por ejemplo: this._router.navigate(['/employees', id, 'edit']);
+    }
+
+    private _deleteEmployee(id: number): void {
+        console.log(`Intentando eliminar empleado con ID: ${id}`);
+        // Idealmente, aquí tendrías un diálogo de confirmación antes de la eliminación real.
+        //this.isLoadingData = true;
+        /* this._employeeServices
+            .deleteEmployee(id)
+            .pipe(
+                finalize((): void => {
+                    // Tipo explícito para finalize
+                    this.isLoadingData = false;
+                    this._cdr.markForCheck(); // Forzar detección de cambios después de la eliminación
+                }),
+            )
+            .subscribe({
+                next: (): void => {
+                    // Tipo explícito para next
+                    console.log(`El registro con ID ${id} ha sido eliminado.`);
+                    // Después de eliminar, recargamos la grilla para reflejar el cambio.
+                    // Podrías también solo quitar el elemento de `gridData` si el backend confirma la eliminación.
+                    this._getEmployees();
+                },
+                error: (error: any): void => {
+                    // Tipo explícito para error
+                    console.error(
+                        `Error al eliminar el registro con ID ${id}:`,
+                        error,
+                    );
+                    // Manejar el error, mostrar un mensaje al usuario, etc.
+                },
+            }); */
     }
 
     private _updateGridConfigOnSortChange(sortEvent: Sort): void {
@@ -290,10 +372,7 @@ export class EmployeeGridComponent implements OnInit {
                     // Formatear a YYYY-MM-DD para el backend (json-server)
                     (newObj as any)[key] = luxonDate.toFormat("yyyy-MM-dd");
                 }
-                /* if (luxonDate && luxonDate.isValid) {
-                    // Formatea *cualquier* fecha detectada al formato "dd/MM/yyyy"
-                    (newObj as any)[key] = luxonDate.toFormat("dd/MM/yyyy");
-                } */
+
                 // 4. Manejo de otros tipos (objetos anidados, null, undefined, string, number, boolean)
                 else if (
                     typeof value === "object" &&
@@ -315,17 +394,20 @@ export class EmployeeGridComponent implements OnInit {
     private _setGridConfiguration(): GridConfiguration {
         const config = createDefaultGridConfiguration({
             columns: [
-                { name: "id", width: "70px" },
-                { name: "name" },
-                { name: "surname" /*isSortable: false*/ },
-                { name: "birthDate" },
-                { name: "position" },
+                { name: "id", width: "70px", label: "ID" }, // Añadido label
+                { name: "name", label: "Nombre" }, // Añadido label
+                { name: "surname", label: "Apellido" /*isSortable: false*/ }, // Añadido label
+                { name: "birthDate", label: "Fecha de Nacimiento" }, // Añadido label
+                { name: "position", label: "Puesto" }, // Añadido label
                 {
-                    name: "elipsis",
+                    name: "elipsisActions", // Este es el nombre de la propiedad en GridDataItem
+                    label: "actions", // Opcional: la etiqueta de la columna en el encabezado
                     width: "70px",
                     align: "center",
                     isSortable: false,
+                    isElipsisColumn: true, // ¡Indica que es la columna de elipsis!
                     hasHeaderTooltip: true,
+                    headerIcon: "more_vert", // Icono para el encabezado de la columna de acciones
                 },
             ],
             hasPagination: {
@@ -341,7 +423,6 @@ export class EmployeeGridComponent implements OnInit {
                     | "asc"
                     | "desc",
             },
-
             filterByColumn: "", // Valor por defecto
             withExcelDownload: false, // Valor por defecto
             hasInputSearch: true, // Valor por defecto
@@ -421,31 +502,5 @@ export class EmployeeGridComponent implements OnInit {
                 );
             }
         });
-    }
-
-    private _mockGetEmployees(): void {
-        setTimeout((): void => {
-            this.gridData = Array.from(
-                { length: 100 },
-                (
-                    _: unknown,
-                    i: number,
-                ): {
-                    id: number;
-                    name: string;
-                    surname: string;
-                    position: string;
-                    elipsis: string;
-                } => {
-                    return {
-                        id: i + 1,
-                        name: `JUAN CARLOS ALBERTO JOSE MARIA ${i + 1}`,
-                        surname: `usuario${i + 1}@mail.com`,
-                        position: `Administrativo ${i + 1}`,
-                        elipsis: "...",
-                    };
-                },
-            );
-        }, 2000);
     }
 }

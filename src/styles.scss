@@ -20,5 +20,6 @@ html, body {
 }
 
 * {
-  font-family: 'Inter', Arial, Helvetica, sans-serif !important;
+  // ¡ELIMINA EL !important DE AQUÍ!
+  font-family: 'Inter', Arial, Helvetica, sans-serif; 
 }

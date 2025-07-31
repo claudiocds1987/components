@@ -45,35 +45,90 @@
         (matSortChange)="onSortChange($event)"
         class="table"
     >
+        <!-- Definición de columnas dinámicas -->
         <ng-container
             *ngFor="let col of columns; trackBy: trackColumnByName"
             [matColumnDef]="col.name"
         >
+            <!-- Encabezado de la columna -->
             <th
                 mat-header-cell
                 *matHeaderCellDef
                 class="grid-cell"
                 [style.width]="col.width || 'auto'"
                 [style.text-align]="col.align || 'left'"
-                [matTooltip]="col.hasHeaderTooltip ? col.name : ''"
+                [matTooltip]="col.hasHeaderTooltip ? col.label || col.name : ''"
             >
-                <ng-container *ngIf="col.isSortable; else noSortableHeader">
-                    <span [mat-sort-header]="col.name">{{ col.name }}</span>
+                <!-- Si es una columna de elipsis, mostrar icono en el encabezado -->
+                <ng-container *ngIf="col.isElipsisColumn">
+                    <mat-icon *ngIf="col.headerIcon">{{
+                        col.headerIcon
+                    }}</mat-icon>
+                    <ng-container *ngIf="!col.headerIcon">{{
+                        col.label || "Acciones"
+                    }}</ng-container>
                 </ng-container>
-                <ng-template #noSortableHeader>
-                    {{ col.name }}
-                </ng-template>
+                <!-- Si es una columna normal, mostrar texto y sortable -->
+                <ng-container *ngIf="!col.isElipsisColumn">
+                    <ng-container *ngIf="col.isSortable; else noSortableHeader">
+                        <span [mat-sort-header]="col.name">{{
+                            col.label || col.name | titlecase
+                        }}</span>
+                    </ng-container>
+                    <ng-template #noSortableHeader>
+                        {{ col.label || col.name | titlecase }}
+                    </ng-template>
+                </ng-container>
             </th>
 
+            <!-- Celda de la columna -->
             <td
                 mat-cell
                 *matCellDef="let row"
                 class="grid-cell"
                 [style.width]="col.width || 'auto'"
                 [style.text-align]="col.align || 'left'"
-                [matTooltip]="getTooltipValue(row, col.name)"
+                [ngStyle]="{
+                    'text-overflow': col.isElipsisColumn ? 'clip' : 'ellipsis',
+                }"
             >
-                {{ getTruncatedValue(row, col.name) }}
+                <!-- NUEVO: Contenedor único con un *ngIf y un 'else' -->
+                <ng-container *ngIf="col.isElipsisColumn; else defaultCell">
+                    <button
+                        mat-icon-button
+                        [matMenuTriggerFor]="elipsisMenu"
+                        aria-label="Más opciones"
+                    >
+                        <mat-icon color="primary">more_vert</mat-icon>
+                    </button>
+                    <!-- El menú se define dentro del ng-container para que sea parte del mismo bloque lógico -->
+                    <mat-menu #elipsisMenu="matMenu">
+                        <ng-container
+                            *ngFor="let action of row['elipsisActions']"
+                        >
+                            <button
+                                mat-menu-item
+                                *ngIf="
+                                    action.condition
+                                        ? action.condition(row)
+                                        : true
+                                "
+                                (click)="action.action(row.id)"
+                            >
+                                <mat-icon *ngIf="action.icon">{{
+                                    action.icon
+                                }}</mat-icon>
+                                <span>{{ action.label }}</span>
+                            </button>
+                        </ng-container>
+                    </mat-menu>
+                </ng-container>
+
+                <ng-template #defaultCell>
+                    <span [matTooltip]="getTooltipValue(row, col.name)">
+                        {{ getTruncatedValue(row, col.name) }}
+                    </span>
+                </ng-template>
             </td>
         </ng-container>
 

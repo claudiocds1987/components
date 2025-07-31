@@ -1,9 +1,23 @@
+// interfaz para las acciones del menú de elipsis
+export interface ElipsisAction {
+    id?: string | number; // Identificador único de la acción (ej. 'edit', 'delete')
+    label: string; // Texto a mostrar en el menú (ej. "Editar", "Eliminar")
+    icon?: string; // Nombre del icono de Material (ej. 'edit', 'delete_forever')
+    action: (id: number) => void;
+    condition?: (row: GridDataItem) => boolean;
+}
+
 export interface Column {
     name: string;
     width?: string;
     align?: "left" | "center" | "right";
     isSortable?: boolean;
     hasHeaderTooltip?: boolean;
+    // Nueva propiedad para indicar que esta columna es de elipsis
+    isElipsisColumn?: boolean;
+    // Nueva propiedad para el icono de la cabecera de la columna (si aplica, ej. 'more_vert')
+    headerIcon?: string;
+    label?: string; // Añadido para etiquetas de columna personalizadas
 }
 
 export interface PaginationConfig {
@@ -24,8 +38,8 @@ export interface OrderBy {
 // Es generalmente un par simple clave-valor, donde la clave es el nombre de la columna.
 export type GridDataItem = Record<
     string,
-    string | number | boolean | Date | null | undefined
->;
+    string | number | boolean | Date | null | undefined | ElipsisAction[]
+> & { id: number }; // Aseguramos que 'id' exista y sea un número
 
 export interface GridConfiguration {
     columns: Column[];
@@ -87,7 +101,6 @@ export const createDefaultGridConfiguration = (
     );
 
     return {
-        //columns: config.columns || [],
         columns: processedColumns,
         hasPagination: finalPaginationConfig,
         hasInputSearch: config.hasInputSearch ?? true,
