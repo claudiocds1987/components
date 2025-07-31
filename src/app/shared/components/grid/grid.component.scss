@@ -27,29 +27,32 @@
     overflow: auto; /* Permite scroll en la tabla si es necesario */
     min-height: 0; /* Permite que se reduzca si es necesario */
     
-    /* Estilos para barra de scroll más fina */
+    /* Reglas para navegadores basados en WebKit (Chrome, Safari, Edge) */
     &::-webkit-scrollbar {
-        width: 6px; /* Ancho de la barra de scroll vertical */
-        height: 6px; /* Alto de la barra de scroll horizontal */
-    }
-    
+      width: 3px; // Ahora este valor sí se aplicará
+      height: 6px;
+    } 
+  
     &::-webkit-scrollbar-track {
-        background: #f1f1f1; /* Color del track de la barra de scroll */
-        border-radius: 3px;
+      background: #f1f1f1;
+      border-radius: 3px;
     }
-    
+  
     &::-webkit-scrollbar-thumb {
-        background: #c1c1c1; /* Color del thumb de la barra de scroll */
-        border-radius: 3px;
+      background: #c1c1c1;
+      border-radius: 3px;
     }
-    
+  
     &::-webkit-scrollbar-thumb:hover {
-        background: #a8a8a8; /* Color del thumb al hacer hover */
+      background: #a8a8a8;
     }
-    
-    /* Para Firefox */
-    scrollbar-width: thin;
-    scrollbar-color: #c1c1c1 #f1f1f1;
+  
+  /* Reglas para Firefox */
+  // Usamos @supports para que Chrome ignore estas reglas y use las de arriba
+    @supports not selector(::-webkit-scrollbar) {
+      scrollbar-width: thin;
+      scrollbar-color: #c1c1c1 #f1f1f1;
+    }
 }
 
 .paginator-container {
