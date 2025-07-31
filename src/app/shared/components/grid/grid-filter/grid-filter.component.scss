@@ -4,18 +4,20 @@
     height: 100%; /* Important: This makes grid-filter take the full height provided by the parent Grid layout */
 }
 
-.form {
-    display: flex;
-    flex-direction: column;
-    height: 100%; /* Makes the form container fill the height of the :host */
-    padding: 15px; 
-    background-color: #f8f8f8; 
-    border-radius: 8px; 
-    box-sizing: border-box; 
+.title{
+    text-align: center;
+    font-size: 1.5rem;
+    letter-spacing: 0.1875rem;
 }
 
+.form {
+    height: 100%; 
+    padding: 15px; 
+    background-color: #f0f4f9;
+    border-radius: 8px; 
+   box-sizing: border-box;
 
-
+}
 .filter-actions{
     display: flex;
     flex-direction: column;
@@ -27,16 +29,8 @@ mat-form-field, ng-select {
     width: 100%;
 }
 
-
 mat-form-field {
     width: 100%;
 }
 
-.form{
-    background-color: #f0f4f9;
-}
-
-.title{
-    height: 500px;
-}
 
