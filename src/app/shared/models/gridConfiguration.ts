@@ -4,7 +4,7 @@ export interface ElipsisAction {
     label: string; // Texto a mostrar en el menú (ej. "Editar", "Eliminar")
     icon?: string; // Nombre del icono de Material (ej. 'edit', 'delete_forever')
     action: (id: number) => void;
-    condition?: (row: GridDataItem) => boolean;
+    condition?: (row: GridData) => boolean;
 }
 
 export interface Column {
@@ -33,10 +33,10 @@ export interface OrderBy {
     direction: "asc" | "desc" | "";
 }
 
-// Define y exporta la interfaz GridDataItem !!!
+// Define y exporta la interfaz GridData !!!
 // Esta interfaz representa una sola fila de datos de la grilla.
 // Es generalmente un par simple clave-valor, donde la clave es el nombre de la columna.
-export type GridDataItem = Record<
+export type GridData = Record<
     string,
     string | number | boolean | Date | null | undefined | ElipsisAction[]
 > & { id: number }; // Aseguramos que 'id' exista y sea un número

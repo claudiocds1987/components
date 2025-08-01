@@ -11,7 +11,7 @@ import { FormControl, FormGroup } from "@angular/forms";
 import {
     createDefaultGridConfiguration,
     GridConfiguration,
-    GridDataItem,
+    GridData,
     PaginationConfig,
     ElipsisAction,
 } from "../../shared/models/gridConfiguration";
@@ -45,7 +45,7 @@ export class EmployeeGridComponent implements OnInit {
     gridFilterConfig: GridFilterConfig[] = [];
     gridFilterForm!: FormGroup;
     gridConfig: GridConfiguration;
-    gridData: GridDataItem[] = [];
+    gridData: GridData[] = [];
     employees: Employee[] = [];
     isLoadingData = false;
     private _employeeFilterParams: EmployeeFilterParams = {};
@@ -145,7 +145,7 @@ export class EmployeeGridComponent implements OnInit {
             )
             .subscribe({
                 next: (
-                    paginatedListGridData: PaginatedList<GridDataItem>,
+                    paginatedListGridData: PaginatedList<GridData>,
                 ): void => {
                     // Tipo explícito para next
                     this.gridData = paginatedListGridData.items;
@@ -163,11 +163,11 @@ export class EmployeeGridComponent implements OnInit {
 
     private _transformPaginatedListToGridData(
         paginatedList: PaginatedList<Employee>,
-    ): PaginatedList<GridDataItem> {
-        const transformedItems: GridDataItem[] = paginatedList.items.map(
-            (employee: Employee): GridDataItem => {
-                // Aseguramos que 'id' exista y sea un número para GridDataItem
-                const gridItem: GridDataItem = { id: employee.id as number };
+    ): PaginatedList<GridData> {
+        const transformedItems: GridData[] = paginatedList.items.map(
+            (employee: Employee): GridData => {
+                // Aseguramos que 'id' exista y sea un número para GridData
+                const gridData: GridData = { id: employee.id as number };
                 for (const key in employee) {
                     // No copiar la propiedad 'id' directamente si ya la asignamos arriba
                     if (key === "id") continue;
@@ -180,23 +180,23 @@ export class EmployeeGridComponent implements OnInit {
 
                         if (luxonDate.isValid) {
                             // Si se parseó con éxito, significa que es una fecha que queremos formatear
-                            gridItem[key] = luxonDate.toFormat("dd/MM/yyyy"); // Formato para la UI
+                            gridData[key] = luxonDate.toFormat("dd/MM/yyyy"); // Formato para la UI
                         } else {
                             // Si no es una fecha ISO válida, mantenemos el string original (ej. un nombre, un texto)
-                            gridItem[key] = value;
+                            gridData[key] = value;
                         }
                     }
                     // Si no es un string, simplemente asigna el valor tal cual
                     else {
-                        gridItem[key] = value;
+                        gridData[key] = value;
                     }
                 }
 
                 // Aca se añaden las acciones de elipsis
                 // Pasa el `employee` completo para que la función `_setElipsisActions` pueda acceder a todas sus propiedades
-                gridItem["elipsisActions"] = this._setElipsisActions(employee);
+                gridData["elipsisActions"] = this._setElipsisActions(employee);
 
-                return gridItem;
+                return gridData;
             },
         );
 
@@ -232,7 +232,7 @@ export class EmployeeGridComponent implements OnInit {
             //     label: 'Ver Detalles',
             //     icon: 'visibility',
             //     action: (id: number): void => console.log(`Ver detalles de ${id}`),
-            //     condition: (row: GridDataItem): boolean => true // Siempre visible
+            //     condition: (row: GridData): boolean => true // Siempre visible
             // }
         ];
     }
@@ -299,7 +299,7 @@ export class EmployeeGridComponent implements OnInit {
     }
 
     private _updateGridConfigOnDataReceived(
-        paginatedListGridData: PaginatedList<GridDataItem>,
+        paginatedListGridData: PaginatedList<GridData>,
     ): void {
         let basePaginationConfig: PaginationConfig;
         if (this.gridConfig.hasPagination === false) {
@@ -399,7 +399,7 @@ export class EmployeeGridComponent implements OnInit {
                 { name: "birthDate", label: "Fecha de Nacimiento" }, // Añadido label
                 { name: "position", label: "Puesto" }, // Añadido label
                 {
-                    name: "elipsisActions", // Este es el nombre de la propiedad en GridDataItem
+                    name: "elipsisActions", // Este es el nombre de la propiedad en GridData
                     label: "actions", // Opcional: la etiqueta de la columna en el encabezado
                     width: "70px",
                     align: "center",
@@ -424,7 +424,7 @@ export class EmployeeGridComponent implements OnInit {
             },
             filterByColumn: "", // Valor por defecto
             withExcelDownload: false, // Valor por defecto
-            hasInputSearch: true, // true para que aparezca
+            hasInputSearch: false, // true para que aparezca
         });
         return config;
     }

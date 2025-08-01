@@ -19,7 +19,7 @@ import { MatTableDataSource } from "@angular/material/table";
 import {
     Column,
     GridConfiguration,
-    GridDataItem,
+    GridData,
     PaginationConfig,
 } from "../../models/gridConfiguration";
 import {
@@ -92,12 +92,12 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     @ViewChild(MatPaginator) paginator!: MatPaginator;
 
     @Input() config!: GridConfiguration;
-    @Input() data: GridDataItem[] = [];
+    @Input() data: GridData[] = [];
     @Input() isLoading = false;
     @Output() pageChange = new EventEmitter<PageEvent>();
     @Output() sortChange = new EventEmitter<Sort>();
 
-    dataSource = new MatTableDataSource<GridDataItem>();
+    dataSource = new MatTableDataSource<GridData>();
     private _ngZone = inject(NgZone);
 
     get columns(): Column[] {
@@ -142,7 +142,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
         });
     }
 
-    getCellValue(row: GridDataItem, colName: string): string {
+    getCellValue(row: GridData, colName: string): string {
         const value = row[colName];
         // Si la columna es la de elipsis, no intentamos convertir el array de acciones a string
         if (colName === "elipsisActions" && Array.isArray(value)) {
@@ -151,12 +151,12 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
         return value != null ? String(value) : "";
     }
 
-    getTruncatedValue(row: GridDataItem, colName: string): string {
+    getTruncatedValue(row: GridData, colName: string): string {
         const value = this.getCellValue(row, colName);
         return this.truncate(value, 25);
     }
 
-    getTooltipValue(row: GridDataItem, colName: string): string {
+    getTooltipValue(row: GridData, colName: string): string {
         const val = this.getCellValue(row, colName);
         const str = String(val ?? "");
         return str.length > 25 ? str : "";
