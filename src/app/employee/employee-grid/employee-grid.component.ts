@@ -75,7 +75,7 @@ export class EmployeeGridComponent implements OnInit {
         // 1. Mapeamos `filterValues` a `EmployeeFilterParams`
         const filterParamsForBackend =
             this._mapToEmployeeFilterParams(filterValues);
-        this._employeeFilterParams.page = 1;
+        this._employeeFilterParams.page = 1; // Aseguramos que la página sea 1 al aplicar un nuevo filtro
         // 2. con Object.assign() Copiamos los valores de filterParamsForBackend
         // (donde tiene las fecha formateadas a dd/mm/yyyy con los otros datos que vienen del filtro) a `_employeeFilterParams`,
         //"_employeeFilterParams" es lo que se envía al servicio.
@@ -111,24 +111,10 @@ export class EmployeeGridComponent implements OnInit {
 
     private _setEmployeeFilterParameters(): void {
         // Aca se establece por defecto como va a aparecer la grilla paginada por 1ra vez.
-        if (!this._employeeFilterParams.page) {
-            // pagina 1
-            this._employeeFilterParams.page = 1;
-        }
-        if (!this._employeeFilterParams.limit) {
-            // aca la cantidad de registros que va a mostrar en la 1er pagina (ej 25)
-            // se define en la funcion _defaultPaginatorOptions()
-            this._employeeFilterParams.limit =
-                this._defaultPaginatorOptions.pageSize;
-        }
-        if (!this._employeeFilterParams.sortColumn) {
-            // aca establece por defecto que la grillapor default la ordena por id
-            this._employeeFilterParams.sortColumn = "id"; // se puede poner name, surname etc..
-        }
-        if (!this._employeeFilterParams.sortOrder) {
-            // ordenada por "id" de forma "asc"
-            this._employeeFilterParams.sortOrder = "asc";
-        }
+        this._employeeFilterParams.page = 1;
+        this._employeeFilterParams.limit = 25;
+        this._employeeFilterParams.sortColumn = "id";
+        this._employeeFilterParams.sortOrder = "asc";
     }
 
     private _getEmployees(): void {
