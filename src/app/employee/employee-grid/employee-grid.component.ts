@@ -96,7 +96,7 @@ export class EmployeeGridComponent implements OnInit {
             page: 1,
         };
 
-        this._updateGridConfigOnSortChange(sortEvent); // Nueva función para la actualización de config
+        this._updateGridConfigOnSortChange(sortEvent);
         this._getEmployees();
     }
 
@@ -136,9 +136,8 @@ export class EmployeeGridComponent implements OnInit {
         this._employeeServices
             .getEmployees(this._employeeFilterParams)
             .pipe(
-                map(this._transformPaginatedListToGridData.bind(this)), // Usamos la nueva función de transformación
+                map(this._transformPaginatedListToGridData.bind(this)),
                 finalize((): void => {
-                    // Tipo explícito para finalize
                     this.isLoadingData = false; // Manejamos el estado de carga aquí
                     this._cdr.markForCheck();
                 }),
@@ -423,7 +422,7 @@ export class EmployeeGridComponent implements OnInit {
                     | "desc",
             },
             filterByColumn: "", // Valor por defecto
-            withExcelDownload: false, // Valor por defecto
+            hasExcelDownload: true, // Valor por defecto
             hasInputSearch: false, // true para que aparezca
         });
         return config;

@@ -34,6 +34,31 @@
     />
 </mat-form-field>
 
+<div class="buttons-actions-container">
+    <div class="buttons-actions">
+        <button
+            class="button-action"
+            mat-icon-button
+            color="primary"
+            (click)="add()"
+            [matTooltip]="'Agregar'"
+        >
+            <mat-icon>person_add</mat-icon>
+        </button>
+        <ng-container *ngIf="config.hasExcelDownload">
+            <button
+                class="button-action"
+                mat-icon-button
+                color="primary"
+                (click)="exportToExcel()"
+                [matTooltip]="'Descargar Excel'"
+            >
+                <mat-icon>file_download</mat-icon>
+            </button>
+        </ng-container>
+    </div>
+</div>
+
 <div class="table-container">
     <table
         mat-table

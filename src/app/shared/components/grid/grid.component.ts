@@ -185,6 +185,16 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
         return column.name;
     }
 
+    add(): void {
+        // Implementar lógica para agregar un nuevo elemento
+        console.log("Agregar nuevo elemento no implementado aún.");
+    }
+
+    exportToExcel(): void {
+        // Implementar la lógica para exportar a Excel
+        console.log("Exportar a Excel no implementado aún.");
+    }
+
     private _setupSorting(): void {
         if (!this.sort) {
             return;

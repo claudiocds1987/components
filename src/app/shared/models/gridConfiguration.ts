@@ -46,7 +46,7 @@ export interface GridConfiguration {
     hasPagination?: PaginationConfig | false; // "false" porque puede no tener paginacion la grilla
     hasInputSearch?: boolean; // Para mostrar o no el input search arriba de la grilla
     filterByColumn?: string; // indica a el input search en que columna hacer la búsqueda
-    withExcelDownload?: boolean; // Muestra o no el boton para descargar el excel
+    hasExcelDownload?: boolean; // Muestra o no el boton para descargar el excel
     OrderBy: OrderBy;
     hasSorting?: {
         isServerSide: boolean;
@@ -105,7 +105,7 @@ export const createDefaultGridConfiguration = (
         hasPagination: finalPaginationConfig,
         hasInputSearch: config.hasInputSearch ?? true,
         filterByColumn: config.filterByColumn ?? "",
-        withExcelDownload: config.withExcelDownload ?? false,
+        hasExcelDownload: config.hasExcelDownload ?? false,
         OrderBy: config.OrderBy
             ? { ...defaultOrderBy, ...config.OrderBy }
             : defaultOrderBy,

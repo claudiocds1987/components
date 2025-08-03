@@ -7,6 +7,24 @@
     overflow: hidden; /* Evita el desbordamiento */
 }
 
+.buttons-actions-container {
+  display: flex;
+  /* Alinea el contenido al final (derecha) del contenedor */
+  justify-content: flex-end;
+  padding-bottom: 10px;
+  
+    .buttons-actions {
+      display: flex;
+      gap: 5px; 
+
+    .button-action{
+      background-color:#f0f4f9;
+    }
+  }
+
+}
+
+
 .header .grid-cell {
   background-color: $primary-color-material;
 
