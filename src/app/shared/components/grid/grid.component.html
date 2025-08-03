@@ -37,14 +37,13 @@
 <div class="buttons-actions-container" *ngIf="!isLoading">
     <div class="buttons-actions">
         <button
-            *ngIf="config.hasAddButton"
-            class="button-action"
-            mat-icon-button
+            *ngIf="config.hasCreateButton"
+            mat-stroked-button
             color="primary"
-            (click)="add()"
-            [matTooltip]="'Agregar'"
+            (click)="create()"
+            style="border-radius: 50px"
         >
-            <mat-icon>person_add</mat-icon>
+            Crear
         </button>
 
         <button
