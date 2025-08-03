@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpParams, HttpResponse } from "@angular/common/http";
-import { map, Observable } from "rxjs";
+import { delay, map, Observable } from "rxjs";
 import { Employee } from "../models/employee.model";
 import { PaginatedList } from "../models/paginated-list.model";
 import { EmployeeFilterParams } from "../models/employee-filter-params.model";
@@ -73,6 +73,7 @@ export class EmployeeService {
                 Employee[]
             >(this.apiUrl, { params: httpParams, observe: "response" })
             .pipe(
+                delay(1500), // Simula un retraso de 1500 milisegundos (1.5 segundos)
                 map(
                     (
                         response: HttpResponse<Employee[]>,

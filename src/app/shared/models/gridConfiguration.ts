@@ -47,6 +47,7 @@ export interface GridConfiguration {
     hasInputSearch?: boolean; // Para mostrar o no el input search arriba de la grilla
     filterByColumn?: string; // indica a el input search en que columna hacer la búsqueda
     hasExcelDownload?: boolean; // Muestra o no el boton para descargar el excel
+    hasAddButton?: boolean; // Muestra o no el botón de agregar
     OrderBy: OrderBy;
     hasSorting?: {
         isServerSide: boolean;
@@ -106,6 +107,7 @@ export const createDefaultGridConfiguration = (
         hasInputSearch: config.hasInputSearch ?? true,
         filterByColumn: config.filterByColumn ?? "",
         hasExcelDownload: config.hasExcelDownload ?? false,
+        hasAddButton: config.hasAddButton ?? false,
         OrderBy: config.OrderBy
             ? { ...defaultOrderBy, ...config.OrderBy }
             : defaultOrderBy,

@@ -408,8 +408,9 @@ export class EmployeeGridComponent implements OnInit {
                     | "desc",
             },
             filterByColumn: "", // Valor por defecto
-            hasExcelDownload: true, // Valor por defecto
             hasInputSearch: false, // true para que aparezca
+            hasExcelDownload: true, // Valor por defecto
+            hasAddButton: true, // Valor por defecto
         });
         return config;
     }
