@@ -5,6 +5,7 @@
         [isLoading]="isLoadingData"
         (pageChange)="onGridPageChange($event)"
         (sortChange)="onGridSortChange($event)"
+        (exportExcel)="onExportToExcel()"
     ></app-grid>
     <div class="filter-container">
         <ng-container *ngIf="gridFilterForm">

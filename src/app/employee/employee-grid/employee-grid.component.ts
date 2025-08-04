@@ -27,6 +27,7 @@ import { finalize, map } from "rxjs";
 import { HttpClientModule } from "@angular/common/http";
 import { PageEvent } from "@angular/material/paginator";
 import { Sort } from "@angular/material/sort";
+import { ExportService } from "../../shared/services/export.service";
 
 @Component({
     selector: "app-employee-grid",
@@ -48,8 +49,10 @@ export class EmployeeGridComponent implements OnInit {
     gridData: GridData[] = [];
     employees: Employee[] = [];
     isLoadingData = false;
+
     private _employeeFilterParams: EmployeeFilterParams = {};
     private _employeeServices = inject(EmployeeService);
+    private _exportService = inject(ExportService);
     private _cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
 
     private _defaultPaginatorOptions: PaginationConfig = {
@@ -107,6 +110,68 @@ export class EmployeeGridComponent implements OnInit {
             limit: event.pageSize,
         };
         this._getEmployees();
+    }
+
+    onExportToExcel(): void {
+        // 1. Tomamos los parámetros actuales
+        const params = { ...this._employeeFilterParams };
+
+        // 2. Creamos un nuevo objeto para los parámetros de la URL
+        const exportParams: any = {};
+
+        // 3. Adaptamos los parámetros a la sintaxis de json-server
+        if (params.sortColumn) {
+            exportParams["_sort"] = params.sortColumn;
+        }
+        if (params.sortOrder) {
+            exportParams["_order"] = params.sortOrder;
+        }
+        // Añade el resto de los filtros de tu grilla
+        if (params.id) {
+            exportParams["id"] = params.id;
+        }
+
+        if (params.name) {
+            exportParams["name"] = params.name;
+        }
+        if (params.surname) {
+            exportParams["surname"] = params.surname;
+        }
+        if (params.birthDate) {
+            exportParams["birthDate"] = params.birthDate;
+        }
+        if (params.position) {
+            exportParams["position"] = params.position;
+        }
+        // 4. Eliminamos los parámetros de paginación que no queremos en el Excel
+        delete params.page;
+        delete params.limit;
+
+        //this.isLoadingData = true;
+        const fileName = "Empleados.xlsx";
+
+        this._exportService
+            .exportDataToExcel(
+                "http://localhost:3000/employees", // La URL de json-server
+                exportParams,
+                fileName,
+            )
+            .pipe(
+                finalize((): void => {
+                    // poner loadSpiner = false
+                    //this.isLoadingData = false;
+                    this._cdr.markForCheck();
+                }),
+            )
+            .subscribe({
+                error: (error: unknown): void => {
+                    console.error(
+                        "Error al descargar el archivo de Excel:",
+                        error,
+                    );
+                    // Muestra un mensaje de error al usuario
+                },
+            });
     }
 
     private _setEmployeeFilterParameters(): void {

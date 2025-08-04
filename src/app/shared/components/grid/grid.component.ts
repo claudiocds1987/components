@@ -96,6 +96,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     @Input() isLoading = false;
     @Output() pageChange = new EventEmitter<PageEvent>();
     @Output() sortChange = new EventEmitter<Sort>();
+    @Output() exportExcel = new EventEmitter<void>();
 
     dataSource = new MatTableDataSource<GridData>();
     private _ngZone = inject(NgZone);
@@ -191,8 +192,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     exportToExcel(): void {
-        // Implementar la lógica para exportar a Excel
-        console.log("Exportar a Excel no implementado aún.");
+        this.exportExcel.emit();
     }
 
     private _setupSorting(): void {
