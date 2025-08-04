@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Observable, tap } from "rxjs";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
+import { DateTime } from "luxon"; // Importamos Luxon
 
 @Injectable({
     providedIn: "root",
@@ -10,7 +11,6 @@ import * as XLSX from "xlsx";
 export class ExportService {
     private _http = inject(HttpClient);
 
-    // El tipo de retorno ahora es Observable<any[]>, el mismo que el del `http.get`
     exportDataToExcel<T>(
         endpoint: string,
         params?: T,
@@ -27,13 +27,26 @@ export class ExportService {
                 }
             });
         }
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return this._http.get<any[]>(endpoint, { params: httpParams }).pipe(
-            // El `tap` se ejecuta con los datos que llegaron.
-            // Después, el observable se completa automáticamente.
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             tap((data: any[]): void => {
-                const worksheet = XLSX.utils.json_to_sheet(data);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const formattedData = data.map((item: any): any => {
+                    if (item.birthDate) {
+                        const luxonDate = DateTime.fromISO(item.birthDate);
+                        return {
+                            ...item,
+                            birthDate: luxonDate.isValid
+                                ? luxonDate.toFormat("dd/MM/yyyy")
+                                : item.birthDate,
+                        };
+                    }
+                    return item;
+                });
+
+                const worksheet = XLSX.utils.json_to_sheet(formattedData); // Usamos los datos formateados
                 const workbook = XLSX.utils.book_new();
                 XLSX.utils.book_append_sheet(workbook, worksheet, "Hoja1");
                 const excelBuffer = XLSX.write(workbook, {
