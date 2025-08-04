@@ -28,6 +28,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { PageEvent } from "@angular/material/paginator";
 import { Sort } from "@angular/material/sort";
 import { ExportService } from "../../shared/services/export.service";
+import { SpinnerService } from "../../shared/services/spinner.service";
 
 @Component({
     selector: "app-employee-grid",
@@ -54,6 +55,7 @@ export class EmployeeGridComponent implements OnInit {
     private _employeeServices = inject(EmployeeService);
     private _exportService = inject(ExportService);
     private _cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
+    private _spinnerService = inject(SpinnerService);
 
     private _defaultPaginatorOptions: PaginationConfig = {
         pageIndex: 0,
@@ -113,6 +115,7 @@ export class EmployeeGridComponent implements OnInit {
     }
 
     onExportToExcel(): void {
+        this._spinnerService.show();
         // 1. Tomamos los parámetros actuales
         const params = { ...this._employeeFilterParams };
 
@@ -152,19 +155,21 @@ export class EmployeeGridComponent implements OnInit {
 
         this._exportService
             .exportDataToExcel(
-                "http://localhost:3000/employees", // La URL de json-server
+                // Se agrega `?_delay=2000` para simular un retraso de 2 segundos
+                // para poder mostrar el spinner
+                "http://localhost:3000/employees?_delay=2000", // ruta json-server
                 exportParams,
                 fileName,
             )
             .pipe(
                 finalize((): void => {
-                    // poner loadSpiner = false
-                    //this.isLoadingData = false;
+                    this._spinnerService.hide();
                     this._cdr.markForCheck();
                 }),
             )
             .subscribe({
                 error: (error: unknown): void => {
+                    this._spinnerService.hide();
                     console.error(
                         "Error al descargar el archivo de Excel:",
                         error,
