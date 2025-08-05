@@ -42,10 +42,20 @@
     </div>
 
     <div class="filter-actions">
-        <button mat-raised-button color="primary" (click)="applyFilter()">
+        <button
+            mat-raised-button
+            color="primary"
+            (click)="applyFilter()"
+            [disabled]="isButtonDisabled()"
+        >
             Aplicar Filtro
         </button>
-        <button mat-button color="primary" (click)="clearFilter()">
+        <button
+            mat-button
+            color="primary"
+            (click)="clearFilter()"
+            [disabled]="!this.filterForm.dirty"
+        >
             Limpiar Filtro
         </button>
     </div>

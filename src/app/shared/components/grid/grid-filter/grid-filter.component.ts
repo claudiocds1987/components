@@ -49,6 +49,11 @@ export class GridFilterComponent {
         this.emitFilterDescriptions.emit([]);
     }
 
+    isButtonDisabled(): boolean {
+        // Verifica si el formulario es válido y si tiene algún valor modificado
+        return !this.filterForm.valid || !this.filterForm.dirty;
+    }
+
     private _mapFilterValuesToChips(
         filterValues: Record<string, unknown>,
     ): Chip[] {
