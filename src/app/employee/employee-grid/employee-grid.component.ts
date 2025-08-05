@@ -29,6 +29,10 @@ import { PageEvent } from "@angular/material/paginator";
 import { Sort } from "@angular/material/sort";
 import { ExportService } from "../../shared/services/export.service";
 import { SpinnerService } from "../../shared/services/spinner.service";
+import {
+    ChipsComponent,
+    Chip,
+} from "../../shared/components/chips/chips/chips.component";
 
 @Component({
     selector: "app-employee-grid",
@@ -38,6 +42,7 @@ import { SpinnerService } from "../../shared/services/spinner.service";
         HttpClientModule,
         GridComponent,
         GridFilterComponent,
+        ChipsComponent,
     ],
     templateUrl: "./employee-grid.component.html",
     styleUrl: "./employee-grid.component.scss",
@@ -49,6 +54,7 @@ export class EmployeeGridComponent implements OnInit {
     gridConfig: GridConfiguration;
     gridData: GridData[] = [];
     employees: Employee[] = [];
+    chips: Chip[] = [];
     isLoadingData = false;
 
     private _employeeFilterParams: EmployeeFilterParams = {};
@@ -76,7 +82,7 @@ export class EmployeeGridComponent implements OnInit {
         this._getEmployees();
     }
 
-    applyFilter(filterValues: unknown): void {
+    applyFilter(filterValues: Record<string, unknown>): void {
         // 1. Mapeamos `filterValues` a `EmployeeFilterParams`
         const filterParamsForBackend =
             this._mapToEmployeeFilterParams(filterValues);
@@ -177,6 +183,25 @@ export class EmployeeGridComponent implements OnInit {
                     // Muestra un mensaje de error al usuario
                 },
             });
+    }
+
+    onFilterDescriptionsEmitted(chips: Chip[]): void {
+        this.chips = chips;
+        console.log("Chips activos actualizados:", this.chips);
+    }
+
+    onRemoveChip(chip: Chip): void {
+        // Obtenemos el nombre del campo del filtro que se va a quitar
+        const fieldName = chip.key;
+        // Reseteamos el valor del formulario para ese campo
+        this.gridFilterForm.get(fieldName)?.reset();
+        // Llamamos a applyFilter con los valores actualizados del formulario
+        this.applyFilter(this.gridFilterForm.value);
+        // Actualizamos la lista de chips activos
+        this.chips = this.chips.filter(
+            // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+            (c) => c.key !== fieldName,
+        );
     }
 
     private _setEmployeeFilterParameters(): void {

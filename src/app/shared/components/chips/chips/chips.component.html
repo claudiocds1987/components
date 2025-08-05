@@ -1,0 +1,26 @@
+<!-- <div class="chips-container">
+    <mat-chip-row *ngFor="let filter of filters">
+        {{ filter.label }}
+        <button
+            matChipRemove
+            [attr.aria-label]="'remove ' + filter.label"
+            (click)="removeChip(filter)"
+        >
+            <mat-icon>cancel</mat-icon>
+        </button>
+    </mat-chip-row>
+</div>
+ -->
+<div class="chips-container">
+    <mat-chip-row *ngFor="let chip of chips; trackBy: trackByChipKey">
+        <!-- Mostrando la etiqueta del filtro -->
+        {{ chip.label }}
+        <mat-icon
+            matChipRemove
+            (click)="removeChip(chip)"
+            [attr.aria-label]="'remove ' + chip.label"
+        >
+            cancel
+        </mat-icon>
+    </mat-chip-row>
+</div>

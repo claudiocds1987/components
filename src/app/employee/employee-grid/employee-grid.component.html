@@ -13,7 +13,9 @@
                 [config]="gridFilterConfig"
                 [filterForm]="gridFilterForm"
                 (emitFilterApplied)="applyFilter($event)"
+                (emitFilterDescriptions)="onFilterDescriptionsEmitted($event)"
             ></app-grid-filter>
         </ng-container>
     </div>
+    <app-chips [chips]="chips" (chipRemoved)="onRemoveChip($event)"></app-chips>
 </div>
