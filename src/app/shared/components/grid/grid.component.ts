@@ -315,10 +315,6 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
 
             // Si no hay columna específica, buscar en todas las columnas sortables (o relevantes)
             return this.columns.some((col: Column): boolean => {
-                // Podrías ajustar qué columnas se consideran para el filtro global
-                // Por ejemplo, solo columnas con isSortable:
-                // if (!col.isSortable) return false;
-
                 const value = data[col.name];
                 const stringValue = value?.toString() || "";
                 return stringValue.toLowerCase().includes(search);

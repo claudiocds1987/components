@@ -12,8 +12,8 @@ import { MatIconModule } from "@angular/material/icon";
 // Definimos la interfaz para la estructura de los chips
 export interface Chip {
     key: string; // Nombre del campo del filtro (ej: 'name', 'position')
-    label: string; // Etiqueta descriptiva para el chip (ej: 'Nombre: John Doe')
-    value: unknown; // Valor del filtro asociado (ej: 'John Doe')
+    label: string; // Etiqueta descriptiva para el chip (ej: 'Nombre: Juan Doe')
+    value: unknown; // Valor del filtro asociado (ej: 'Juan Doe')
 }
 
 @Component({

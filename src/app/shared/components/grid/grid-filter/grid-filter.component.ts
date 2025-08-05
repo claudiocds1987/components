@@ -1,13 +1,10 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
-import {
-    MatDatepickerInputEvent,
-    MatDatepickerModule,
-} from "@angular/material/datepicker";
+import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { MatButtonModule } from "@angular/material/button";
 import { GridFilterConfig } from "../../../models/grid-filter-config.model";
@@ -40,24 +37,39 @@ export class GridFilterComponent {
     @Output() emitFilterDescriptions = new EventEmitter<Chip[]>();
 
     applyFilter(): void {
-        //this.emitFilterApplied.emit(this.filterForm.value);
-        const filterValues = this.filterForm.value;
-        this.emitFilterApplied.emit(filterValues);
-        const filterChips = this._mapFilterValuesToChips(filterValues);
+        const filterFormValues = this.filterForm.value;
+        this.emitFilterApplied.emit(filterFormValues);
+        const filterChips = this._mapFilterValuesToChips(filterFormValues);
         this.emitFilterDescriptions.emit(filterChips);
     }
 
     clearFilter(): void {
         this.filterForm.reset();
-        this.emitFilterApplied.emit(this.filterForm.value); // Emitir filtro vacío para recargar datos
+        this.emitFilterApplied.emit(this.filterForm.value);
         this.emitFilterDescriptions.emit([]);
     }
 
-    private _mapFilterValuesToChips(filterValues: any): Chip[] {
+    private _mapFilterValuesToChips(
+        filterValues: Record<string, unknown>,
+    ): Chip[] {
         const chips: Chip[] = [];
 
         // Aquí se tipifica el parámetro 'key' como string en la función flecha.
+        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         Object.keys(filterValues).forEach((key: string) => {
+            console.log("key", filterValues[key]);
+            /* filterValues es el objeto con los valores de los filtros aplicados ej:
+            {
+                birthDate: null
+                id: ""
+                name: "Maria"
+                position: ""
+                surname: "perez"
+            }
+            "key" es cada propiedad del objeto birthDate, id, name, position, surname 
+            filterValues[key]; es el valor de cada propiedad del objeto ej "Maria"
+            */
+
             const value = filterValues[key];
 
             // Ignora valores nulos, indefinidos o cadenas vacías
