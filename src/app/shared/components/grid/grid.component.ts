@@ -36,6 +36,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
+import { Chip, ChipsComponent } from "../chips/chips/chips.component";
 
 // --- función para el setear paginador ---
 export function getPaginatorIntl(): MatPaginatorIntl {
@@ -76,6 +77,7 @@ export function getPaginatorIntl(): MatPaginatorIntl {
         MatMenuModule,
         MatIconModule,
         MatButtonModule,
+        ChipsComponent,
     ],
     templateUrl: "./grid.component.html",
     styleUrl: "./grid.component.scss",
@@ -94,9 +96,11 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     @Input() config!: GridConfiguration;
     @Input() data: GridData[] = [];
     @Input() isLoading = false;
+    @Input() chips: Chip[] = [];
     @Output() pageChange = new EventEmitter<PageEvent>();
     @Output() sortChange = new EventEmitter<Sort>();
     @Output() exportExcel = new EventEmitter<void>();
+    @Output() chipRemoved = new EventEmitter<Chip>();
 
     dataSource = new MatTableDataSource<GridData>();
     private _ngZone = inject(NgZone);
@@ -193,6 +197,10 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
 
     exportToExcel(): void {
         this.exportExcel.emit();
+    }
+
+    onChipRemoved(chip: Chip): void {
+        this.chipRemoved.emit(chip);
     }
 
     private _setupSorting(): void {

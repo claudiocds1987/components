@@ -1,4 +1,4 @@
-<div class="employee-grid-container">
+<!-- <div class="employee-grid-container">
     <app-grid
         [config]="gridConfig"
         [data]="gridData"
@@ -18,4 +18,27 @@
         </ng-container>
     </div>
     <app-chips [chips]="chips" (chipRemoved)="onRemoveChip($event)"></app-chips>
+</div>
+ -->
+<div class="employee-grid-container">
+    <app-grid
+        [config]="gridConfig"
+        [data]="gridData"
+        [isLoading]="isLoadingData"
+        [chips]="chips"
+        (pageChange)="onGridPageChange($event)"
+        (sortChange)="onGridSortChange($event)"
+        (exportExcel)="onExportToExcel()"
+        (chipRemoved)="onRemoveChip($event)"
+    ></app-grid>
+    <div class="filter-container">
+        <ng-container *ngIf="gridFilterForm">
+            <app-grid-filter
+                [config]="gridFilterConfig"
+                [filterForm]="gridFilterForm"
+                (emitFilterApplied)="applyFilter($event)"
+                (emitFilterDescriptions)="onFilterDescriptionsEmitted($event)"
+            ></app-grid-filter>
+        </ng-container>
+    </div>
 </div>

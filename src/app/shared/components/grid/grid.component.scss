@@ -9,13 +9,13 @@
 
 .buttons-actions-container {
   display: flex;
-  /* Alinea el contenido al final (derecha) del contenedor */
-  justify-content: flex-end;
+  justify-content: space-between;
   padding-bottom: 10px;
   
-    .buttons-actions {
-      display: flex;
-      gap: 5px; 
+  .buttons-actions {
+    display: flex;
+    justify-content: flex-end; // Para alinear el contenido al final (derecha) del contenedor
+    gap: 5px; 
 
     .button-action{
       background-color:#f0f4f9;
@@ -27,8 +27,6 @@
 
 .header .grid-cell {
   background-color: $primary-color-material;
-
-
   color: white;
   font-weight: bold;
 }
@@ -44,7 +42,7 @@
     flex: 1; /* La tabla ocupa la mayor parte del espacio */
     overflow: auto; /* Permite scroll en la tabla si es necesario */
     min-height: 0; /* Permite que se reduzca si es necesario */
-    
+    background: white;
     /* Reglas para navegadores basados en WebKit (Chrome, Safari, Edge) */
     &::-webkit-scrollbar {
       width: 3px;
