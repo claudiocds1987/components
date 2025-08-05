@@ -37,6 +37,7 @@
 <div class="buttons-actions-container" *ngIf="!isLoading">
     <div>
         <app-chips
+            *ngIf="config.hasChips"
             [chips]="chips"
             (chipRemoved)="onChipRemoved($event)"
         ></app-chips>

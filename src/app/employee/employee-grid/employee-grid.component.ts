@@ -504,6 +504,7 @@ export class EmployeeGridComponent implements OnInit {
             },
             filterByColumn: "", // Valor por defecto
             hasInputSearch: false, // true para que aparezca
+            hasChips: true, // Para mostrar los chips de filtros aplicados
             hasExcelDownload: true, // Valor por defecto
             hasCreateButton: true, // Valor por defecto
         });
