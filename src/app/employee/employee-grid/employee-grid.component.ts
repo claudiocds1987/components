@@ -29,10 +29,7 @@ import { PageEvent } from "@angular/material/paginator";
 import { Sort } from "@angular/material/sort";
 import { ExportService } from "../../shared/services/export.service";
 import { SpinnerService } from "../../shared/services/spinner.service";
-import {
-    ChipsComponent,
-    Chip,
-} from "../../shared/components/chips/chips/chips.component";
+import { Chip } from "../../shared/components/chips/chips/chips.component";
 
 @Component({
     selector: "app-employee-grid",
@@ -42,7 +39,6 @@ import {
         HttpClientModule,
         GridComponent,
         GridFilterComponent,
-        ChipsComponent,
     ],
     templateUrl: "./employee-grid.component.html",
     styleUrl: "./employee-grid.component.scss",
@@ -187,7 +183,6 @@ export class EmployeeGridComponent implements OnInit {
 
     onFilterDescriptionsEmitted(chips: Chip[]): void {
         this.chips = chips;
-        console.log("Chips activos actualizados:", this.chips);
     }
 
     onRemoveChip(chip: Chip): void {
