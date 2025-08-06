@@ -1,8 +1,15 @@
 <div class="chips-container">
-    <mat-chip-row *ngFor="let chip of chips; trackBy: trackByChipKey">
+    <mat-chip-row
+        class="chip-row"
+        *ngFor="let chip of chips; trackBy: trackByChipKey"
+    >
         <!-- Mostrando la etiqueta del filtro -->
-        {{ chip.label }}
+        <span class="chip-label">{{
+            chip.label.substring(0, chip.label.indexOf(":") + 1)
+        }}</span
+        >{{ chip.label.substring(chip.label.indexOf(":") + 1) }}
         <mat-icon
+            class="icon-remove"
             matChipRemove
             (click)="removeChip(chip)"
             [attr.aria-label]="'remove ' + chip.value"
