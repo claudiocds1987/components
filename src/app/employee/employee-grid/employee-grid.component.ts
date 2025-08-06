@@ -212,9 +212,9 @@ export class EmployeeGridComponent implements OnInit {
         this._employeeServices
             .getEmployees(this._employeeFilterParams)
             .pipe(
-                map(this._transformPaginatedListToGridData.bind(this)),
+                map(this._mapPaginatedListToGridData.bind(this)),
                 finalize((): void => {
-                    this.isLoadingData = false; // Manejamos el estado de carga aquí
+                    this.isLoadingData = false;
                     this._cdr.markForCheck();
                 }),
             )
@@ -222,12 +222,10 @@ export class EmployeeGridComponent implements OnInit {
                 next: (
                     paginatedListGridData: PaginatedList<GridData>,
                 ): void => {
-                    // Tipo explícito para next
                     this.gridData = paginatedListGridData.items;
-                    this._updateGridConfigOnDataReceived(paginatedListGridData); // Nueva función para actualizar config
+                    this._updateGridConfigOnDataReceived(paginatedListGridData);
                 },
                 error: (error: any): void => {
-                    // Tipo explícito para error
                     console.error(
                         "EmployeeGridComponent: Error al obtener empleados:",
                         error,
@@ -236,7 +234,7 @@ export class EmployeeGridComponent implements OnInit {
             });
     }
 
-    private _transformPaginatedListToGridData(
+    private _mapPaginatedListToGridData(
         paginatedList: PaginatedList<Employee>,
     ): PaginatedList<GridData> {
         const transformedItems: GridData[] = paginatedList.items.map(
