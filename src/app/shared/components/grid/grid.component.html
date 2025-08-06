@@ -69,7 +69,7 @@
 <div class="table-container">
     <table
         mat-table
-        *ngIf="!isLoading"
+        *ngIf="!isLoading && dataSource.data.length > 0"
         [dataSource]="dataSource"
         matSort
         [matSortActive]="config.OrderBy.columnName"
@@ -167,6 +167,11 @@
         ></tr>
         <tr mat-row *matRowDef="let row; columns: columnNames"></tr>
     </table>
+    <!-- Mostrar FeedbackComponent cuando no hay datos y no está cargando -->
+    <app-feedback
+        *ngIf="!isLoading && dataSource.data.length === 0"
+        [imageUrl]="'assets/no-result.svg'"
+    ></app-feedback>
 </div>
 
 <mat-paginator
