@@ -39,7 +39,7 @@ export interface OrderBy {
 export type GridData = Record<
     string,
     string | number | boolean | Date | null | undefined | ElipsisAction[]
-> & { id: number }; // Aseguramos que 'id' exista y sea un número
+> /*& { id: number | string }*/; // Aseguramos que 'id' exista y sea un número o string
 
 export interface GridConfiguration {
     columns: Column[];

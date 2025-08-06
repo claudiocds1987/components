@@ -83,6 +83,12 @@ export class EmployeeGridComponent implements OnInit {
         const filterParamsForBackend =
             this._mapToEmployeeFilterParams(filterValues);
         this._employeeFilterParams.page = 1; // Aseguramos que la página sea 1 al aplicar un nuevo filtro
+
+        // Si el usuario limpia los filtros, el objeto viene vacío, por eso reiniciamos los parámetros de filtro
+        // como estan en la configuracion en _setEmployeeFilterParameters(),es decir por "id asc"
+        if (this._isObjectEmpty(filterParamsForBackend)) {
+            this._setEmployeeFilterParameters();
+        }
         // 2. con Object.assign() Copiamos los valores de filterParamsForBackend
         // (donde tiene las fecha formateadas a dd/mm/yyyy con los otros datos que vienen del filtro) a `_employeeFilterParams`,
         //"_employeeFilterParams" es lo que se envía al servicio.
@@ -120,10 +126,8 @@ export class EmployeeGridComponent implements OnInit {
         this._spinnerService.show();
         // 1. Tomamos los parámetros actuales
         const params = { ...this._employeeFilterParams };
-
         // 2. Creamos un nuevo objeto para los parámetros de la URL
         const exportParams: any = {};
-
         // 3. Adaptamos los parámetros a la sintaxis de json-server
         if (params.sortColumn) {
             exportParams["_sort"] = params.sortColumn;
@@ -151,8 +155,6 @@ export class EmployeeGridComponent implements OnInit {
         // 4. Eliminamos los parámetros de paginación que no queremos en el Excel
         delete params.page;
         delete params.limit;
-
-        //this.isLoadingData = true;
         const fileName = "Empleados.xlsx";
 
         this._exportService
@@ -199,6 +201,25 @@ export class EmployeeGridComponent implements OnInit {
         );
     }
 
+    private _isObjectEmpty(obj: EmployeeFilterParams): boolean {
+        // Object.values() obtiene un array con los valores del objeto.
+        // .some() verifica si al menos un valor cumple la condición.
+        // Si algún valor es truthy (no falso), el objeto no está vacío.
+        const hasTruthyValue = Object.values(obj).some(
+            (value: unknown): boolean => {
+                // Si el valor es un string, lo consideramos falsy si está vacío ("")
+                if (typeof value === "string") {
+                    return value.trim() !== "";
+                }
+                // Para otros tipos, la doble negación (!!) es suficiente
+                return !!value;
+            },
+        );
+
+        // Si no hay valores truthy, significa que todo está vacío o falsy.
+        return !hasTruthyValue;
+    }
+
     private _setEmployeeFilterParameters(): void {
         // Aca se establece por defecto como va a aparecer la grilla paginada por 1ra vez.
         this._employeeFilterParams.page = 1;
@@ -243,7 +264,7 @@ export class EmployeeGridComponent implements OnInit {
                 const gridData: GridData = { id: employee.id as number };
                 for (const key in employee) {
                     // No copiar la propiedad 'id' directamente si ya la asignamos arriba
-                    if (key === "id") continue;
+                    //if (key === "id") continue;
 
                     const value = (employee as any)[key]; // Valor tal como viene del backend
                     // Verifica si el valor es un string y si puede ser parseado como una fecha YYYY-MM-DD (ISO)
@@ -418,6 +439,7 @@ export class EmployeeGridComponent implements OnInit {
         }
     }
 
+    // Mapea para funcionar con json-server
     private _mapToEmployeeFilterParams(obj: unknown): EmployeeFilterParams {
         const newObj: Partial<EmployeeFilterParams> = {
             ...(obj as Record<string, unknown>),
