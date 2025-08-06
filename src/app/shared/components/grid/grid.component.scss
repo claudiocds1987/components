@@ -8,9 +8,21 @@
 }
 
 .buttons-actions-container {
-  display: flex;
+  /* display: flex;
   justify-content: space-between;
-  padding-bottom: 10px;
+  padding-bottom: 10px; */
+   display: grid; /* Cambiado de flex a grid */
+    /* Define dos columnas: la primera (para los chips) ocupa todo el espacio disponible (1fr),
+       y la segunda (para los botones) ocupa solo el espacio que necesita (auto).
+       Esto logra el efecto de "space-between" al empujar los botones a la derecha. */
+    grid-template-columns: 1fr auto; 
+  
+    gap: 10px; /* Espacio entre las columnas de la cuadrícula */
+    padding-bottom: 10px; /* Mantiene el padding inferior */
+    /* El 'flex-wrap: wrap' ya no es directamente aplicable aquí para el comportamiento de envoltura
+       de los elementos principales (chips-wrapper y buttons-actions) en la misma línea de grid.
+       La responsividad para que se apilen en pantallas pequeñas se manejaría con media queries
+       cambiando 'grid-template-columns' a una sola columna (ej. 1fr). */
   
   .buttons-actions {
     display: flex;

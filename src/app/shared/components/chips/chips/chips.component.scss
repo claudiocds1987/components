@@ -1,7 +1,35 @@
 .chips-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px; /* Espacio entre los chips */
+    gap: 10px; /* Espacio entre los chips */
+    overflow-x: auto;
+    max-height: 105px;
+    /* Reglas para navegadores basados en WebKit (Chrome, Safari, Edge) */
+    &::-webkit-scrollbar {
+      width: 3px;
+      height: 6px;
+    } 
+  
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 3px;
+    }
+  
+    &::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 3px;
+    }
+  
+    &::-webkit-scrollbar-thumb:hover {
+      background: #a8a8a8;
+    }
+  
+  /* Reglas para Firefox */
+  // Usamos @supports para que Chrome ignore estas reglas y use las de arriba
+    @supports not selector(::-webkit-scrollbar) {
+      scrollbar-width: thin;
+      scrollbar-color: #c1c1c1 #f1f1f1;
+    }
    
 }
 
