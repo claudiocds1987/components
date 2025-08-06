@@ -137,25 +137,27 @@ export class EmployeeGridComponent implements OnInit {
         }
         // Añade el resto de los filtros de tu grilla
         if (params.id) {
-            exportParams["id"] = params.id;
+            exportParams["id_like"] = params.id;
         }
 
         if (params.name) {
-            exportParams["name"] = params.name;
+            exportParams["name_like"] = params.name;
         }
         if (params.surname) {
-            exportParams["surname"] = params.surname;
+            exportParams["surname_like"] = params.surname;
         }
         if (params.birthDate) {
-            exportParams["birthDate"] = params.birthDate;
+            exportParams["birthDate_like"] = params.birthDate;
         }
         if (params.position) {
-            exportParams["position"] = params.position;
+            exportParams["position_like"] = params.position;
         }
         // 4. Eliminamos los parámetros de paginación que no queremos en el Excel
         delete params.page;
         delete params.limit;
         const fileName = "Empleados.xlsx";
+
+        console.log("Exportando con parámetros:", exportParams);
 
         this._exportService
             .exportDataToExcel(
