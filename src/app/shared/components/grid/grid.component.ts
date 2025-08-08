@@ -103,6 +103,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     @Output() sortChange = new EventEmitter<Sort>();
     @Output() exportExcel = new EventEmitter<void>();
     @Output() chipRemoved = new EventEmitter<Chip>();
+    @Output() createButtonClicked = new EventEmitter<void>();
 
     dataSource = new MatTableDataSource<GridData>();
     private _ngZone = inject(NgZone);
@@ -193,8 +194,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     create(): void {
-        // Implementar lógica para agregar un nuevo elemento
-        console.log("Crear nuevo elemento no implementado aún.");
+        this.createButtonClicked.emit();
     }
 
     exportToExcel(): void {

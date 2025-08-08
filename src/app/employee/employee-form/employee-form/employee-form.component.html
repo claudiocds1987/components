@@ -1,0 +1,34 @@
+<h2 mat-dialog-title>Crear nuevo empleado</h2>
+<div mat-dialog-content>
+    <form [formGroup]="employeeForm">
+        <div class="employee-form-container">
+            <mat-form-field appearance="outline">
+                <mat-label>Nombre</mat-label>
+                <input matInput formControlName="name" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Apellido</mat-label>
+                <input matInput formControlName="surname" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Nacimiento</mat-label>
+                <input matInput formControlName="birthDate" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Puesto</mat-label>
+                <input matInput formControlName="position" />
+            </mat-form-field>
+        </div>
+    </form>
+</div>
+<div class="actions-container" mat-dialog-actions>
+    <button mat-button (click)="onCancel()">Cancelar</button>
+    <button
+        mat-flat-button
+        color="primary"
+        [disabled]="employeeForm.invalid"
+        (click)="onSave()"
+    >
+        Guardar
+    </button>
+</div>

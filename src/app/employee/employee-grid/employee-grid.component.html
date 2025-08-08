@@ -8,6 +8,7 @@
         (sortChange)="onGridSortChange($event)"
         (exportExcel)="onExportToExcel()"
         (chipRemoved)="onRemoveChip($event)"
+        (createButtonClicked)="onCreateEmployee()"
     ></app-grid>
     <div class="filter-container">
         <ng-container *ngIf="gridFilterForm">

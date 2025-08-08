@@ -30,6 +30,8 @@ import { Sort } from "@angular/material/sort";
 import { ExportService } from "../../shared/services/export.service";
 import { SpinnerService } from "../../shared/services/spinner.service";
 import { Chip } from "../../shared/components/chips/chips/chips.component";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { EmployeeFormComponent } from "../employee-form/employee-form/employee-form.component";
 
 @Component({
     selector: "app-employee-grid",
@@ -39,6 +41,7 @@ import { Chip } from "../../shared/components/chips/chips/chips.component";
         HttpClientModule,
         GridComponent,
         GridFilterComponent,
+        MatDialogModule,
     ],
     templateUrl: "./employee-grid.component.html",
     styleUrl: "./employee-grid.component.scss",
@@ -58,6 +61,7 @@ export class EmployeeGridComponent implements OnInit {
     private _exportService = inject(ExportService);
     private _cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
     private _spinnerService = inject(SpinnerService);
+    private _dialog: MatDialog = inject(MatDialog);
 
     private _defaultPaginatorOptions: PaginationConfig = {
         pageIndex: 0,
@@ -152,6 +156,10 @@ export class EmployeeGridComponent implements OnInit {
         if (params.position) {
             exportParams["position_like"] = params.position;
         }
+        // agregar esto
+        /* if (params.position) {
+            exportParams["active_like"] = params.active;
+        } */
         // 4. Eliminamos los parámetros de paginación que no queremos en el Excel
         delete params.page;
         delete params.limit;
@@ -201,6 +209,25 @@ export class EmployeeGridComponent implements OnInit {
             // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
             (c) => c.key !== fieldName,
         );
+    }
+
+    onCreateEmployee(): void {
+        const dialogRef = this._dialog.open(EmployeeFormComponent, {
+            width: "500px", // O el ancho que desees
+            disableClose: true, // Opcional: para evitar que el modal se cierre al hacer clic fuera
+        });
+
+        // Suscribirse al evento 'afterClosed' para obtener los datos del formulario
+        dialogRef.afterClosed().subscribe((formData): void => {
+            if (formData) {
+                // 'result' contendrá los datos del formulario si el usuario hizo clic en "Guardar"
+                console.log("Datos del formulario recibidos:", formData);
+                // Aquí puedes llamar a tu servicio para guardar los datos
+                //this._saveNewEmployee(result);
+            } else {
+                console.log("Formulario de empleado cancelado.");
+            }
+        });
     }
 
     private _isObjectEmpty(obj: EmployeeFilterParams): boolean {
@@ -291,7 +318,6 @@ export class EmployeeGridComponent implements OnInit {
                 // Aca se añaden las acciones de elipsis
                 // Pasa el `employee` completo para que la función `_setElipsisActions` pueda acceder a todas sus propiedades
                 gridData["elipsisActions"] = this._setElipsisActions(employee);
-
                 return gridData;
             },
         );
