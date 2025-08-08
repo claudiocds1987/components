@@ -59,6 +59,12 @@ export class EmployeeService {
             );
         }
 
+        console.log("params.active", params.active);
+
+        if (params.active !== undefined) {
+            httpParams = httpParams.set("active", params.active.toString());
+        }
+
         // ... otros filtros
 
         // Usa valores por defecto si no se proporcionan en el objeto

@@ -1,5 +1,5 @@
 export interface SelectItem {
-    value: string;
+    value: string | boolean; // Puede ser string o booleano para el filtro 'status'
     label: string;
 }
 

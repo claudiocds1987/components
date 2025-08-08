@@ -10,13 +10,24 @@
                 <mat-label>Apellido</mat-label>
                 <input matInput formControlName="surname" />
             </mat-form-field>
-            <mat-form-field appearance="outline">
-                <mat-label>Nacimiento</mat-label>
-                <input matInput formControlName="birthDate" />
-            </mat-form-field>
+
+            <app-date-input
+                [formControlName]="'birthDate'"
+                [label]="'Fecha de nacimiento'"
+                [placeholder]="'Fecha de nacimiento'"
+                [isDisabled]="false"
+            ></app-date-input>
+
             <mat-form-field appearance="outline">
                 <mat-label>Puesto</mat-label>
-                <input matInput formControlName="position" />
+                <mat-select formControlName="position">
+                    <mat-option
+                        *ngFor="let position of employeePositions"
+                        [value]="position"
+                    >
+                        {{ position }}
+                    </mat-option>
+                </mat-select>
             </mat-form-field>
         </div>
     </form>

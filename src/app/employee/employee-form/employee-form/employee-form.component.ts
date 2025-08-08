@@ -11,6 +11,8 @@ import { MatDialogModule, MatDialogRef } from "@angular/material/dialog";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatButtonModule } from "@angular/material/button";
+import { DateInputComponent } from "../../../shared/components/date-input/date-input.component";
+import { MatSelectModule } from "@angular/material/select";
 
 @Component({
     selector: "app-employee-form",
@@ -23,16 +25,28 @@ import { MatButtonModule } from "@angular/material/button";
         MatFormFieldModule,
         MatInputModule,
         MatButtonModule,
+        DateInputComponent,
+        MatSelectModule,
     ],
     templateUrl: "./employee-form.component.html",
     styleUrl: "./employee-form.component.scss",
 })
 export class EmployeeFormComponent {
     employeeForm: FormGroup;
+    employeePositions: string[] = [];
     private _dialogRef = inject(MatDialogRef<EmployeeFormComponent>);
 
     constructor() {
         this.employeeForm = this._createForm();
+        this.employeePositions = [
+            "Todos",
+            "Desarrollador Senior",
+            "Desarrollador Junior",
+            "Diseñador UX/UI",
+            "Soporte Técnico",
+            "Analista de Datos",
+            "Especialista QA",
+        ];
     }
     onCancel(): void {
         // Cierra el diálogo sin pasar ningún dato

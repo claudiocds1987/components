@@ -86,8 +86,22 @@ export class EmployeeGridComponent implements OnInit {
         // 1. Mapeamos `filterValues` a `EmployeeFilterParams`
         const filterParamsForBackend =
             this._mapToEmployeeFilterParams(filterValues);
-        this._employeeFilterParams.page = 1; // Aseguramos que la página sea 1 al aplicar un nuevo filtro
 
+        // 2. Reiniciamos completamente el objeto de parámetros.
+        //    Esto garantiza que no se arrastren filtros antiguos.
+        this._employeeFilterParams = {};
+
+        // 3. Reasignamos los parámetros de paginación por defecto.
+        this._setEmployeeFilterParameters();
+
+        // 4. Copiamos los valores de `filterParamsForBackend`
+        //    a `_employeeFilterParams`.
+        Object.assign(this._employeeFilterParams, filterParamsForBackend);
+        /* // 1. Mapeamos `filterValues` a `EmployeeFilterParams`
+        const filterParamsForBackend =
+            this._mapToEmployeeFilterParams(filterValues);
+        this._employeeFilterParams.page = 1; // Aseguramos que la página sea 1 al aplicar un nuevo filtro
+        console.log("applyFilter:", filterParamsForBackend);
         // Si el usuario limpia los filtros, el objeto viene vacío, por eso reiniciamos los parámetros de filtro
         // como estan en la configuracion en _setEmployeeFilterParameters(),es decir por "id asc"
         if (this._isObjectEmpty(filterParamsForBackend)) {
@@ -96,7 +110,7 @@ export class EmployeeGridComponent implements OnInit {
         // 2. con Object.assign() Copiamos los valores de filterParamsForBackend
         // (donde tiene las fecha formateadas a dd/mm/yyyy con los otros datos que vienen del filtro) a `_employeeFilterParams`,
         //"_employeeFilterParams" es lo que se envía al servicio.
-        Object.assign(this._employeeFilterParams, filterParamsForBackend);
+        Object.assign(this._employeeFilterParams, filterParamsForBackend); */
 
         if (this.gridConfig.hasPagination) {
             this.gridConfig.hasPagination.pageIndex = 0;
@@ -157,9 +171,10 @@ export class EmployeeGridComponent implements OnInit {
             exportParams["position_like"] = params.position;
         }
         // agregar esto
-        /* if (params.position) {
+        if (params.active) {
             exportParams["active_like"] = params.active;
-        } */
+        }
+
         // 4. Eliminamos los parámetros de paginación que no queremos en el Excel
         delete params.page;
         delete params.limit;
@@ -473,11 +488,39 @@ export class EmployeeGridComponent implements OnInit {
             ...(obj as Record<string, unknown>),
         };
 
+        // Primero, verificamos si la propiedad 'active' existe y si es un string.
+        // Esto es crucial para que TypeScript no arroje un error.
+        if (typeof newObj.active === "string") {
+            // Ahora que sabemos que es un string, podemos compararlo con 'all' o '' de forma segura.
+            if (newObj.active === "all" || newObj.active === "") {
+                delete newObj.active;
+            }
+        }
+
         for (const key in newObj) {
             if (Object.prototype.hasOwnProperty.call(newObj, key)) {
                 const value = newObj[
                     key as keyof Partial<EmployeeFilterParams>
                 ] as unknown;
+
+                // Iteramos sobre una copia de las claves para poder eliminarlas de forma segura.
+                const keys = Object.keys(newObj);
+                for (const key of keys) {
+                    const value =
+                        newObj[key as keyof Partial<EmployeeFilterParams>];
+
+                    // Verificamos si el valor es "all", nulo, undefined o un string vacío.
+                    if (
+                        value === "all" ||
+                        value === null ||
+                        value === undefined ||
+                        (typeof value === "string" && value.trim() === "")
+                    ) {
+                        delete newObj[
+                            key as keyof Partial<EmployeeFilterParams>
+                        ];
+                    }
+                }
 
                 let luxonDate: DateTime | null = null;
 
@@ -521,6 +564,7 @@ export class EmployeeGridComponent implements OnInit {
                 { name: "surname", label: "Apellido" /*isSortable: false*/ }, // Añadido label
                 { name: "birthDate", label: "Fecha de Nacimiento" }, // Añadido label
                 { name: "position", label: "Puesto" }, // Añadido label
+                { name: "active", label: "Estado" }, // Añadido label
                 {
                     name: "elipsisActions", // Este es el nombre de la propiedad en GridData
                     label: "actions", // Opcional: la etiqueta de la columna en el encabezado
@@ -599,6 +643,22 @@ export class EmployeeGridComponent implements OnInit {
                     { value: "Soporte Técnico", label: "Soporte Técnico" },
                     { value: "Analista de Datos", label: "Analista de Datos" },
                     { value: "Especialista QA", label: "Especialista QA" },
+                ],
+            },
+            {
+                fieldName: "active",
+                fieldType: "select",
+                label: "Estado",
+                selectItems: [
+                    { value: "all", label: "Todos" },
+                    {
+                        value: true,
+                        label: "Activo",
+                    },
+                    {
+                        value: false,
+                        label: "Inactivo",
+                    },
                 ],
             },
 

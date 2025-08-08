@@ -4,6 +4,7 @@ export interface EmployeeFilterParams {
     surname?: string;
     birthDate?: Date;
     position?: string;
+    active?: boolean;
     page?: number;
     limit?: number;
     sortColumn?: string; // para hacer sort por columuna (ej: 'name', 'id')
