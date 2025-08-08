@@ -86,31 +86,15 @@ export class EmployeeGridComponent implements OnInit {
         // 1. Mapeamos `filterValues` a `EmployeeFilterParams`
         const filterParamsForBackend =
             this._mapToEmployeeFilterParams(filterValues);
-
         // 2. Reiniciamos completamente el objeto de parámetros.
         //    Esto garantiza que no se arrastren filtros antiguos.
         this._employeeFilterParams = {};
-
         // 3. Reasignamos los parámetros de paginación por defecto.
         this._setEmployeeFilterParameters();
-
-        // 4. Copiamos los valores de `filterParamsForBackend`
-        //    a `_employeeFilterParams`.
-        Object.assign(this._employeeFilterParams, filterParamsForBackend);
-        /* // 1. Mapeamos `filterValues` a `EmployeeFilterParams`
-        const filterParamsForBackend =
-            this._mapToEmployeeFilterParams(filterValues);
-        this._employeeFilterParams.page = 1; // Aseguramos que la página sea 1 al aplicar un nuevo filtro
-        console.log("applyFilter:", filterParamsForBackend);
-        // Si el usuario limpia los filtros, el objeto viene vacío, por eso reiniciamos los parámetros de filtro
-        // como estan en la configuracion en _setEmployeeFilterParameters(),es decir por "id asc"
-        if (this._isObjectEmpty(filterParamsForBackend)) {
-            this._setEmployeeFilterParameters();
-        }
-        // 2. con Object.assign() Copiamos los valores de filterParamsForBackend
+        // 4. con Object.assign() Copiamos los valores de filterParamsForBackend
         // (donde tiene las fecha formateadas a dd/mm/yyyy con los otros datos que vienen del filtro) a `_employeeFilterParams`,
         //"_employeeFilterParams" es lo que se envía al servicio.
-        Object.assign(this._employeeFilterParams, filterParamsForBackend); */
+        Object.assign(this._employeeFilterParams, filterParamsForBackend);
 
         if (this.gridConfig.hasPagination) {
             this.gridConfig.hasPagination.pageIndex = 0;
@@ -144,6 +128,7 @@ export class EmployeeGridComponent implements OnInit {
         this._spinnerService.show();
         // 1. Tomamos los parámetros actuales
         const params = { ...this._employeeFilterParams };
+        console.log("excel params:", params);
         // 2. Creamos un nuevo objeto para los parámetros de la URL
         const exportParams: any = {};
         // 3. Adaptamos los parámetros a la sintaxis de json-server
@@ -170,8 +155,8 @@ export class EmployeeGridComponent implements OnInit {
         if (params.position) {
             exportParams["position_like"] = params.position;
         }
-        // agregar esto
-        if (params.active) {
+
+        if (params.active !== null) {
             exportParams["active_like"] = params.active;
         }
 
@@ -245,7 +230,7 @@ export class EmployeeGridComponent implements OnInit {
         });
     }
 
-    private _isObjectEmpty(obj: EmployeeFilterParams): boolean {
+    /* private _isObjectEmpty(obj: EmployeeFilterParams): boolean {
         // Object.values() obtiene un array con los valores del objeto.
         // .some() verifica si al menos un valor cumple la condición.
         // Si algún valor es truthy (no falso), el objeto no está vacío.
@@ -262,7 +247,7 @@ export class EmployeeGridComponent implements OnInit {
 
         // Si no hay valores truthy, significa que todo está vacío o falsy.
         return !hasTruthyValue;
-    }
+    } */
 
     private _setEmployeeFilterParameters(): void {
         // Aca se establece por defecto como va a aparecer la grilla paginada por 1ra vez.
@@ -493,6 +478,8 @@ export class EmployeeGridComponent implements OnInit {
         if (typeof newObj.active === "string") {
             // Ahora que sabemos que es un string, podemos compararlo con 'all' o '' de forma segura.
             if (newObj.active === "all" || newObj.active === "") {
+                // borramos la propiedad 'active' si es 'all' o '' porque json server
+                // el campo active es boolean no tiene el valor "all"
                 delete newObj.active;
             }
         }
@@ -502,25 +489,6 @@ export class EmployeeGridComponent implements OnInit {
                 const value = newObj[
                     key as keyof Partial<EmployeeFilterParams>
                 ] as unknown;
-
-                // Iteramos sobre una copia de las claves para poder eliminarlas de forma segura.
-                const keys = Object.keys(newObj);
-                for (const key of keys) {
-                    const value =
-                        newObj[key as keyof Partial<EmployeeFilterParams>];
-
-                    // Verificamos si el valor es "all", nulo, undefined o un string vacío.
-                    if (
-                        value === "all" ||
-                        value === null ||
-                        value === undefined ||
-                        (typeof value === "string" && value.trim() === "")
-                    ) {
-                        delete newObj[
-                            key as keyof Partial<EmployeeFilterParams>
-                        ];
-                    }
-                }
 
                 let luxonDate: DateTime | null = null;
 

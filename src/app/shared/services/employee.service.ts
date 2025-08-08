@@ -59,10 +59,19 @@ export class EmployeeService {
             );
         }
 
-        console.log("params.active", params.active);
-
-        if (params.active !== undefined) {
+        /* if (params.active !== undefined) {
             httpParams = httpParams.set("active", params.active.toString());
+        }
+        */
+        if (params.active !== undefined && params.active !== null) {
+            httpParams = httpParams.set(
+                "active",
+                (params.active ?? "").toString(),
+            );
+        } else {
+            // en caso que en el filtro como activo se haya elegido "todos"
+            // se elimina el parametro active de la url
+            httpParams = httpParams.delete("active");
         }
 
         // ... otros filtros
