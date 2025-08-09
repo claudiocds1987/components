@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
+    AfterViewInit,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
@@ -32,6 +33,9 @@ import { SpinnerService } from "../../shared/services/spinner.service";
 import { Chip } from "../../shared/components/chips/chips/chips.component";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { EmployeeFormComponent } from "../employee-form/employee-form/employee-form.component";
+import { SelectItem } from "../../shared/models/select-item.model";
+import { CountryService } from "../../shared/services/country.service";
+import { PositionService } from "../../shared/services/position.service";
 
 @Component({
     selector: "app-employee-grid",
@@ -54,10 +58,14 @@ export class EmployeeGridComponent implements OnInit {
     gridData: GridData[] = [];
     employees: Employee[] = [];
     chips: Chip[] = [];
+    countries: SelectItem[] = [];
+    positions: SelectItem[] = [];
     isLoadingData = false;
 
     private _employeeFilterParams: EmployeeFilterParams = {};
     private _employeeServices = inject(EmployeeService);
+    private _countryServices = inject(CountryService);
+    private _positionServices = inject(PositionService);
     private _exportService = inject(ExportService);
     private _cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
     private _spinnerService = inject(SpinnerService);
@@ -72,14 +80,16 @@ export class EmployeeGridComponent implements OnInit {
     };
 
     constructor() {
-        this._setGridFilter();
+        /* this._setGridFilter();
         this._setGridFilterForm();
         this._setEmployeeFilterParameters();
+        this.gridConfig = this._setGridConfiguration(); */
         this.gridConfig = this._setGridConfiguration();
     }
 
     ngOnInit(): void {
-        this._getEmployees();
+        //this._getEmployees();
+        this._loadData();
     }
 
     applyFilter(filterValues: Record<string, unknown>): void {
@@ -110,7 +120,7 @@ export class EmployeeGridComponent implements OnInit {
             sortOrder: sortEvent.direction,
             page: 1,
         };
-
+        // Actualiza la configuración de la grilla con el nuevo
         this._updateGridConfigOnSortChange(sortEvent);
         this._getEmployees();
     }
@@ -152,12 +162,17 @@ export class EmployeeGridComponent implements OnInit {
         if (params.birthDate) {
             exportParams["birthDate_like"] = params.birthDate;
         }
-        if (params.position) {
-            exportParams["position_like"] = params.position;
+        if (params.position && params.position !== "all") {
+            exportParams["position.id"] = params.position;
         }
 
-        if (params.active !== null) {
-            exportParams["active_like"] = params.active;
+        if (params.active !== null || params.active !== 2) {
+            if (params.active === 1) {
+                exportParams["active_like"] = "true";
+            } else if (params.active === 0) {
+                exportParams["active_like"] = "false";
+            }
+            //exportParams["active_like"] = params.active;
         }
 
         // 4. Eliminamos los parámetros de paginación que no queremos en el Excel
@@ -165,7 +180,15 @@ export class EmployeeGridComponent implements OnInit {
         delete params.limit;
         const fileName = "Empleados.xlsx";
 
-        console.log("Exportando con parámetros:", exportParams);
+        /* const exportData = this.gridData.map((item) => ({
+            ...item,
+            position:
+                typeof item["position"] === "object" &&
+                item["position"] !== null &&
+                "description" in item["position"]
+                    ? (item["position"] as { description: string }).description
+                    : item["position"],
+        })); */
 
         this._exportService
             .exportDataToExcel(
@@ -174,6 +197,7 @@ export class EmployeeGridComponent implements OnInit {
                 "http://localhost:3000/employees?_delay=2000", // ruta json-server
                 exportParams,
                 fileName,
+                //exportData,
             )
             .pipe(
                 finalize((): void => {
@@ -284,7 +308,125 @@ export class EmployeeGridComponent implements OnInit {
             });
     }
 
+    private _getCountries(): void {
+        this._countryServices.getCountries().subscribe({
+            next: (countries: SelectItem[]): void => {
+                this.countries = countries;
+                this._cdr.markForCheck();
+            },
+            error: (error: any): void => {
+                console.error("Error al obtener países:", error);
+            },
+        });
+    }
+
+    private _getPositions(): void {
+        this._positionServices.getPositions().subscribe({
+            next: (positions: SelectItem[]): void => {
+                this.positions = positions;
+                this._cdr.markForCheck();
+            },
+            error: (error: any): void => {
+                console.error("Error al obtener posiciones:", error);
+            },
+        });
+    }
+
+    private _loadData(): void {
+        this.isLoadingData = true;
+
+        // 1. Cargar las posiciones primero
+        this._positionServices.getPositions().subscribe({
+            next: (positions: SelectItem[]): void => {
+                this.positions = positions;
+                // 2. Cargar los países
+                this._countryServices.getCountries().subscribe({
+                    next: (countries: SelectItem[]): void => {
+                        this.countries = countries;
+
+                        // 3. Cuando todos los datos de los selectores estén listos,
+                        // configura el filtro y el formulario.
+                        this._setGridFilter();
+                        this._setGridFilterForm();
+
+                        // 4. Establecer parámetros y cargar la grilla
+                        this._setEmployeeFilterParameters();
+                        this._getEmployees();
+                        this._cdr.markForCheck(); // Forzar la detección de cambios
+                    },
+                    error: (error: any): void => {
+                        console.error("Error al obtener países:", error);
+                        // Manejar el error y cargar la grilla de todos modos
+                        this._setGridFilter();
+                        this._setGridFilterForm();
+                        this._setEmployeeFilterParameters();
+                        this._getEmployees();
+                        this._cdr.markForCheck();
+                    },
+                });
+            },
+            error: (error: any): void => {
+                console.error("Error al obtener posiciones:", error);
+                // Si falla el servicio, aún podemos cargar la grilla sin ese filtro
+                this._countryServices.getCountries().subscribe({
+                    // ... (misma lógica de arriba)
+                });
+            },
+        });
+    }
+
     private _mapPaginatedListToGridData(
+        paginatedList: PaginatedList<Employee>,
+    ): PaginatedList<GridData> {
+        const transformedItems: GridData[] = paginatedList.items.map(
+            (employee: Employee): GridData => {
+                const gridData: GridData = { id: employee.id as number };
+
+                for (const key in employee) {
+                    const value = (employee as any)[key];
+                    // para manejar la propiedad 'position'
+                    if (
+                        key === "position" &&
+                        typeof value === "object" &&
+                        value !== null
+                    ) {
+                        // Asigna el valor de la propiedad 'description' a la celda de la grilla
+                        gridData[key] = (
+                            value as { description: string }
+                        ).description;
+                    }
+                    //  para manejar la propiedad 'active' (que es un booleano)
+                    else if (key === "active" && typeof value === "boolean") {
+                        gridData[key] = value ? "Activo" : "Inactivo";
+                    }
+                    // Si el valor es una fecha, la formateamos
+                    else if (typeof value === "string") {
+                        const luxonDate = DateTime.fromISO(value);
+                        if (luxonDate.isValid) {
+                            gridData[key] = luxonDate.toFormat("dd/MM/yyyy");
+                        } else {
+                            gridData[key] = value;
+                        }
+                    }
+                    // Si no es ninguno de los casos anteriores, asignamos el valor tal cual
+                    else {
+                        gridData[key] = value;
+                    }
+                }
+
+                gridData["elipsisActions"] = this._setElipsisActions(employee);
+                return gridData;
+            },
+        );
+
+        return {
+            ...paginatedList,
+            items: transformedItems,
+            pageIndex: paginatedList.page - 1,
+        };
+    }
+
+    /*  private _mapPaginatedListToGridData(
         paginatedList: PaginatedList<Employee>,
     ): PaginatedList<GridData> {
         const transformedItems: GridData[] = paginatedList.items.map(
@@ -327,7 +469,7 @@ export class EmployeeGridComponent implements OnInit {
             items: transformedItems,
             pageIndex: paginatedList.page - 1,
         };
-    }
+    } */
 
     private _setElipsisActions(employee: Employee): ElipsisAction[] {
         return [
@@ -472,7 +614,7 @@ export class EmployeeGridComponent implements OnInit {
         const newObj: Partial<EmployeeFilterParams> = {
             ...(obj as Record<string, unknown>),
         };
-
+        console.log("mapToEmployeeFilterParams:", newObj);
         // Primero, verificamos si la propiedad 'active' existe y si es un string.
         // Esto es crucial para que TypeScript no arroje un error.
         if (typeof newObj.active === "string") {
@@ -597,35 +739,36 @@ export class EmployeeGridComponent implements OnInit {
                 fieldName: "position",
                 fieldType: "select",
                 label: "Puesto",
-                selectItems: [
-                    { value: "all", label: "Todos" },
+                selectItems: this.positions,
+                /* selectItems: [
+                    { description: "all", id: 0 },
                     {
-                        value: "Desarrollador Senior",
-                        label: "Desarrollador Senior",
+                        description: "Desarrollador Senior",
+                        id: 1,
                     },
                     {
-                        value: "Desarrollador Junior",
-                        label: "Desarrollador Junior",
+                        description: "Desarrollador Junior",
+                        id: 2,
                     },
-                    { value: "Diseñador UX/UI", label: "Diseñador UX/UI" },
-                    { value: "Soporte Técnico", label: "Soporte Técnico" },
-                    { value: "Analista de Datos", label: "Analista de Datos" },
-                    { value: "Especialista QA", label: "Especialista QA" },
-                ],
+                    { description: "Diseñador UX/UI", id: 3 },
+                    { description: "Soporte Técnico", id: 4 },
+                    { description: "Analista de Datos", id: 5 },
+                    { description: "Especialista QA", id: 6 },
+                ], */
             },
             {
                 fieldName: "active",
                 fieldType: "select",
                 label: "Estado",
                 selectItems: [
-                    { value: "all", label: "Todos" },
+                    { description: "all", id: 2 },
                     {
-                        value: true,
-                        label: "Activo",
+                        description: "activo",
+                        id: 1,
                     },
                     {
-                        value: false,
-                        label: "Inactivo",
+                        description: "inactivo",
+                        id: 0,
                     },
                 ],
             },

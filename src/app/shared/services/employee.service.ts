@@ -48,7 +48,7 @@ export class EmployeeService {
         }
 
         if (params.position && params.position !== "all") {
-            httpParams = httpParams.set("position", params.position); // O el nombre de la propiedad real en tu db.json
+            httpParams = httpParams.set("position.id", params.position);
         }
 
         // Aca añadir los restantes campos del componente grid-filter
@@ -59,15 +59,13 @@ export class EmployeeService {
             );
         }
 
-        /* if (params.active !== undefined) {
-            httpParams = httpParams.set("active", params.active.toString());
-        }
-        */
         if (params.active !== undefined && params.active !== null) {
-            httpParams = httpParams.set(
-                "active",
-                (params.active ?? "").toString(),
-            );
+            if (params.active === 1) {
+                httpParams = httpParams.set("active", "true");
+            }
+            if (params.active === 0) {
+                httpParams = httpParams.set("active", "false");
+            }
         } else {
             // en caso que en el filtro como activo se haya elegido "todos"
             // se elimina el parametro active de la url
@@ -115,5 +113,22 @@ export class EmployeeService {
                     },
                 ),
             );
+    }
+
+    getEmployeesForExportJsonServer(
+        params: EmployeeFilterParams,
+    ): Observable<Employee[]> {
+        let httpParams = new HttpParams();
+
+        // Lógica para agregar los parámetros, igual que en getEmployees,
+        // pero sin paginación (_page y _limit).
+        // ...
+        // Aquí también usarías la sintaxis 'position.id'
+        if (params.position && params.position !== "all") {
+            httpParams = httpParams.set("position.id", params.position);
+        }
+        // ... otros filtros
+
+        return this._http.get<Employee[]>(this.apiUrl, { params: httpParams });
     }
 }

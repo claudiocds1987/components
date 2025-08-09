@@ -22,9 +22,9 @@
                 <mat-select [formControlName]="filter.fieldName">
                     <mat-option
                         *ngFor="let item of filter.selectItems"
-                        [value]="item.value"
+                        [value]="item.id"
                     >
-                        {{ item.label }}
+                        {{ item.description }}
                     </mat-option>
                 </mat-select>
             </mat-form-field>

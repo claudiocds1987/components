@@ -2,1603 +2,2330 @@
   "employees": [
     {
       "id": 1,
-      "name": "Juan Manuel Ernesto Luis Bon Aire",
-      "surname": "Perez",
-      "birthDate": "1985-05-10",
-      "position": "Desarrollador Senior",
+      "name": "Jane",
+      "surname": "Doe",
+      "birthDate": "1990-01-15",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
       "active": true
     },
     {
       "id": 2,
-      "name": "Maria",
-      "surname": "Gomez",
-      "birthDate": "1990-03-15",
-      "position": "Analista de Datos",
-      "active": true
+      "name": "John",
+      "surname": "Smith",
+      "birthDate": "1988-05-22",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
+      "active": false
     },
     {
       "id": 3,
-      "name": "Pedro",
-      "surname": "Rodriguez",
-      "birthDate": "1988-11-20",
-      "position": "Gerente de Proyecto",
+      "name": "Emily",
+      "surname": "Jones",
+      "birthDate": "1995-09-10",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
       "active": true
     },
     {
       "id": 4,
-      "name": "Ana",
-      "surname": "López",
-      "birthDate": "1992-07-25",
-      "position": "Diseñador UX/UI",
+      "name": "Michael",
+      "surname": "Williams",
+      "birthDate": "1992-03-03",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 5,
-      "name": "Carlos",
-      "surname": "Sanchez",
-      "birthDate": "1987-01-30",
-      "position": "Desarrollador Junior",
-      "active": true
+      "name": "Sarah",
+      "surname": "Brown",
+      "birthDate": "1991-07-28",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
+      "active": false
     },
     {
       "id": 6,
-      "name": "Laura",
-      "surname": "Fernandez",
-      "birthDate": "1995-09-01",
-      "position": "Especialista QA",
+      "name": "David",
+      "surname": "Miller",
+      "birthDate": "1994-12-05",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
       "active": true
     },
     {
       "id": 7,
-      "name": "Diego",
-      "surname": "Garcia",
-      "birthDate": "1983-04-12",
-      "position": "Desarrollador Senior",
+      "name": "Jessica",
+      "surname": "Davis",
+      "birthDate": "1993-02-18",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 8,
-      "name": "Sofia",
-      "surname": "Martinez",
-      "birthDate": "1991-06-18",
-      "position": "Analista de Negocios",
-      "active": true
+      "name": "Chris",
+      "surname": "Garcia",
+      "birthDate": "1989-10-30",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
+      "active": false
     },
     {
       "id": 9,
-      "name": "Pablo",
-      "surname": "Diaz",
-      "birthDate": "1989-02-28",
-      "position": "Desarrollador Mobile",
+      "name": "Ashley",
+      "surname": "Rodriguez",
+      "birthDate": "1996-06-08",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
       "active": true
     },
     {
       "id": 10,
-      "name": "Lucia",
-      "surname": "Hernandez",
-      "birthDate": "1993-10-05",
-      "position": "Soporte Técnico",
+      "name": "Daniel",
+      "surname": "Wilson",
+      "birthDate": "1987-04-12",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 11,
-      "name": "Jose",
-      "surname": "Perez",
-      "birthDate": "1980-08-01",
-      "position": "Desarrollador Senior",
+      "name": "Olivia",
+      "surname": "Martinez",
+      "birthDate": "1990-11-20",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 12,
-      "name": "Sofia",
-      "surname": "Gomez",
-      "birthDate": "1991-06-18",
-      "position": "Analista de Datos",
-      "active": true
+      "name": "Andrew",
+      "surname": "Anderson",
+      "birthDate": "1994-08-05",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 13,
-      "name": "Martin",
-      "surname": "Rodriguez",
-      "birthDate": "1988-11-20",
-      "position": "Desarrollador Junior",
+      "name": "Sophia",
+      "surname": "Thomas",
+      "birthDate": "1993-01-25",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 14,
-      "name": "Maria",
-      "surname": "López",
-      "birthDate": "1992-07-25",
-      "position": "Desarrollador Senior",
+      "name": "James",
+      "surname": "Hernandez",
+      "birthDate": "1989-06-01",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 15,
-      "name": "Carlos",
-      "surname": "Sanchez",
-      "birthDate": "1987-01-30",
-      "position": "Gerente de Proyecto",
-      "active": true
+      "name": "Isabella",
+      "surname": "Moore",
+      "birthDate": "1996-03-18",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 16,
-      "name": "Ana",
-      "surname": "Fernandez",
-      "birthDate": "1995-09-01",
-      "position": "Especialista QA",
-      "active": false
+      "name": "Joshua",
+      "surname": "Jackson",
+      "birthDate": "1987-09-07",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
+      "active": true
     },
     {
       "id": 17,
-      "name": "Juan",
-      "surname": "Garcia",
-      "birthDate": "1983-04-12",
-      "position": "Desarrollador Senior",
-      "active": false
+      "name": "Mia",
+      "surname": "White",
+      "birthDate": "1991-04-20",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
+      "active": true
     },
     {
       "id": 18,
-      "name": "Pedro",
-      "surname": "Martinez",
-      "birthDate": "1991-06-18",
-      "position": "Analista de Negocios",
-      "active": false
+      "name": "William",
+      "surname": "Harris",
+      "birthDate": "1994-07-12",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": true
     },
     {
       "id": 19,
-      "name": "Laura",
-      "surname": "Diaz",
-      "birthDate": "1989-02-28",
-      "position": "Desarrollador Mobile",
+      "name": "Evelyn",
+      "surname": "Clark",
+      "birthDate": "1993-10-28",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": false
     },
     {
       "id": 20,
-      "name": "Juan",
-      "surname": "Hernandez",
-      "birthDate": "1993-10-05",
-      "position": "Soporte Técnico",
-      "active": false
-    },
-    {
-      "id": 21,
-      "name": "Lucas",
-      "surname": "Perez",
-      "birthDate": "1990-03-15",
-      "position": "Desarrollador Senior",
+      "name": "Benjamin",
+      "surname": "Lewis",
+      "birthDate": "1989-02-05",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
+      "id": 21,
+      "name": "Abigail",
+      "surname": "Young",
+      "birthDate": "1996-08-11",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
+    },
+    {
       "id": 22,
-      "name": "Maria",
-      "surname": "Perez",
-      "birthDate": "1985-05-10",
-      "position": "Analista de Datos",
+      "name": "Alexander",
+      "surname": "King",
+      "birthDate": "1987-03-27",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 23,
-      "name": "Pedro",
-      "surname": "Perez",
-      "birthDate": "1988-11-20",
-      "position": "Gerente de Proyecto",
-      "active": true
+      "name": "Ella",
+      "surname": "Hill",
+      "birthDate": "1991-09-09",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
+      "active": false
     },
     {
       "id": 24,
-      "name": "Juan",
-      "surname": "López",
-      "birthDate": "1992-07-25",
-      "position": "Diseñador UX/UI",
+      "name": "Joseph",
+      "surname": "Scott",
+      "birthDate": "1994-06-14",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
       "active": true
     },
     {
       "id": 25,
-      "name": "Carlos",
-      "surname": "Diaz",
-      "birthDate": "1987-01-30",
-      "position": "Desarrollador Junior",
+      "name": "Lily",
+      "surname": "Green",
+      "birthDate": "1993-12-02",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 26,
-      "name": "Laura",
-      "surname": "Garcia",
-      "birthDate": "1995-09-01",
-      "position": "Especialista QA",
+      "name": "Ryan",
+      "surname": "Adams",
+      "birthDate": "1989-08-28",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 27,
-      "name": "Diego",
-      "surname": "Hernandez",
-      "birthDate": "1983-04-12",
-      "position": "Desarrollador Senior",
-      "active": true
+      "name": "Grace",
+      "surname": "Baker",
+      "birthDate": "1996-01-19",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 28,
-      "name": "Sofia",
-      "surname": "Sanchez",
-      "birthDate": "1991-06-18",
-      "position": "Analista de Negocios",
+      "name": "Samuel",
+      "surname": "Nelson",
+      "birthDate": "1987-10-06",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 29,
-      "name": "Pablo",
-      "surname": "Martinez",
-      "birthDate": "1989-02-28",
-      "position": "Desarrollador Mobile",
+      "name": "Chloe",
+      "surname": "Carter",
+      "birthDate": "1991-05-13",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 30,
-      "name": "Lucia",
-      "surname": "Gomez",
-      "birthDate": "1993-10-05",
-      "position": "Soporte Técnico",
-      "active": true
+      "name": "Luke",
+      "surname": "Mitchell",
+      "birthDate": "1994-09-21",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 31,
-      "name": "Juan",
+      "name": "Madison",
       "surname": "Perez",
-      "birthDate": "1985-05-10",
-      "position": "Analista de Datos",
+      "birthDate": "1993-04-04",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 32,
-      "name": "Maria",
-      "surname": "Gomez",
-      "birthDate": "1990-03-15",
-      "position": "Desarrollador Senior",
+      "name": "Gabriel",
+      "surname": "Roberts",
+      "birthDate": "1989-11-27",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 33,
-      "name": "Pedro",
-      "surname": "Rodriguez",
-      "birthDate": "1988-11-20",
-      "position": "Gerente de Proyecto",
-      "active": true
+      "name": "Victoria",
+      "surname": "Turner",
+      "birthDate": "1996-02-14",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 34,
-      "name": "Ana",
-      "surname": "López",
-      "birthDate": "1992-07-25",
-      "position": "Diseñador UX/UI",
+      "name": "Nathan",
+      "surname": "Phillips",
+      "birthDate": "1988-07-29",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 35,
-      "name": "Carlos",
-      "surname": "Sanchez",
-      "birthDate": "1987-01-30",
-      "position": "Desarrollador Junior",
+      "name": "Zoey",
+      "surname": "Campbell",
+      "birthDate": "1991-02-08",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 36,
-      "name": "Laura",
-      "surname": "Fernandez",
-      "birthDate": "1995-09-01",
-      "position": "Especialista QA",
-      "active": true
+      "name": "Isaac",
+      "surname": "Parker",
+      "birthDate": "1994-05-17",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 37,
-      "name": "Diego",
-      "surname": "Garcia",
-      "birthDate": "1983-04-12",
-      "position": "Desarrollador Senior",
+      "name": "Hailey",
+      "surname": "Evans",
+      "birthDate": "1993-08-29",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 38,
-      "name": "Sofia",
-      "surname": "Martinez",
-      "birthDate": "1991-06-18",
-      "position": "Analista de Negocios",
+      "name": "Julian",
+      "surname": "Edwards",
+      "birthDate": "1989-01-01",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 39,
-      "name": "Pablo",
-      "surname": "Diaz",
-      "birthDate": "1989-02-28",
-      "position": "Desarrollador Mobile",
-      "active": true
+      "name": "Natalie",
+      "surname": "Collins",
+      "birthDate": "1996-04-14",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 40,
-      "name": "Lucia",
-      "surname": "Hernandez",
-      "birthDate": "1993-10-05",
-      "position": "Soporte Técnico",
+      "name": "Ethan",
+      "surname": "Stewart",
+      "birthDate": "1988-09-23",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 41,
-      "name": "Maria",
-      "surname": "Perez",
-      "birthDate": "1980-08-01",
-      "position": "Desarrollador Senior",
+      "name": "Avery",
+      "surname": "Morris",
+      "birthDate": "1991-03-05",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 42,
-      "name": "Juan",
-      "surname": "Gomez",
-      "birthDate": "1991-06-18",
-      "position": "Analista de Datos",
-      "active": true
+      "name": "Adrian",
+      "surname": "Flores",
+      "birthDate": "1994-06-19",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 43,
-      "name": "Sofia",
-      "surname": "Rodriguez",
-      "birthDate": "1988-11-20",
-      "position": "Desarrollador Junior",
+      "name": "Hannah",
+      "surname": "Rivera",
+      "birthDate": "1993-09-02",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 44,
-      "name": "Pedro",
-      "surname": "López",
-      "birthDate": "1992-07-25",
-      "position": "Desarrollador Senior",
+      "name": "Caleb",
+      "surname": "Cook",
+      "birthDate": "1989-04-17",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 45,
-      "name": "Laura",
-      "surname": "Sanchez",
-      "birthDate": "1987-01-30",
-      "position": "Gerente de Proyecto",
-      "active": true
+      "name": "Addison",
+      "surname": "Rogers",
+      "birthDate": "1996-07-26",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 46,
-      "name": "Carlos",
-      "surname": "Fernandez",
-      "birthDate": "1995-09-01",
-      "position": "Especialista QA",
+      "name": "Owen",
+      "surname": "Morgan",
+      "birthDate": "1988-02-09",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 47,
-      "name": "Ana",
-      "surname": "Garcia",
-      "birthDate": "1983-04-12",
-      "position": "Desarrollador Senior",
+      "name": "Brooklyn",
+      "surname": "Bell",
+      "birthDate": "1991-10-24",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 48,
-      "name": "Diego",
-      "surname": "Martinez",
-      "birthDate": "1991-06-18",
-      "position": "Analista de Negocios",
-      "active": true
+      "name": "Carter",
+      "surname": "Cooper",
+      "birthDate": "1994-03-08",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 49,
-      "name": "Jose",
-      "surname": "Diaz",
-      "birthDate": "1989-02-28",
-      "position": "Desarrollador Mobile",
+      "name": "Audrey",
+      "surname": "Reed",
+      "birthDate": "1993-06-13",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 50,
-      "name": "Pablo",
-      "surname": "Hernandez",
-      "birthDate": "1993-10-05",
-      "position": "Soporte Técnico",
+      "name": "Wyatt",
+      "surname": "Bailey",
+      "birthDate": "1989-09-09",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 51,
-      "name": "Juan",
-      "surname": "Perez",
-      "birthDate": "1990-03-15",
-      "position": "Desarrollador Junior",
-      "active": true
+      "name": "Aurora",
+      "surname": "Kelly",
+      "birthDate": "1996-12-25",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 52,
-      "name": "Maria",
-      "surname": "Gomez",
-      "birthDate": "1985-05-10",
-      "position": "Analista de Datos",
+      "name": "Leo",
+      "surname": "Howard",
+      "birthDate": "1988-05-18",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 53,
-      "name": "Pedro",
-      "surname": "Rodriguez",
-      "birthDate": "1988-11-20",
-      "position": "Gerente de Proyecto",
+      "name": "Willow",
+      "surname": "Cox",
+      "birthDate": "1991-08-03",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 54,
-      "name": "Ana",
-      "surname": "López",
-      "birthDate": "1992-07-25",
-      "position": "Diseñador UX/UI",
-      "active": true
+      "name": "Eli",
+      "surname": "Ward",
+      "birthDate": "1994-11-20",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 55,
-      "name": "Carlos",
-      "surname": "Sanchez",
-      "birthDate": "1987-01-30",
-      "position": "Desarrollador Junior",
+      "name": "Savannah",
+      "surname": "Peterson",
+      "birthDate": "1993-03-07",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 56,
-      "name": "Laura",
-      "surname": "Fernandez",
-      "birthDate": "1995-09-01",
-      "position": "Especialista QA",
+      "name": "Lincoln",
+      "surname": "Gray",
+      "birthDate": "1989-06-28",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 57,
-      "name": "Diego",
-      "surname": "Garcia",
-      "birthDate": "1983-04-12",
-      "position": "Desarrollador Senior",
-      "active": true
+      "name": "Paisley",
+      "surname": "Ramirez",
+      "birthDate": "1996-09-15",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 58,
-      "name": "Sofia",
-      "surname": "Martinez",
-      "birthDate": "1991-06-18",
-      "position": "Analista de Negocios",
+      "name": "Cole",
+      "surname": "James",
+      "birthDate": "1988-04-02",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 59,
-      "name": "Pablo",
-      "surname": "Diaz",
-      "birthDate": "1989-02-28",
-      "position": "Desarrollador Mobile",
+      "name": "Stella",
+      "surname": "Watson",
+      "birthDate": "1991-12-19",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 60,
-      "name": "Lucia",
-      "surname": "Hernandez",
-      "birthDate": "1993-10-05",
-      "position": "Soporte Técnico",
-      "active": true
+      "name": "Dominic",
+      "surname": "Brooks",
+      "birthDate": "1994-02-28",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 61,
-      "name": "Juan",
-      "surname": "Perez",
-      "birthDate": "1980-08-01",
-      "position": "Desarrollador Senior",
+      "name": "Hazel",
+      "surname": "Russell",
+      "birthDate": "1993-07-06",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 62,
-      "name": "Sofia",
-      "surname": "Gomez",
-      "birthDate": "1991-06-18",
-      "position": "Analista de Datos",
+      "name": "Hunter",
+      "surname": "Barnes",
+      "birthDate": "1989-10-18",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 63,
-      "name": "Martin",
-      "surname": "Rodriguez",
-      "birthDate": "1988-11-20",
-      "position": "Desarrollador Junior",
-      "active": true
+      "name": "Clara",
+      "surname": "Foster",
+      "birthDate": "1996-05-02",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 64,
-      "name": "Maria",
-      "surname": "López",
-      "birthDate": "1992-07-25",
-      "position": "Desarrollador Senior",
+      "name": "Gavin",
+      "surname": "Long",
+      "birthDate": "1988-08-20",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 65,
-      "name": "Carlos",
-      "surname": "Sanchez",
-      "birthDate": "1987-01-30",
-      "position": "Gerente de Proyecto",
+      "name": "Maya",
+      "surname": "Henderson",
+      "birthDate": "1991-03-27",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 66,
-      "name": "Ana",
-      "surname": "Fernandez",
-      "birthDate": "1995-09-01",
-      "position": "Especialista QA",
-      "active": true
+      "name": "Landon",
+      "surname": "Patterson",
+      "birthDate": "1994-06-05",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 67,
-      "name": "Juan",
-      "surname": "Garcia",
-      "birthDate": "1983-04-12",
-      "position": "Desarrollador Senior",
+      "name": "Penelope",
+      "surname": "Hughes",
+      "birthDate": "1993-11-12",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 68,
-      "name": "Pedro",
-      "surname": "Martinez",
-      "birthDate": "1991-06-18",
-      "position": "Analista de Negocios",
+      "name": "Jaxon",
+      "surname": "Coleman",
+      "birthDate": "1989-05-08",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 69,
-      "name": "Laura",
-      "surname": "Diaz",
-      "birthDate": "1989-02-28",
-      "position": "Desarrollador Mobile",
-      "active": true
+      "name": "Leah",
+      "surname": "Jenkins",
+      "birthDate": "1996-08-21",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 70,
-      "name": "Juan",
-      "surname": "Hernandez",
-      "birthDate": "1993-10-05",
-      "position": "Soporte Técnico",
+      "name": "Cole",
+      "surname": "Butler",
+      "birthDate": "1988-01-30",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 71,
-      "name": "Lucas",
-      "surname": "Perez",
-      "birthDate": "1990-03-15",
-      "position": "Desarrollador Senior",
+      "name": "Ruby",
+      "surname": "Simmons",
+      "birthDate": "1991-06-17",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 72,
-      "name": "Maria",
-      "surname": "Perez",
-      "birthDate": "1985-05-10",
-      "position": "Analista de Datos",
-      "active": true
+      "name": "Henry",
+      "surname": "Fisher",
+      "birthDate": "1994-09-24",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 73,
-      "name": "Pedro",
-      "surname": "Perez",
-      "birthDate": "1988-11-20",
-      "position": "Gerente de Proyecto",
+      "name": "Madelyn",
+      "surname": "Ross",
+      "birthDate": "1993-02-11",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 74,
-      "name": "Juan",
-      "surname": "López",
-      "birthDate": "1992-07-25",
-      "position": "Diseñador UX/UI",
+      "name": "Liam",
+      "surname": "Snyder",
+      "birthDate": "1989-07-03",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 75,
-      "name": "Carlos",
-      "surname": "Diaz",
-      "birthDate": "1987-01-30",
-      "position": "Desarrollador Junior",
-      "active": true
+      "name": "Isabelle",
+      "surname": "Sullivan",
+      "birthDate": "1996-10-10",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 76,
-      "name": "Laura",
-      "surname": "Garcia",
-      "birthDate": "1995-09-01",
-      "position": "Especialista QA",
+      "name": "Miles",
+      "surname": "Wright",
+      "birthDate": "1988-03-25",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 77,
-      "name": "Diego",
-      "surname": "Hernandez",
-      "birthDate": "1983-04-12",
-      "position": "Desarrollador Senior",
+      "name": "Serenity",
+      "surname": "Russell",
+      "birthDate": "1991-08-01",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 78,
-      "name": "Sofia",
-      "surname": "Sanchez",
-      "birthDate": "1991-06-18",
-      "position": "Analista de Negocios",
-      "active": true
+      "name": "Nolan",
+      "surname": "King",
+      "birthDate": "1994-01-18",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 79,
-      "name": "Pablo",
-      "surname": "Martinez",
-      "birthDate": "1989-02-28",
-      "position": "Desarrollador Mobile",
+      "name": "Kennedy",
+      "surname": "Cooper",
+      "birthDate": "1993-04-29",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 80,
-      "name": "Lucia",
-      "surname": "Gomez",
-      "birthDate": "1993-10-05",
-      "position": "Soporte Técnico",
+      "name": "Asher",
+      "surname": "Patterson",
+      "birthDate": "1989-11-15",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 81,
-      "name": "Juan",
-      "surname": "Perez",
-      "birthDate": "1985-05-10",
-      "position": "Desarrollador Senior",
-      "active": true
+      "name": "Skylar",
+      "surname": "Scott",
+      "birthDate": "1996-06-28",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 82,
-      "name": "Maria",
-      "surname": "Gomez",
-      "birthDate": "1990-03-15",
-      "position": "Analista de Datos",
+      "name": "Jaxson",
+      "surname": "Hill",
+      "birthDate": "1988-09-03",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 83,
-      "name": "Pedro",
-      "surname": "Rodriguez",
-      "birthDate": "1988-11-20",
-      "position": "Gerente de Proyecto",
+      "name": "Paige",
+      "surname": "Green",
+      "birthDate": "1991-02-10",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 84,
-      "name": "Ana",
-      "surname": "López",
-      "birthDate": "1992-07-25",
-      "position": "Diseñador UX/UI",
-      "active": true
+      "name": "Cameron",
+      "surname": "Adams",
+      "birthDate": "1994-05-27",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 85,
-      "name": "Carlos",
-      "surname": "Sanchez",
-      "birthDate": "1987-01-30",
-      "position": "Desarrollador Junior",
+      "name": "Elena",
+      "surname": "Baker",
+      "birthDate": "1993-08-14",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 86,
-      "name": "Laura",
-      "surname": "Fernandez",
-      "birthDate": "1995-09-01",
-      "position": "Especialista QA",
+      "name": "Leo",
+      "surname": "Nelson",
+      "birthDate": "1989-01-08",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 87,
-      "name": "Diego",
-      "surname": "Garcia",
-      "birthDate": "1983-04-12",
-      "position": "Desarrollador Senior",
-      "active": true
+      "name": "Hadley",
+      "surname": "Carter",
+      "birthDate": "1996-04-20",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 88,
-      "name": "Sofia",
-      "surname": "Martinez",
-      "birthDate": "1991-06-18",
-      "position": "Analista de Negocios",
+      "name": "Declan",
+      "surname": "Mitchell",
+      "birthDate": "1988-10-05",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 89,
-      "name": "Pablo",
-      "surname": "Diaz",
-      "birthDate": "1989-02-28",
-      "position": "Desarrollador Mobile",
+      "name": "Quinn",
+      "surname": "Perez",
+      "birthDate": "1991-03-12",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 90,
-      "name": "Lucia",
-      "surname": "Hernandez",
-      "birthDate": "1993-10-05",
-      "position": "Soporte Técnico",
-      "active": true
+      "name": "Giovanni",
+      "surname": "Roberts",
+      "birthDate": "1994-06-25",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 91,
-      "name": "Maria",
-      "surname": "Perez",
-      "birthDate": "1980-08-01",
-      "position": "Desarrollador Senior",
+      "name": "Eliza",
+      "surname": "Turner",
+      "birthDate": "1993-09-08",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 92,
-      "name": "Juan",
-      "surname": "Gomez",
-      "birthDate": "1991-06-18",
-      "position": "Analista de Datos",
+      "name": "Kai",
+      "surname": "Phillips",
+      "birthDate": "1989-04-21",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 93,
-      "name": "Sofia",
-      "surname": "Rodriguez",
-      "birthDate": "1988-11-20",
-      "position": "Desarrollador Junior",
-      "active": true
+      "name": "Lila",
+      "surname": "Campbell",
+      "birthDate": "1996-07-30",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 94,
-      "name": "Pedro",
-      "surname": "López",
-      "birthDate": "1992-07-25",
-      "position": "Desarrollador Senior",
+      "name": "Rowan",
+      "surname": "Parker",
+      "birthDate": "1988-02-15",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 95,
-      "name": "Laura",
-      "surname": "Sanchez",
-      "birthDate": "1987-01-30",
-      "position": "Gerente de Proyecto",
+      "name": "Stella",
+      "surname": "Evans",
+      "birthDate": "1991-11-03",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 96,
-      "name": "Carlos",
-      "surname": "Fernandez",
-      "birthDate": "1995-09-01",
-      "position": "Especialista QA",
-      "active": true
+      "name": "Maverick",
+      "surname": "Edwards",
+      "birthDate": "1994-04-22",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 97,
-      "name": "Ana",
-      "surname": "Garcia",
-      "birthDate": "1983-04-12",
-      "position": "Desarrollador Senior",
+      "name": "Piper",
+      "surname": "Collins",
+      "birthDate": "1993-07-09",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 98,
-      "name": "Diego",
-      "surname": "Martinez",
-      "birthDate": "1991-06-18",
-      "position": "Analista de Negocios",
+      "name": "Milo",
+      "surname": "Stewart",
+      "birthDate": "1989-12-01",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 99,
-      "name": "Jose",
-      "surname": "Diaz",
-      "birthDate": "1989-02-28",
-      "position": "Desarrollador Mobile",
-      "active": true
+      "name": "Ivy",
+      "surname": "Morris",
+      "birthDate": "1996-05-17",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 100,
-      "name": "Pablo",
-      "surname": "Hernandez",
-      "birthDate": "1993-10-05",
-      "position": "Soporte Técnico",
+      "name": "Asher",
+      "surname": "Flores",
+      "birthDate": "1988-10-24",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 101,
-      "name": "Juan",
-      "surname": "Perez",
-      "birthDate": "1990-03-15",
-      "position": "Desarrollador Junior",
+      "name": "Naomi",
+      "surname": "Rivera",
+      "birthDate": "1991-03-08",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 102,
-      "name": "Maria",
-      "surname": "Gomez",
-      "birthDate": "1985-05-10",
-      "position": "Analista de Datos",
-      "active": true
+      "name": "Felix",
+      "surname": "Cook",
+      "birthDate": "1994-08-16",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 103,
-      "name": "Pedro",
-      "surname": "Rodriguez",
-      "birthDate": "1988-11-20",
-      "position": "Gerente de Proyecto",
+      "name": "Valerie",
+      "surname": "Rogers",
+      "birthDate": "1993-01-29",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 104,
-      "name": "Ana",
-      "surname": "López",
-      "birthDate": "1992-07-25",
-      "position": "Diseñador UX/UI",
+      "name": "Arthur",
+      "surname": "Morgan",
+      "birthDate": "1989-06-03",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 105,
-      "name": "Carlos",
-      "surname": "Sanchez",
-      "birthDate": "1987-01-30",
-      "position": "Desarrollador Junior",
-      "active": true
+      "name": "Genevieve",
+      "surname": "Bell",
+      "birthDate": "1996-10-19",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 106,
-      "name": "Laura",
-      "surname": "Fernandez",
-      "birthDate": "1995-09-01",
-      "position": "Especialista QA",
+      "name": "Kai",
+      "surname": "Cooper",
+      "birthDate": "1988-04-06",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 107,
-      "name": "Diego",
-      "surname": "Garcia",
-      "birthDate": "1983-04-12",
-      "position": "Desarrollador Senior",
+      "name": "Penelope",
+      "surname": "Reed",
+      "birthDate": "1991-09-23",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 108,
-      "name": "Sofia",
-      "surname": "Martinez",
-      "birthDate": "1991-06-18",
-      "position": "Analista de Negocios",
-      "active": true
+      "name": "Silas",
+      "surname": "Bailey",
+      "birthDate": "1994-12-30",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 109,
-      "name": "Pablo",
-      "surname": "Diaz",
-      "birthDate": "1989-02-28",
-      "position": "Desarrollador Mobile",
+      "name": "Luna",
+      "surname": "Kelly",
+      "birthDate": "1993-05-17",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 110,
-      "name": "Lucia",
-      "surname": "Hernandez",
-      "birthDate": "1993-10-05",
-      "position": "Soporte Técnico",
+      "name": "Sebastian",
+      "surname": "Howard",
+      "birthDate": "1989-08-04",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 111,
-      "name": "Maria",
-      "surname": "Perez",
-      "birthDate": "1980-08-01",
-      "position": "Desarrollador Senior",
-      "active": true
+      "name": "Clara",
+      "surname": "Cox",
+      "birthDate": "1996-01-22",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 112,
-      "name": "Juan",
-      "surname": "Gomez",
-      "birthDate": "1991-06-18",
-      "position": "Analista de Datos",
+      "name": "Ezra",
+      "surname": "Ward",
+      "birthDate": "1988-06-08",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 113,
-      "name": "Sofia",
-      "surname": "Rodriguez",
-      "birthDate": "1988-11-20",
-      "position": "Desarrollador Junior",
+      "name": "Nora",
+      "surname": "Peterson",
+      "birthDate": "1991-10-15",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 114,
-      "name": "Pedro",
-      "surname": "López",
-      "birthDate": "1992-07-25",
-      "position": "Desarrollador Senior",
-      "active": true
+      "name": "Jasper",
+      "surname": "Gray",
+      "birthDate": "1994-03-24",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 115,
-      "name": "Laura",
-      "surname": "Sanchez",
-      "birthDate": "1987-01-30",
-      "position": "Gerente de Proyecto",
+      "name": "Julia",
+      "surname": "Ramirez",
+      "birthDate": "1993-07-01",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 116,
-      "name": "Carlos",
-      "surname": "Fernandez",
-      "birthDate": "1995-09-01",
-      "position": "Especialista QA",
+      "name": "Ezra",
+      "surname": "James",
+      "birthDate": "1989-09-17",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 117,
-      "name": "Ana",
-      "surname": "Garcia",
-      "birthDate": "1983-04-12",
-      "position": "Desarrollador Senior",
-      "active": true
+      "name": "Stella",
+      "surname": "Watson",
+      "birthDate": "1996-02-04",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 118,
-      "name": "Diego",
-      "surname": "Martinez",
-      "birthDate": "1991-06-18",
-      "position": "Analista de Negocios",
+      "name": "Kai",
+      "surname": "Brooks",
+      "birthDate": "1988-07-21",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 119,
-      "name": "Jose",
-      "surname": "Diaz",
-      "birthDate": "1989-02-28",
-      "position": "Desarrollador Mobile",
+      "name": "Violet",
+      "surname": "Russell",
+      "birthDate": "1991-12-08",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 120,
-      "name": "Pablo",
-      "surname": "Hernandez",
-      "birthDate": "1993-10-05",
-      "position": "Soporte Técnico",
-      "active": true
+      "name": "Cole",
+      "surname": "Barnes",
+      "birthDate": "1994-05-15",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 121,
-      "name": "Juan",
-      "surname": "Perez",
-      "birthDate": "1990-03-15",
-      "position": "Desarrollador Junior",
+      "name": "Elara",
+      "surname": "Foster",
+      "birthDate": "1993-08-22",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 122,
-      "name": "Maria",
-      "surname": "Perez",
-      "birthDate": "1985-05-10",
-      "position": "Analista de Datos",
+      "name": "Dominic",
+      "surname": "Long",
+      "birthDate": "1989-01-09",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 123,
-      "name": "Pedro",
-      "surname": "Perez",
-      "birthDate": "1988-11-20",
-      "position": "Gerente de Proyecto",
-      "active": true
+      "name": "Lydia",
+      "surname": "Henderson",
+      "birthDate": "1996-04-26",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 124,
-      "name": "Juan",
-      "surname": "López",
-      "birthDate": "1992-07-25",
-      "position": "Diseñador UX/UI",
+      "name": "Jaxon",
+      "surname": "Patterson",
+      "birthDate": "1988-09-13",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 125,
-      "name": "Carlos",
-      "surname": "Diaz",
-      "birthDate": "1987-01-30",
-      "position": "Desarrollador Junior",
+      "name": "Aria",
+      "surname": "Hughes",
+      "birthDate": "1991-02-20",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 126,
-      "name": "Laura",
-      "surname": "Garcia",
-      "birthDate": "1995-09-01",
-      "position": "Especialista QA",
-      "active": true
+      "name": "Silas",
+      "surname": "Coleman",
+      "birthDate": "1994-07-29",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 127,
-      "name": "Diego",
-      "surname": "Hernandez",
-      "birthDate": "1983-04-12",
-      "position": "Desarrollador Senior",
+      "name": "Chloe",
+      "surname": "Jenkins",
+      "birthDate": "1993-10-15",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 128,
-      "name": "Sofia",
-      "surname": "Sanchez",
-      "birthDate": "1991-06-18",
-      "position": "Analista de Negocios",
+      "name": "Milo",
+      "surname": "Butler",
+      "birthDate": "1989-03-02",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 129,
-      "name": "Pablo",
-      "surname": "Martinez",
-      "birthDate": "1989-02-28",
-      "position": "Desarrollador Mobile",
-      "active": true
+      "name": "Lila",
+      "surname": "Simmons",
+      "birthDate": "1996-08-09",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 130,
-      "name": "Lucia",
-      "surname": "Gomez",
-      "birthDate": "1993-10-05",
-      "position": "Soporte Técnico",
+      "name": "Declan",
+      "surname": "Fisher",
+      "birthDate": "1988-01-26",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 131,
-      "name": "Juan",
-      "surname": "Perez",
-      "birthDate": "1985-05-10",
-      "position": "Desarrollador Senior",
+      "name": "Isabelle",
+      "surname": "Ross",
+      "birthDate": "1991-05-14",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 132,
-      "name": "Maria",
-      "surname": "Gomez",
-      "birthDate": "1990-03-15",
-      "position": "Analista de Datos",
-      "active": true
+      "name": "Wyatt",
+      "surname": "Snyder",
+      "birthDate": "1994-10-21",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 133,
-      "name": "Pedro",
-      "surname": "Rodriguez",
-      "birthDate": "1988-11-20",
-      "position": "Gerente de Proyecto",
+      "name": "Hadley",
+      "surname": "Sullivan",
+      "birthDate": "1993-03-08",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 134,
-      "name": "Ana",
-      "surname": "López",
-      "birthDate": "1992-07-25",
-      "position": "Diseñador UX/UI",
+      "name": "Rowan",
+      "surname": "Wright",
+      "birthDate": "1989-08-25",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 135,
-      "name": "Carlos",
-      "surname": "Sanchez",
-      "birthDate": "1987-01-30",
-      "position": "Desarrollador Junior",
-      "active": true
+      "name": "Aurora",
+      "surname": "Russell",
+      "birthDate": "1996-01-12",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 136,
-      "name": "Laura",
-      "surname": "Fernandez",
-      "birthDate": "1995-09-01",
-      "position": "Especialista QA",
+      "name": "Silas",
+      "surname": "King",
+      "birthDate": "1988-06-29",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 137,
-      "name": "Diego",
-      "surname": "Garcia",
-      "birthDate": "1983-04-12",
-      "position": "Desarrollador Senior",
+      "name": "Maeve",
+      "surname": "Cooper",
+      "birthDate": "1991-09-06",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 138,
-      "name": "Sofia",
-      "surname": "Martinez",
-      "birthDate": "1991-06-18",
-      "position": "Analista de Negocios",
-      "active": true
+      "name": "Ezra",
+      "surname": "Patterson",
+      "birthDate": "1994-02-13",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 139,
-      "name": "Pablo",
-      "surname": "Diaz",
-      "birthDate": "1989-02-28",
-      "position": "Desarrollador Mobile",
+      "name": "Eliza",
+      "surname": "Scott",
+      "birthDate": "1993-05-20",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 140,
-      "name": "Lucia",
-      "surname": "Hernandez",
-      "birthDate": "1993-10-05",
-      "position": "Soporte Técnico",
+      "name": "Julian",
+      "surname": "Hill",
+      "birthDate": "1989-10-27",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 141,
-      "name": "Maria",
-      "surname": "Perez",
-      "birthDate": "1980-08-01",
-      "position": "Desarrollador Senior",
-      "active": true
+      "name": "Victoria",
+      "surname": "Green",
+      "birthDate": "1996-03-04",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 142,
-      "name": "Juan",
-      "surname": "Gomez",
-      "birthDate": "1991-06-18",
-      "position": "Analista de Datos",
+      "name": "Cole",
+      "surname": "Adams",
+      "birthDate": "1988-08-11",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 143,
-      "name": "Sofia",
-      "surname": "Rodriguez",
-      "birthDate": "1988-11-20",
-      "position": "Desarrollador Junior",
+      "name": "Quinn",
+      "surname": "Baker",
+      "birthDate": "1991-01-18",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 144,
-      "name": "Pedro",
-      "surname": "López",
-      "birthDate": "1992-07-25",
-      "position": "Desarrollador Senior",
-      "active": true
+      "name": "Jaxon",
+      "surname": "Nelson",
+      "birthDate": "1994-04-25",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 145,
-      "name": "Laura",
-      "surname": "Sanchez",
-      "birthDate": "1987-01-30",
-      "position": "Gerente de Proyecto",
+      "name": "Madison",
+      "surname": "Carter",
+      "birthDate": "1993-07-02",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 146,
-      "name": "Carlos",
-      "surname": "Fernandez",
-      "birthDate": "1995-09-01",
-      "position": "Especialista QA",
+      "name": "Giovanni",
+      "surname": "Mitchell",
+      "birthDate": "1989-12-09",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 147,
-      "name": "Ana",
-      "surname": "Garcia",
-      "birthDate": "1983-04-12",
-      "position": "Desarrollador Senior",
-      "active": true
+      "name": "Elara",
+      "surname": "Perez",
+      "birthDate": "1996-05-16",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 148,
-      "name": "Diego",
-      "surname": "Martinez",
-      "birthDate": "1991-06-18",
-      "position": "Analista de Negocios",
+      "name": "Declan",
+      "surname": "Roberts",
+      "birthDate": "1988-10-23",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 149,
-      "name": "Jose",
-      "surname": "Diaz",
-      "birthDate": "1989-02-28",
-      "position": "Desarrollador Mobile",
+      "name": "Lydia",
+      "surname": "Turner",
+      "birthDate": "1991-03-01",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 150,
-      "name": "Pablo",
-      "surname": "Hernandez",
-      "birthDate": "1993-10-05",
-      "position": "Soporte Técnico",
-      "active": true
+      "name": "Wyatt",
+      "surname": "Phillips",
+      "birthDate": "1994-06-18",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 151,
-      "name": "Juan",
-      "surname": "Perez",
-      "birthDate": "1990-03-15",
-      "position": "Desarrollador Junior",
+      "name": "Aria",
+      "surname": "Campbell",
+      "birthDate": "1993-09-25",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 152,
-      "name": "Maria",
-      "surname": "Perez",
-      "birthDate": "1985-05-10",
-      "position": "Analista de Datos",
+      "name": "Silas",
+      "surname": "Parker",
+      "birthDate": "1989-02-02",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 153,
-      "name": "Pedro",
-      "surname": "Perez",
-      "birthDate": "1988-11-20",
-      "position": "Gerente de Proyecto",
-      "active": true
+      "name": "Chloe",
+      "surname": "Evans",
+      "birthDate": "1996-07-10",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 154,
-      "name": "Juan",
-      "surname": "López",
-      "birthDate": "1992-07-25",
-      "position": "Diseñador UX/UI",
+      "name": "Milo",
+      "surname": "Edwards",
+      "birthDate": "1988-12-17",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 155,
-      "name": "Carlos",
-      "surname": "Diaz",
-      "birthDate": "1987-01-30",
-      "position": "Desarrollador Junior",
+      "name": "Lila",
+      "surname": "Collins",
+      "birthDate": "1991-05-24",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 156,
-      "name": "Laura",
-      "surname": "Garcia",
-      "birthDate": "1995-09-01",
-      "position": "Especialista QA",
-      "active": true
+      "name": "Giovanni",
+      "surname": "Stewart",
+      "birthDate": "1994-08-31",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 157,
-      "name": "Diego",
-      "surname": "Hernandez",
-      "birthDate": "1983-04-12",
-      "position": "Desarrollador Senior",
+      "name": "Isabelle",
+      "surname": "Morris",
+      "birthDate": "1993-11-07",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 158,
-      "name": "Sofia",
-      "surname": "Sanchez",
-      "birthDate": "1991-06-18",
-      "position": "Analista de Negocios",
+      "name": "Declan",
+      "surname": "Flores",
+      "birthDate": "1989-04-14",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 159,
-      "name": "Pablo",
-      "surname": "Martinez",
-      "birthDate": "1989-02-28",
-      "position": "Desarrollador Mobile",
-      "active": true
+      "name": "Aurora",
+      "surname": "Rivera",
+      "birthDate": "1996-09-21",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 160,
-      "name": "Lucia",
-      "surname": "Gomez",
-      "birthDate": "1993-10-05",
-      "position": "Soporte Técnico",
+      "name": "Rowan",
+      "surname": "Cook",
+      "birthDate": "1988-02-28",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 161,
-      "name": "Juan",
-      "surname": "Perez",
-      "birthDate": "1985-05-10",
-      "position": "Desarrollador Senior",
+      "name": "Maeve",
+      "surname": "Rogers",
+      "birthDate": "1991-07-05",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 162,
-      "name": "Maria",
-      "surname": "Gomez",
-      "birthDate": "1990-03-15",
-      "position": "Analista de Datos",
-      "active": true
+      "name": "Ezra",
+      "surname": "Morgan",
+      "birthDate": "1994-10-12",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 163,
-      "name": "Pedro",
-      "surname": "Rodriguez",
-      "birthDate": "1988-11-20",
-      "position": "Gerente de Proyecto",
+      "name": "Eliza",
+      "surname": "Bell",
+      "birthDate": "1993-01-19",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 164,
-      "name": "Ana",
-      "surname": "López",
-      "birthDate": "1992-07-25",
-      "position": "Diseñador UX/UI",
+      "name": "Julian",
+      "surname": "Cooper",
+      "birthDate": "1989-06-26",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 165,
-      "name": "Carlos",
-      "surname": "Sanchez",
-      "birthDate": "1987-01-30",
-      "position": "Desarrollador Junior",
-      "active": true
+      "name": "Victoria",
+      "surname": "Reed",
+      "birthDate": "1996-11-03",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 166,
-      "name": "Laura",
-      "surname": "Fernandez",
-      "birthDate": "1995-09-01",
-      "position": "Especialista QA",
+      "name": "Cole",
+      "surname": "Bailey",
+      "birthDate": "1988-04-10",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 167,
-      "name": "Diego",
-      "surname": "Garcia",
-      "birthDate": "1983-04-12",
-      "position": "Desarrollador Senior",
+      "name": "Quinn",
+      "surname": "Kelly",
+      "birthDate": "1991-09-17",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 168,
-      "name": "Sofia",
-      "surname": "Martinez",
-      "birthDate": "1991-06-18",
-      "position": "Analista de Negocios",
-      "active": true
+      "name": "Jaxon",
+      "surname": "Howard",
+      "birthDate": "1994-12-24",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 169,
-      "name": "Pablo",
-      "surname": "Diaz",
-      "birthDate": "1989-02-28",
-      "position": "Desarrollador Mobile",
+      "name": "Madison",
+      "surname": "Cox",
+      "birthDate": "1993-05-31",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 170,
-      "name": "Lucia",
-      "surname": "Hernandez",
-      "birthDate": "1993-10-05",
-      "position": "Soporte Técnico",
+      "name": "Giovanni",
+      "surname": "Ward",
+      "birthDate": "1989-08-07",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 171,
-      "name": "Maria",
-      "surname": "Perez",
-      "birthDate": "1980-08-01",
-      "position": "Desarrollador Senior",
-      "active": true
+      "name": "Elara",
+      "surname": "Peterson",
+      "birthDate": "1996-01-14",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 172,
-      "name": "Juan",
-      "surname": "Gomez",
-      "birthDate": "1991-06-18",
-      "position": "Analista de Datos",
+      "name": "Declan",
+      "surname": "Gray",
+      "birthDate": "1988-06-21",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 173,
-      "name": "Sofia",
-      "surname": "Rodriguez",
-      "birthDate": "1988-11-20",
-      "position": "Desarrollador Junior",
+      "name": "Lydia",
+      "surname": "Ramirez",
+      "birthDate": "1991-11-28",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 174,
-      "name": "Pedro",
-      "surname": "López",
-      "birthDate": "1992-07-25",
-      "position": "Desarrollador Senior",
-      "active": true
+      "name": "Wyatt",
+      "surname": "James",
+      "birthDate": "1994-04-05",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 175,
-      "name": "Laura",
-      "surname": "Sanchez",
-      "birthDate": "1987-01-30",
-      "position": "Gerente de Proyecto",
+      "name": "Aria",
+      "surname": "Watson",
+      "birthDate": "1993-07-12",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 176,
-      "name": "Carlos",
-      "surname": "Fernandez",
-      "birthDate": "1995-09-01",
-      "position": "Especialista QA",
+      "name": "Silas",
+      "surname": "Brooks",
+      "birthDate": "1989-12-19",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 177,
-      "name": "Ana",
-      "surname": "Garcia",
-      "birthDate": "1983-04-12",
-      "position": "Desarrollador Senior",
-      "active": true
+      "name": "Chloe",
+      "surname": "Russell",
+      "birthDate": "1996-05-26",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 178,
-      "name": "Diego",
-      "surname": "Martinez",
-      "birthDate": "1991-06-18",
-      "position": "Analista de Negocios",
+      "name": "Milo",
+      "surname": "Barnes",
+      "birthDate": "1988-10-02",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 179,
-      "name": "Jose",
-      "surname": "Diaz",
-      "birthDate": "1989-02-28",
-      "position": "Desarrollador Mobile",
+      "name": "Lila",
+      "surname": "Foster",
+      "birthDate": "1991-03-09",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 180,
-      "name": "Pablo",
-      "surname": "Hernandez",
-      "birthDate": "1993-10-05",
-      "position": "Soporte Técnico",
-      "active": true
+      "name": "Giovanni",
+      "surname": "Long",
+      "birthDate": "1994-06-16",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 181,
-      "name": "Juan",
-      "surname": "Perez",
-      "birthDate": "1990-03-15",
-      "position": "Desarrollador Junior",
+      "name": "Isabelle",
+      "surname": "Henderson",
+      "birthDate": "1993-09-23",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 182,
-      "name": "Maria",
-      "surname": "Perez",
-      "birthDate": "1985-05-10",
-      "position": "Analista de Datos",
+      "name": "Declan",
+      "surname": "Patterson",
+      "birthDate": "1989-02-28",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 183,
-      "name": "Pedro",
-      "surname": "Perez",
-      "birthDate": "1988-11-20",
-      "position": "Gerente de Proyecto",
-      "active": true
+      "name": "Aurora",
+      "surname": "Hughes",
+      "birthDate": "1996-07-05",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 184,
-      "name": "Juan",
-      "surname": "López",
-      "birthDate": "1992-07-25",
-      "position": "Diseñador UX/UI",
+      "name": "Rowan",
+      "surname": "Coleman",
+      "birthDate": "1988-12-12",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 185,
-      "name": "Carlos",
-      "surname": "Diaz",
-      "birthDate": "1987-01-30",
-      "position": "Desarrollador Junior",
+      "name": "Maeve",
+      "surname": "Jenkins",
+      "birthDate": "1991-05-19",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 186,
-      "name": "Laura",
-      "surname": "Garcia",
-      "birthDate": "1995-09-01",
-      "position": "Especialista QA",
-      "active": true
+      "name": "Ezra",
+      "surname": "Butler",
+      "birthDate": "1994-08-26",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 187,
-      "name": "Diego",
-      "surname": "Hernandez",
-      "birthDate": "1983-04-12",
-      "position": "Desarrollador Senior",
+      "name": "Eliza",
+      "surname": "Simmons",
+      "birthDate": "1993-11-02",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 188,
-      "name": "Sofia",
-      "surname": "Sanchez",
-      "birthDate": "1991-06-18",
-      "position": "Analista de Negocios",
+      "name": "Julian",
+      "surname": "Fisher",
+      "birthDate": "1989-04-09",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 189,
-      "name": "Pablo",
-      "surname": "Martinez",
-      "birthDate": "1989-02-28",
-      "position": "Desarrollador Mobile",
-      "active": true
+      "name": "Victoria",
+      "surname": "Ross",
+      "birthDate": "1996-09-16",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 190,
-      "name": "Lucia",
-      "surname": "Gomez",
-      "birthDate": "1993-10-05",
-      "position": "Soporte Técnico",
+      "name": "Cole",
+      "surname": "Snyder",
+      "birthDate": "1988-02-23",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 191,
-      "name": "Juan",
-      "surname": "Perez",
-      "birthDate": "1985-05-10",
-      "position": "Desarrollador Senior",
+      "name": "Quinn",
+      "surname": "Sullivan",
+      "birthDate": "1991-07-30",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 192,
-      "name": "Maria",
-      "surname": "Gomez",
-      "birthDate": "1990-03-15",
-      "position": "Analista de Datos",
-      "active": true
+      "name": "Jaxon",
+      "surname": "Wright",
+      "birthDate": "1994-10-06",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 193,
-      "name": "Pedro",
-      "surname": "Rodriguez",
-      "birthDate": "1988-11-20",
-      "position": "Gerente de Proyecto",
+      "name": "Madison",
+      "surname": "Russell",
+      "birthDate": "1993-01-13",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 194,
-      "name": "Ana",
-      "surname": "López",
-      "birthDate": "1992-07-25",
-      "position": "Diseñador UX/UI",
+      "name": "Giovanni",
+      "surname": "King",
+      "birthDate": "1989-06-20",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
     },
     {
       "id": 195,
-      "name": "Carlos",
-      "surname": "Sanchez",
-      "birthDate": "1987-01-30",
-      "position": "Desarrollador Junior",
-      "active": true
+      "name": "Elara",
+      "surname": "Cooper",
+      "birthDate": "1996-11-27",
+      "position": {
+        "description": "Desarrollador Senior",
+        "id": 1
+      },
+      "active": false
     },
     {
       "id": 196,
-      "name": "Laura",
-      "surname": "Fernandez",
-      "birthDate": "1995-09-01",
-      "position": "Especialista QA",
+      "name": "Declan",
+      "surname": "Patterson",
+      "birthDate": "1988-04-04",
+      "position": {
+        "description": "Soporte Técnico",
+        "id": 4
+      },
       "active": true
     },
     {
       "id": 197,
-      "name": "Diego",
-      "surname": "Garcia",
-      "birthDate": "1983-04-12",
-      "position": "Desarrollador Senior",
+      "name": "Lydia",
+      "surname": "Scott",
+      "birthDate": "1991-09-11",
+      "position": {
+        "description": "Especialista QA",
+        "id": 6
+      },
       "active": true
     },
     {
       "id": 198,
-      "name": "Sofia",
-      "surname": "Martinez",
-      "birthDate": "1991-06-18",
-      "position": "Analista de Negocios",
-      "active": true
+      "name": "Wyatt",
+      "surname": "Hill",
+      "birthDate": "1994-12-18",
+      "position": {
+        "description": "Desarrollador Junior",
+        "id": 2
+      },
+      "active": false
     },
     {
       "id": 199,
-      "name": "Pablo",
-      "surname": "Diaz",
-      "birthDate": "1989-02-28",
-      "position": "Desarrollador Mobile",
+      "name": "Aria",
+      "surname": "Green",
+      "birthDate": "1993-05-25",
+      "position": {
+        "description": "Diseñador UX/UI",
+        "id": 3
+      },
       "active": true
     },
     {
       "id": 200,
-      "name": "Lucia",
-      "surname": "Hernandez",
-      "birthDate": "1993-10-05",
-      "position": "Soporte Técnico",
+      "name": "Silas",
+      "surname": "Adams",
+      "birthDate": "1989-10-01",
+      "position": {
+        "description": "Analista de Datos",
+        "id": 5
+      },
       "active": true
+    }
+  ],
+  "countries": [
+    {
+      "id": 1,
+      "description": "Argentina"
+    },
+    {
+      "id": 2,
+      "description": "Bolivia"
+    },
+    {
+      "id": 3,
+      "description": "Brasil"
+    },
+    {
+      "id": 4,
+      "description": "Canadá"
+    },
+    {
+      "id": 5,
+      "description": "Chile"
+    },
+    {
+      "id": 6,
+      "description": "Colombia"
+    },
+    {
+      "id": 7,
+      "description": "Costa Rica"
+    },
+    {
+      "id": 8,
+      "description": "Cuba"
+    },
+    {
+      "id": 9,
+      "description": "Ecuador"
+    },
+    {
+      "id": 10,
+      "description": "El Salvador"
+    },
+    {
+      "id": 11,
+      "description": "Estados Unidos"
+    },
+    {
+      "id": 12,
+      "description": "Guatemala"
+    },
+    {
+      "id": 13,
+      "description": "Haití"
+    },
+    {
+      "id": 14,
+      "description": "Honduras"
+    },
+    {
+      "id": 15,
+      "description": "Jamaica"
+    },
+    {
+      "id": 16,
+      "description": "México"
+    },
+    {
+      "id": 17,
+      "description": "Nicaragua"
+    },
+    {
+      "id": 18,
+      "description": "Panamá"
+    },
+    {
+      "id": 19,
+      "description": "Paraguay"
+    },
+    {
+      "id": 20,
+      "description": "Perú"
+    },
+    {
+      "id": 21,
+      "description": "Puerto Rico"
+    },
+    {
+      "id": 22,
+      "description": "República Dominicana"
+    },
+    {
+      "id": 23,
+      "description": "Uruguay"
+    },
+    {
+      "id": 24,
+      "description": "Venezuela"
+    }
+  ],
+  "positions": [
+    {
+      "id": 1,
+      "description": "Desarrollador Senior"
+    },
+    {
+      "id": 2,
+      "description": "Desarrollador Junior"
+    },
+    {
+      "id": 3,
+      "description": "Diseñador UX/UI"
+    },
+    {
+      "id": 4,
+      "description": "Soporte Técnico"
+    },
+    {
+      "id": 5,
+      "description": "Analista de Datos"
+    },
+    {
+      "id": 6,
+      "description": "Especialista QA"
     }
   ]
 }
+
+
+  
