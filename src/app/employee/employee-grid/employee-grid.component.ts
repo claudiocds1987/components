@@ -24,7 +24,7 @@ import { EmployeeService } from "../../shared/services/employee.service";
 import { EmployeeFilterParams } from "../../shared/models/employee-filter-params.model";
 import { PaginatedList } from "../../shared/models/paginated-list.model";
 import { Employee } from "../../shared/models/employee.model";
-import { finalize, map } from "rxjs";
+import { catchError, finalize, forkJoin, map, Observable, of } from "rxjs";
 import { HttpClientModule } from "@angular/common/http";
 import { PageEvent } from "@angular/material/paginator";
 import { Sort } from "@angular/material/sort";
@@ -183,15 +183,19 @@ export class EmployeeGridComponent implements OnInit {
                 map((employees: Employee[]): any =>
                     this._mapEmployeesForExport(employees),
                 ),
-                finalize((): void => {
-                    this._spinnerService.hide();
-                    this._cdr.markForCheck();
-                }),
             )
             .subscribe({
                 next: (processedData: any[]): void => {
                     const fileName = "Empleados.xlsx";
-                    this._exportService.exportToExcel(processedData, fileName);
+                    // Simulación de descarga con setTimeout
+                    setTimeout((): void => {
+                        this._exportService.exportToExcel(
+                            processedData,
+                            fileName,
+                        );
+                        this._spinnerService.hide();
+                        this._cdr.markForCheck();
+                    }, 2000); // 2000 ms = 2 segundos
                 },
                 error: (error: unknown): void => {
                     console.error(
@@ -321,71 +325,58 @@ export class EmployeeGridComponent implements OnInit {
             });
     }
 
-    private _getCountries(): void {
-        this._countryServices.getCountries().subscribe({
-            next: (countries: SelectItem[]): void => {
-                this.countries = countries;
-                this._cdr.markForCheck();
-            },
-            error: (error: any): void => {
+    private _getCountriesObservable(): Observable<SelectItem[]> {
+        // La función ahora solo devuelve el observable del servicio.
+        return this._countryServices.getCountries().pipe(
+            catchError((error) => {
                 console.error("Error al obtener países:", error);
-            },
-        });
+                // Devolvemos un observable vacío para que el forkJoin no falle.
+                return of([]);
+            }),
+        );
     }
 
-    private _getPositions(): void {
-        this._positionServices.getPositions().subscribe({
-            next: (positions: SelectItem[]): void => {
-                this.positions = positions;
-                this._cdr.markForCheck();
-            },
-            error: (error: any): void => {
+    private _getPositionsObservable(): Observable<SelectItem[]> {
+        // La función solo devuelve el observable del servicio.
+        return this._positionServices.getPositions().pipe(
+            catchError((error) => {
                 console.error("Error al obtener posiciones:", error);
-            },
-        });
+                return of([]);
+            }),
+        );
     }
 
     private _loadData(): void {
         this.isLoadingData = true;
 
-        // 1. Cargar las posiciones primero
-        this._positionServices.getPositions().subscribe({
-            next: (positions: SelectItem[]): void => {
-                this.positions = positions;
-                // 2. Cargar los países
-                this._countryServices.getCountries().subscribe({
-                    next: (countries: SelectItem[]): void => {
-                        this.countries = countries;
+        forkJoin({
+            positions: this._getPositionsObservable(),
+            countries: this._getCountriesObservable(),
+        })
+            .pipe(
+                finalize((): void => {
+                    this.isLoadingData = false;
+                    this._cdr.markForCheck();
+                }),
+            )
+            .subscribe({
+                next: (results: {
+                    positions: SelectItem[];
+                    countries: SelectItem[];
+                }): void => {
+                    this.positions = results.positions;
+                    this.countries = results.countries;
 
-                        // 3. Cuando todos los datos de los selectores estén listos,
-                        // configura el filtro y el formulario.
-                        this._setGridFilter();
-                        this._setGridFilterForm();
-
-                        // 4. Establecer parámetros y cargar la grilla
-                        this._setEmployeeFilterParameters();
-                        this._getEmployees();
-                        this._cdr.markForCheck(); // Forzar la detección de cambios
-                    },
-                    error: (error: any): void => {
-                        console.error("Error al obtener países:", error);
-                        // Manejar el error y cargar la grilla de todos modos
-                        this._setGridFilter();
-                        this._setGridFilterForm();
-                        this._setEmployeeFilterParameters();
-                        this._getEmployees();
-                        this._cdr.markForCheck();
-                    },
-                });
-            },
-            error: (error: any): void => {
-                console.error("Error al obtener posiciones:", error);
-                // Si falla el servicio, aún podemos cargar la grilla sin ese filtro
-                this._countryServices.getCountries().subscribe({
-                    // ... (misma lógica de arriba)
-                });
-            },
-        });
+                    // Lógica para configurar la grilla
+                    this._setGridFilter();
+                    this._setGridFilterForm();
+                    this._setEmployeeFilterParameters();
+                    this._getEmployees();
+                },
+                error: (error: unknown): void => {
+                    console.error("Error en forkJoin:", error);
+                },
+            });
     }
 
     private _mapPaginatedListToGridData(
