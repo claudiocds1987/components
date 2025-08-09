@@ -136,83 +136,68 @@ export class EmployeeGridComponent implements OnInit {
 
     onExportToExcel(): void {
         this._spinnerService.show();
-        // 1. Tomamos los parámetros actuales
-        const params = { ...this._employeeFilterParams };
-        console.log("excel params:", params);
-        // 2. Creamos un nuevo objeto para los parámetros de la URL
-        const exportParams: any = {};
-        // 3. Adaptamos los parámetros a la sintaxis de json-server
-        if (params.sortColumn) {
-            exportParams["_sort"] = params.sortColumn;
+
+        // Obtener los valores del formulario de filtro.
+        const filterValues = this.gridFilterForm.value;
+
+        // Crear un objeto para los parámetros del servicio.
+        // Usamos el tipo EmployeeFilterParams para ser consistentes.
+        const exportParams: EmployeeFilterParams = {};
+
+        // Mapear los filtros a las propiedades de EmployeeFilterParams.
+        if (filterValues.id) {
+            exportParams.id = filterValues.id;
         }
-        if (params.sortOrder) {
-            exportParams["_order"] = params.sortOrder;
+        if (filterValues.name) {
+            exportParams.name = filterValues.name;
         }
-        // Añade el resto de los filtros de tu grilla
-        if (params.id) {
-            exportParams["id_like"] = params.id;
+        if (filterValues.surname) {
+            exportParams.surname = filterValues.surname;
+        }
+        if (filterValues.birthDate) {
+            // Asegúrate de que el valor sea del tipo esperado.
+            exportParams.birthDate = filterValues.birthDate;
+        }
+        // Clave: Asigna el ID de la posición a la propiedad 'position'.
+        if (filterValues.position && filterValues.position !== "all") {
+            exportParams.position = filterValues.position;
         }
 
-        if (params.name) {
-            exportParams["name_like"] = params.name;
-        }
-        if (params.surname) {
-            exportParams["surname_like"] = params.surname;
-        }
-        if (params.birthDate) {
-            exportParams["birthDate_like"] = params.birthDate;
-        }
-        if (params.position && params.position !== "all") {
-            exportParams["position.id"] = params.position;
+        if (filterValues.active !== null && filterValues.active !== 2) {
+            // Usa los valores numéricos 1 y 0 para 'active'
+            exportParams.active = filterValues.active;
         }
 
-        if (params.active !== null || params.active !== 2) {
-            if (params.active === 1) {
-                exportParams["active_like"] = "true";
-            } else if (params.active === 0) {
-                exportParams["active_like"] = "false";
-            }
-            //exportParams["active_like"] = params.active;
+        // Asigna los parámetros de ordenamiento.
+        if (this._employeeFilterParams.sortColumn) {
+            exportParams.sortColumn = this._employeeFilterParams.sortColumn;
+        }
+        if (this._employeeFilterParams.sortOrder) {
+            exportParams.sortOrder = this._employeeFilterParams.sortOrder;
         }
 
-        // 4. Eliminamos los parámetros de paginación que no queremos en el Excel
-        delete params.page;
-        delete params.limit;
-        const fileName = "Empleados.xlsx";
-
-        /* const exportData = this.gridData.map((item) => ({
-            ...item,
-            position:
-                typeof item["position"] === "object" &&
-                item["position"] !== null &&
-                "description" in item["position"]
-                    ? (item["position"] as { description: string }).description
-                    : item["position"],
-        })); */
-
-        this._exportService
-            .exportDataToExcel(
-                // Se agrega `?_delay=2000` para simular un retraso de 2 segundos
-                // para poder mostrar el spinner
-                "http://localhost:3000/employees?_delay=2000", // ruta json-server
-                exportParams,
-                fileName,
-                //exportData,
-            )
+        // Obtener todos los datos del backend con los filtros y ordenamiento aplicados
+        this._employeeServices
+            .getEmployeesForExportJsonServer(exportParams)
             .pipe(
+                map((employees: Employee[]): any =>
+                    this._mapEmployeesForExport(employees),
+                ),
                 finalize((): void => {
                     this._spinnerService.hide();
                     this._cdr.markForCheck();
                 }),
             )
             .subscribe({
+                next: (processedData: any[]): void => {
+                    const fileName = "Empleados.xlsx";
+                    this._exportService.exportToExcel(processedData, fileName);
+                },
                 error: (error: unknown): void => {
-                    this._spinnerService.hide();
                     console.error(
                         "Error al descargar el archivo de Excel:",
                         error,
                     );
-                    // Muestra un mensaje de error al usuario
                 },
             });
     }
@@ -272,6 +257,34 @@ export class EmployeeGridComponent implements OnInit {
         // Si no hay valores truthy, significa que todo está vacío o falsy.
         return !hasTruthyValue;
     } */
+
+    private _mapEmployeesForExport(employees: Employee[]): any[] {
+        return employees.map((employee): any => {
+            const mappedEmployee: any = { ...employee };
+
+            if (
+                mappedEmployee.position &&
+                mappedEmployee.position.description
+            ) {
+                mappedEmployee.position = mappedEmployee.position.description;
+            }
+
+            if (typeof mappedEmployee.active === "boolean") {
+                mappedEmployee.active = mappedEmployee.active
+                    ? "Activo"
+                    : "Inactivo";
+            }
+
+            if (typeof mappedEmployee.birthDate === "string") {
+                const luxonDate = DateTime.fromISO(mappedEmployee.birthDate);
+                if (luxonDate.isValid) {
+                    mappedEmployee.birthDate = luxonDate.toFormat("dd/MM/yyyy");
+                }
+            }
+
+            return mappedEmployee;
+        });
+    }
 
     private _setEmployeeFilterParameters(): void {
         // Aca se establece por defecto como va a aparecer la grilla paginada por 1ra vez.

@@ -115,20 +115,59 @@ export class EmployeeService {
             );
     }
 
+    // En tu 'employee.service.ts'
+
     getEmployeesForExportJsonServer(
         params: EmployeeFilterParams,
     ): Observable<Employee[]> {
         let httpParams = new HttpParams();
 
-        // Lógica para agregar los parámetros, igual que en getEmployees,
-        // pero sin paginación (_page y _limit).
-        // ...
-        // Aquí también usarías la sintaxis 'position.id'
+        // Filtros
+        if (params.id) {
+            httpParams = httpParams.set("id_like", String(params.id));
+        }
+        if (params.name) {
+            httpParams = httpParams.set("name_like", params.name);
+        }
+        if (params.surname) {
+            httpParams = httpParams.set("surname_like", params.surname);
+        }
+        if (params.birthDate) {
+            httpParams = httpParams.set(
+                "birthDate_like",
+                String(params.birthDate),
+            );
+        }
+
+        // Aquí está el filtro de position con la sintaxis correcta
         if (params.position && params.position !== "all") {
             httpParams = httpParams.set("position.id", params.position);
         }
-        // ... otros filtros
 
-        return this._http.get<Employee[]>(this.apiUrl, { params: httpParams });
+        if (params.active !== undefined && params.active !== null) {
+            if (params.active === 1) {
+                httpParams = httpParams.set("active", "true");
+            }
+            if (params.active === 0) {
+                httpParams = httpParams.set("active", "false");
+            }
+        } else {
+            // en caso que en el filtro como activo se haya elegido "todos"
+            // se elimina el parametro active de la url
+            httpParams = httpParams.delete("active");
+        }
+
+        // Ordenamiento
+        if (params.sortColumn) {
+            httpParams = httpParams.set("_sort", params.sortColumn);
+        }
+        if (params.sortOrder) {
+            httpParams = httpParams.set("_order", params.sortOrder);
+        }
+
+        // No se incluyen parámetros de paginación como '_page' y '_limit' para obtener todos los registros.
+        return this._http.get<Employee[]>(`${this.apiUrl}`, {
+            params: httpParams,
+        });
     }
 }
