@@ -66,7 +66,7 @@
     </div>
 </div>
 
-<div class="table-container">
+<div class="table-container" *ngIf="!isLoading">
     <table
         mat-table
         *ngIf="!isLoading && dataSource.data.length > 0"

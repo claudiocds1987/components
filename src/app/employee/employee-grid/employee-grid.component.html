@@ -11,7 +11,7 @@
         (createButtonClicked)="onCreateEmployee()"
     ></app-grid>
     <div class="filter-container">
-        <ng-container *ngIf="gridFilterForm">
+        <ng-container>
             <app-grid-filter
                 [config]="gridFilterConfig"
                 [filterForm]="gridFilterForm"

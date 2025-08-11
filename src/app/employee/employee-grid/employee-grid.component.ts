@@ -60,7 +60,7 @@ export class EmployeeGridComponent implements OnInit {
     chips: Chip[] = [];
     countries: SelectItem[] = [];
     positions: SelectItem[] = [];
-    isLoadingData = false;
+    isLoadingData = true;
 
     private _employeeFilterParams: EmployeeFilterParams = {};
     private _employeeServices = inject(EmployeeService);
@@ -328,7 +328,7 @@ export class EmployeeGridComponent implements OnInit {
     private _getCountriesObservable(): Observable<SelectItem[]> {
         // La función ahora solo devuelve el observable del servicio.
         return this._countryServices.getCountries().pipe(
-            catchError((error) => {
+            catchError((error: unknown): Observable<SelectItem[]> => {
                 console.error("Error al obtener países:", error);
                 // Devolvemos un observable vacío para que el forkJoin no falle.
                 return of([]);
@@ -339,7 +339,7 @@ export class EmployeeGridComponent implements OnInit {
     private _getPositionsObservable(): Observable<SelectItem[]> {
         // La función solo devuelve el observable del servicio.
         return this._positionServices.getPositions().pipe(
-            catchError((error) => {
+            catchError((error: unknown): Observable<SelectItem[]> => {
                 console.error("Error al obtener posiciones:", error);
                 return of([]);
             }),
@@ -347,36 +347,27 @@ export class EmployeeGridComponent implements OnInit {
     }
 
     private _loadData(): void {
-        this.isLoadingData = true;
-
         forkJoin({
             positions: this._getPositionsObservable(),
             countries: this._getCountriesObservable(),
-        })
-            .pipe(
-                finalize((): void => {
-                    this.isLoadingData = false;
-                    this._cdr.markForCheck();
-                }),
-            )
-            .subscribe({
-                next: (results: {
-                    positions: SelectItem[];
-                    countries: SelectItem[];
-                }): void => {
-                    this.positions = results.positions;
-                    this.countries = results.countries;
+        }).subscribe({
+            next: (results: {
+                positions: SelectItem[];
+                countries: SelectItem[];
+            }): void => {
+                this.positions = results.positions;
+                this.countries = results.countries;
 
-                    // Lógica para configurar la grilla
-                    this._setGridFilter();
-                    this._setGridFilterForm();
-                    this._setEmployeeFilterParameters();
-                    this._getEmployees();
-                },
-                error: (error: unknown): void => {
-                    console.error("Error en forkJoin:", error);
-                },
-            });
+                // Lógica para configurar la grilla
+                this._setGridFilter();
+                this._setGridFilterForm();
+                this._setEmployeeFilterParameters();
+                this._getEmployees();
+            },
+            error: (error: unknown): void => {
+                console.error("Error en forkJoin:", error);
+            },
+        });
     }
 
     private _mapPaginatedListToGridData(
