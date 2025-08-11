@@ -2,7 +2,7 @@
     <app-grid
         [config]="gridConfig"
         [data]="gridData"
-        [isLoading]="isLoadingData"
+        [isLoading]="isLoadingGridData"
         [chips]="chips"
         (pageChange)="onGridPageChange($event)"
         (sortChange)="onGridSortChange($event)"
@@ -15,6 +15,7 @@
             <app-grid-filter
                 [config]="gridFilterConfig"
                 [filterForm]="gridFilterForm"
+                [isLoading]="isLoadingFilterGridData"
                 (emitFilterApplied)="applyFilter($event)"
                 (emitFilterDescriptions)="onFilterDescriptionsEmitted($event)"
             ></app-grid-filter>

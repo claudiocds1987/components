@@ -7,6 +7,7 @@
                 class="width"
                 appearance="outline"
                 *ngIf="filter.fieldType === 'text'"
+                [appSkeleton]="isLoading"
             >
                 <mat-label>{{ filter.label }}</mat-label>
                 <input matInput [formControlName]="filter.fieldName" />
@@ -17,6 +18,7 @@
                 class="width"
                 appearance="outline"
                 *ngIf="filter.fieldType === 'select'"
+                [appSkeleton]="isLoading"
             >
                 <mat-label>{{ filter.label }}</mat-label>
                 <mat-select [formControlName]="filter.fieldName">
@@ -35,6 +37,7 @@
                     [label]="filter.label"
                     [placeholder]="filter.label"
                     [isDisabled]="false"
+                    [appSkeleton]="isLoading"
                 ></app-date-input>
             </ng-container>
         </ng-container>

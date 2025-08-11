@@ -60,7 +60,8 @@ export class EmployeeGridComponent implements OnInit {
     chips: Chip[] = [];
     countries: SelectItem[] = [];
     positions: SelectItem[] = [];
-    isLoadingData = true;
+    isLoadingGridData = true;
+    isLoadingFilterGridData = true;
 
     private _employeeFilterParams: EmployeeFilterParams = {};
     private _employeeServices = inject(EmployeeService);
@@ -80,15 +81,12 @@ export class EmployeeGridComponent implements OnInit {
     };
 
     constructor() {
-        /* this._setGridFilter();
+        this._setGridFilter();
         this._setGridFilterForm();
-        this._setEmployeeFilterParameters();
-        this.gridConfig = this._setGridConfiguration(); */
         this.gridConfig = this._setGridConfiguration();
     }
 
     ngOnInit(): void {
-        //this._getEmployees();
         this._loadData();
     }
 
@@ -243,25 +241,6 @@ export class EmployeeGridComponent implements OnInit {
         });
     }
 
-    /* private _isObjectEmpty(obj: EmployeeFilterParams): boolean {
-        // Object.values() obtiene un array con los valores del objeto.
-        // .some() verifica si al menos un valor cumple la condición.
-        // Si algún valor es truthy (no falso), el objeto no está vacío.
-        const hasTruthyValue = Object.values(obj).some(
-            (value: unknown): boolean => {
-                // Si el valor es un string, lo consideramos falsy si está vacío ("")
-                if (typeof value === "string") {
-                    return value.trim() !== "";
-                }
-                // Para otros tipos, la doble negación (!!) es suficiente
-                return !!value;
-            },
-        );
-
-        // Si no hay valores truthy, significa que todo está vacío o falsy.
-        return !hasTruthyValue;
-    } */
-
     private _mapEmployeesForExport(employees: Employee[]): any[] {
         return employees.map((employee): any => {
             const mappedEmployee: any = { ...employee };
@@ -299,13 +278,13 @@ export class EmployeeGridComponent implements OnInit {
     }
 
     private _getEmployees(): void {
-        this.isLoadingData = true;
+        this.isLoadingGridData = true;
         this._employeeServices
             .getEmployees(this._employeeFilterParams)
             .pipe(
                 map(this._mapPaginatedListToGridData.bind(this)),
                 finalize((): void => {
-                    this.isLoadingData = false;
+                    this.isLoadingGridData = false;
                     this._cdr.markForCheck();
                 }),
             )
@@ -358,9 +337,15 @@ export class EmployeeGridComponent implements OnInit {
                 this.positions = results.positions;
                 this.countries = results.countries;
 
-                // Lógica para configurar la grilla
-                this._setGridFilter();
-                this._setGridFilterForm();
+                // le asigno los puestos al gridFilterConfig haciendo cambio de referencia
+                // para que onPush detecte el cambio
+                this.gridFilterConfig = this.gridFilterConfig.map(
+                    (config: GridFilterConfig): GridFilterConfig =>
+                        config.fieldName === "position"
+                            ? { ...config, selectItems: this.positions }
+                            : config,
+                );
+                this.isLoadingFilterGridData = false;
                 this._setEmployeeFilterParameters();
                 this._getEmployees();
             },
@@ -420,51 +405,6 @@ export class EmployeeGridComponent implements OnInit {
             pageIndex: paginatedList.page - 1,
         };
     }
-
-    /*  private _mapPaginatedListToGridData(
-        paginatedList: PaginatedList<Employee>,
-    ): PaginatedList<GridData> {
-        const transformedItems: GridData[] = paginatedList.items.map(
-            (employee: Employee): GridData => {
-                // Aseguramos que 'id' exista y sea un número para GridData
-                const gridData: GridData = { id: employee.id as number };
-                for (const key in employee) {
-                    // No copiar la propiedad 'id' directamente si ya la asignamos arriba
-                    //if (key === "id") continue;
-
-                    const value = (employee as any)[key]; // Valor tal como viene del backend
-                    // Verifica si el valor es un string y si puede ser parseado como una fecha YYYY-MM-DD (ISO)
-                    if (typeof value === "string") {
-                        // Intenta parsear como ISO (YYYY-MM-DD es ISO 8601)
-                        const luxonDate = DateTime.fromISO(value);
-
-                        if (luxonDate.isValid) {
-                            // Si se parseó con éxito, significa que es una fecha que queremos formatear
-                            gridData[key] = luxonDate.toFormat("dd/MM/yyyy"); // Formato para la UI
-                        } else {
-                            // Si no es una fecha ISO válida, mantenemos el string original (ej. un nombre, un texto)
-                            gridData[key] = value;
-                        }
-                    }
-                    // Si no es un string, simplemente asigna el valor tal cual
-                    else {
-                        gridData[key] = value;
-                    }
-                }
-
-                // Aca se añaden las acciones de elipsis
-                // Pasa el `employee` completo para que la función `_setElipsisActions` pueda acceder a todas sus propiedades
-                gridData["elipsisActions"] = this._setElipsisActions(employee);
-                return gridData;
-            },
-        );
-
-        return {
-            ...paginatedList,
-            items: transformedItems,
-            pageIndex: paginatedList.page - 1,
-        };
-    } */
 
     private _setElipsisActions(employee: Employee): ElipsisAction[] {
         return [
@@ -734,22 +674,7 @@ export class EmployeeGridComponent implements OnInit {
                 fieldName: "position",
                 fieldType: "select",
                 label: "Puesto",
-                selectItems: this.positions,
-                /* selectItems: [
-                    { description: "all", id: 0 },
-                    {
-                        description: "Desarrollador Senior",
-                        id: 1,
-                    },
-                    {
-                        description: "Desarrollador Junior",
-                        id: 2,
-                    },
-                    { description: "Diseñador UX/UI", id: 3 },
-                    { description: "Soporte Técnico", id: 4 },
-                    { description: "Analista de Datos", id: 5 },
-                    { description: "Especialista QA", id: 6 },
-                ], */
+                selectItems: [],
             },
             {
                 fieldName: "active",

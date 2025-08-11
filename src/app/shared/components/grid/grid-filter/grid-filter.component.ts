@@ -17,6 +17,7 @@ import { GridFilterConfig } from "../../../models/grid-filter-config.model";
 import { DateTime } from "luxon";
 import { DateInputComponent } from "../../date-input/date-input.component";
 import { Chip } from "../../chips/chips/chips.component";
+import { SkeletonDirective } from "../../../directives/skeleton.directive";
 
 @Component({
     selector: "app-grid-filter",
@@ -31,15 +32,19 @@ import { Chip } from "../../chips/chips/chips.component";
         MatNativeDateModule,
         MatButtonModule,
         DateInputComponent,
+        SkeletonDirective,
     ],
     templateUrl: "./grid-filter.component.html",
-    styleUrls: ["./grid-filter.component.scss"],
+    styleUrls: [
+        "./grid-filter.component.scss",
+        "../../../styles/skeleton.scss",
+    ],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GridFilterComponent {
     @Input() config: GridFilterConfig[] = [];
     @Input() filterForm!: FormGroup;
-    //@Output() emitFilterApplied = new EventEmitter<unknown>(); // Considerar un tipo más específico para los valores del filtro
+    @Input() isLoading = false;
     @Output() emitFilterApplied = new EventEmitter<Record<string, unknown>>();
     @Output() emitFilterDescriptions = new EventEmitter<Chip[]>();
 
