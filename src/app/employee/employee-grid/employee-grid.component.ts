@@ -500,50 +500,37 @@ export class EmployeeGridComponent implements OnInit {
     private _updateGridConfigOnDataReceived(
         paginatedListGridData: PaginatedList<GridData>,
     ): void {
-        let basePaginationConfig: PaginationConfig;
-        if (this.gridConfig.hasPagination) {
-            basePaginationConfig = this.gridConfig.hasPagination;
-        } else {
-            basePaginationConfig = this._defaultPaginatorOptions;
-        }
-        /* if (this.gridConfig.hasPagination === false) {
-            basePaginationConfig = this._defaultPaginatorOptions;
-        } else if (this.gridConfig.hasPagination) {
-            basePaginationConfig = this.gridConfig.hasPagination;
-        } else {
-            basePaginationConfig = this._defaultPaginatorOptions;
-        } */
+        // 1. Obtiene la configuración de paginación actual de manera concisa.
+        const currentPaginationConfig =
+            this.gridConfig.hasPagination || this._defaultPaginatorOptions;
 
-        const currentOrderBy = this.gridConfig.OrderBy;
-        const newTotalCount = paginatedListGridData.totalCount;
-        const newPageIndex = paginatedListGridData.pageIndex;
-        const newPageSize = paginatedListGridData.pageSize;
-        const newSortColumn = this._employeeFilterParams.sortColumn || "";
-        const newSortDirection = (this._employeeFilterParams.sortOrder ||
-            "") as "asc" | "desc" | "";
+        // 2. Desestructuramos los valores del servicio para que el código sea más legible.
+        const { totalCount, pageIndex, pageSize } = paginatedListGridData;
+        const { sortColumn = "", sortOrder = "" } = this._employeeFilterParams;
 
+        // 3. Comprueba si los valores han cambiado.
         const paginationChanged =
-            basePaginationConfig.totalCount !== newTotalCount ||
-            basePaginationConfig.pageIndex !== newPageIndex ||
-            basePaginationConfig.pageSize !== newPageSize;
+            currentPaginationConfig.totalCount !== totalCount ||
+            currentPaginationConfig.pageIndex !== pageIndex ||
+            currentPaginationConfig.pageSize !== pageSize;
 
         const orderByChanged =
-            currentOrderBy.columnName !== newSortColumn ||
-            currentOrderBy.direction !== newSortDirection;
+            this.gridConfig.OrderBy.columnName !== sortColumn ||
+            this.gridConfig.OrderBy.direction !== sortOrder;
 
+        // 4. Si hay algún cambio, crea un nuevo objeto para forzar la detección de cambios.
         if (paginationChanged || orderByChanged) {
-            // aca creo nueva referencia del objeto gridConfig para que ChangeDetectionStrategy.OnPush detecte el cambio
             this.gridConfig = {
                 ...this.gridConfig,
                 hasPagination: {
-                    ...basePaginationConfig,
-                    totalCount: newTotalCount,
-                    pageSize: newPageSize,
-                    pageIndex: newPageIndex,
+                    ...currentPaginationConfig,
+                    totalCount,
+                    pageSize,
+                    pageIndex,
                 },
                 OrderBy: {
-                    columnName: newSortColumn,
-                    direction: newSortDirection,
+                    columnName: sortColumn,
+                    direction: sortOrder as "asc" | "desc" | "",
                 },
             };
         }
