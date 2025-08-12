@@ -501,13 +501,18 @@ export class EmployeeGridComponent implements OnInit {
         paginatedListGridData: PaginatedList<GridData>,
     ): void {
         let basePaginationConfig: PaginationConfig;
-        if (this.gridConfig.hasPagination === false) {
+        if (this.gridConfig.hasPagination) {
+            basePaginationConfig = this.gridConfig.hasPagination;
+        } else {
+            basePaginationConfig = this._defaultPaginatorOptions;
+        }
+        /* if (this.gridConfig.hasPagination === false) {
             basePaginationConfig = this._defaultPaginatorOptions;
         } else if (this.gridConfig.hasPagination) {
             basePaginationConfig = this.gridConfig.hasPagination;
         } else {
             basePaginationConfig = this._defaultPaginatorOptions;
-        }
+        } */
 
         const currentOrderBy = this.gridConfig.OrderBy;
         const newTotalCount = paginatedListGridData.totalCount;

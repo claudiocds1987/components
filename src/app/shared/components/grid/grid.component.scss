@@ -8,22 +8,15 @@
 }
 
 .buttons-actions-container {
-  /* display: flex;
-  justify-content: space-between;
-  padding-bottom: 10px; */
-   display: grid; /* Cambiado de flex a grid */
-    /* Define dos columnas: la primera (para los chips) ocupa todo el espacio disponible (1fr),
+
+   display: grid;
+    /* Definiendo dos columnas: la primera (para los chips) ocupa todo el espacio disponible (1fr),
        y la segunda (para los botones) ocupa solo el espacio que necesita (auto).
        Esto logra el efecto de "space-between" al empujar los botones a la derecha. */
     grid-template-columns: 1fr auto; 
-  
     gap: 10px; /* Espacio entre las columnas de la cuadrícula */
     padding-bottom: 10px; /* Mantiene el padding inferior */
-    /* El 'flex-wrap: wrap' ya no es directamente aplicable aquí para el comportamiento de envoltura
-       de los elementos principales (chips-wrapper y buttons-actions) en la misma línea de grid.
-       La responsividad para que se apilen en pantallas pequeñas se manejaría con media queries
-       cambiando 'grid-template-columns' a una sola columna (ej. 1fr). */
-  
+
   .buttons-actions {
     display: flex;
     justify-content: flex-end; // Para alinear el contenido al final (derecha) del contenedor
@@ -36,19 +29,13 @@
 
 }
 
-
 .header .grid-cell {
   background-color: #f0f4f9;;
   color: $primary-material-color;
   font-weight: bold;
 }
 
-.grid-container {
-    display: flex;
-    flex-direction: column;
-    flex: 1; /* Ocupa todo el espacio disponible */
-    min-height: 0; /* Permite que se reduzca si es necesario */
-}
+
 
 .table-container {
     flex: 1; /* La tabla ocupa la mayor parte del espacio */
@@ -96,14 +83,13 @@
 
 // SKELETON
 
-/* Simula una tabla con bordes y espacio */
 .skeleton-table {
   display: flex;
   flex-direction: column;
   border: 1px solid #ccc;
   border-radius: 4px;
   overflow: hidden;
-  margin-bottom: 16px;
+  
 }
 
 .skeleton-header-row,
@@ -129,6 +115,7 @@
   padding: 12px 16px;
   border-top: 1px solid #eee;
   border-right: 1px solid #eee;
+  
 }
 
 .skeleton-cell:last-child {
@@ -140,17 +127,15 @@
   width: 100%;
   background: linear-gradient(90deg, #eeeeee 25%, #dddddd 50%, #eeeeee 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.2s infinite;
+  animation: pulse 1.5s infinite ease-in-out;
   border-radius: 4px;
 }
 
-@keyframes shimmer {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
+
+ @keyframes pulse {
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
 }
 
 /* Skeleton del input de búsqueda */
@@ -180,6 +165,6 @@
   height: 20px;
   background: linear-gradient(90deg, #eeeeee 25%, #dddddd 50%, #eeeeee 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.2s infinite;
+  animation: pulse 1.5s infinite ease-in-out;
   border-radius: 4px;
 }
