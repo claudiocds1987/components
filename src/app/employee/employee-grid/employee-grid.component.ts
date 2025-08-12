@@ -142,15 +142,11 @@ export class EmployeeGridComponent implements OnInit {
 
     onExportToExcel(): void {
         this._spinnerService.show();
-
         // Obtener los valores del formulario de filtro.
         const filterValues = this.gridFilterForm.value;
-
-        // Crear un objeto para los parámetros del servicio.
-        // Usamos el tipo EmployeeFilterParams para ser consistentes.
+        // Usamos el tipo EmployeeFilterParams para los parametros en json-server.
         const exportParams: EmployeeFilterParams = {};
 
-        // Mapear los filtros a las propiedades de EmployeeFilterParams.
         if (filterValues.id) {
             exportParams.id = filterValues.id;
         }
@@ -161,10 +157,9 @@ export class EmployeeGridComponent implements OnInit {
             exportParams.surname = filterValues.surname;
         }
         if (filterValues.birthDate) {
-            // Asegúrate de que el valor sea del tipo esperado.
             exportParams.birthDate = filterValues.birthDate;
         }
-        // Clave: Asigna el ID de la posición a la propiedad 'position'.
+
         if (filterValues.position && filterValues.position !== "all") {
             exportParams.position = filterValues.position;
         }
@@ -173,7 +168,6 @@ export class EmployeeGridComponent implements OnInit {
             // Usa los valores numéricos 1 y 0 para 'active'
             exportParams.active = filterValues.active;
         }
-
         // Asigna los parámetros de ordenamiento.
         if (this._employeeFilterParams.sortColumn) {
             exportParams.sortColumn = this._employeeFilterParams.sortColumn;
@@ -181,12 +175,12 @@ export class EmployeeGridComponent implements OnInit {
         if (this._employeeFilterParams.sortOrder) {
             exportParams.sortOrder = this._employeeFilterParams.sortOrder;
         }
-
         // Obtener todos los datos del backend con los filtros y ordenamiento aplicados
         this._employeeServices
             .getEmployeesForExportJsonServer(exportParams)
             .pipe(
                 map((employees: Employee[]): any =>
+                    // this._mapEmployeesForExport() para que en en excel salga en position la descripcion, fecha formateada, activo como activo/inactivo
                     this._mapEmployeesForExport(employees),
                 ),
             )
@@ -232,10 +226,9 @@ export class EmployeeGridComponent implements OnInit {
 
     onCreateEmployee(): void {
         const dialogRef = this._dialog.open(EmployeeFormComponent, {
-            width: "500px", // O el ancho que desees
-            disableClose: true, // Opcional: para evitar que el modal se cierre al hacer clic fuera
+            width: "500px",
+            disableClose: true, // para evitar que el modal se cierre al hacer clic fuera
         });
-
         // Suscribirse al evento 'afterClosed' para obtener los datos del formulario
         dialogRef.afterClosed().subscribe((formData): void => {
             if (formData) {
