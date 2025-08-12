@@ -286,6 +286,8 @@ export class EmployeeGridComponent implements OnInit {
                 map(this._mapPaginatedListToGridData.bind(this)),
                 finalize((): void => {
                     this.isLoadingGridData = false;
+                    // usamos markForCheck en isLoadingGridData para avisarle a Angular que actualize su valor
+                    // a false ya que isLoadingGridData no se puede cambiar por referencia porque no es un objeto
                     this._cdr.markForCheck();
                 }),
             )
