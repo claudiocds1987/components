@@ -337,7 +337,12 @@ export class EmployeeGridComponent implements OnInit {
             }): void => {
                 this.positions = results.positions;
                 this.countries = results.countries;
-
+                const allPositionsItem: SelectItem = {
+                    id: "all",
+                    description: "Todos",
+                };
+                // Agregando opcion "Todos" al inicio de la lista de posiciones
+                this.positions.unshift(allPositionsItem);
                 // le asigno los puestos al gridFilterConfig haciendo cambio de referencia
                 // para que onPush detecte el cambio
                 this.gridFilterConfig = this.gridFilterConfig.map(
@@ -547,7 +552,7 @@ export class EmployeeGridComponent implements OnInit {
         // Esto es crucial para que TypeScript no arroje un error.
         if (typeof newObj.active === "string") {
             // Ahora que sabemos que es un string, podemos compararlo con 'all' o '' de forma segura.
-            if (newObj.active === "all" || newObj.active === "") {
+            if (newObj.active === "Todos" || newObj.active === "") {
                 // borramos la propiedad 'active' si es 'all' o '' porque json server
                 // el campo active es boolean no tiene el valor "all"
                 delete newObj.active;
@@ -674,7 +679,7 @@ export class EmployeeGridComponent implements OnInit {
                 fieldType: "select",
                 label: "Estado",
                 selectItems: [
-                    { description: "all", id: 2 },
+                    { description: "Todos", id: 2 },
                     {
                         description: "activo",
                         id: 1,
