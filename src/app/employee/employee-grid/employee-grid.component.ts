@@ -164,7 +164,7 @@ export class EmployeeGridComponent implements OnInit {
             exportParams.position = filterValues.position;
         }
 
-        if (filterValues.active !== null && filterValues.active !== 2) {
+        if (filterValues.active !== null && filterValues.active !== "all") {
             // Usa los valores numéricos 1 y 0 para 'active'
             exportParams.active = filterValues.active;
         }
@@ -207,21 +207,50 @@ export class EmployeeGridComponent implements OnInit {
     }
 
     onFilterDescriptionsEmitted(chips: Chip[]): void {
-        this.chips = chips;
+        console.log("Chips emitidos desde el filtro:", chips);
+        //this.chips = chips;
+        // Actualizamos la lista de chips en la grilla
+        this.chips = chips.map(
+            (chip: Chip): Chip => ({
+                ...chip,
+                disabled: chip.value === "all", // si se elige opcion "todos" desabilitamos el chip
+            }),
+        );
     }
 
     onRemoveChip(chip: Chip): void {
-        // Obtenemos el nombre del campo del filtro que se va a quitar
+        // aca sewr logico si chip.value === "all" no borrarlo
+        console.log("chipe key:", chip.key);
+        // Obtenemos el nombre del campo del filtro que se va a quitar ej: 'name', 'position'
         const fieldName = chip.key;
-        // Reseteamos el valor del formulario para ese campo
-        this.gridFilterForm.get(fieldName)?.reset();
+        // Reseteamos el valor del formulario para campo position o active
+        if (chip.key === "position" || chip.key === "active") {
+            this.gridFilterForm.get(fieldName)?.patchValue("all");
+        } else {
+            this.gridFilterForm.get(fieldName)?.patchValue(null);
+        }
         // Llamamos a applyFilter con los valores actualizados del formulario
         this.applyFilter(this.gridFilterForm.value);
         // Actualizamos la lista de chips activos
         this.chips = this.chips.filter(
-            // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-            (c) => c.key !== fieldName,
+            (c: Chip): boolean => c.key !== fieldName,
         );
+
+        // para que los chips position y active al borrarse, siempre aparezcan por defecto con la opcion "Todos"
+        if (fieldName === "position" || fieldName === "active") {
+            const filterConfig = this.gridFilterConfig.find(
+                (c: GridFilterConfig): boolean => c.fieldName === fieldName,
+            );
+            if (filterConfig) {
+                const defaultChip: Chip = {
+                    key: fieldName,
+                    label: `${filterConfig.label}: Todos`,
+                    value: "all",
+                    disabled: true,
+                };
+                this.chips.push(defaultChip);
+            }
+        }
     }
 
     onCreateEmployee(): void {
@@ -353,6 +382,23 @@ export class EmployeeGridComponent implements OnInit {
                             ? { ...config, selectItems: this.positions }
                             : config,
                 );
+
+                // ✅ Modificación clave: Inicializar los chips aquí
+                this.onFilterDescriptionsEmitted([
+                    {
+                        key: "position",
+                        label: "Puesto: Todos",
+                        value: "all",
+                        disabled: true,
+                    },
+                    {
+                        key: "active",
+                        label: "Estado: Todos",
+                        value: "all",
+                        disabled: true,
+                    },
+                ]);
+
                 this.isLoadingFilterGridData = false;
                 this._setEmployeeFilterParameters();
                 this._getEmployees();
@@ -681,7 +727,7 @@ export class EmployeeGridComponent implements OnInit {
                 fieldType: "select",
                 label: "Estado",
                 selectItems: [
-                    { description: "Todos", id: 2 },
+                    { description: "Todos", id: "all" },
                     {
                         description: "activo",
                         id: 1,
@@ -709,9 +755,10 @@ export class EmployeeGridComponent implements OnInit {
             }
 
             if (filter.fieldType === "select") {
+                // Inicializamos los select con 'all'
                 this.gridFilterForm.addControl(
                     filter.fieldName,
-                    new FormControl(""),
+                    new FormControl("all"),
                 );
                 return;
             }

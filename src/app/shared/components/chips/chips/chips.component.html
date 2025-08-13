@@ -2,6 +2,7 @@
     <mat-chip-row
         class="chip-row"
         *ngFor="let chip of chips; trackBy: trackByChipKey"
+        [disabled]="chip.disabled"
     >
         <!-- Mostrando la etiqueta del filtro -->
         <span class="chip-label">{{
@@ -9,6 +10,7 @@
         }}</span
         >{{ chip.label.substring(chip.label.indexOf(":") + 1) }}
         <mat-icon
+            *ngIf="!chip.disabled"
             class="icon-remove"
             matChipRemove
             (click)="removeChip(chip)"

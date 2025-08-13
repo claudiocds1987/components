@@ -131,6 +131,7 @@ export class GridFilterComponent {
                 key: key,
                 label: `${label}: ${displayValue}`,
                 value: value,
+                disabled: false,
             };
             chips.push(chip);
         });
