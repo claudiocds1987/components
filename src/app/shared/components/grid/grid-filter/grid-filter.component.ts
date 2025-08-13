@@ -72,6 +72,17 @@ export class GridFilterComponent {
         const chips: Chip[] = [];
 
         Object.keys(filterValues).forEach((key: string): void => {
+            /* filterValues es el objeto con los valores de los filtros aplicados ej:
+            {
+                birthDate: null
+                id: ""
+                name: "Maria"
+                position: ""
+                surname: "perez"
+            }
+            "key" es cada propiedad del objeto birthDate, id, name, position, surname 
+            filterValues[key]; es el valor de cada propiedad del objeto ej "Maria"
+            */
             const value = filterValues[key];
 
             if (
@@ -119,64 +130,6 @@ export class GridFilterComponent {
             const chip = {
                 key: key,
                 label: `${label}: ${displayValue}`,
-                value: value,
-            };
-            chips.push(chip);
-        });
-
-        return chips;
-    }
-
-    private _mapFilterValuesToChips1(
-        filterValues: Record<string, unknown>,
-    ): Chip[] {
-        const chips: Chip[] = [];
-
-        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-        Object.keys(filterValues).forEach((key: string) => {
-            console.log("key 1", filterValues);
-            console.log("key", filterValues[key]);
-            /* filterValues es el objeto con los valores de los filtros aplicados ej:
-            {
-                birthDate: null
-                id: ""
-                name: "Maria"
-                position: ""
-                surname: "perez"
-            }
-            "key" es cada propiedad del objeto birthDate, id, name, position, surname 
-            filterValues[key]; es el valor de cada propiedad del objeto ej "Maria"
-            */
-
-            const value = filterValues[key];
-
-            // Ignora valores nulos, indefinidos o cadenas vacías
-            if (
-                value === null ||
-                typeof value === "undefined" ||
-                value === ""
-            ) {
-                return;
-            }
-
-            let displayValue: string;
-
-            // Lógica para formatear la fecha
-            if (value instanceof DateTime) {
-                displayValue = value.toFormat("dd/MM/yyyy");
-            } else if (value instanceof Date) {
-                displayValue =
-                    DateTime.fromJSDate(value).toFormat("dd/MM/yyyy");
-            } else {
-                // Convierte cualquier otro tipo de valor a una cadena
-                displayValue = `${value}`;
-            }
-
-            // Simula la lógica para crear un chip. Usamos `displayValue` para la etiqueta
-            // y el `value` original para mantener el valor del filtro sin formatear.
-            const chip = {
-                key: key,
-                label: `${key}: ${displayValue}`,
                 value: value,
             };
             chips.push(chip);
