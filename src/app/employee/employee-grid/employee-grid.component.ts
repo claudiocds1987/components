@@ -207,8 +207,6 @@ export class EmployeeGridComponent implements OnInit {
     }
 
     onFilterDescriptionsEmitted(chips: Chip[]): void {
-        console.log("Chips emitidos desde el filtro:", chips);
-        //this.chips = chips;
         // Actualizamos la lista de chips en la grilla
         this.chips = chips.map(
             (chip: Chip): Chip => ({
@@ -219,8 +217,6 @@ export class EmployeeGridComponent implements OnInit {
     }
 
     onRemoveChip(chip: Chip): void {
-        // aca sewr logico si chip.value === "all" no borrarlo
-        console.log("chipe key:", chip.key);
         // Obtenemos el nombre del campo del filtro que se va a quitar ej: 'name', 'position'
         const fieldName = chip.key;
         // Reseteamos el valor del formulario para campo position o active
@@ -235,7 +231,6 @@ export class EmployeeGridComponent implements OnInit {
         this.chips = this.chips.filter(
             (c: Chip): boolean => c.key !== fieldName,
         );
-
         // para que los chips position y active al borrarse, siempre aparezcan por defecto con la opcion "Todos"
         if (fieldName === "position" || fieldName === "active") {
             const filterConfig = this.gridFilterConfig.find(
@@ -274,7 +269,6 @@ export class EmployeeGridComponent implements OnInit {
     private _mapEmployeesForExport(employees: Employee[]): any[] {
         return employees.map((employee): any => {
             const mappedEmployee: any = { ...employee };
-
             if (
                 mappedEmployee.position &&
                 mappedEmployee.position.description
@@ -467,17 +461,14 @@ export class EmployeeGridComponent implements OnInit {
                 label: "Editar",
                 icon: "edit",
                 action: (id: number): void => this._editEmployee(id),
-                // Condición de ejemplo: usa employeeData capturado por el closure
-                condition: (): boolean => (employee.id as number) % 2 !== 0,
             },
             {
                 id: "delete",
                 label: "Eliminar",
                 icon: "delete_forever",
                 action: (id: number): void => this._deleteEmployee(id),
-
-                // Condición de ejemplo: solo eliminable si el ID es par
-                condition: (): boolean => (employee.id as number) % 2 === 0,
+                // Condición de ejemplo: solo eliminable si el usuario esta activo
+                condition: (): boolean => employee.active === true,
             },
             // Puedes agregar más opciones aquí
             // {
@@ -497,6 +488,7 @@ export class EmployeeGridComponent implements OnInit {
     }
 
     private _deleteEmployee(id: number): void {
+        // QUE PONGA EL EMPLEADO COMO INACTIVO NO LO BORRE
         console.log(`Intentando eliminar empleado con ID: ${id}`);
         // Idealmente, aquí tendrías un diálogo de confirmación antes de la eliminación real.
         //this.isLoadingData = true;
@@ -595,9 +587,7 @@ export class EmployeeGridComponent implements OnInit {
         const newObj: Partial<EmployeeFilterParams> = {
             ...(obj as Record<string, unknown>),
         };
-        console.log("mapToEmployeeFilterParams:", newObj);
         // Primero, verificamos si la propiedad 'active' existe y si es un string.
-        // Esto es crucial para que TypeScript no arroje un error.
         if (typeof newObj.active === "string") {
             // Ahora que sabemos que es un string, podemos compararlo con 'all' o '' de forma segura.
             if (newObj.active === "Todos" || newObj.active === "") {
