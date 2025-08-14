@@ -17,6 +17,7 @@ export class EmployeeService {
     getEmployees(
         params: EmployeeFilterParams,
     ): Observable<PaginatedList<Employee>> {
+        // NOTA: EL CODIGO ES ALGO EXTENSO POR LA POCA DINAMICA QUE TIENE JSON-SERVER
         let httpParams = new HttpParams();
 
         if (params.page) {
@@ -91,11 +92,8 @@ export class EmployeeService {
             httpParams = httpParams.delete("active");
         }
 
-        console.log("employee-service parametros: ", params);
-
         // ... otros filtros
 
-        // Usa valores por defecto si no se proporcionan en el objeto
         const page = params.page !== undefined ? params.page : 1;
         const limit = params.limit !== undefined ? params.limit : 25;
 
@@ -123,9 +121,8 @@ export class EmployeeService {
                         return {
                             items: items,
                             totalCount: totalCount,
-                            // --- AGREGAMOS LA PROPIEDAD 'page' AQUÍ ---
-                            page: page, // This is the missing property!
-                            pageIndex: page, // Assuming pageIndex is the same as page for now (or adjust as needed)
+                            page: page,
+                            pageIndex: page,
                             pageSize: limit,
                             totalPages: totalPages,
                             hasPreviousPage: page > 1,
@@ -136,13 +133,10 @@ export class EmployeeService {
             );
     }
 
-    // En tu 'employee.service.ts'
-
     getEmployeesForExportJsonServer(
         params: EmployeeFilterParams,
     ): Observable<Employee[]> {
         let httpParams = new HttpParams();
-
         // Filtros
         if (params.id) {
             httpParams = httpParams.set("id_like", String(params.id));

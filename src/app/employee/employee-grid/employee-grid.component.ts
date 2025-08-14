@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
-    AfterViewInit,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
@@ -148,15 +147,11 @@ export class EmployeeGridComponent implements OnInit {
 
     onExportToExcel(): void {
         this._spinnerService.show();
-
         // Obtener todos los valores del formulario
         const filterValues = this.gridFilterForm.value;
-
-        // ✅ Paso clave: Pasa los valores del formulario a la función de mapeo.
-        // La función se encargará de convertir 'birthDateRange' en 'birthDate_gte' y 'birthDate_lte'.
+        // Pasa los valores del formulario a la función de mapeo.
         const exportParams = this._mapToEmployeeFilterParams(filterValues);
         console.log("exportParams: ", exportParams);
-
         // Asigna los parámetros de ordenamiento.
         if (this._employeeFilterParams.sortColumn) {
             exportParams.sortColumn = this._employeeFilterParams.sortColumn;
@@ -164,7 +159,6 @@ export class EmployeeGridComponent implements OnInit {
         if (this._employeeFilterParams.sortOrder) {
             exportParams.sortOrder = this._employeeFilterParams.sortOrder;
         }
-
         // El resto de la función se mantiene igual.
         this._employeeServices
             .getEmployeesForExportJsonServer(exportParams)
@@ -191,7 +185,7 @@ export class EmployeeGridComponent implements OnInit {
             });
     }
 
-    onExportToExcel2(): void {
+    /* onExportToExcel2(): void {
         this._spinnerService.show();
         // Obtener los valores del formulario de filtro.
         const filterValues = this.gridFilterForm.value;
@@ -257,7 +251,7 @@ export class EmployeeGridComponent implements OnInit {
                     );
                 },
             });
-    }
+    } */
 
     onFilterDescriptionsEmitted(chips: Chip[]): void {
         // Actualizamos la lista de chips en la grilla
