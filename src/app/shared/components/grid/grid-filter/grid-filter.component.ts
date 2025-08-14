@@ -82,7 +82,6 @@ export class GridFilterComponent {
                 return;
             }
 
-            // --- ✅ Lógica corregida para dateRange (debe ser la primera) ---
             if (filterConfig.fieldType === "dateRange") {
                 const dateRangeValues = value as {
                     startDate: Date | string | null;

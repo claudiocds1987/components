@@ -160,6 +160,17 @@ export class EmployeeService {
             );
         }
 
+        if (params.birthDateRange) {
+            httpParams = httpParams.set(
+                "birthDate_gte",
+                String(params.birthDateRange.startDate),
+            );
+            httpParams = httpParams.set(
+                "birthDate_lte",
+                String(params.birthDateRange.endDate),
+            );
+        }
+
         // Aquí está el filtro de position con la sintaxis correcta
         if (params.position && params.position !== "all") {
             httpParams = httpParams.set("position.id", params.position);
