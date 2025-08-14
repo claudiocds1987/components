@@ -91,6 +91,7 @@ export class EmployeeGridComponent implements OnInit {
     }
 
     applyFilter(filterValues: Record<string, unknown>): void {
+        console.log("Valores del filtro aplicados:", filterValues);
         // 1. Mapeamos `filterValues` a `EmployeeFilterParams`
         const filterParamsForBackend =
             this._mapToEmployeeFilterParams(filterValues);
@@ -691,11 +692,6 @@ export class EmployeeGridComponent implements OnInit {
                 fieldType: "text",
                 label: "Nombre",
             },
-            /* {
-                fieldName: "domicilio",
-                fieldType: "text",
-                label: "domicilio",
-            }, */
             {
                 fieldName: "surname",
                 fieldType: "text",
@@ -705,6 +701,12 @@ export class EmployeeGridComponent implements OnInit {
                 fieldName: "birthDate",
                 fieldType: "date",
                 label: "Fecha de nacimiento",
+            },
+            // Campo daterange para filtrar por un rango de fechas de nacimiento
+            {
+                fieldName: "birthDateRange",
+                fieldType: "dateRange",
+                label: "Rango de nacimiento",
             },
             {
                 fieldName: "position",
@@ -757,6 +759,16 @@ export class EmployeeGridComponent implements OnInit {
                 this.gridFilterForm.addControl(
                     filter.fieldName,
                     new FormControl(null),
+                );
+            }
+
+            if (filter.fieldType === "dateRange") {
+                this.gridFilterForm.addControl(
+                    filter.fieldName,
+                    new FormGroup({
+                        startDate: new FormControl(null),
+                        endDate: new FormControl(null),
+                    }),
                 );
             }
         });

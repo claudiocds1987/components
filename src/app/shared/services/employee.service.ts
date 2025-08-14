@@ -59,6 +59,25 @@ export class EmployeeService {
             );
         }
 
+        // --- ✅ Lógica para el filtro de rango de fechas ---
+        if (params.birthDateRange) {
+            const { startDate, endDate } = params.birthDateRange;
+
+            if (startDate) {
+                httpParams = httpParams.set(
+                    "birthDate_gte",
+                    startDate.toString(),
+                );
+            }
+
+            if (endDate) {
+                httpParams = httpParams.set(
+                    "birthDate_lte",
+                    endDate.toString(),
+                );
+            }
+        }
+
         if (params.active !== undefined && params.active !== null) {
             if (params.active === 1) {
                 httpParams = httpParams.set("active", "true");
@@ -71,6 +90,8 @@ export class EmployeeService {
             // se elimina el parametro active de la url
             httpParams = httpParams.delete("active");
         }
+
+        console.log("employee-service parametros: ", params);
 
         // ... otros filtros
 

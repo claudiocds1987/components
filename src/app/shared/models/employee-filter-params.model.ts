@@ -3,6 +3,11 @@ export interface EmployeeFilterParams {
     name?: string;
     surname?: string;
     birthDate?: Date;
+    // Propiedad para el rango de fechas
+    birthDateRange?: {
+        startDate?: Date | null;
+        endDate?: Date | null;
+    };
     position?: string;
     active?: boolean | number;
     page?: number;

@@ -40,6 +40,31 @@
                     [appSkeleton]="isLoading"
                 ></app-date-input>
             </ng-container>
+
+            <ng-container *ngIf="filter.fieldType === 'dateRange'">
+                <div [formGroupName]="filter.fieldName">
+                    <mat-form-field appearance="outline" class="width">
+                        <mat-label>{{ filter.label }}</mat-label>
+                        <mat-date-range-input [rangePicker]="picker">
+                            <input
+                                matStartDate
+                                [formControlName]="'startDate'"
+                                placeholder="Desde"
+                            />
+                            <input
+                                matEndDate
+                                [formControlName]="'endDate'"
+                                placeholder="Hasta"
+                            />
+                        </mat-date-range-input>
+                        <mat-datepicker-toggle
+                            matSuffix
+                            [for]="picker"
+                        ></mat-datepicker-toggle>
+                        <mat-date-range-picker #picker></mat-date-range-picker>
+                    </mat-form-field>
+                </div>
+            </ng-container>
         </ng-container>
     </div>
 

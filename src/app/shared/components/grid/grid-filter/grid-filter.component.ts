@@ -66,7 +66,109 @@ export class GridFilterComponent {
         return !this.filterForm.valid || !this.filterForm.dirty;
     }
 
+    // esta funciona soplo que dice Invalid DateTime
     private _mapFilterValuesToChips(
+        filterValues: Record<string, unknown>,
+    ): Chip[] {
+        const chips: Chip[] = [];
+
+        Object.keys(filterValues).forEach((key: string): void => {
+            const value = filterValues[key];
+            const filterConfig = this.config.find(
+                (c): boolean => c.fieldName === key,
+            );
+
+            if (!filterConfig) {
+                return;
+            }
+
+            // --- ✅ Lógica corregida para dateRange (debe ser la primera) ---
+            if (filterConfig.fieldType === "dateRange") {
+                const dateRangeValues = value as {
+                    startDate: Date | string | null;
+                    endDate: Date | string | null;
+                };
+                let startValue = dateRangeValues.startDate;
+                let endValue = dateRangeValues.endDate;
+
+                // Convierte a Date si es string
+                if (startValue && !(startValue instanceof Date)) {
+                    startValue = new Date(startValue);
+                }
+                if (endValue && !(endValue instanceof Date)) {
+                    endValue = new Date(endValue);
+                }
+
+                if (startValue || endValue) {
+                    let displayValue = "";
+                    if (startValue && endValue) {
+                        displayValue = `${DateTime.fromJSDate(startValue as Date).toFormat("dd/MM/yyyy")} - ${DateTime.fromJSDate(endValue as Date).toFormat("dd/MM/yyyy")}`;
+                        console.log("rango fecha: ", displayValue);
+                    } else if (startValue) {
+                        displayValue = `Desde: ${DateTime.fromJSDate(startValue as Date).toFormat("dd/MM/yyyy")}`;
+                    } else if (endValue) {
+                        displayValue = `Hasta: ${DateTime.fromJSDate(endValue as Date).toFormat("dd/MM/yyyy")}`;
+                    }
+
+                    chips.push({
+                        key: key,
+                        label: `${filterConfig.label}: ${displayValue}`,
+                        value: value,
+                        disabled: false,
+                    });
+                }
+                return;
+            }
+
+            // Excluimos valores vacíos para otros tipos de campo
+            if (
+                value === null ||
+                typeof value === "undefined" ||
+                value === ""
+            ) {
+                return;
+            }
+
+            let displayValue: string | number | boolean;
+
+            // --- Lógica para select ---
+            if (
+                filterConfig.fieldType === "select" &&
+                filterConfig.selectItems
+            ) {
+                const selectedItem = filterConfig.selectItems.find(
+                    (item): boolean => item.id === value,
+                );
+                displayValue = selectedItem
+                    ? selectedItem.description
+                    : `${value}`;
+            }
+            // --- Lógica para fechas individuales ---
+            else if (value instanceof DateTime) {
+                displayValue = value.toFormat("dd/MM/yyyy");
+            } else if (value instanceof Date) {
+                displayValue =
+                    DateTime.fromJSDate(value).toFormat("dd/MM/yyyy");
+            }
+            // --- Lógica por defecto (text, etc.) ---
+            else {
+                displayValue = `${value}`;
+            }
+
+            const label = filterConfig.label;
+            const chip = {
+                key: key,
+                label: `${label}: ${displayValue}`,
+                value: value,
+                disabled: false,
+            };
+            chips.push(chip);
+        });
+
+        return chips;
+    }
+
+    private _mapFilterValuesToChips2(
         filterValues: Record<string, unknown>,
     ): Chip[] {
         const chips: Chip[] = [];
@@ -99,7 +201,7 @@ export class GridFilterComponent {
                 (c): boolean => c.fieldName === key,
             );
 
-            // --- Lógica corregida para manejar el mat-select de 'activo/inactivo' ---
+            // --- Lógica para manejar el mat-select de 'activo/inactivo' ---
             if (
                 filterConfig &&
                 filterConfig.fieldType === "select" &&
@@ -114,9 +216,7 @@ export class GridFilterComponent {
                 displayValue = selectedItem
                     ? selectedItem.description
                     : `${value}`;
-            }
-            // --- Fin de la lógica corregida ---
-            else if (value instanceof DateTime) {
+            } else if (value instanceof DateTime) {
                 displayValue = value.toFormat("dd/MM/yyyy");
             } else if (value instanceof Date) {
                 displayValue =
