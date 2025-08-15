@@ -109,8 +109,7 @@ export class EmployeeGridComponent implements OnInit {
     onGridSortChange(sortEvent: Sort): void {
         // obteniendo nombre de la columna
         let sortColumnName = sortEvent.active;
-
-        // Si la columna activa es 'position', ajusta el nombre
+        // Si la columna activa es 'position', ajusta el nombre para json-server
         if (sortEvent.active === "position") {
             sortColumnName = "position.description";
         }
