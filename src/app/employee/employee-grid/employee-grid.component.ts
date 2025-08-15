@@ -140,20 +140,6 @@ export class EmployeeGridComponent implements OnInit {
         const filterValues = this.gridFilterForm.value;
         // Pasa los valores del formulario a la función de mapeo.
         const exportParams = this._mapToEmployeeFilterParams(filterValues);
-        // Forzar que el rango de fechas se incluya si está presente
-        const dateRange = (filterValues as any)["birthDateRange"];
-        if (dateRange && (dateRange.startDate || dateRange.endDate)) {
-            if (dateRange.startDate) {
-                (exportParams as any)["birthDate_gte"] = DateTime.fromJSDate(
-                    new Date(dateRange.startDate),
-                ).toFormat("yyyy-MM-dd");
-            }
-            if (dateRange.endDate) {
-                (exportParams as any)["birthDate_lte"] = DateTime.fromJSDate(
-                    new Date(dateRange.endDate),
-                ).toFormat("yyyy-MM-dd");
-            }
-        }
         // Asigna los parámetros de ordenamiento.
         if (this._employeeFilterParams.sortColumn) {
             exportParams.sortColumn = this._employeeFilterParams.sortColumn;
