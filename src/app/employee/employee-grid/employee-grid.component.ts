@@ -90,7 +90,6 @@ export class EmployeeGridComponent implements OnInit {
     }
 
     applyFilter(filterValues: Record<string, unknown>): void {
-        console.log("Valores del filtro aplicados:", filterValues);
         // 1. Mapeamos `filterValues` a `EmployeeFilterParams` (ya incluye el rango de fechas)
         const filterParamsForBackend =
             this._mapToEmployeeFilterParams(filterValues);
@@ -100,10 +99,7 @@ export class EmployeeGridComponent implements OnInit {
         this._setEmployeeFilterParameters();
         // 4. Copiamos los valores de filterParamsForBackend
         Object.assign(this._employeeFilterParams, filterParamsForBackend);
-        console.log(
-            "[APPLY FILTER] Params enviados al backend:",
-            this._employeeFilterParams,
-        );
+
         if (this.gridConfig.hasPagination) {
             this.gridConfig.hasPagination.pageIndex = 0;
         }
@@ -143,7 +139,6 @@ export class EmployeeGridComponent implements OnInit {
         this._spinnerService.show();
         // Obtener todos los valores del formulario
         const filterValues = this.gridFilterForm.value;
-        console.log("[EXPORT] gridFilterForm.value:", filterValues);
         // Pasa los valores del formulario a la función de mapeo.
         const exportParams = this._mapToEmployeeFilterParams(filterValues);
         // Forzar que el rango de fechas se incluya si está presente
@@ -160,7 +155,6 @@ export class EmployeeGridComponent implements OnInit {
                 ).toFormat("yyyy-MM-dd");
             }
         }
-        console.log("[EXPORT] exportParams: ", exportParams);
         // Asigna los parámetros de ordenamiento.
         if (this._employeeFilterParams.sortColumn) {
             exportParams.sortColumn = this._employeeFilterParams.sortColumn;
@@ -199,14 +193,35 @@ export class EmployeeGridComponent implements OnInit {
             });
     }
 
-    onFilterDescriptionsEmitted(chips: Chip[]): void {
-        // Actualizamos la lista de chips en la grilla
-        this.chips = chips.map(
+    onCreateChips(chips: Chip[]): void {
+        // 1. Para deshabilitar chip Puesto y Estado.
+        const newChips = chips.map(
             (chip: Chip): Chip => ({
                 ...chip,
-                disabled: chip.value === "all", // si se elige opcion "todos" desabilitamos el chip
+                disabled: chip.value === "all", // Deshabilita si el valor es "all"
             }),
         );
+
+        // 2. Arreglo temporal para almacenar los chips finales.
+        const updatedChips = [...this.chips];
+
+        // 3. Itera sobre los nuevos chips y actualiza o añade en el arreglo final.
+        newChips.forEach((newChip: Chip): void => {
+            const existingChipIndex = updatedChips.findIndex(
+                (chip): boolean => chip.key === newChip.key,
+            );
+
+            if (existingChipIndex > -1) {
+                // Si el chip ya existe, actualiza su valor.
+                updatedChips[existingChipIndex] = newChip;
+            } else {
+                // Si no existe, se añade a la lista.
+                updatedChips.push(newChip);
+            }
+        });
+
+        // 4. Asigna la lista final a la propiedad del componente.
+        this.chips = updatedChips;
     }
 
     onRemoveChip(chip: Chip): void {
@@ -296,10 +311,6 @@ export class EmployeeGridComponent implements OnInit {
 
     private _getEmployees(): void {
         this.isLoadingGridData = true;
-        console.log(
-            "[GET EMPLOYEES] Params enviados al backend:",
-            this._employeeFilterParams,
-        );
         this._employeeServices
             .getEmployees(this._employeeFilterParams)
             .pipe(
@@ -372,8 +383,8 @@ export class EmployeeGridComponent implements OnInit {
                             : config,
                 );
 
-                // ✅ Modificación clave: Inicializar los chips aquí
-                this.onFilterDescriptionsEmitted([
+                // Inicializa chips Puesto: Todos y Estado: Todos por default
+                this.onCreateChips([
                     {
                         key: "position",
                         label: "Puesto: Todos",
@@ -581,9 +592,6 @@ export class EmployeeGridComponent implements OnInit {
         // NOTA: EL CODIGO ES LARGO PORQUE JSON-SERVER NO ES MUY DINAMICO PARA FILTROS
         const employeeFilterParams: EmployeeFilterParams = {};
         const source = obj as Record<string, unknown>;
-
-        console.log("Valores de filtro originales:", source);
-
         // Iterar sobre el objeto de filtro completo
         for (const key in source) {
             if (Object.prototype.hasOwnProperty.call(source, key)) {
