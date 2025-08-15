@@ -91,28 +91,22 @@ export class EmployeeGridComponent implements OnInit {
 
     applyFilter(filterValues: Record<string, unknown>): void {
         console.log("Valores del filtro aplicados:", filterValues);
-        // 1. Mapeamos `filterValues` a `EmployeeFilterParams`
+        // 1. Mapeamos `filterValues` a `EmployeeFilterParams` (ya incluye el rango de fechas)
         const filterParamsForBackend =
             this._mapToEmployeeFilterParams(filterValues);
-        console.log("Valores del filtro mapeados:", filterValues);
         // 2. Reiniciamos completamente el objeto de parámetros.
-        //    Esto garantiza que no se arrastren filtros antiguos.
         this._employeeFilterParams = {};
         // 3. Reasignamos los parámetros de paginación por defecto.
         this._setEmployeeFilterParameters();
-        // 4. con Object.assign() Copiamos los valores de filterParamsForBackend
-        // (donde tiene las fecha formateadas a dd/mm/yyyy con los otros datos que vienen del filtro) a `_employeeFilterParams`,
-        //"_employeeFilterParams" es lo que se envía al servicio.
+        // 4. Copiamos los valores de filterParamsForBackend
         Object.assign(this._employeeFilterParams, filterParamsForBackend);
         console.log(
-            "Valores del employeeFilterParams asign:",
+            "[APPLY FILTER] Params enviados al backend:",
             this._employeeFilterParams,
         );
-
         if (this.gridConfig.hasPagination) {
             this.gridConfig.hasPagination.pageIndex = 0;
         }
-
         this._getEmployees();
     }
 
@@ -149,9 +143,24 @@ export class EmployeeGridComponent implements OnInit {
         this._spinnerService.show();
         // Obtener todos los valores del formulario
         const filterValues = this.gridFilterForm.value;
+        console.log("[EXPORT] gridFilterForm.value:", filterValues);
         // Pasa los valores del formulario a la función de mapeo.
         const exportParams = this._mapToEmployeeFilterParams(filterValues);
-        console.log("exportParams: ", exportParams);
+        // Forzar que el rango de fechas se incluya si está presente
+        const dateRange = (filterValues as any)["birthDateRange"];
+        if (dateRange && (dateRange.startDate || dateRange.endDate)) {
+            if (dateRange.startDate) {
+                (exportParams as any)["birthDate_gte"] = DateTime.fromJSDate(
+                    new Date(dateRange.startDate),
+                ).toFormat("yyyy-MM-dd");
+            }
+            if (dateRange.endDate) {
+                (exportParams as any)["birthDate_lte"] = DateTime.fromJSDate(
+                    new Date(dateRange.endDate),
+                ).toFormat("yyyy-MM-dd");
+            }
+        }
+        console.log("[EXPORT] exportParams: ", exportParams);
         // Asigna los parámetros de ordenamiento.
         if (this._employeeFilterParams.sortColumn) {
             exportParams.sortColumn = this._employeeFilterParams.sortColumn;
@@ -166,75 +175,10 @@ export class EmployeeGridComponent implements OnInit {
                 map((employees: Employee[]): any =>
                     this._mapEmployeesForExport(employees),
                 ),
-                finalize((): void => {
-                    this._spinnerService.hide();
-                    this._cdr.markForCheck();
-                }),
             )
             .subscribe({
                 next: (processedData: any[]): void => {
                     const fileName = "Empleados.xlsx";
-                    this._exportService.exportToExcel(processedData, fileName);
-                },
-                error: (error: unknown): void => {
-                    console.error(
-                        "Error al descargar el archivo de Excel:",
-                        error,
-                    );
-                },
-            });
-    }
-
-    /* onExportToExcel2(): void {
-        this._spinnerService.show();
-        // Obtener los valores del formulario de filtro.
-        const filterValues = this.gridFilterForm.value;
-        // Usamos el tipo EmployeeFilterParams para los parametros en json-server.
-        const exportParams: EmployeeFilterParams = {};
-
-        console.log("filtervalues: ", filterValues);
-
-        if (filterValues.id) {
-            exportParams.id = filterValues.id;
-        }
-        if (filterValues.name) {
-            exportParams.name = filterValues.name;
-        }
-        if (filterValues.surname) {
-            exportParams.surname = filterValues.surname;
-        }
-        if (filterValues.birthDate) {
-            exportParams.birthDate = filterValues.birthDate;
-        }
-
-        if (filterValues.position && filterValues.position !== "all") {
-            exportParams.position = filterValues.position;
-        }
-
-        if (filterValues.active !== null && filterValues.active !== "all") {
-            // Usa los valores numéricos 1 y 0 para 'active'
-            exportParams.active = filterValues.active;
-        }
-        // Asigna los parámetros de ordenamiento.
-        if (this._employeeFilterParams.sortColumn) {
-            exportParams.sortColumn = this._employeeFilterParams.sortColumn;
-        }
-        if (this._employeeFilterParams.sortOrder) {
-            exportParams.sortOrder = this._employeeFilterParams.sortOrder;
-        }
-        // Obtener todos los datos del backend con los filtros y ordenamiento aplicados
-        this._employeeServices
-            .getEmployeesForExportJsonServer(exportParams)
-            .pipe(
-                map((employees: Employee[]): any =>
-                    // this._mapEmployeesForExport() para que en en excel salga en position la descripcion, fecha formateada, activo como activo/inactivo
-                    this._mapEmployeesForExport(employees),
-                ),
-            )
-            .subscribe({
-                next: (processedData: any[]): void => {
-                    const fileName = "Empleados.xlsx";
-                    // Simulación de descarga con setTimeout
                     setTimeout((): void => {
                         this._exportService.exportToExcel(
                             processedData,
@@ -242,16 +186,18 @@ export class EmployeeGridComponent implements OnInit {
                         );
                         this._spinnerService.hide();
                         this._cdr.markForCheck();
-                    }, 2000); // 2000 ms = 2 segundos
+                    }, 1500);
                 },
                 error: (error: unknown): void => {
+                    this._spinnerService.hide();
+                    this._cdr.markForCheck();
                     console.error(
                         "Error al descargar el archivo de Excel:",
                         error,
                     );
                 },
             });
-    } */
+    }
 
     onFilterDescriptionsEmitted(chips: Chip[]): void {
         // Actualizamos la lista de chips en la grilla
@@ -305,7 +251,7 @@ export class EmployeeGridComponent implements OnInit {
             if (formData) {
                 // 'result' contendrá los datos del formulario si el usuario hizo clic en "Guardar"
                 console.log("Datos del formulario recibidos:", formData);
-                // Aquí puedes llamar a tu servicio para guardar los datos
+                // Aca llamar a tu servicio para guardar los datos
                 //this._saveNewEmployee(result);
             } else {
                 console.log("Formulario de empleado cancelado.");
@@ -350,14 +296,16 @@ export class EmployeeGridComponent implements OnInit {
 
     private _getEmployees(): void {
         this.isLoadingGridData = true;
+        console.log(
+            "[GET EMPLOYEES] Params enviados al backend:",
+            this._employeeFilterParams,
+        );
         this._employeeServices
             .getEmployees(this._employeeFilterParams)
             .pipe(
                 map(this._mapPaginatedListToGridData.bind(this)),
                 finalize((): void => {
                     this.isLoadingGridData = false;
-                    // usamos markForCheck en isLoadingGridData para avisarle a Angular que actualize su valor
-                    // a false ya que isLoadingGridData no se puede cambiar por referencia porque no es un objeto
                     this._cdr.markForCheck();
                 }),
             )
@@ -366,7 +314,7 @@ export class EmployeeGridComponent implements OnInit {
                     paginatedListGridData: PaginatedList<GridData>,
                 ): void => {
                     this.gridData = paginatedListGridData.items;
-                    this._updateGridConfigOnDataReceived(paginatedListGridData);
+                    this._updateGridConfig(paginatedListGridData);
                 },
                 error: (error: any): void => {
                     console.error(
@@ -590,7 +538,7 @@ export class EmployeeGridComponent implements OnInit {
         };
     }
 
-    private _updateGridConfigOnDataReceived(
+    private _updateGridConfig(
         paginatedListGridData: PaginatedList<GridData>,
     ): void {
         // 1. Obtiene la configuración de paginación actual de manera concisa.
@@ -631,7 +579,7 @@ export class EmployeeGridComponent implements OnInit {
 
     private _mapToEmployeeFilterParams(obj: unknown): EmployeeFilterParams {
         // NOTA: EL CODIGO ES LARGO PORQUE JSON-SERVER NO ES MUY DINAMICO PARA FILTROS
-        const params: EmployeeFilterParams = {};
+        const employeeFilterParams: EmployeeFilterParams = {};
         const source = obj as Record<string, unknown>;
 
         console.log("Valores de filtro originales:", source);
@@ -649,17 +597,12 @@ export class EmployeeGridComponent implements OnInit {
                     continue;
                 }
 
-                // 2. Manejar el campo de rango de fechas de forma explícita
+                // 2. Manejar el campo de rango de fechas: enviar birthDate_gte y birthDate_lte
                 if (key === "birthDateRange" && value) {
                     const dateRangeValue = value as {
                         startDate: Date | string | null;
                         endDate: Date | string | null;
                     };
-
-                    const newDateRange: {
-                        startDate?: string;
-                        endDate?: string;
-                    } = {};
 
                     if (dateRangeValue.startDate) {
                         const dateObj =
@@ -668,11 +611,10 @@ export class EmployeeGridComponent implements OnInit {
                                 : new Date(dateRangeValue.startDate);
                         const luxonStartDate = DateTime.fromJSDate(dateObj);
                         if (luxonStartDate.isValid) {
-                            newDateRange.startDate =
+                            (employeeFilterParams as any)["birthDate_gte"] =
                                 luxonStartDate.toFormat("yyyy-MM-dd");
                         }
                     }
-
                     if (dateRangeValue.endDate) {
                         const dateObj =
                             dateRangeValue.endDate instanceof Date
@@ -680,20 +622,9 @@ export class EmployeeGridComponent implements OnInit {
                                 : new Date(dateRangeValue.endDate);
                         const luxonEndDate = DateTime.fromJSDate(dateObj);
                         if (luxonEndDate.isValid) {
-                            newDateRange.endDate =
+                            (employeeFilterParams as any)["birthDate_lte"] =
                                 luxonEndDate.toFormat("yyyy-MM-dd");
                         }
-                    }
-
-                    // Asignamos el objeto de rango de fechas formateado a 'params'
-                    (params as any).birthDateRange = newDateRange;
-                    continue;
-                }
-                // si solo usa el filtro birthDate
-                if (key === "birthDate" && value instanceof Date) {
-                    const luxonDate = DateTime.fromJSDate(value);
-                    if (luxonDate.isValid) {
-                        (params as any)[key] = luxonDate.toFormat("yyyy-MM-dd");
                     }
                     continue;
                 }
@@ -707,168 +638,24 @@ export class EmployeeGridComponent implements OnInit {
                 ) {
                     if (key === "position") {
                         // Para position.id, que es un filtro anidado
-                        (params as any)["position.id"] = value;
+                        (employeeFilterParams as any)["position.id"] = value;
                     } else {
                         // Para otros filtros de texto como 'name', 'surname'
-                        (params as any)[key] = value;
+                        (employeeFilterParams as any)[key] = value;
                     }
                 } else if (
                     typeof value === "boolean" ||
                     typeof value === "number"
                 ) {
                     // Para booleanos como 'active' o números como 'id'
-                    (params as any)[key] = value;
+                    (employeeFilterParams as any)[key] = value;
                 }
             }
         }
 
-        console.log("Parámetros finales para el backend:", params);
-        return params;
+        return employeeFilterParams;
     }
 
-    /* private _mapToEmployeeFilterParamsMEJORADA(
-        obj: unknown,
-    ): EmployeeFilterParams {
-        const params: EmployeeFilterParams = {};
-        const source = obj as Record<string, unknown>;
-
-        console.log("Valores de filtro originales:", source);
-
-        // ✅ Paso 1: Procesar el campo de rango de fechas
-        if (source["birthDateRange"]) {
-            const dateRangeValue = source["birthDateRange"] as {
-                startDate: Date | string | null;
-                endDate: Date | string | null;
-            };
-
-            const newDateRange: { startDate?: string; endDate?: string } = {};
-
-            if (dateRangeValue.startDate) {
-                const dateObj =
-                    dateRangeValue.startDate instanceof Date
-                        ? dateRangeValue.startDate
-                        : new Date(dateRangeValue.startDate);
-                const luxonStartDate = DateTime.fromJSDate(dateObj);
-                if (luxonStartDate.isValid) {
-                    newDateRange.startDate =
-                        luxonStartDate.toFormat("yyyy-MM-dd");
-                }
-            }
-
-            if (dateRangeValue.endDate) {
-                const dateObj =
-                    dateRangeValue.endDate instanceof Date
-                        ? dateRangeValue.endDate
-                        : new Date(dateRangeValue.endDate);
-                const luxonEndDate = DateTime.fromJSDate(dateObj);
-                if (luxonEndDate.isValid) {
-                    newDateRange.endDate = luxonEndDate.toFormat("yyyy-MM-dd");
-                }
-            }
-
-            // Asignamos el objeto de rango de fechas formateado a 'params'
-            (params as any).birthDateRange = newDateRange;
-        }
-
-        // ✅ Paso 2: Iterar sobre el resto de los campos
-        for (const key in source) {
-            if (Object.prototype.hasOwnProperty.call(source, key)) {
-                const value = source[key];
-
-                // Ignoramos la propiedad 'birthDateRange' para evitar duplicarla
-                if (key === "birthDateRange") {
-                    continue;
-                }
-
-                // Asignamos el resto de los valores
-                if (
-                    typeof value === "string" &&
-                    value !== "" &&
-                    value !== "all" &&
-                    value !== "Todos"
-                ) {
-                    (params as any)[key] = value;
-                } else if (value instanceof Date) {
-                    const luxonDate = DateTime.fromJSDate(value);
-                    if (luxonDate.isValid) {
-                        (params as any)[key] = luxonDate.toFormat("yyyy-MM-dd");
-                    }
-                } else if (typeof value === "boolean") {
-                    (params as any)[key] = value;
-                }
-            }
-        }
-
-        // ✅ Paso 3: Manejar el campo 'active'
-        if (
-            (params.active as unknown as string) === "all" ||
-            (params.active as unknown as string) === "Todos" ||
-            (params.active as unknown as string) === ""
-        ) {
-            delete params.active;
-        }
-
-        console.log("Parámetros finales (formato para UI):", params);
-        return params;
-    }
- */
-    // Mapea para funcionar con json-server
-    /*  private _mapToEmployeeFilterParams2(obj: unknown): EmployeeFilterParams {
-        const newObj: Partial<EmployeeFilterParams> = {
-            ...(obj as Record<string, unknown>),
-        };
-        console.log("mapToEmployeeFilter: ", newObj);
-
-        // Primero, verificamos si la propiedad 'active' existe y si es un string.
-        if (typeof newObj.active === "string") {
-            // Ahora que sabemos que es un string, podemos compararlo con 'all' o '' de forma segura.
-            if (newObj.active === "Todos" || newObj.active === "") {
-                // borramos la propiedad 'active' si es 'all' o '' porque json server
-                // el campo active es boolean no tiene el valor "all"
-                delete newObj.active;
-            }
-        }
-
-        for (const key in newObj) {
-            if (Object.prototype.hasOwnProperty.call(newObj, key)) {
-                const value = newObj[
-                    key as keyof Partial<EmployeeFilterParams>
-                ] as unknown;
-
-                let luxonDate: DateTime | null = null;
-
-                // 1. Verifica si es un Date nativo
-                if (value instanceof Date) {
-                    luxonDate = DateTime.fromJSDate(value);
-                }
-                // 2. Si no es un Date nativo, verifica si es un objeto DateTime de Luxon
-                else if (value instanceof DateTime) {
-                    luxonDate = value;
-                }
-                // Si se logró obtener un objeto Luxon DateTime válido
-                if (luxonDate && luxonDate.isValid) {
-                    // Formatear a YYYY-MM-DD para el backend (json-server)
-                    (newObj as any)[key] = luxonDate.toFormat("yyyy-MM-dd");
-                }
-
-                // 4. Manejo de otros tipos (objetos anidados, null, undefined, string, number, boolean)
-                else if (
-                    typeof value === "object" &&
-                    value !== null &&
-                    !Array.isArray(value)
-                ) {
-                    // Llamada recursiva para objetos anidados que podrían contener más fechas
-                    (newObj as any)[key] =
-                        this._mapToEmployeeFilterParams(value);
-                } else {
-                    // Para valores nulos, indefinidos, strings, numbers, booleans, etc. Se asigna el valor tal cual.
-                    (newObj as any)[key] = value;
-                }
-            }
-        }
-        return newObj as EmployeeFilterParams;
-    }
- */
     private _setGridConfiguration(): GridConfiguration {
         const config = createDefaultGridConfiguration({
             columns: [

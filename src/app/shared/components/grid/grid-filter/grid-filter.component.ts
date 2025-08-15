@@ -62,118 +62,13 @@ export class GridFilterComponent {
     }
 
     isButtonDisabled(): boolean {
-        // Verifica si el formulario es válido y si tiene algún valor modificado
         return !this.filterForm.valid || !this.filterForm.dirty;
     }
 
-    // esta funciona soplo que dice Invalid DateTime
     private _mapFilterValuesToChips(
         filterValues: Record<string, unknown>,
     ): Chip[] {
-        const chips: Chip[] = [];
-
-        Object.keys(filterValues).forEach((key: string): void => {
-            const value = filterValues[key];
-            const filterConfig = this.config.find(
-                (c): boolean => c.fieldName === key,
-            );
-
-            if (!filterConfig) {
-                return;
-            }
-
-            if (filterConfig.fieldType === "dateRange") {
-                const dateRangeValues = value as {
-                    startDate: Date | string | null;
-                    endDate: Date | string | null;
-                };
-                let startValue = dateRangeValues.startDate;
-                let endValue = dateRangeValues.endDate;
-
-                // Convierte a Date si es string
-                if (startValue && !(startValue instanceof Date)) {
-                    startValue = new Date(startValue);
-                }
-                if (endValue && !(endValue instanceof Date)) {
-                    endValue = new Date(endValue);
-                }
-
-                if (startValue || endValue) {
-                    let displayValue = "";
-                    if (startValue && endValue) {
-                        displayValue = `${DateTime.fromJSDate(startValue as Date).toFormat("dd/MM/yyyy")} - ${DateTime.fromJSDate(endValue as Date).toFormat("dd/MM/yyyy")}`;
-                        console.log("rango fecha: ", displayValue);
-                    } else if (startValue) {
-                        displayValue = `Desde: ${DateTime.fromJSDate(startValue as Date).toFormat("dd/MM/yyyy")}`;
-                    } else if (endValue) {
-                        displayValue = `Hasta: ${DateTime.fromJSDate(endValue as Date).toFormat("dd/MM/yyyy")}`;
-                    }
-
-                    chips.push({
-                        key: key,
-                        label: `${filterConfig.label}: ${displayValue}`,
-                        value: value,
-                        disabled: false,
-                    });
-                }
-                return;
-            }
-
-            // Excluimos valores vacíos para otros tipos de campo
-            if (
-                value === null ||
-                typeof value === "undefined" ||
-                value === ""
-            ) {
-                return;
-            }
-
-            let displayValue: string | number | boolean;
-
-            // --- Lógica para select ---
-            if (
-                filterConfig.fieldType === "select" &&
-                filterConfig.selectItems
-            ) {
-                const selectedItem = filterConfig.selectItems.find(
-                    (item): boolean => item.id === value,
-                );
-                displayValue = selectedItem
-                    ? selectedItem.description
-                    : `${value}`;
-            }
-            // --- Lógica para fechas individuales ---
-            else if (value instanceof DateTime) {
-                displayValue = value.toFormat("dd/MM/yyyy");
-            } else if (value instanceof Date) {
-                displayValue =
-                    DateTime.fromJSDate(value).toFormat("dd/MM/yyyy");
-            }
-            // --- Lógica por defecto (text, etc.) ---
-            else {
-                displayValue = `${value}`;
-            }
-
-            const label = filterConfig.label;
-            const chip = {
-                key: key,
-                label: `${label}: ${displayValue}`,
-                value: value,
-                disabled: false,
-            };
-            chips.push(chip);
-        });
-
-        return chips;
-    }
-
-    private _mapFilterValuesToChips2(
-        filterValues: Record<string, unknown>,
-    ): Chip[] {
-        const chips: Chip[] = [];
-
-        Object.keys(filterValues).forEach((key: string): void => {
-            /* filterValues es el objeto con los valores de los filtros aplicados ej:
+        /* filterValues es el objeto con los valores de los filtros aplicados ej:
             {
                 birthDate: null
                 id: ""
@@ -184,9 +79,16 @@ export class GridFilterComponent {
             "key" es cada propiedad del objeto birthDate, id, name, position, surname 
             filterValues[key]; es el valor de cada propiedad del objeto ej "Maria"
             */
+        const chips: Chip[] = [];
+
+        Object.keys(filterValues).forEach((key: string): void => {
             const value = filterValues[key];
+            const filterConfig = this.config.find(
+                (c): boolean => c.fieldName === key,
+            );
 
             if (
+                !filterConfig ||
                 value === null ||
                 typeof value === "undefined" ||
                 value === ""
@@ -194,45 +96,70 @@ export class GridFilterComponent {
                 return;
             }
 
-            let displayValue: string | number | boolean;
-
-            const filterConfig = this.config.find(
-                (c): boolean => c.fieldName === key,
-            );
-
-            // --- Lógica para manejar el mat-select de 'activo/inactivo' ---
             if (
-                filterConfig &&
                 filterConfig.fieldType === "select" &&
-                filterConfig.selectItems
+                (value === "all" || value === "Todos")
             ) {
-                // Se debe buscar el item por su ID, que es el valor que viene en filterValues[key]
-                const selectedItem = filterConfig.selectItems.find(
-                    (item): boolean => item.id === value,
-                );
-
-                // Si se encuentra el item, se usa su 'description' para mostrarlo en el chip
-                displayValue = selectedItem
-                    ? selectedItem.description
-                    : `${value}`;
-            } else if (value instanceof DateTime) {
-                displayValue = value.toFormat("dd/MM/yyyy");
-            } else if (value instanceof Date) {
-                displayValue =
-                    DateTime.fromJSDate(value).toFormat("dd/MM/yyyy");
-            } else {
-                displayValue = `${value}`;
+                return;
             }
 
-            const label = filterConfig ? filterConfig.label : key;
+            let displayValue: string | number | boolean;
+            let chipType: Chip["type"] = filterConfig.fieldType;
 
-            const chip = {
+            switch (filterConfig.fieldType) {
+                case "date": {
+                    const luxonDate = DateTime.fromISO(value as string);
+                    displayValue = luxonDate.isValid
+                        ? luxonDate.toFormat("dd/MM/yyyy")
+                        : "Fecha inválida";
+                    break;
+                }
+                case "dateRange": {
+                    const dateRangeValue = value as {
+                        startDate?: string;
+                        endDate?: string;
+                    };
+                    const startLuxon = dateRangeValue.startDate
+                        ? DateTime.fromISO(dateRangeValue.startDate)
+                        : null;
+                    const endLuxon = dateRangeValue.endDate
+                        ? DateTime.fromISO(dateRangeValue.endDate)
+                        : null;
+
+                    if (startLuxon && endLuxon) {
+                        displayValue = `${startLuxon.toFormat("dd/MM/yyyy")} - ${endLuxon.toFormat("dd/MM/yyyy")}`;
+                    } else if (startLuxon) {
+                        displayValue = `Desde: ${startLuxon.toFormat("dd/MM/yyyy")}`;
+                    } else if (endLuxon) {
+                        displayValue = `Hasta: ${endLuxon.toFormat("dd/MM/yyyy")}`;
+                    } else {
+                        return;
+                    }
+                    break;
+                }
+                case "select": {
+                    const selectedItem = filterConfig.selectItems?.find(
+                        (item): boolean => item.id === value,
+                    );
+                    displayValue = selectedItem?.description || `${value}`;
+                    break;
+                }
+                case "text":
+                default:
+                    displayValue = `${value}`;
+                    chipType = filterConfig.fieldType;
+                    break;
+            }
+
+            const newChip: Chip = {
                 key: key,
-                label: `${label}: ${displayValue}`,
+                label: `${filterConfig.label}: ${displayValue}`,
                 value: value,
                 disabled: false,
+                type: chipType,
             };
-            chips.push(chip);
+
+            chips.push(newChip);
         });
 
         return chips;

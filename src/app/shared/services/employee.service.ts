@@ -60,23 +60,24 @@ export class EmployeeService {
             );
         }
 
-        // --- ✅ Lógica para el filtro de rango de fechas ---
-        if (params.birthDateRange) {
-            const { startDate, endDate } = params.birthDateRange;
-
-            if (startDate) {
-                httpParams = httpParams.set(
-                    "birthDate_gte",
-                    startDate.toString(),
-                );
+        // Lógica para el filtro de rango de fechas (igual que en export)
+        const filterParams = params as Partial<
+            EmployeeFilterParams & {
+                birthDate_gte?: string;
+                birthDate_lte?: string;
             }
-
-            if (endDate) {
-                httpParams = httpParams.set(
-                    "birthDate_lte",
-                    endDate.toString(),
-                );
-            }
+        >;
+        if (filterParams.birthDate_gte) {
+            httpParams = httpParams.set(
+                "birthDate_gte",
+                filterParams.birthDate_gte,
+            );
+        }
+        if (filterParams.birthDate_lte) {
+            httpParams = httpParams.set(
+                "birthDate_lte",
+                filterParams.birthDate_lte,
+            );
         }
 
         if (params.active !== undefined && params.active !== null) {
@@ -154,18 +155,26 @@ export class EmployeeService {
             );
         }
 
-        if (params.birthDateRange) {
+        const filterParams = params as Partial<
+            EmployeeFilterParams & {
+                birthDate_gte?: string;
+                birthDate_lte?: string;
+            }
+        >;
+        if (filterParams.birthDate_gte) {
             httpParams = httpParams.set(
                 "birthDate_gte",
-                String(params.birthDateRange.startDate),
+                filterParams.birthDate_gte,
             );
+        }
+        if (filterParams.birthDate_lte) {
             httpParams = httpParams.set(
                 "birthDate_lte",
-                String(params.birthDateRange.endDate),
+                filterParams.birthDate_lte,
             );
         }
 
-        // Aquí está el filtro de position con la sintaxis correcta
+        // Aca está el filtro de position con la sintaxis correcta
         if (params.position && params.position !== "all") {
             httpParams = httpParams.set("position.id", params.position);
         }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { Component, Input, OnInit, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
@@ -72,9 +73,19 @@ export class DateInputComponent implements ControlValueAccessor, OnInit {
     }
 
     ngOnInit(): void {
-        this.internalControl.valueChanges.subscribe((value) => {
-            this.onChange(value);
-        });
+        this.internalControl.valueChanges.subscribe(
+            (dateValue: Date | null) => {
+                let formattedValue: string | null = null;
+                if (dateValue) {
+                    const luxonDate = DateTime.fromJSDate(dateValue);
+                    if (luxonDate.isValid) {
+                        formattedValue = luxonDate.toFormat("yyyy-MM-dd");
+                    }
+                }
+                // Notificamos al formulario padre con el string
+                this.onChange(formattedValue);
+            },
+        );
     }
 
     // Al implementar la interfaz "ControlValueAccessor" Angular me obliga a implementar los metodos
@@ -87,8 +98,15 @@ export class DateInputComponent implements ControlValueAccessor, OnInit {
      *  Angular le pasa ese new Date() a esta función writeValue.
      *  emitEvent: false (para evitar que un setValue interno dispare un bucle de eventos).
      *-----------------------------------------------------------------------------------------------------*/
-    writeValue(obj: Date | null): void {
-        this.internalControl.setValue(obj, { emitEvent: false });
+    writeValue(obj: string | null): void {
+        let dateObject: Date | null = null;
+        if (obj) {
+            const luxonDate = DateTime.fromISO(obj);
+            if (luxonDate.isValid) {
+                dateObject = luxonDate.toJSDate();
+            }
+        }
+        this.internalControl.setValue(dateObject, { emitEvent: false });
     }
 
     /*-----------------------------------------------------------------------------------------------------
@@ -97,7 +115,7 @@ export class DateInputComponent implements ControlValueAccessor, OnInit {
      *  cambie internamente y quieras notificar al FormControl padre.
      *  vos la guardas en tu onChange privado para usarla después.
      *-----------------------------------------------------------------------------------------------------*/
-    registerOnChange(fn: (value: Date | null) => void): void {
+    registerOnChange(fn: (value: string | null) => void): void {
         this.onChange = fn;
     }
 
@@ -227,8 +245,7 @@ export class DateInputComponent implements ControlValueAccessor, OnInit {
         this.onTouched(); // Notifica al formulario padre que el campo fue tocado
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
-    private onChange: (value: Date | null) => void = (_: Date | null) => {};
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    private onChange: (value: string | null) => void = (_: string | null) => {};
     private onTouched: () => void = () => {};
 }
