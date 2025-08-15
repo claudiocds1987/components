@@ -194,6 +194,71 @@ export class EmployeeGridComponent implements OnInit {
     }
 
     onCreateChips(chips: Chip[]): void {
+        // 1. Un arreglo para guardarlos chips finales.
+        const updatedChips: Chip[] = [];
+        // 2. Iteramos sobre los nuevos chips que provienen del formulario
+        // para añadir o actualizar los chips activos.
+        chips.forEach((newChip: Chip): void => {
+            // Deshabilitamos el chip si su valor es "all"
+            newChip.disabled = newChip.value === "all";
+            // Si el chip es "Todos" para Puesto o Estado, lo ignoramos por ahora
+            if (
+                newChip.value === "all" &&
+                (newChip.key === "position" || newChip.key === "active")
+            ) {
+                return;
+            }
+            // Si el chip ya existe, lo actualizamos. Si no, lo añadimos.
+            const existingChipIndex = updatedChips.findIndex(
+                (chip): boolean => chip.key === newChip.key,
+            );
+
+            if (existingChipIndex > -1) {
+                updatedChips[existingChipIndex] = newChip;
+            } else {
+                updatedChips.push(newChip);
+            }
+        });
+        // 3. Añade los chips por defecto para 'Puesto' y 'Estado' si no hay un filtro activo para ellos.
+        const positionChipExists = updatedChips.some(
+            (chip: Chip): boolean => chip.key === "position",
+        );
+        if (!positionChipExists) {
+            const filterConfig = this.gridFilterConfig.find(
+                (c: GridFilterConfig): boolean => c.fieldName === "position",
+            );
+            if (filterConfig) {
+                updatedChips.push({
+                    key: "position",
+                    label: `${filterConfig.label}: Todos`,
+                    value: "all",
+                    disabled: true,
+                });
+            }
+        }
+
+        const activeChipExists = updatedChips.some(
+            (chip: Chip): boolean => chip.key === "active",
+        );
+        if (!activeChipExists) {
+            const filterConfig = this.gridFilterConfig.find(
+                (c: GridFilterConfig): boolean => c.fieldName === "active",
+            );
+            if (filterConfig) {
+                updatedChips.push({
+                    key: "active",
+                    label: `${filterConfig.label}: Todos`,
+                    value: "all",
+                    disabled: true,
+                });
+            }
+        }
+        // 4. actualiza la lista de chips y se envia por input a grid.component.
+        this.chips = updatedChips;
+    }
+
+    /* onCreateChips1(chips: Chip[]): void {
+        console.log("OnCreateChip: ", chips);
         // 1. Para deshabilitar chip Puesto y Estado.
         const newChips = chips.map(
             (chip: Chip): Chip => ({
@@ -222,14 +287,22 @@ export class EmployeeGridComponent implements OnInit {
 
         // 4. Asigna la lista final a la propiedad del componente.
         this.chips = updatedChips;
-    }
+        console.log("chips updated: ", this.chips);
+    } */
 
     onRemoveChip(chip: Chip): void {
         // Obtenemos el nombre del campo del filtro que se va a quitar ej: 'name', 'position'
         const fieldName = chip.key;
         // Reseteamos el valor del formulario para campo position o active
+        // Reseteamos el valor del formulario para el campo según su tipo
         if (chip.key === "position" || chip.key === "active") {
             this.gridFilterForm.get(fieldName)?.patchValue("all");
+        } else if (chip.key === "birthDateRange") {
+            // ✅ Nueva condición para birthDateRange
+            // Resetea el FormGroup de birthDateRange a null
+            this.gridFilterForm
+                .get(fieldName)
+                ?.patchValue({ startDate: null, endDate: null });
         } else {
             this.gridFilterForm.get(fieldName)?.patchValue(null);
         }
