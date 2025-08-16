@@ -242,44 +242,10 @@ export class EmployeeGridComponent implements OnInit {
         this.chips = updatedChips;
     }
 
-    /* onCreateChips1(chips: Chip[]): void {
-        console.log("OnCreateChip: ", chips);
-        // 1. Para deshabilitar chip Puesto y Estado.
-        const newChips = chips.map(
-            (chip: Chip): Chip => ({
-                ...chip,
-                disabled: chip.value === "all", // Deshabilita si el valor es "all"
-            }),
-        );
-
-        // 2. Arreglo temporal para almacenar los chips finales.
-        const updatedChips = [...this.chips];
-
-        // 3. Itera sobre los nuevos chips y actualiza o añade en el arreglo final.
-        newChips.forEach((newChip: Chip): void => {
-            const existingChipIndex = updatedChips.findIndex(
-                (chip): boolean => chip.key === newChip.key,
-            );
-
-            if (existingChipIndex > -1) {
-                // Si el chip ya existe, actualiza su valor.
-                updatedChips[existingChipIndex] = newChip;
-            } else {
-                // Si no existe, se añade a la lista.
-                updatedChips.push(newChip);
-            }
-        });
-
-        // 4. Asigna la lista final a la propiedad del componente.
-        this.chips = updatedChips;
-        console.log("chips updated: ", this.chips);
-    } */
-
     onRemoveChip(chip: Chip): void {
         // Obtenemos el nombre del campo del filtro que se va a quitar ej: 'name', 'position'
         const fieldName = chip.key;
-        // Reseteamos el valor del formulario para campo position o active
-        // Reseteamos el valor del formulario para el campo según su tipo
+        // Reseteamos el valor a "all" del formulario para campo position o active
         if (chip.key === "position" || chip.key === "active") {
             this.gridFilterForm.get(fieldName)?.patchValue("all");
         } else if (chip.key === "birthDateRange") {
@@ -444,7 +410,6 @@ export class EmployeeGridComponent implements OnInit {
                             ? { ...config, selectItems: this.positions }
                             : config,
                 );
-
                 // Inicializa chips Puesto: Todos y Estado: Todos por default
                 this.onCreateChips([
                     {
@@ -658,7 +623,6 @@ export class EmployeeGridComponent implements OnInit {
         for (const key in source) {
             if (Object.prototype.hasOwnProperty.call(source, key)) {
                 const value = source[key];
-
                 // 1. Manejar el campo 'active' de forma especial
                 if (
                     key === "active" &&
@@ -666,7 +630,6 @@ export class EmployeeGridComponent implements OnInit {
                 ) {
                     continue;
                 }
-
                 // 2. Manejar el campo de rango de fechas: enviar birthDate_gte y birthDate_lte
                 if (key === "birthDateRange" && value) {
                     const dateRangeValue = value as {
@@ -698,7 +661,6 @@ export class EmployeeGridComponent implements OnInit {
                     }
                     continue;
                 }
-
                 // 3. Manejar los otros campos
                 if (
                     typeof value === "string" &&

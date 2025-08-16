@@ -161,13 +161,19 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
 
     getTruncatedValue(row: GridData, colName: string): string {
         const value = this.getCellValue(row, colName);
-        return this.truncate(value, 25);
+        return this._truncate(value, 25);
+    }
+
+    getLargeTooltipValue(row: GridData, colName: string): string {
+        const val = this.getCellValue(row, colName);
+        const str = String(val ?? "");
+        return str.length > 25 ? str : "";
     }
 
     getTooltipValue(row: GridData, colName: string): string {
         const val = this.getCellValue(row, colName);
         const str = String(val ?? "");
-        return str.length > 25 ? str : "";
+        return str;
     }
 
     applyFilter(event: Event): void {
@@ -181,12 +187,6 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
 
     onSortChange(sortState: Sort): void {
         this.sortChange.emit(sortState);
-    }
-
-    truncate(text: string | number | undefined | null, maxLength = 25): string {
-        if (text === undefined || text === null) return "";
-        const str = String(text);
-        return str.length > maxLength ? str.slice(0, maxLength) + "..." : str;
     }
 
     trackColumnByName(index: number, column: Column): string {
@@ -203,6 +203,15 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
 
     onChipRemoved(chip: Chip): void {
         this.chipRemoved.emit(chip);
+    }
+
+    private _truncate(
+        text: string | number | undefined | null,
+        maxLength = 25,
+    ): string {
+        if (text === undefined || text === null) return "";
+        const str = String(text);
+        return str.length > maxLength ? str.slice(0, maxLength) + "..." : str;
     }
 
     private _setupSorting(): void {

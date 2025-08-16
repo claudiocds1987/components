@@ -153,11 +153,6 @@
                     </mat-menu>
                 </ng-container>
 
-                <!--    <ng-template #defaultCell>
-                    <span [matTooltip]="getTooltipValue(row, col.name)">
-                        {{ getTruncatedValue(row, col.name) }}
-                    </span>
-                </ng-template> -->
                 <ng-template #defaultCell>
                     <ng-container
                         *ngIf="
@@ -171,11 +166,14 @@
                                 'status-circle-active': row[col.name],
                                 'status-circle-inactive': !row[col.name],
                             }"
+                            [matTooltip]="getTooltipValue(row, col.name)"
                         ></span>
                     </ng-container>
 
                     <ng-template #standardContent>
-                        <span [matTooltip]="getTooltipValue(row, col.name)">
+                        <span
+                            [matTooltip]="getLargeTooltipValue(row, col.name)"
+                        >
                             {{ getTruncatedValue(row, col.name) }}
                         </span>
                     </ng-template>

@@ -17,7 +17,7 @@ export class EmployeeService {
     getEmployees(
         params: EmployeeFilterParams,
     ): Observable<PaginatedList<Employee>> {
-        // NOTA: EL CODIGO ES ALGO EXTENSO POR LA POCA DINAMICA QUE TIENE JSON-SERVER
+        // NOTA: EL CODIGO ES ALGO EXTENSO POR DINAMICA QUE TIENE JSON-SERVER
         let httpParams = new HttpParams();
 
         if (params.page) {
@@ -98,7 +98,6 @@ export class EmployeeService {
             >(this.apiUrl, { params: httpParams, observe: "response" })
             .pipe(
                 delay(1500), // Simula un retraso de 1500 milisegundos (1.5 segundos)
-
                 map(
                     (
                         response: HttpResponse<Employee[]>,
