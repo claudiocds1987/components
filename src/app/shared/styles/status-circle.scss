@@ -1,0 +1,18 @@
+/* Estilo base para el círculo */
+.status-circle {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  //border: 1px solid #ccc; /* Agrega un borde sutil para mejor visibilidad */
+}
+
+/* Estilo para el estado "activo" */
+.status-circle-active {
+  background-color: green;
+}
+
+/* Estilo para el estado "inactivo" */
+.status-circle-inactive {
+  background-color: red;
+}

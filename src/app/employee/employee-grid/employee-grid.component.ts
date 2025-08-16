@@ -382,6 +382,10 @@ export class EmployeeGridComponent implements OnInit {
                 next: (
                     paginatedListGridData: PaginatedList<GridData>,
                 ): void => {
+                    console.log(
+                        "Datos de la grilla:",
+                        paginatedListGridData.items,
+                    );
                     this.gridData = paginatedListGridData.items;
                     this._updateGridConfig(paginatedListGridData);
                 },
@@ -489,7 +493,7 @@ export class EmployeeGridComponent implements OnInit {
                     }
                     //  para manejar la propiedad 'active' (que es un booleano)
                     else if (key === "active" && typeof value === "boolean") {
-                        gridData[key] = value ? "Activo" : "Inactivo";
+                        gridData[key] = value;
                     }
                     // Si el valor es una fecha, la formateamos
                     else if (typeof value === "string") {
@@ -730,10 +734,10 @@ export class EmployeeGridComponent implements OnInit {
                 { name: "surname", label: "Apellido" /*isSortable: false*/ }, // Añadido label
                 { name: "birthDate", label: "Fecha de Nacimiento" }, // Añadido label
                 { name: "position", label: "Puesto" }, // Añadido label
-                { name: "active", label: "Estado" }, // Añadido label
+                { name: "active", label: "Estado", style: "status-circle" }, // Añadido label
                 {
                     name: "elipsisActions", // Este es el nombre de la propiedad en GridData
-                    label: "actions", // Opcional: la etiqueta de la columna en el encabezado
+                    //label: "actions", // Opcional: la etiqueta de la columna en el encabezado
                     width: "70px",
                     align: "center",
                     isSortable: false,

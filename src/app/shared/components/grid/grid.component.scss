@@ -1,4 +1,5 @@
 @import '../../../shared/styles/colors.scss';
+@import "../../../shared/styles/status-circle.scss";
 :host {
     display: flex; /* Hace que el elemento host sea un contenedor flex */
     flex-direction: column; /* Apila su contenido verticalmente */

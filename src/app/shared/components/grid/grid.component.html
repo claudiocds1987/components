@@ -93,6 +93,7 @@
             >
                 <!-- Si es una columna de elipsis, mostrar icono en el encabezado -->
                 <ng-container *ngIf="col.isElipsisColumn">
+                    <span *ngIf="col.label">{{ col.label }}</span>
                     <mat-icon *ngIf="col.headerIcon">{{
                         col.headerIcon
                     }}</mat-icon>
@@ -152,10 +153,32 @@
                     </mat-menu>
                 </ng-container>
 
-                <ng-template #defaultCell>
+                <!--    <ng-template #defaultCell>
                     <span [matTooltip]="getTooltipValue(row, col.name)">
                         {{ getTruncatedValue(row, col.name) }}
                     </span>
+                </ng-template> -->
+                <ng-template #defaultCell>
+                    <ng-container
+                        *ngIf="
+                            col.style === 'status-circle';
+                            else standardContent
+                        "
+                    >
+                        <span
+                            class="status-circle"
+                            [ngClass]="{
+                                'status-circle-active': row[col.name],
+                                'status-circle-inactive': !row[col.name],
+                            }"
+                        ></span>
+                    </ng-container>
+
+                    <ng-template #standardContent>
+                        <span [matTooltip]="getTooltipValue(row, col.name)">
+                            {{ getTruncatedValue(row, col.name) }}
+                        </span>
+                    </ng-template>
                 </ng-template>
             </td>
         </ng-container>

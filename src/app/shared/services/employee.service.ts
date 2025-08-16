@@ -81,16 +81,7 @@ export class EmployeeService {
         }
 
         if (params.active !== undefined && params.active !== null) {
-            if (params.active === 1) {
-                httpParams = httpParams.set("active", "true");
-            }
-            if (params.active === 0) {
-                httpParams = httpParams.set("active", "false");
-            }
-        } else {
-            // en caso que en el filtro como activo se haya elegido "todos"
-            // se elimina el parametro active de la url
-            httpParams = httpParams.delete("active");
+            httpParams = httpParams.set("active", String(!!params.active));
         }
 
         // ... otros filtros
@@ -107,6 +98,7 @@ export class EmployeeService {
             >(this.apiUrl, { params: httpParams, observe: "response" })
             .pipe(
                 delay(1500), // Simula un retraso de 1500 milisegundos (1.5 segundos)
+
                 map(
                     (
                         response: HttpResponse<Employee[]>,
@@ -180,16 +172,7 @@ export class EmployeeService {
         }
 
         if (params.active !== undefined && params.active !== null) {
-            if (params.active === 1) {
-                httpParams = httpParams.set("active", "true");
-            }
-            if (params.active === 0) {
-                httpParams = httpParams.set("active", "false");
-            }
-        } else {
-            // en caso que en el filtro como activo se haya elegido "todos"
-            // se elimina el parametro active de la url
-            httpParams = httpParams.delete("active");
+            httpParams = httpParams.set("active", String(!!params.active));
         }
 
         // Ordenamiento

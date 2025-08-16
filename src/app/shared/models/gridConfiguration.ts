@@ -18,6 +18,7 @@ export interface Column {
     // propiedad para el icono de la cabecera de la columna (si aplica, ej. 'more_vert')
     headerIcon?: string;
     label?: string; // Añadido para etiquetas de columna personalizadas
+    style?: string; // para añadir una clase .scss
 }
 
 export interface PaginationConfig {
