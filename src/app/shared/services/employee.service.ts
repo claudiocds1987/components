@@ -17,6 +17,7 @@ export class EmployeeService {
     getEmployees(
         params: EmployeeFilterParams,
     ): Observable<PaginatedList<Employee>> {
+        console.log("employeeFilterParams: ", params);
         // NOTA: EL CODIGO ES ALGO EXTENSO POR DINAMICA QUE TIENE JSON-SERVER
         let httpParams = new HttpParams();
 
@@ -64,7 +65,7 @@ export class EmployeeService {
             );
         }
 
-        // Lógica para el filtro de rango de fechas (igual que en export)
+        // Lógica para el filtro de rango de fechas
         const filterParams = params as Partial<
             EmployeeFilterParams & {
                 birthDate_gte?: string;

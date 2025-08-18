@@ -752,7 +752,12 @@ export class EmployeeGridComponent implements OnInit {
                 //{ name: "birthDate", label: "Fecha de Nacimiento" }, // Añadido label
                 { name: "gender", label: "genero" },
                 { name: "position", label: "Puesto" }, // Añadido label
-                { name: "active", label: "Estado", style: "status-circle" }, // Añadido label
+                {
+                    name: "active",
+                    label: "Estado",
+                    style: "status-circle",
+                    align: "center",
+                }, // Añadido label
                 {
                     name: "elipsisActions", // Este es el nombre de la propiedad en GridData
                     //label: "actions", // Opcional: la etiqueta de la columna en el encabezado

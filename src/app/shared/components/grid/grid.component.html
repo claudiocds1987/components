@@ -101,9 +101,20 @@
                 <!-- Si es una columna normal, mostrar texto y sortable -->
                 <ng-container *ngIf="!col.isElipsisColumn">
                     <ng-container *ngIf="col.isSortable; else noSortableHeader">
-                        <span [mat-sort-header]="col.name">{{
-                            col.label || col.name | titlecase
-                        }}</span>
+                        <span
+                            [mat-sort-header]="col.name"
+                            [ngStyle]="{
+                                display: 'flex',
+                                'justify-content':
+                                    col.align === 'center'
+                                        ? 'center'
+                                        : col.align === 'right'
+                                          ? 'flex-end'
+                                          : 'flex-start',
+                            }"
+                        >
+                            {{ col.label || col.name | titlecase }}
+                        </span>
                     </ng-container>
                     <ng-template #noSortableHeader>
                         {{ col.label || col.name | titlecase }}
