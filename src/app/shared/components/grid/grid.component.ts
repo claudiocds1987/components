@@ -126,6 +126,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     ngOnChanges(changes: SimpleChanges): void {
         if (changes["data"]) {
             this.dataSource.data = this.data;
+            console.log("dataSource: ", this.dataSource.data);
             this._updatePaginatorForClientSide();
         }
 

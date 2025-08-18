@@ -122,6 +122,10 @@
                     'text-overflow': col.isElipsisColumn ? 'clip' : 'ellipsis',
                 }"
             >
+                <ng-container *ngIf="col.name === 'img' && row['imgUrl']">
+                    <img [src]="row['imgUrl']" alt="Imagen" class="table-img" />
+                </ng-container>
+
                 <ng-container *ngIf="col.isElipsisColumn; else defaultCell">
                     <button
                         mat-icon-button

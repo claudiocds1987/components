@@ -8,7 +8,7 @@ export interface ElipsisAction {
 }
 
 export interface Column {
-    name: string;
+    name: string; // Nombre de la columna que aparece en el header de la tabla
     width?: string;
     align?: "left" | "center" | "right";
     isSortable?: boolean;

@@ -35,6 +35,7 @@ import { EmployeeFormComponent } from "../employee-form/employee-form/employee-f
 import { SelectItem } from "../../shared/models/select-item.model";
 import { CountryService } from "../../shared/services/country.service";
 import { PositionService } from "../../shared/services/position.service";
+import { RandomUserService } from "../../shared/services/random-user.service";
 
 @Component({
     selector: "app-employee-grid",
@@ -67,6 +68,7 @@ export class EmployeeGridComponent implements OnInit {
     private _countryServices = inject(CountryService);
     private _positionServices = inject(PositionService);
     private _exportService = inject(ExportService);
+    private _randomUserService = inject(RandomUserService);
     private _cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
     private _spinnerService = inject(SpinnerService);
     private _dialog: MatDialog = inject(MatDialog);
@@ -301,19 +303,57 @@ export class EmployeeGridComponent implements OnInit {
     private _mapEmployeesForExport(employees: Employee[]): any[] {
         return employees.map((employee): any => {
             const mappedEmployee: any = { ...employee };
+            // Elimino la propiedad imgUrl para que el excel no muestre esa columna
+            delete mappedEmployee.imgUrl;
+
+            if (mappedEmployee.name) {
+                // pongo mappedEmployee.nombre para que en el excel la columna se llame nombre
+                mappedEmployee.nombre = mappedEmployee.name;
+                delete mappedEmployee.name;
+            }
+
+            if (mappedEmployee.surname) {
+                // pongo mappedEmployee.apellido para que en el excel la columna se llame apellido
+                mappedEmployee.apellido = mappedEmployee.surname;
+                delete mappedEmployee.surname;
+            }
+
+            if (mappedEmployee.birthDate) {
+                // pongo mappedEmployee.birthDate para que en el excel la columna se llame nacimiento
+                mappedEmployee.nacimiento = mappedEmployee.birthDate;
+                delete mappedEmployee.birthDate;
+            }
+
             if (
                 mappedEmployee.position &&
                 mappedEmployee.position.description
             ) {
-                mappedEmployee.position = mappedEmployee.position.description;
+                // pongo mappedEmployee.puesto para que en el excel la columna se llame puesto
+                mappedEmployee.puesto = mappedEmployee.position.description;
+                delete mappedEmployee.position;
+            }
+
+            if (mappedEmployee.gender && mappedEmployee.gender.description) {
+                // pongo mappedEmployee.genero para que en el excel la columna se llame genero
+                mappedEmployee.genero = mappedEmployee.gender.description;
+                delete mappedEmployee.gender;
             }
 
             if (typeof mappedEmployee.active === "boolean") {
+                // pongo mappedEmployee.estado para que en el excel la columna se llame estado
+                mappedEmployee.estado = mappedEmployee.active
+                    ? "Activo"
+                    : "Inactivo";
+                // Elimina la propiedad original 'active'
+                delete mappedEmployee.active;
+            }
+
+            /* if (typeof mappedEmployee.active === "boolean") {
                 mappedEmployee.active = mappedEmployee.active
                     ? "Activo"
                     : "Inactivo";
             }
-
+ */
             if (typeof mappedEmployee.birthDate === "string") {
                 const luxonDate = DateTime.fromISO(mappedEmployee.birthDate);
                 if (luxonDate.isValid) {
@@ -451,11 +491,20 @@ export class EmployeeGridComponent implements OnInit {
                         typeof value === "object" &&
                         value !== null
                     ) {
-                        // Asigna el valor de la propiedad 'description' a la celda de la grilla
+                        // Asigna el valor de la propiedad 'gender' a la celda de la grilla
+                        gridData[key] = (
+                            value as { description: string }
+                        ).description;
+                    } else if (
+                        key === "gender" &&
+                        typeof value === "object" &&
+                        value !== null
+                    ) {
                         gridData[key] = (
                             value as { description: string }
                         ).description;
                     }
+
                     //  para manejar la propiedad 'active' (que es un booleano)
                     else if (key === "active" && typeof value === "boolean") {
                         gridData[key] = value;
@@ -691,10 +740,17 @@ export class EmployeeGridComponent implements OnInit {
     private _setGridConfiguration(): GridConfiguration {
         const config = createDefaultGridConfiguration({
             columns: [
+                {
+                    name: "img",
+                    width: "70px",
+                    label: "img",
+                    isSortable: false,
+                }, // Añadido label
                 { name: "id", width: "70px", label: "ID" }, // Añadido label
                 { name: "name", label: "Nombre" }, // Añadido label
                 { name: "surname", label: "Apellido" /*isSortable: false*/ }, // Añadido label
-                { name: "birthDate", label: "Fecha de Nacimiento" }, // Añadido label
+                //{ name: "birthDate", label: "Fecha de Nacimiento" }, // Añadido label
+                { name: "gender", label: "genero" },
                 { name: "position", label: "Puesto" }, // Añadido label
                 { name: "active", label: "Estado", style: "status-circle" }, // Añadido label
                 {
@@ -748,10 +804,21 @@ export class EmployeeGridComponent implements OnInit {
                 label: "Apellido",
             },
             {
+                fieldName: "gender",
+                fieldType: "select",
+                label: "Género",
+                selectItems: [
+                    { description: "Todos", id: "all" },
+                    { description: "Masculino", id: 1 },
+                    { description: "Femenino", id: 2 },
+                    { description: "No binario", id: 0 },
+                ],
+            },
+            /* {
                 fieldName: "birthDate",
                 fieldType: "date",
                 label: "Fecha de nacimiento",
-            },
+            }, */
             // Campo daterange para filtrar por un rango de fechas de nacimiento
             {
                 fieldName: "birthDateRange",

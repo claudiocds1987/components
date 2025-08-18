@@ -52,6 +52,10 @@ export class EmployeeService {
             httpParams = httpParams.set("position.id", params.position);
         }
 
+        if (params.gender && params.gender !== "all") {
+            httpParams = httpParams.set("gender.id", params.gender);
+        }
+
         // Aca añadir los restantes campos del componente grid-filter
         if (params.birthDate) {
             httpParams = httpParams.append(
@@ -163,6 +167,10 @@ export class EmployeeService {
                 "birthDate_lte",
                 filterParams.birthDate_lte,
             );
+        }
+
+        if (params.gender && params.gender !== "all") {
+            httpParams = httpParams.set("gender.id", params.gender);
         }
 
         // Aca está el filtro de position con la sintaxis correcta

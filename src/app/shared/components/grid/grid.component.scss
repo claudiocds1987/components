@@ -82,6 +82,14 @@
   max-width: 300px;    
 }
 
+.table-img {
+  display: flex;
+  width: 40px; /* Ajusta el tamaño según tus necesidades */
+  height: 40px; /* Ajusta el tamaño según tus necesidades */
+  border-radius: 50%; /* Para hacer la imagen circular */
+  object-fit: cover; /* Para asegurar que la imagen cubra el área sin distorsionarse */
+}
+
 // SKELETON
 
 .skeleton-table {

@@ -3,6 +3,7 @@ export interface EmployeeFilterParams {
     name?: string;
     surname?: string;
     birthDate?: Date;
+    gender?: string;
     // Propiedad para el rango de fechas para que funcione con json-server
     birthDateRange?: {
         startDate?: Date | null;
