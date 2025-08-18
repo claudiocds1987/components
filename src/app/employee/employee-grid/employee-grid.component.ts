@@ -741,7 +741,8 @@ export class EmployeeGridComponent implements OnInit {
         const config = createDefaultGridConfiguration({
             columns: [
                 {
-                    name: "img",
+                    name: "foto",
+                    type: "img",
                     width: "70px",
                     label: "img",
                     isSortable: false,
@@ -750,7 +751,7 @@ export class EmployeeGridComponent implements OnInit {
                 { name: "name", label: "Nombre" }, // Añadido label
                 { name: "surname", label: "Apellido" /*isSortable: false*/ }, // Añadido label
                 //{ name: "birthDate", label: "Fecha de Nacimiento" }, // Añadido label
-                { name: "gender", label: "genero" },
+                { name: "gender", label: "genero", isSortable: false },
                 { name: "position", label: "Puesto" }, // Añadido label
                 {
                     name: "active",
@@ -764,7 +765,7 @@ export class EmployeeGridComponent implements OnInit {
                     width: "70px",
                     align: "center",
                     isSortable: false,
-                    isElipsisColumn: true, // ¡Indica que es la columna de elipsis!
+                    type: "elipsis", // ¡Indica que es la columna de elipsis!
                     hasHeaderTooltip: true,
                     //headerIcon: "settings", // Icono para el encabezado de la columna de acciones
                 },

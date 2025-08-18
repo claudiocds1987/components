@@ -91,15 +91,15 @@
                 [style.text-align]="col.align || 'left'"
                 [matTooltip]="col.hasHeaderTooltip ? col.label || col.name : ''"
             >
-                <!-- Si es una columna de elipsis, mostrar icono en el encabezado -->
-                <ng-container *ngIf="col.isElipsisColumn">
+                <!-- Si es una columna de elipsis, -->
+                <ng-container *ngIf="col.type === 'elipsis'">
                     <span *ngIf="col.label">{{ col.label }}</span>
                     <mat-icon *ngIf="col.headerIcon">{{
                         col.headerIcon
                     }}</mat-icon>
                 </ng-container>
                 <!-- Si es una columna normal, mostrar texto y sortable -->
-                <ng-container *ngIf="!col.isElipsisColumn">
+                <ng-container *ngIf="col.type !== 'elipsis'">
                     <ng-container *ngIf="col.isSortable; else noSortableHeader">
                         <span
                             [mat-sort-header]="col.name"
@@ -130,14 +130,15 @@
                 [style.width]="col.width || 'auto'"
                 [style.text-align]="col.align || 'left'"
                 [ngStyle]="{
-                    'text-overflow': col.isElipsisColumn ? 'clip' : 'ellipsis',
+                    'text-overflow':
+                        col.type === 'elipsis' ? 'clip' : 'ellipsis',
                 }"
             >
-                <ng-container *ngIf="col.name === 'img' && row['imgUrl']">
+                <ng-container *ngIf="col.type === 'img' && row['imgUrl']">
                     <img [src]="row['imgUrl']" alt="Imagen" class="table-img" />
                 </ng-container>
 
-                <ng-container *ngIf="col.isElipsisColumn; else defaultCell">
+                <ng-container *ngIf="col.type === 'elipsis'; else defaultCell">
                     <button
                         mat-icon-button
                         [matMenuTriggerFor]="elipsisMenu"

@@ -14,11 +14,15 @@ export interface Column {
     isSortable?: boolean;
     hasHeaderTooltip?: boolean;
     // propiedad para indicar que esta columna es de elipsis
-    isElipsisColumn?: boolean;
+    //isElipsisColumn?: boolean;
     // propiedad para el icono de la cabecera de la columna (si aplica, ej. 'more_vert')
     headerIcon?: string;
     label?: string; // Añadido para etiquetas de columna personalizadas
     style?: string; // para añadir una clase .scss
+    // si "type" es "img" grid.component se encarga de agregar un la etiqueta img en su html
+    // para que muestra una imagen como en el caso de las imagenes el empleado
+    // si "type" es "component" lalogica del html va estar preparada para llamar a un componente en el html.
+    type?: "img" | "elipsis" | "component";
 }
 
 export interface PaginationConfig {
