@@ -636,6 +636,9 @@ export class EmployeeGridComponent implements OnInit {
         for (const key in source) {
             if (Object.prototype.hasOwnProperty.call(source, key)) {
                 const value = source[key];
+                if (key === "id") {
+                    (employeeFilterParams as any)["id"] = value;
+                }
                 // (value === "all" || value === "Todos" || value === "")
                 // 1. Manejar el campo 'active'/position y gender de forma especial
                 if (

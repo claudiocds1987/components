@@ -36,8 +36,9 @@ export class EmployeeService {
             httpParams = httpParams.append("_order", params.sortOrder);
         }
         // Agrega los parametros a la url de base de datos json-server los campos que estan en grid-filter
+        console.log("params id: ", params.id);
         if (params.id) {
-            httpParams = httpParams.set("id", params.id.toString()); // busqueda exacta sensitive
+            httpParams = httpParams.set("id", String(params.id)); // busqueda exacta sensitive
         }
 
         if (params.name) {
@@ -134,10 +135,9 @@ export class EmployeeService {
         params: EmployeeFilterParams,
     ): Observable<Employee[]> {
         let httpParams = new HttpParams();
-        console.log("PARAMS EXPORT EXCEL: ", params);
         // Filtros
         if (params.id) {
-            httpParams = httpParams.set("id_like", String(params.id));
+            httpParams = httpParams.set("id", String(params.id)); // busqueda exacta sensitive
         }
         if (params.name) {
             httpParams = httpParams.set("name_like", params.name);
