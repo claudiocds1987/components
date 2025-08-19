@@ -33,10 +33,7 @@ import { Chip } from "../../shared/components/chips/chips/chips.component";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { EmployeeFormComponent } from "../employee-form/employee-form/employee-form.component";
 import { SelectItem } from "../../shared/models/select-item.model";
-import { CountryService } from "../../shared/services/country.service";
 import { PositionService } from "../../shared/services/position.service";
-import { RandomUserService } from "../../shared/services/random-user.service";
-//import { Gender } from "../../shared/enums/gender.enum";
 
 interface DateRangeValue {
     startDate: string | null;
@@ -86,7 +83,6 @@ export class EmployeeGridComponent implements OnInit {
     private _employeeServices = inject(EmployeeService);
     private _positionServices = inject(PositionService);
     private _exportService = inject(ExportService);
-    private _randomUserService = inject(RandomUserService);
     private _cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
     private _spinnerService = inject(SpinnerService);
     private _dialog: MatDialog = inject(MatDialog);
@@ -103,10 +99,7 @@ export class EmployeeGridComponent implements OnInit {
         this._setGridFilter();
         this._setGridFilterForm();
         this.gridConfig = this._setGridConfiguration();
-        //this.chips = this.mapToChipsDescription(this._defaultChips);
-        // ---------------------------------------------------
-        this.createChips(this._defaultChips); //se crean los chips por default estado,puesto y genero
-        // ---------------------------------------------------
+        this._createChips(this._defaultChips); //se crean los chips por default estado,puesto y genero
     }
 
     ngOnInit(): void {
@@ -127,10 +120,10 @@ export class EmployeeGridComponent implements OnInit {
         // si el filtro de grid-filter.component esta vacio
         if (isClearFilter) {
             // Se crean los chips Estado, Puesto y Genero por default
-            this.createChips(this._defaultChips);
+            this._createChips(this._defaultChips);
             this._setGridFilterForm(); // ser resetea el formulario de grid-filter.component
         } else {
-            this.createChips(filterValues);
+            this._createChips(filterValues);
             const filterParamsForBackend =
                 this._mapToEmployeeFilterParams(filterValues);
             Object.assign(this._employeeFilterParams, filterParamsForBackend);
@@ -214,11 +207,59 @@ export class EmployeeGridComponent implements OnInit {
             });
     }
 
-    createChips(filterValues: Record<string, unknown>): void {
-        this.chips = this.mapToChipsDescription(filterValues);
+    onRemoveChip(chip: Chip): void {
+        const fieldName = chip.key;
+        // Define un mapa de estrategias para manejar cada tipo de filtro
+        const resetStrategies = {
+            position: (): void =>
+                this.gridFilterForm.get(fieldName)?.patchValue("all"),
+            active: (): void =>
+                this.gridFilterForm.get(fieldName)?.patchValue("all"),
+            gender: (): void =>
+                this.gridFilterForm.get(fieldName)?.patchValue("all"),
+            birthDateRange: (): void =>
+                this.gridFilterForm.get(fieldName)?.patchValue({
+                    startDate: null,
+                    endDate: null,
+                }),
+            // Estrategia por defecto para otros campos (name, surname, etc.)
+            default: (): void =>
+                this.gridFilterForm.get(fieldName)?.patchValue(null),
+        };
+        // Obtenemos la estrategia correspondiente o usamos la por defecto
+        const resetAction =
+            resetStrategies[fieldName as keyof typeof resetStrategies] ||
+            resetStrategies.default;
+        resetAction();
+
+        this.applyFilter(this.gridFilterForm.value);
     }
 
-    mapToChipsDescription(filterValues: Record<string, unknown>): Chip[] {
+    onCreateEmployee(): void {
+        const dialogRef = this._dialog.open(EmployeeFormComponent, {
+            width: "500px",
+            disableClose: true, // para evitar que el modal se cierre al hacer clic fuera
+        });
+        // Suscribirse al evento 'afterClosed' para obtener los datos del formulario
+        dialogRef.afterClosed().subscribe((formData): void => {
+            if (formData) {
+                // 'result' contendrá los datos del formulario si el usuario hizo clic en "Guardar"
+                console.log("Datos del formulario recibidos:", formData);
+                // Aca llamar a tu servicio para guardar los datos
+                //this._saveNewEmployee(result);
+            } else {
+                console.log("Formulario de empleado cancelado.");
+            }
+        });
+    }
+
+    private _createChips(filterValues: Record<string, unknown>): void {
+        this.chips = this._mapToChipsDescription(filterValues);
+    }
+
+    private _mapToChipsDescription(
+        filterValues: Record<string, unknown>,
+    ): Chip[] {
         const newChips: Chip[] = [];
 
         const specialCases = {
@@ -306,52 +347,6 @@ export class EmployeeGridComponent implements OnInit {
             }
         }
         return newChips;
-    }
-
-    onRemoveChip(chip: Chip): void {
-        const fieldName = chip.key;
-        // Define un mapa de estrategias para manejar cada tipo de filtro
-        const resetStrategies = {
-            position: (): void =>
-                this.gridFilterForm.get(fieldName)?.patchValue("all"),
-            active: (): void =>
-                this.gridFilterForm.get(fieldName)?.patchValue("all"),
-            gender: (): void =>
-                this.gridFilterForm.get(fieldName)?.patchValue("all"),
-            birthDateRange: (): void =>
-                this.gridFilterForm.get(fieldName)?.patchValue({
-                    startDate: null,
-                    endDate: null,
-                }),
-            // Estrategia por defecto para otros campos (name, surname, etc.)
-            default: (): void =>
-                this.gridFilterForm.get(fieldName)?.patchValue(null),
-        };
-        // Obtenemos la estrategia correspondiente o usamos la por defecto
-        const resetAction =
-            resetStrategies[fieldName as keyof typeof resetStrategies] ||
-            resetStrategies.default;
-        resetAction();
-
-        this.applyFilter(this.gridFilterForm.value);
-    }
-
-    onCreateEmployee(): void {
-        const dialogRef = this._dialog.open(EmployeeFormComponent, {
-            width: "500px",
-            disableClose: true, // para evitar que el modal se cierre al hacer clic fuera
-        });
-        // Suscribirse al evento 'afterClosed' para obtener los datos del formulario
-        dialogRef.afterClosed().subscribe((formData): void => {
-            if (formData) {
-                // 'result' contendrá los datos del formulario si el usuario hizo clic en "Guardar"
-                console.log("Datos del formulario recibidos:", formData);
-                // Aca llamar a tu servicio para guardar los datos
-                //this._saveNewEmployee(result);
-            } else {
-                console.log("Formulario de empleado cancelado.");
-            }
-        });
     }
 
     private _mapEmployeesForExport(employees: Employee[]): any[] {
@@ -478,22 +473,6 @@ export class EmployeeGridComponent implements OnInit {
                             ? { ...config, selectItems: this._positions }
                             : config,
                 );
-                // Inicializa chips Puesto: Todos y Estado: Todos por default
-                /* this.onCreateChips([
-                    {
-                        key: "position",
-                        label: "Puesto: Todos",
-                        value: "all",
-                        disabled: true,
-                    },
-                    {
-                        key: "active",
-                        label: "Estado: Todos",
-                        value: "all",
-                        disabled: true,
-                    },
-                ]); */
-
                 this.isLoadingFilterGridData = false;
                 this._setEmployeeFilterParameters();
                 this._getEmployees();
@@ -580,14 +559,6 @@ export class EmployeeGridComponent implements OnInit {
                 // Condición de ejemplo: solo eliminable si el usuario esta activo
                 condition: (): boolean => employee.active === true,
             },
-            // Puedes agregar más opciones aquí
-            // {
-            //     id: 'view',
-            //     label: 'Ver Detalles',
-            //     icon: 'visibility',
-            //     action: (id: number): void => console.log(`Ver detalles de ${id}`),
-            //     condition: (row: GridData): boolean => true // Siempre visible
-            // }
         ];
     }
 
@@ -741,28 +712,28 @@ export class EmployeeGridComponent implements OnInit {
                     }
                     continue;
                 }
-                // 3 position
+                // 3. position
                 if (key === "position") {
                     (employeeFilterParams as any)["position"] = value;
                 }
-                // 4 gender
+                // 4. gender
                 if (key === "gender") {
                     // Para position.id, que es un filtro anidado
                     (employeeFilterParams as any)["gender"] = value;
                 }
 
-                // 5 active
+                // 5. active
                 if (key === "active") {
                     // Para position.id, que es un filtro anidado
                     (employeeFilterParams as any)["active"] = value;
                 }
 
-                // 6 name
+                // 6. name
                 if (key === "name") {
                     // Para position.id, que es un filtro anidado
                     (employeeFilterParams as any)["name"] = value;
                 }
-                // 7 surname
+                // 7. surname
                 if (key === "surname") {
                     // Para position.id, que es un filtro anidado
                     (employeeFilterParams as any)["surname"] = value;
