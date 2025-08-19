@@ -791,7 +791,7 @@ export class EmployeeGridComponent implements OnInit {
                 { name: "position", label: "Puesto" }, // Añadido label
                 {
                     name: "active",
-                    label: "Estado",
+                    label: "Activo",
                     style: "status-circle",
                     align: "center",
                 }, // Añadido label
@@ -802,13 +802,13 @@ export class EmployeeGridComponent implements OnInit {
                     align: "center",
                     isSortable: false,
                     type: "elipsis", // ¡Indica que es la columna de elipsis!
-                    hasHeaderTooltip: true,
+                    //hasHeaderTooltip: true,
                     //headerIcon: "settings", // Icono para el encabezado de la columna de acciones
                 },
             ],
             hasPagination: {
                 pageSize: this._employeeFilterParams.limit || 25,
-                pageSizeOptions: [5, 10, 25, 50],
+                pageSizeOptions: [25, 50],
                 totalCount: 0,
                 pageIndex: 0,
                 isServerSide: true,
