@@ -350,61 +350,26 @@ export class EmployeeGridComponent implements OnInit {
     }
 
     private _mapEmployeesForExport(employees: Employee[]): any[] {
-        return employees.map((employee): any => {
-            const mappedEmployee: any = { ...employee };
-            // Elimino la propiedad imgUrl para que el excel no muestre esa columna
-            delete mappedEmployee.imgUrl;
+        return employees.map((employee: Employee): any => {
+            const birthDateString = employee.birthDate as unknown as string;
+            const formattedBirthDate = birthDateString
+                ? DateTime.fromISO(birthDateString).toFormat("dd/MM/yyyy")
+                : null;
 
-            if (mappedEmployee.name) {
-                // pongo mappedEmployee.nombre para que en el excel la columna se llame nombre
-                mappedEmployee.nombre = mappedEmployee.name;
-                delete mappedEmployee.name;
-            }
-
-            if (mappedEmployee.surname) {
-                // pongo mappedEmployee.apellido para que en el excel la columna se llame apellido
-                mappedEmployee.apellido = mappedEmployee.surname;
-                delete mappedEmployee.surname;
-            }
-
-            if (mappedEmployee.birthDate) {
-                // pongo mappedEmployee.birthDate para que en el excel la columna se llame nacimiento
-                mappedEmployee.nacimiento = mappedEmployee.birthDate;
-                delete mappedEmployee.birthDate;
-            }
-
-            if (
-                mappedEmployee.position &&
-                mappedEmployee.position.description
-            ) {
-                // pongo mappedEmployee.puesto para que en el excel la columna se llame puesto
-                mappedEmployee.puesto = mappedEmployee.position.description;
-                delete mappedEmployee.position;
-            }
-
-            if (mappedEmployee.gender && mappedEmployee.gender.description) {
-                // pongo mappedEmployee.genero para que en el excel la columna se llame genero
-                mappedEmployee.genero = mappedEmployee.gender.description;
-                delete mappedEmployee.gender;
-            }
-
-            if (typeof mappedEmployee.active === "boolean") {
-                // pongo mappedEmployee.estado para que en el excel la columna se llame estado
-                mappedEmployee.estado = mappedEmployee.active
-                    ? "Activo"
-                    : "Inactivo";
-                // Elimina la propiedad original 'active'
-                delete mappedEmployee.active;
-            }
-
-            if (typeof mappedEmployee.birthDate === "string") {
-                const luxonDate = DateTime.fromISO(mappedEmployee.birthDate);
-                if (luxonDate.isValid) {
-                    mappedEmployee.birthDate = luxonDate.toFormat("dd/MM/yyyy");
-                }
-            }
-
-            return mappedEmployee;
+            return {
+                id: employee.id,
+                nombre: employee.name || null,
+                apellido: employee.surname || null,
+                puesto: employee.position?.description || null,
+                genero: employee.gender?.description || null,
+                estado:
+                    typeof employee.active === "boolean"
+                        ? employee.active
+                            ? "Activo"
+                            : "Inactivo"
+                        : null,
+                nacimiento: formattedBirthDate,
+            };
         });
     }
 
