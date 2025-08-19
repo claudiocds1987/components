@@ -36,6 +36,12 @@ import { SelectItem } from "../../shared/models/select-item.model";
 import { CountryService } from "../../shared/services/country.service";
 import { PositionService } from "../../shared/services/position.service";
 import { RandomUserService } from "../../shared/services/random-user.service";
+//import { Gender } from "../../shared/enums/gender.enum";
+
+interface DateRangeValue {
+    startDate: string | null;
+    endDate: string | null;
+}
 
 @Component({
     selector: "app-employee-grid",
@@ -58,14 +64,26 @@ export class EmployeeGridComponent implements OnInit {
     gridData: GridData[] = [];
     employees: Employee[] = [];
     chips: Chip[] = [];
-    countries: SelectItem[] = [];
-    positions: SelectItem[] = [];
+
     isLoadingGridData = true;
     isLoadingFilterGridData = true;
 
+    private _positions: SelectItem[] = [];
+    private _genders: SelectItem[] = [
+        { id: "all", description: "Todos" },
+        { id: 0, description: "No binario" },
+        { id: 1, description: "Masculino" },
+        { id: 2, description: "Femenino" },
+    ];
+
+    private _defaultChips = {
+        gender: "all",
+        position: "all",
+        active: "all",
+    };
+
     private _employeeFilterParams: EmployeeFilterParams = {};
     private _employeeServices = inject(EmployeeService);
-    private _countryServices = inject(CountryService);
     private _positionServices = inject(PositionService);
     private _exportService = inject(ExportService);
     private _randomUserService = inject(RandomUserService);
@@ -85,6 +103,10 @@ export class EmployeeGridComponent implements OnInit {
         this._setGridFilter();
         this._setGridFilterForm();
         this.gridConfig = this._setGridConfiguration();
+        //this.chips = this.mapToChipsDescription(this._defaultChips);
+        // ---------------------------------------------------
+        this.createChips(this._defaultChips); //se crean los chips por default estado,puesto y genero
+        // ---------------------------------------------------
     }
 
     ngOnInit(): void {
@@ -92,16 +114,28 @@ export class EmployeeGridComponent implements OnInit {
     }
 
     applyFilter(filterValues: Record<string, unknown>): void {
-        // 1. Mapeamos `filterValues` a `EmployeeFilterParams` (ya incluye el rango de fechas)
-        const filterParamsForBackend =
-            this._mapToEmployeeFilterParams(filterValues);
-        // 2. Reiniciamos completamente el objeto de parámetros.
         this._employeeFilterParams = {};
-        // 3. Reasignamos los parámetros de paginación por defecto.
         this._setEmployeeFilterParameters();
-        // 4. Copiamos los valores de filterParamsForBackend
-        Object.assign(this._employeeFilterParams, filterParamsForBackend);
-
+        // En caso que desde grid-filter.component se hizo clic en boton Limpiar filtros, el filtro viene vacio
+        const isClearFilter = Object.values(filterValues).every(
+            (value): boolean =>
+                value === null ||
+                (typeof value === "object" &&
+                    value !== null &&
+                    Object.values(value).every((val): boolean => val === null)),
+        );
+        // si el filtro de grid-filter.component esta vacio
+        if (isClearFilter) {
+            // Se crean los chips Estado, Puesto y Genero por default
+            this.createChips(this._defaultChips);
+            this._setGridFilterForm(); // ser resetea el formulario de grid-filter.component
+        } else {
+            this.createChips(filterValues);
+            const filterParamsForBackend =
+                this._mapToEmployeeFilterParams(filterValues);
+            Object.assign(this._employeeFilterParams, filterParamsForBackend);
+        }
+        // Lógica de paginación y obtención de datos que se aplica en ambos casos
         if (this.gridConfig.hasPagination) {
             this.gridConfig.hasPagination.pageIndex = 0;
         }
@@ -180,106 +214,126 @@ export class EmployeeGridComponent implements OnInit {
             });
     }
 
-    onCreateChips(chips: Chip[]): void {
-        // 1. Un arreglo para guardarlos chips finales.
-        const updatedChips: Chip[] = [];
-        // 2. Iteramos sobre los nuevos chips que provienen del formulario
-        // para añadir o actualizar los chips activos.
-        chips.forEach((newChip: Chip): void => {
-            // Deshabilitamos el chip si su valor es "all"
-            newChip.disabled = newChip.value === "all";
-            // Si el chip es "Todos" para Puesto o Estado, lo ignoramos por ahora
+    createChips(filterValues: Record<string, unknown>): void {
+        this.chips = this.mapToChipsDescription(filterValues);
+    }
+
+    mapToChipsDescription(filterValues: Record<string, unknown>): Chip[] {
+        const newChips: Chip[] = [];
+
+        const specialCases = {
+            position: (value: any): string => {
+                if (typeof value === "number") {
+                    const item = this._positions.find(
+                        (p: SelectItem): boolean => p.id === value,
+                    );
+                    return item
+                        ? `Puesto: ${item.description}`
+                        : `Puesto: ${value}`;
+                }
+                return "Puesto: Todos";
+            },
+            gender: (value: any): string => {
+                if (typeof value === "number") {
+                    const item = this._genders.find(
+                        (g: SelectItem): boolean => g.id === value,
+                    );
+                    return item
+                        ? `Género: ${item.description}`
+                        : `Género: ${value}`;
+                }
+                return "Género: Todos";
+            },
+            active: (value: any): string => {
+                // Maneja el valor 'all' para el caso de 'Estado'
+                if (value === "all") {
+                    return "Estado: Todos";
+                }
+                return `Estado: ${value ? "Activo" : "Inactivo"}`;
+            },
+        };
+
+        for (const [key, value] of Object.entries(filterValues)) {
+            if (value === null || value === undefined || value === "") {
+                continue;
+            }
+
+            let labelText: string;
+            const isDisabled: boolean = value === "all";
+
             if (
-                newChip.value === "all" &&
-                (newChip.key === "position" || newChip.key === "active")
+                key === "birthDateRange" &&
+                typeof value === "object" &&
+                value !== null
             ) {
-                return;
-            }
-            // Si el chip ya existe, lo actualizamos. Si no, lo añadimos.
-            const existingChipIndex = updatedChips.findIndex(
-                (chip): boolean => chip.key === newChip.key,
-            );
-
-            if (existingChipIndex > -1) {
-                updatedChips[existingChipIndex] = newChip;
+                const dateRangeValue = value as DateRangeValue;
+                if (dateRangeValue.startDate || dateRangeValue.endDate) {
+                    const formattedStartDate = dateRangeValue.startDate
+                        ? DateTime.fromISO(dateRangeValue.startDate).toFormat(
+                              "dd/MM/yyyy",
+                          )
+                        : "N/A";
+                    const formattedEndDate = dateRangeValue.endDate
+                        ? DateTime.fromISO(dateRangeValue.endDate).toFormat(
+                              "dd/MM/yyyy",
+                          )
+                        : "N/A";
+                    labelText = `Fecha de Nacimiento: ${formattedStartDate} - ${formattedEndDate}`;
+                    newChips.push({
+                        key,
+                        label: labelText,
+                        value,
+                        disabled: isDisabled,
+                    });
+                }
+            } else if (key in specialCases) {
+                const creator = specialCases[key as keyof typeof specialCases];
+                labelText = creator(value);
+                newChips.push({
+                    key,
+                    label: labelText,
+                    value,
+                    disabled: isDisabled,
+                });
             } else {
-                updatedChips.push(newChip);
-            }
-        });
-        // 3. Añade los chips por defecto para 'Puesto' y 'Estado' si no hay un filtro activo para ellos.
-        const positionChipExists = updatedChips.some(
-            (chip: Chip): boolean => chip.key === "position",
-        );
-        if (!positionChipExists) {
-            const filterConfig = this.gridFilterConfig.find(
-                (c: GridFilterConfig): boolean => c.fieldName === "position",
-            );
-            if (filterConfig) {
-                updatedChips.push({
-                    key: "position",
-                    label: `${filterConfig.label}: Todos`,
-                    value: "all",
-                    disabled: true,
+                labelText = `${key}: ${value}`;
+                newChips.push({
+                    key,
+                    label: labelText,
+                    value,
+                    disabled: isDisabled,
                 });
             }
         }
-
-        const activeChipExists = updatedChips.some(
-            (chip: Chip): boolean => chip.key === "active",
-        );
-        if (!activeChipExists) {
-            const filterConfig = this.gridFilterConfig.find(
-                (c: GridFilterConfig): boolean => c.fieldName === "active",
-            );
-            if (filterConfig) {
-                updatedChips.push({
-                    key: "active",
-                    label: `${filterConfig.label}: Todos`,
-                    value: "all",
-                    disabled: true,
-                });
-            }
-        }
-        // 4. actualiza la lista de chips y se envia por input a grid.component.
-        this.chips = updatedChips;
+        return newChips;
     }
 
     onRemoveChip(chip: Chip): void {
-        // Obtenemos el nombre del campo del filtro que se va a quitar ej: 'name', 'position'
         const fieldName = chip.key;
-        // Reseteamos el valor a "all" del formulario para campo position o active
-        if (chip.key === "position" || chip.key === "active") {
-            this.gridFilterForm.get(fieldName)?.patchValue("all");
-        } else if (chip.key === "birthDateRange") {
-            // ✅ Nueva condición para birthDateRange
-            // Resetea el FormGroup de birthDateRange a null
-            this.gridFilterForm
-                .get(fieldName)
-                ?.patchValue({ startDate: null, endDate: null });
-        } else {
-            this.gridFilterForm.get(fieldName)?.patchValue(null);
-        }
-        // Llamamos a applyFilter con los valores actualizados del formulario
+        // Define un mapa de estrategias para manejar cada tipo de filtro
+        const resetStrategies = {
+            position: (): void =>
+                this.gridFilterForm.get(fieldName)?.patchValue("all"),
+            active: (): void =>
+                this.gridFilterForm.get(fieldName)?.patchValue("all"),
+            gender: (): void =>
+                this.gridFilterForm.get(fieldName)?.patchValue("all"),
+            birthDateRange: (): void =>
+                this.gridFilterForm.get(fieldName)?.patchValue({
+                    startDate: null,
+                    endDate: null,
+                }),
+            // Estrategia por defecto para otros campos (name, surname, etc.)
+            default: (): void =>
+                this.gridFilterForm.get(fieldName)?.patchValue(null),
+        };
+        // Obtenemos la estrategia correspondiente o usamos la por defecto
+        const resetAction =
+            resetStrategies[fieldName as keyof typeof resetStrategies] ||
+            resetStrategies.default;
+        resetAction();
+
         this.applyFilter(this.gridFilterForm.value);
-        // Actualizamos la lista de chips activos
-        this.chips = this.chips.filter(
-            (c: Chip): boolean => c.key !== fieldName,
-        );
-        // para que los chips position y active al borrarse, siempre aparezcan por defecto con la opcion "Todos"
-        if (fieldName === "position" || fieldName === "active") {
-            const filterConfig = this.gridFilterConfig.find(
-                (c: GridFilterConfig): boolean => c.fieldName === fieldName,
-            );
-            if (filterConfig) {
-                const defaultChip: Chip = {
-                    key: fieldName,
-                    label: `${filterConfig.label}: Todos`,
-                    value: "all",
-                    disabled: true,
-                };
-                this.chips.push(defaultChip);
-            }
-        }
     }
 
     onCreateEmployee(): void {
@@ -348,12 +402,6 @@ export class EmployeeGridComponent implements OnInit {
                 delete mappedEmployee.active;
             }
 
-            /* if (typeof mappedEmployee.active === "boolean") {
-                mappedEmployee.active = mappedEmployee.active
-                    ? "Activo"
-                    : "Inactivo";
-            }
- */
             if (typeof mappedEmployee.birthDate === "string") {
                 const luxonDate = DateTime.fromISO(mappedEmployee.birthDate);
                 if (luxonDate.isValid) {
@@ -388,10 +436,6 @@ export class EmployeeGridComponent implements OnInit {
                 next: (
                     paginatedListGridData: PaginatedList<GridData>,
                 ): void => {
-                    console.log(
-                        "Datos de la grilla:",
-                        paginatedListGridData.items,
-                    );
                     this.gridData = paginatedListGridData.items;
                     this._updateGridConfig(paginatedListGridData);
                 },
@@ -404,18 +448,7 @@ export class EmployeeGridComponent implements OnInit {
             });
     }
 
-    private _getCountriesObservable(): Observable<SelectItem[]> {
-        // La función ahora solo devuelve el observable del servicio.
-        return this._countryServices.getCountries().pipe(
-            catchError((error: unknown): Observable<SelectItem[]> => {
-                console.error("Error al obtener países:", error);
-                // Devolvemos un observable vacío para que el forkJoin no falle.
-                return of([]);
-            }),
-        );
-    }
-
-    private _getPositionsObservable(): Observable<SelectItem[]> {
+    private _getPositions(): Observable<SelectItem[]> {
         // La función solo devuelve el observable del servicio.
         return this._positionServices.getPositions().pipe(
             catchError((error: unknown): Observable<SelectItem[]> => {
@@ -427,31 +460,26 @@ export class EmployeeGridComponent implements OnInit {
 
     private _loadData(): void {
         forkJoin({
-            positions: this._getPositionsObservable(),
-            countries: this._getCountriesObservable(),
+            positions: this._getPositions(),
         }).subscribe({
-            next: (results: {
-                positions: SelectItem[];
-                countries: SelectItem[];
-            }): void => {
-                this.positions = results.positions;
-                this.countries = results.countries;
+            next: (results: { positions: SelectItem[] }): void => {
+                this._positions = results.positions;
                 const allPositionsItem: SelectItem = {
                     id: "all",
                     description: "Todos",
                 };
                 // Agregando opcion "Todos" al inicio de la lista de posiciones
-                this.positions.unshift(allPositionsItem);
+                this._positions.unshift(allPositionsItem);
                 // le asigno los puestos al gridFilterConfig haciendo cambio de referencia
                 // para que onPush detecte el cambio
                 this.gridFilterConfig = this.gridFilterConfig.map(
                     (config: GridFilterConfig): GridFilterConfig =>
                         config.fieldName === "position"
-                            ? { ...config, selectItems: this.positions }
+                            ? { ...config, selectItems: this._positions }
                             : config,
                 );
                 // Inicializa chips Puesto: Todos y Estado: Todos por default
-                this.onCreateChips([
+                /* this.onCreateChips([
                     {
                         key: "position",
                         label: "Puesto: Todos",
@@ -464,7 +492,7 @@ export class EmployeeGridComponent implements OnInit {
                         value: "all",
                         disabled: true,
                     },
-                ]);
+                ]); */
 
                 this.isLoadingFilterGridData = false;
                 this._setEmployeeFilterParameters();
@@ -672,12 +700,16 @@ export class EmployeeGridComponent implements OnInit {
         for (const key in source) {
             if (Object.prototype.hasOwnProperty.call(source, key)) {
                 const value = source[key];
-                // 1. Manejar el campo 'active' de forma especial
+                // (value === "all" || value === "Todos" || value === "")
+                // 1. Manejar el campo 'active'/position y gender de forma especial
                 if (
-                    key === "active" &&
-                    (value === "all" || value === "Todos" || value === "")
+                    key === "active" ||
+                    key === "position" ||
+                    key === "gender"
                 ) {
-                    continue;
+                    if (value === "all" || value === "Todos" || value === "") {
+                        continue;
+                    }
                 }
                 // 2. Manejar el campo de rango de fechas: enviar birthDate_gte y birthDate_lte
                 if (key === "birthDateRange" && value) {
@@ -685,7 +717,6 @@ export class EmployeeGridComponent implements OnInit {
                         startDate: Date | string | null;
                         endDate: Date | string | null;
                     };
-
                     if (dateRangeValue.startDate) {
                         const dateObj =
                             dateRangeValue.startDate instanceof Date
@@ -710,26 +741,31 @@ export class EmployeeGridComponent implements OnInit {
                     }
                     continue;
                 }
-                // 3. Manejar los otros campos
-                if (
-                    typeof value === "string" &&
-                    value !== "" &&
-                    value !== "all" &&
-                    value !== "Todos"
-                ) {
-                    if (key === "position") {
-                        // Para position.id, que es un filtro anidado
-                        (employeeFilterParams as any)["position.id"] = value;
-                    } else {
-                        // Para otros filtros de texto como 'name', 'surname'
-                        (employeeFilterParams as any)[key] = value;
-                    }
-                } else if (
-                    typeof value === "boolean" ||
-                    typeof value === "number"
-                ) {
-                    // Para booleanos como 'active' o números como 'id'
-                    (employeeFilterParams as any)[key] = value;
+                // 3 position
+                if (key === "position") {
+                    (employeeFilterParams as any)["position"] = value;
+                }
+                // 4 gender
+                if (key === "gender") {
+                    // Para position.id, que es un filtro anidado
+                    (employeeFilterParams as any)["gender"] = value;
+                }
+
+                // 5 active
+                if (key === "active") {
+                    // Para position.id, que es un filtro anidado
+                    (employeeFilterParams as any)["active"] = value;
+                }
+
+                // 6 name
+                if (key === "name") {
+                    // Para position.id, que es un filtro anidado
+                    (employeeFilterParams as any)["name"] = value;
+                }
+                // 7 surname
+                if (key === "surname") {
+                    // Para position.id, que es un filtro anidado
+                    (employeeFilterParams as any)["surname"] = value;
                 }
             }
         }
@@ -750,7 +786,7 @@ export class EmployeeGridComponent implements OnInit {
                 { name: "id", width: "70px", label: "ID" }, // Añadido label
                 { name: "name", label: "Nombre" }, // Añadido label
                 { name: "surname", label: "Apellido" /*isSortable: false*/ }, // Añadido label
-                //{ name: "birthDate", label: "Fecha de Nacimiento" }, // Añadido label
+                { name: "birthDate", label: "Nacimiento" }, // Añadido label
                 { name: "gender", label: "genero", isSortable: false },
                 { name: "position", label: "Puesto" }, // Añadido label
                 {
@@ -813,19 +849,8 @@ export class EmployeeGridComponent implements OnInit {
                 fieldName: "gender",
                 fieldType: "select",
                 label: "Género",
-                selectItems: [
-                    { description: "Todos", id: "all" },
-                    { description: "Masculino", id: 1 },
-                    { description: "Femenino", id: 2 },
-                    { description: "No binario", id: 0 },
-                ],
+                selectItems: this._genders,
             },
-            /* {
-                fieldName: "birthDate",
-                fieldType: "date",
-                label: "Fecha de nacimiento",
-            }, */
-            // Campo daterange para filtrar por un rango de fechas de nacimiento
             {
                 fieldName: "birthDateRange",
                 fieldType: "dateRange",
@@ -835,7 +860,7 @@ export class EmployeeGridComponent implements OnInit {
                 fieldName: "position",
                 fieldType: "select",
                 label: "Puesto",
-                selectItems: [],
+                selectItems: [{ description: "Todos", id: "all" }],
             },
             {
                 fieldName: "active",
@@ -853,8 +878,6 @@ export class EmployeeGridComponent implements OnInit {
                     },
                 ],
             },
-
-            // se puede seguir agregando mas campos de tipo text, date, select.
         ];
     }
 

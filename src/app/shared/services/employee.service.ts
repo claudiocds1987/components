@@ -17,7 +17,6 @@ export class EmployeeService {
     getEmployees(
         params: EmployeeFilterParams,
     ): Observable<PaginatedList<Employee>> {
-        console.log("employeeFilterParams: ", params);
         // NOTA: EL CODIGO ES ALGO EXTENSO POR DINAMICA QUE TIENE JSON-SERVER
         let httpParams = new HttpParams();
 
@@ -52,9 +51,10 @@ export class EmployeeService {
         if (params.position && params.position !== "all") {
             httpParams = httpParams.set("position.id", params.position);
         }
-
-        if (params.gender && params.gender !== "all") {
-            httpParams = httpParams.set("gender.id", params.gender);
+        if (params.gender !== null && params.gender !== undefined) {
+            if (params.gender !== "all") {
+                httpParams = httpParams.set("gender.id", params.gender);
+            }
         }
 
         // Aca añadir los restantes campos del componente grid-filter
@@ -134,6 +134,7 @@ export class EmployeeService {
         params: EmployeeFilterParams,
     ): Observable<Employee[]> {
         let httpParams = new HttpParams();
+        console.log("PARAMS EXPORT EXCEL: ", params);
         // Filtros
         if (params.id) {
             httpParams = httpParams.set("id_like", String(params.id));
@@ -170,8 +171,10 @@ export class EmployeeService {
             );
         }
 
-        if (params.gender && params.gender !== "all") {
-            httpParams = httpParams.set("gender.id", params.gender);
+        if (params.gender !== null && params.gender !== undefined) {
+            if (params.gender !== "all") {
+                httpParams = httpParams.set("gender.id", params.gender);
+            }
         }
 
         // Aca está el filtro de position con la sintaxis correcta

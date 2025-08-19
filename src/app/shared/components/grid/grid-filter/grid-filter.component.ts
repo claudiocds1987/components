@@ -46,25 +46,26 @@ export class GridFilterComponent {
     @Input() filterForm!: FormGroup;
     @Input() isLoading = false;
     @Output() emitFilterApplied = new EventEmitter<Record<string, unknown>>();
-    @Output() emitFilterDescriptions = new EventEmitter<Chip[]>();
+    //@Output() emitFilterDescriptions = new EventEmitter<Chip[]>();
 
     applyFilter(): void {
         const filterFormValues = this.filterForm.value;
         this.emitFilterApplied.emit(filterFormValues);
-        const filterChips = this._mapFilterValuesToChips(filterFormValues);
-        this.emitFilterDescriptions.emit(filterChips);
+        //const filterChips = this._mapFilterValuesToChips(filterFormValues); //esto sacarlo tambien
+        //this.emitFilterDescriptions.emit(filterChips); // este sacarlo cuando se resuelva todo
     }
 
     clearFilter(): void {
         this.filterForm.reset();
         this.emitFilterApplied.emit(this.filterForm.value);
-        this.emitFilterDescriptions.emit([]);
+        //this.emitFilterDescriptions.emit([]);
     }
 
     isButtonDisabled(): boolean {
         return !this.filterForm.valid || !this.filterForm.dirty;
     }
 
+    // borrar esta funcion
     private _mapFilterValuesToChips(
         filterValues: Record<string, unknown>,
     ): Chip[] {
