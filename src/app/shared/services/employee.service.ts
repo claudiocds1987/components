@@ -36,7 +36,6 @@ export class EmployeeService {
             httpParams = httpParams.append("_order", params.sortOrder);
         }
         // Agrega los parametros a la url de base de datos json-server los campos que estan en grid-filter
-        console.log("params id: ", params.id);
         if (params.id) {
             httpParams = httpParams.set("id", String(params.id)); // busqueda exacta sensitive
         }

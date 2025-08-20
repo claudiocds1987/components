@@ -453,50 +453,34 @@ export class EmployeeGridComponent implements OnInit {
     ): PaginatedList<GridData> {
         const transformedItems: GridData[] = paginatedList.items.map(
             (employee: Employee): GridData => {
-                const gridData: GridData = { id: employee.id as number };
+                const gridData: GridData = {
+                    id: employee.id as number,
+                    elipsisActions: this._setElipsisActions(employee),
+                };
 
                 for (const key in employee) {
                     const value = (employee as any)[key];
-                    // para manejar la propiedad 'position'
-                    if (
-                        key === "position" &&
-                        typeof value === "object" &&
-                        value !== null
-                    ) {
-                        // Asigna el valor de la propiedad 'gender' a la celda de la grilla
-                        gridData[key] = (
-                            value as { description: string }
-                        ).description;
-                    } else if (
-                        key === "gender" &&
-                        typeof value === "object" &&
-                        value !== null
-                    ) {
-                        gridData[key] = (
-                            value as { description: string }
-                        ).description;
-                    }
 
-                    //  para manejar la propiedad 'active' (que es un booleano)
-                    else if (key === "active" && typeof value === "boolean") {
-                        gridData[key] = value;
-                    }
-                    // Si el valor es una fecha, la formateamos
-                    else if (typeof value === "string") {
-                        const luxonDate = DateTime.fromISO(value);
-                        if (luxonDate.isValid) {
-                            gridData[key] = luxonDate.toFormat("dd/MM/yyyy");
-                        } else {
+                    if (key === "position" || key === "gender") {
+                        if (typeof value === "object" && value !== null) {
+                            gridData[key] = (
+                                value as { description: string }
+                            ).description;
+                        }
+                    } else if (key === "active") {
+                        if (typeof value === "boolean") {
                             gridData[key] = value;
                         }
-                    }
-                    // Si no es ninguno de los casos anteriores, asignamos el valor tal cual
-                    else {
+                    } else if (typeof value === "string") {
+                        const luxonDate = DateTime.fromISO(value);
+                        gridData[key] = luxonDate.isValid
+                            ? luxonDate.toFormat("dd/MM/yyyy")
+                            : value;
+                    } else {
                         gridData[key] = value;
                     }
                 }
 
-                gridData["elipsisActions"] = this._setElipsisActions(employee);
                 return gridData;
             },
         );
