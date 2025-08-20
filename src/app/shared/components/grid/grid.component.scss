@@ -86,6 +86,7 @@
     height: 40px; /* Ajusta el tamaño según tus necesidades */
     border-radius: 50%; /* Para hacer la imagen circular */
     object-fit: cover; /* Para asegurar que la imagen cubra el área sin distorsionarse */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 // SKELETON
