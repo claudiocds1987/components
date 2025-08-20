@@ -10,6 +10,7 @@ export interface EmployeeFilterParams {
         endDate?: Date | null;
     };
     position?: string;
+    country?: string;
     active?: boolean | number;
     page?: number;
     limit?: number;

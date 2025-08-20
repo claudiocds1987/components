@@ -27,7 +27,6 @@ export class EmployeeService {
         if (params.limit) {
             httpParams = httpParams.append("_limit", params.limit.toString());
         }
-
         // PARÁMETROS DE ORDENAMIENTO!!!
         if (params.sortColumn) {
             httpParams = httpParams.append("_sort", params.sortColumn);
@@ -51,6 +50,11 @@ export class EmployeeService {
         if (params.position && params.position !== "all") {
             httpParams = httpParams.set("position.id", params.position);
         }
+
+        if (params.country && params.country !== "all") {
+            httpParams = httpParams.set("country.id", params.country);
+        }
+
         if (params.gender !== null && params.gender !== undefined) {
             if (params.gender !== "all") {
                 httpParams = httpParams.set("gender.id", params.gender);
@@ -72,12 +76,14 @@ export class EmployeeService {
                 birthDate_lte?: string;
             }
         >;
+
         if (filterParams.birthDate_gte) {
             httpParams = httpParams.set(
                 "birthDate_gte",
                 filterParams.birthDate_gte,
             );
         }
+
         if (filterParams.birthDate_lte) {
             httpParams = httpParams.set(
                 "birthDate_lte",
@@ -179,6 +185,10 @@ export class EmployeeService {
         // Aca está el filtro de position con la sintaxis correcta
         if (params.position && params.position !== "all") {
             httpParams = httpParams.set("position.id", params.position);
+        }
+
+        if (params.country && params.country !== "all") {
+            httpParams = httpParams.set("country.id", params.country);
         }
 
         if (params.active !== undefined && params.active !== null) {

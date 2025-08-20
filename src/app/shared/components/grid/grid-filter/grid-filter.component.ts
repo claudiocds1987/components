@@ -62,7 +62,7 @@ export class GridFilterComponent {
     }
 
     isButtonDisabled(): boolean {
-        return !this.filterForm.valid || !this.filterForm.dirty;
+        return !this.filterForm?.valid || !this.filterForm?.dirty;
     }
 
     // borrar esta funcion

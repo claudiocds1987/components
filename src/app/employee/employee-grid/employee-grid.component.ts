@@ -34,6 +34,7 @@ import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { EmployeeFormComponent } from "../employee-form/employee-form/employee-form.component";
 import { SelectItem } from "../../shared/models/select-item.model";
 import { PositionService } from "../../shared/services/position.service";
+import { CountryService } from "../../shared/services/country.service";
 
 interface DateRangeValue {
     startDate: string | null;
@@ -66,6 +67,7 @@ export class EmployeeGridComponent implements OnInit {
     isLoadingFilterGridData = true;
 
     private _positions: SelectItem[] = [];
+    private _countries: SelectItem[] = [];
     private _genders: SelectItem[] = [
         { id: "all", description: "Todos" },
         { id: 0, description: "No binario" },
@@ -76,12 +78,14 @@ export class EmployeeGridComponent implements OnInit {
     private _defaultChips = {
         gender: "all",
         position: "all",
+        country: "all",
         active: "all",
     };
 
     private _employeeFilterParams: EmployeeFilterParams = {};
     private _employeeServices = inject(EmployeeService);
     private _positionServices = inject(PositionService);
+    private _countryServices = inject(CountryService);
     private _exportService = inject(ExportService);
     private _cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
     private _spinnerService = inject(SpinnerService);
@@ -96,10 +100,10 @@ export class EmployeeGridComponent implements OnInit {
     };
 
     constructor() {
-        this._setGridFilter();
-        this._setGridFilterForm();
-        this.gridConfig = this._setGridConfiguration();
-        this._createChips(this._defaultChips); //se crean los chips por default estado,puesto y genero
+        this.gridConfig = this._setGridConfiguration(); // seteando la grilla para grid.component
+        this._setGridFilterConfig(); // se definen los tipos de inputs(text, date, select) para grod-filter.component
+        this._setGridFilterForm(); // se define el formulario en funcion de setGridFilterConfig()
+        this._createChips(this._defaultChips); // se crean los chips por default estado,puesto y genero
     }
 
     ngOnInit(): void {
@@ -138,9 +142,13 @@ export class EmployeeGridComponent implements OnInit {
     onGridSortChange(sortEvent: Sort): void {
         // obteniendo nombre de la columna
         let sortColumnName = sortEvent.active;
-        // Si la columna activa es 'position', ajusta el nombre para json-server
+        // Para que ordene por descripción en json-server
         if (sortEvent.active === "position") {
             sortColumnName = "position.description";
+        }
+
+        if (sortEvent.active === "country") {
+            sortColumnName = "country.description";
         }
 
         this._employeeFilterParams = {
@@ -213,6 +221,8 @@ export class EmployeeGridComponent implements OnInit {
         const resetStrategies = {
             position: (): void =>
                 this.gridFilterForm.get(fieldName)?.patchValue("all"),
+            country: (): void =>
+                this.gridFilterForm.get(fieldName)?.patchValue("all"),
             active: (): void =>
                 this.gridFilterForm.get(fieldName)?.patchValue("all"),
             gender: (): void =>
@@ -266,7 +276,8 @@ export class EmployeeGridComponent implements OnInit {
             position: (value: any): string => {
                 if (typeof value === "number") {
                     const item = this._positions.find(
-                        (p: SelectItem): boolean => p.id === value,
+                        (position: SelectItem): boolean =>
+                            position.id === value,
                     );
                     return item
                         ? `Puesto: ${item.description}`
@@ -274,10 +285,21 @@ export class EmployeeGridComponent implements OnInit {
                 }
                 return "Puesto: Todos";
             },
+            country: (value: any): string => {
+                if (typeof value === "number") {
+                    const item = this._countries.find(
+                        (country: SelectItem): boolean => country.id === value,
+                    );
+                    return item
+                        ? `Pais: ${item.description}`
+                        : `Pais: ${value}`;
+                }
+                return "Pais: Todos";
+            },
             gender: (value: any): string => {
                 if (typeof value === "number") {
                     const item = this._genders.find(
-                        (g: SelectItem): boolean => g.id === value,
+                        (gender: SelectItem): boolean => gender.id === value,
                     );
                     return item
                         ? `Género: ${item.description}`
@@ -361,6 +383,7 @@ export class EmployeeGridComponent implements OnInit {
                 nombre: employee.name || null,
                 apellido: employee.surname || null,
                 puesto: employee.position?.description || null,
+                pais: employee.country?.description || null,
                 genero: employee.gender?.description || null,
                 estado:
                     typeof employee.active === "boolean"
@@ -409,7 +432,6 @@ export class EmployeeGridComponent implements OnInit {
     }
 
     private _getPositions(): Observable<SelectItem[]> {
-        // La función solo devuelve el observable del servicio.
         return this._positionServices.getPositions().pipe(
             catchError((error: unknown): Observable<SelectItem[]> => {
                 console.error("Error al obtener posiciones:", error);
@@ -417,34 +439,54 @@ export class EmployeeGridComponent implements OnInit {
             }),
         );
     }
+    private _getCountries(): Observable<SelectItem[]> {
+        return this._countryServices.getCountries().pipe(
+            catchError((error: unknown): Observable<SelectItem[]> => {
+                console.error("Error al obtener paises:", error);
+                return of([]);
+            }),
+        );
+    }
+
+    private _loadSelects(): Observable<boolean> {
+        this.isLoadingFilterGridData = true;
+        return forkJoin({
+            positions: this._getPositions(),
+            countries: this._getCountries(),
+        }).pipe(
+            map(
+                (results: {
+                    positions: SelectItem[];
+                    countries: SelectItem[];
+                }): boolean => {
+                    this._positions = results.positions;
+                    this._countries = results.countries;
+
+                    const allItem: SelectItem = {
+                        id: "all",
+                        description: "Todos",
+                    };
+                    this._positions.unshift(allItem);
+                    this._countries.unshift(allItem);
+
+                    this.isLoadingFilterGridData = false;
+                    return true;
+                },
+            ),
+        );
+    }
+
+    /* private _setConfigurations(): void {
+        this._setEmployeeFilterParameters();
+        this._setGridFilter();
+        this._setGridFilterForm();
+    } */
 
     private _loadData(): void {
-        forkJoin({
-            positions: this._getPositions(),
-        }).subscribe({
-            next: (results: { positions: SelectItem[] }): void => {
-                this._positions = results.positions;
-                const allPositionsItem: SelectItem = {
-                    id: "all",
-                    description: "Todos",
-                };
-                // Agregando opcion "Todos" al inicio de la lista de posiciones
-                this._positions.unshift(allPositionsItem);
-                // le asigno los puestos al gridFilterConfig haciendo cambio de referencia
-                // para que onPush detecte el cambio
-                this.gridFilterConfig = this.gridFilterConfig.map(
-                    (config: GridFilterConfig): GridFilterConfig =>
-                        config.fieldName === "position"
-                            ? { ...config, selectItems: this._positions }
-                            : config,
-                );
-                this.isLoadingFilterGridData = false;
-                this._setEmployeeFilterParameters();
-                this._getEmployees();
-            },
-            error: (error: unknown): void => {
-                console.error("Error en forkJoin:", error);
-            },
+        this._loadSelects().subscribe((): void => {
+            this._setGridFilterConfig();
+            this._setEmployeeFilterParameters();
+            this._getEmployees();
         });
     }
 
@@ -461,7 +503,11 @@ export class EmployeeGridComponent implements OnInit {
                 for (const key in employee) {
                     const value = (employee as any)[key];
 
-                    if (key === "position" || key === "gender") {
+                    if (
+                        key === "position" ||
+                        key === "gender" ||
+                        key === "country"
+                    ) {
                         if (typeof value === "object" && value !== null) {
                             gridData[key] = (
                                 value as { description: string }
@@ -599,7 +645,7 @@ export class EmployeeGridComponent implements OnInit {
         for (const key in source) {
             const value = source[key];
             // 1. ignorars campos con valores "all" o "Todos"
-            if (["active", "position", "gender"].includes(key)) {
+            if (["active", "position", "gender", "country"].includes(key)) {
                 if (value === "all" || value === "Todos" || value === "") {
                     continue;
                 }
@@ -655,6 +701,7 @@ export class EmployeeGridComponent implements OnInit {
                 { name: "birthDate", label: "Nacimiento" }, // Añadido label
                 { name: "gender", label: "genero", isSortable: false },
                 { name: "position", label: "Puesto" }, // Añadido label
+                { name: "country", label: "Pais" }, // Añadido label
                 {
                     name: "active",
                     label: "Activo",
@@ -694,7 +741,7 @@ export class EmployeeGridComponent implements OnInit {
         return config;
     }
 
-    private _setGridFilter(): void {
+    private _setGridFilterConfig(): void {
         this.gridFilterConfig = [
             {
                 fieldName: "id",
@@ -726,7 +773,13 @@ export class EmployeeGridComponent implements OnInit {
                 fieldName: "position",
                 fieldType: "select",
                 label: "Puesto",
-                selectItems: [{ description: "Todos", id: "all" }],
+                selectItems: this._positions,
+            },
+            {
+                fieldName: "country",
+                fieldType: "select",
+                label: "Pais",
+                selectItems: this._countries,
             },
             {
                 fieldName: "active",

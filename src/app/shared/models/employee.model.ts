@@ -4,7 +4,7 @@ export interface Employee {
     id: number;
     name: string;
     surname: string;
-    countryId: number;
+    country: SelectItem;
     birthDate: Date;
     position: SelectItem;
     active: boolean;
