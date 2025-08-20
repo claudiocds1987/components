@@ -691,11 +691,10 @@ export class EmployeeGridComponent implements OnInit {
                 {
                     name: "foto",
                     type: "img",
-                    width: "70px",
                     label: "img",
                     isSortable: false,
-                }, // Añadido label
-                { name: "id", width: "70px", label: "ID" }, // Añadido label
+                },
+                { name: "id", label: "ID" }, // Añadido label
                 { name: "name", label: "Nombre" }, // Añadido label
                 { name: "surname", label: "Apellido" /*isSortable: false*/ }, // Añadido label
                 { name: "birthDate", label: "Nacimiento" }, // Añadido label
@@ -707,11 +706,10 @@ export class EmployeeGridComponent implements OnInit {
                     label: "Activo",
                     style: "status-circle",
                     align: "center",
-                }, // Añadido label
+                },
                 {
                     name: "elipsisActions", // Este es el nombre de la propiedad en GridData
                     //label: "actions", // Opcional: la etiqueta de la columna en el encabezado
-                    width: "70px",
                     align: "center",
                     isSortable: false,
                     type: "elipsis", // ¡Indica que es la columna de elipsis!

@@ -1,4 +1,4 @@
-@import '../../../shared/styles/colors.scss';
+@import "../../../shared/styles/colors.scss";
 @import "../../../shared/styles/status-circle.scss";
 :host {
     display: flex; /* Hace que el elemento host sea un contenedor flex */
@@ -9,34 +9,32 @@
 }
 
 .buttons-actions-container {
-
-   display: grid;
+    display: grid;
     /* Definiendo dos columnas: la primera (para los chips) ocupa todo el espacio disponible (1fr),
        y la segunda (para los botones) ocupa solo el espacio que necesita (auto).
        Esto logra el efecto de "space-between" al empujar los botones a la derecha. */
-    grid-template-columns: 1fr auto; 
+    grid-template-columns: 1fr auto;
     gap: 10px; /* Espacio entre las columnas de la cuadrícula */
     padding-bottom: 10px; /* Mantiene el padding inferior */
 
-  .buttons-actions {
-    display: flex;
-    justify-content: flex-end; // Para alinear el contenido al final (derecha) del contenedor
-    gap: 5px; 
+    .buttons-actions {
+        display: flex;
+        justify-content: flex-end; // Para alinear el contenido al final (derecha) del contenedor
+        gap: 5px;
 
-    .button-action{
-      background-color:#f0f4f9;
+        .button-action {
+            background-color: #f0f4f9;
+        }
     }
-  }
-
 }
 
 .header .grid-cell {
-  background-color: #f0f4f9;;
-  color: $primary-material-color;
-  font-weight: bold;
+    background-color: #f0f4f9;
+    //background-color: #262446;
+    color: $primary-material-color;
+    //color: white;
+    font-weight: bold;
 }
-
-
 
 .table-container {
     flex: 1; /* La tabla ocupa la mayor parte del espacio */
@@ -45,29 +43,29 @@
     background: white;
     /* Reglas para navegadores basados en WebKit (Chrome, Safari, Edge) */
     &::-webkit-scrollbar {
-      width: 3px;
-      height: 6px;
-    } 
-  
+        width: 3px;
+        height: 6px;
+    }
+
     &::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 3px;
+        background: #f1f1f1;
+        border-radius: 3px;
     }
-  
+
     &::-webkit-scrollbar-thumb {
-      background: #c1c1c1;
-      border-radius: 3px;
+        background: #c1c1c1;
+        border-radius: 3px;
     }
-  
+
     &::-webkit-scrollbar-thumb:hover {
-      background: #a8a8a8;
+        background: #a8a8a8;
     }
-  
-  /* Reglas para Firefox */
-  // Usamos @supports para que Chrome ignore estas reglas y use las de arriba
+
+    /* Reglas para Firefox */
+    // Usamos @supports para que Chrome ignore estas reglas y use las de arriba
     @supports not selector(::-webkit-scrollbar) {
-      scrollbar-width: thin;
-      scrollbar-color: #c1c1c1 #f1f1f1;
+        scrollbar-width: thin;
+        scrollbar-color: #c1c1c1 #f1f1f1;
     }
 }
 
@@ -76,104 +74,107 @@
     padding: 10px 0; /* Espacio arriba y abajo del paginador */
 }
 
-.search-field{
-  margin-top: 5px;
-  width: auto; 
-  max-width: 300px;    
+.search-field {
+    margin-top: 5px;
+    width: auto;
+    max-width: 300px;
 }
 
 .table-img {
-  display: flex;
-  width: 40px; /* Ajusta el tamaño según tus necesidades */
-  height: 40px; /* Ajusta el tamaño según tus necesidades */
-  border-radius: 50%; /* Para hacer la imagen circular */
-  object-fit: cover; /* Para asegurar que la imagen cubra el área sin distorsionarse */
+    display: flex;
+    width: 40px; /* Ajusta el tamaño según tus necesidades */
+    height: 40px; /* Ajusta el tamaño según tus necesidades */
+    border-radius: 50%; /* Para hacer la imagen circular */
+    object-fit: cover; /* Para asegurar que la imagen cubra el área sin distorsionarse */
 }
 
 // SKELETON
 
 .skeleton-table {
-  display: flex;
-  flex-direction: column;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  overflow: hidden;
-  
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow: hidden;
 }
 
 .skeleton-header-row,
 .skeleton-row {
-  display: flex;
+    display: flex;
 }
 
 /* Simula un th */
 .skeleton-header-cell {
-  flex: 1;
-  height: 48px;
-  background-color: #f0f0f0;
-  border-right: 1px solid #ddd;
+    flex: 1;
+    height: 48px;
+    background-color: #f0f0f0;
+    border-right: 1px solid #ddd;
 }
 
 .skeleton-header-cell:last-child {
-  border-right: none;
+    border-right: none;
 }
 
 /* Simula una td */
 .skeleton-cell {
-  flex: 1;
-  padding: 12px 16px;
-  border-top: 1px solid #eee;
-  border-right: 1px solid #eee;
-  
+    flex: 1;
+    padding: 12px 16px;
+    border-top: 1px solid #eee;
+    border-right: 1px solid #eee;
 }
 
 .skeleton-cell:last-child {
-  border-right: none;
+    border-right: none;
 }
 
 .skeleton-line {
-  height: 16px;
-  width: 100%;
-  background: linear-gradient(90deg, #eeeeee 25%, #dddddd 50%, #eeeeee 75%);
-  background-size: 200% 100%;
-  animation: pulse 1.5s infinite ease-in-out;
-  border-radius: 4px;
+    height: 16px;
+    width: 100%;
+    background: linear-gradient(90deg, #eeeeee 25%, #dddddd 50%, #eeeeee 75%);
+    background-size: 200% 100%;
+    animation: pulse 1.5s infinite ease-in-out;
+    border-radius: 4px;
 }
 
-
- @keyframes pulse {
-    0% { opacity: 0.5; }
-    50% { opacity: 1; }
-    100% { opacity: 0.5; }
+@keyframes pulse {
+    0% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+    }
 }
 
 /* Skeleton del input de búsqueda */
 .skeleton-search-container {
-  position: relative;
-  width: 212px;
-  height: 56px;
-  border: 1px solid rgba(0, 0, 0, 0.23);
-  border-radius: 4px;
-  margin-bottom: 20px;
-  padding: 0 12px;
-  box-sizing: border-box;
+    position: relative;
+    width: 212px;
+    height: 56px;
+    border: 1px solid rgba(0, 0, 0, 0.23);
+    border-radius: 4px;
+    margin-bottom: 20px;
+    padding: 0 12px;
+    box-sizing: border-box;
 }
 
 .skeleton-search-label {
-  position: absolute;
-  top: -8px;
-  left: 8px;
-  background-color: white;
-  font-size: 12px;
-  color: #999;
-  padding: 0 4px;
+    position: absolute;
+    top: -8px;
+    left: 8px;
+    background-color: white;
+    font-size: 12px;
+    color: #999;
+    padding: 0 4px;
 }
 
 .skeleton-search-input {
-  margin-top: 16px;
-  height: 20px;
-  background: linear-gradient(90deg, #eeeeee 25%, #dddddd 50%, #eeeeee 75%);
-  background-size: 200% 100%;
-  animation: pulse 1.5s infinite ease-in-out;
-  border-radius: 4px;
+    margin-top: 16px;
+    height: 20px;
+    background: linear-gradient(90deg, #eeeeee 25%, #dddddd 50%, #eeeeee 75%);
+    background-size: 200% 100%;
+    animation: pulse 1.5s infinite ease-in-out;
+    border-radius: 4px;
 }
