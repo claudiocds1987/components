@@ -570,40 +570,26 @@ export class EmployeeGridComponent implements OnInit {
     private _updateGridConfig(
         paginatedListGridData: PaginatedList<GridData>,
     ): void {
-        // 1. Obtiene la configuración de paginación actual de manera concisa.
-        const currentPaginationConfig =
-            this.gridConfig.hasPagination || this._defaultPaginatorOptions;
-
-        // 2. Desestructuramos los valores del servicio para que el código sea más legible.
         const { totalCount, pageIndex, pageSize } = paginatedListGridData;
         const { sortColumn = "", sortOrder = "" } = this._employeeFilterParams;
-
-        // 3. Comprueba si los valores han cambiado.
-        const paginationChanged =
-            currentPaginationConfig.totalCount !== totalCount ||
-            currentPaginationConfig.pageIndex !== pageIndex ||
-            currentPaginationConfig.pageSize !== pageSize;
-
-        const orderByChanged =
-            this.gridConfig.OrderBy.columnName !== sortColumn ||
-            this.gridConfig.OrderBy.direction !== sortOrder;
-
-        // 4. Si hay algún cambio, crea un nuevo objeto para forzar la detección de cambios.
-        if (paginationChanged || orderByChanged) {
-            this.gridConfig = {
-                ...this.gridConfig,
-                hasPagination: {
-                    ...currentPaginationConfig,
-                    totalCount,
-                    pageSize,
-                    pageIndex,
-                },
-                OrderBy: {
-                    columnName: sortColumn,
-                    direction: sortOrder as "asc" | "desc" | "",
-                },
-            };
-        }
+        // Se crea el objeto de paginación
+        const paginationConfig = {
+            ...(this.gridConfig.hasPagination || this._defaultPaginatorOptions),
+            totalCount,
+            pageSize,
+            pageIndex,
+        };
+        // Se crea el objeto de ordenamiento
+        const orderByConfig = {
+            columnName: sortColumn,
+            direction: sortOrder as "asc" | "desc" | "",
+        };
+        // Actualiza la configuración de la grilla con los nuevos datos cambiando la referencia ...this.gridConfig
+        this.gridConfig = {
+            ...this.gridConfig,
+            hasPagination: paginationConfig,
+            OrderBy: orderByConfig,
+        };
     }
 
     private _mapToEmployeeFilterParams(obj: unknown): EmployeeFilterParams {
