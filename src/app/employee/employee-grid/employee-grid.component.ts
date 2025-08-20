@@ -629,83 +629,46 @@ export class EmployeeGridComponent implements OnInit {
     }
 
     private _mapToEmployeeFilterParams(obj: unknown): EmployeeFilterParams {
-        // NOTA: EL CODIGO ES LARGO PORQUE JSON-SERVER NO ES MUY DINAMICO PARA FILTROS
         const employeeFilterParams: EmployeeFilterParams = {};
         const source = obj as Record<string, unknown>;
-        // Iterar sobre el objeto de filtro completo
+
         for (const key in source) {
-            if (Object.prototype.hasOwnProperty.call(source, key)) {
-                const value = source[key];
-                if (key === "id") {
-                    (employeeFilterParams as any)["id"] = value;
-                }
-                // (value === "all" || value === "Todos" || value === "")
-                // 1. Manejar el campo 'active'/position y gender de forma especial
-                if (
-                    key === "active" ||
-                    key === "position" ||
-                    key === "gender"
-                ) {
-                    if (value === "all" || value === "Todos" || value === "") {
-                        continue;
-                    }
-                }
-                // 2. Manejar el campo de rango de fechas: enviar birthDate_gte y birthDate_lte
-                if (key === "birthDateRange" && value) {
-                    const dateRangeValue = value as {
-                        startDate: Date | string | null;
-                        endDate: Date | string | null;
-                    };
-                    if (dateRangeValue.startDate) {
-                        const dateObj =
-                            dateRangeValue.startDate instanceof Date
-                                ? dateRangeValue.startDate
-                                : new Date(dateRangeValue.startDate);
-                        const luxonStartDate = DateTime.fromJSDate(dateObj);
-                        if (luxonStartDate.isValid) {
-                            (employeeFilterParams as any)["birthDate_gte"] =
-                                luxonStartDate.toFormat("yyyy-MM-dd");
-                        }
-                    }
-                    if (dateRangeValue.endDate) {
-                        const dateObj =
-                            dateRangeValue.endDate instanceof Date
-                                ? dateRangeValue.endDate
-                                : new Date(dateRangeValue.endDate);
-                        const luxonEndDate = DateTime.fromJSDate(dateObj);
-                        if (luxonEndDate.isValid) {
-                            (employeeFilterParams as any)["birthDate_lte"] =
-                                luxonEndDate.toFormat("yyyy-MM-dd");
-                        }
-                    }
+            const value = source[key];
+            // 1. ignorars campos con valores "all" o "Todos"
+            if (["active", "position", "gender"].includes(key)) {
+                if (value === "all" || value === "Todos" || value === "") {
                     continue;
                 }
-                // 3. position
-                if (key === "position") {
-                    (employeeFilterParams as any)["position"] = value;
+            }
+            // 2. Para rango de fechas en json server desde(birthDate_gte) hasta (birthDate_lte)
+            if (key === "birthDateRange" && value) {
+                const dateRangeValue = value as {
+                    startDate: Date | string | null;
+                    endDate: Date | string | null;
+                };
+                if (dateRangeValue.startDate) {
+                    const luxonStartDate = DateTime.fromJSDate(
+                        new Date(dateRangeValue.startDate),
+                    );
+                    if (luxonStartDate.isValid) {
+                        (employeeFilterParams as any)["birthDate_gte"] =
+                            luxonStartDate.toFormat("yyyy-MM-dd");
+                    }
                 }
-                // 4. gender
-                if (key === "gender") {
-                    // Para position.id, que es un filtro anidado
-                    (employeeFilterParams as any)["gender"] = value;
+                if (dateRangeValue.endDate) {
+                    const luxonEndDate = DateTime.fromJSDate(
+                        new Date(dateRangeValue.endDate),
+                    );
+                    if (luxonEndDate.isValid) {
+                        (employeeFilterParams as any)["birthDate_lte"] =
+                            luxonEndDate.toFormat("yyyy-MM-dd");
+                    }
                 }
-
-                // 5. active
-                if (key === "active") {
-                    // Para position.id, que es un filtro anidado
-                    (employeeFilterParams as any)["active"] = value;
-                }
-
-                // 6. name
-                if (key === "name") {
-                    // Para position.id, que es un filtro anidado
-                    (employeeFilterParams as any)["name"] = value;
-                }
-                // 7. surname
-                if (key === "surname") {
-                    // Para position.id, que es un filtro anidado
-                    (employeeFilterParams as any)["surname"] = value;
-                }
+                continue;
+            }
+            // 3. Manejar todos los demás campos de manera genérica
+            if (value !== null && value !== undefined) {
+                (employeeFilterParams as any)[key] = value;
             }
         }
 
