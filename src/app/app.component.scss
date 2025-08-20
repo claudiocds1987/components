@@ -3,20 +3,22 @@
     top: 0;
     left: 0;
     width: 100vw;
-    background: linear-gradient(90deg, #7b2ff2 0%, #f357a8 100%);
+    //background: linear-gradient(90deg, #7b2ff2 0%, #f357a8 100%);
+    background: #262446;
     color: #fff;
     text-align: center;
     font-size: 1.3rem;
     font-weight: 600;
     padding: 1rem 0;
     z-index: 1000;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     letter-spacing: 1px;
     height: 64px; /* Define altura específica del banner */
     box-sizing: border-box; /* Incluye padding en la altura total */
 }
 
-body, .app-root {
+body,
+.app-root {
     margin: 0;
     padding: 0;
     height: 100vh; /* Asegura que tomen la altura completa de la ventana */

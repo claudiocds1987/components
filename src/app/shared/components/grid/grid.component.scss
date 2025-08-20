@@ -36,6 +36,10 @@
     font-weight: bold;
 }
 
+.paginator {
+    background-color: #f0f4f9;
+}
+
 .table-container {
     flex: 1; /* La tabla ocupa la mayor parte del espacio */
     overflow: auto; /* Permite scroll en la tabla si es necesario */
