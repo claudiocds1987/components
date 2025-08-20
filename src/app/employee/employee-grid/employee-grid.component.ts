@@ -551,14 +551,8 @@ export class EmployeeGridComponent implements OnInit {
     }
 
     private _updateGridConfigOnSortChange(sortEvent: Sort): void {
-        let basePaginationConfig: PaginationConfig;
-        if (this.gridConfig.hasPagination === false) {
-            basePaginationConfig = this._defaultPaginatorOptions;
-        } else if (this.gridConfig.hasPagination) {
-            basePaginationConfig = this.gridConfig.hasPagination;
-        } else {
-            basePaginationConfig = this._defaultPaginatorOptions;
-        }
+        const basePaginationConfig =
+            this.gridConfig.hasPagination || this._defaultPaginatorOptions;
 
         this.gridConfig = {
             ...this.gridConfig,
