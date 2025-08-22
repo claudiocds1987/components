@@ -1,3 +1,5 @@
+import { SelectItem } from "./select-item.model";
+
 // interfaz para las acciones del menú de elipsis
 export interface ElipsisAction {
     id?: string | number; // Identificador único de la acción (ej. 'edit', 'delete')
@@ -41,8 +43,15 @@ export interface OrderBy {
 // Es generalmente un par simple clave-valor, donde la clave es el nombre de la columna.
 export type GridData = Record<
     string,
-    string | number | boolean | Date | null | undefined | ElipsisAction[]
-> /*& { id: number | string }*/; // Aseguramos que 'id' exista y sea un número o string
+    | string
+    | number
+    | boolean
+    | Date
+    | null
+    | undefined
+    | ElipsisAction[]
+    | SelectItem
+>;
 
 export interface GridConfiguration {
     columns: Column[];

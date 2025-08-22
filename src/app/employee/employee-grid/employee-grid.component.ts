@@ -217,7 +217,8 @@ export class EmployeeGridComponent implements OnInit {
 
     onRemoveChip(chip: Chip): void {
         const fieldName = chip.key;
-        // Define un mapa de estrategias para manejar cada tipo de filtro
+        // Definiendo un mapa de estrategias para manejar los filtros puesto, pais, active, genero y fecha nacimiento
+        // para setear el valor a all de estos filtros en el formulario de grid-filter.component cuando
         const resetStrategies = {
             position: (): void =>
                 this.gridFilterForm.get(fieldName)?.patchValue("all"),
@@ -397,7 +398,6 @@ export class EmployeeGridComponent implements OnInit {
     }
 
     private _setEmployeeFilterParameters(): void {
-        // Aca se establece por defecto como va a aparecer la grilla paginada por 1ra vez.
         this._employeeFilterParams.page = 1;
         this._employeeFilterParams.limit = 25;
         this._employeeFilterParams.sortColumn = "id";
@@ -476,12 +476,6 @@ export class EmployeeGridComponent implements OnInit {
         );
     }
 
-    /* private _setConfigurations(): void {
-        this._setEmployeeFilterParameters();
-        this._setGridFilter();
-        this._setGridFilterForm();
-    } */
-
     private _loadData(): void {
         this._loadSelects().subscribe((): void => {
             this._setGridFilterConfig();
@@ -496,35 +490,25 @@ export class EmployeeGridComponent implements OnInit {
         const transformedItems: GridData[] = paginatedList.items.map(
             (employee: Employee): GridData => {
                 const gridData: GridData = {
-                    id: employee.id as number,
+                    id: employee.id,
                     elipsisActions: this._setElipsisActions(employee),
+                    name: employee.name,
+                    surname: employee.surname,
+                    active: employee.active,
+                    position: employee.position?.description,
+                    gender: employee.gender?.description,
+                    country: employee.country?.description,
                 };
 
-                for (const key in employee) {
-                    const value = (employee as any)[key];
-
-                    if (
-                        key === "position" ||
-                        key === "gender" ||
-                        key === "country"
-                    ) {
-                        if (typeof value === "object" && value !== null) {
-                            gridData[key] = (
-                                value as { description: string }
-                            ).description;
-                        }
-                    } else if (key === "active") {
-                        if (typeof value === "boolean") {
-                            gridData[key] = value;
-                        }
-                    } else if (typeof value === "string") {
-                        const luxonDate = DateTime.fromISO(value);
-                        gridData[key] = luxonDate.isValid
-                            ? luxonDate.toFormat("dd/MM/yyyy")
-                            : value;
-                    } else {
-                        gridData[key] = value;
-                    }
+                if (typeof employee.birthDate === "string") {
+                    const luxonDate = DateTime.fromISO(
+                        employee["birthDate"] as string,
+                    );
+                    gridData["birthDate"] = luxonDate.isValid
+                        ? luxonDate.toFormat("dd/MM/yyyy")
+                        : employee.birthDate;
+                } else {
+                    gridData["birthDate"] = employee.birthDate;
                 }
 
                 return gridData;

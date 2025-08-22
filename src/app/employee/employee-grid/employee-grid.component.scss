@@ -7,7 +7,7 @@
 .employee-grid-container {
     display: grid;
     /* Define las filas: la primera para los chips (auto) y la segunda para la grilla y el filtro */
-    grid-template-rows: auto 1fr; 
+    grid-template-rows: auto 1fr;
     grid-template-columns: 5fr 1fr; /* Se define 2 columnas la 1ra toma la mayor parte (5 partes) y la 2da toma una parte (1 parte) */
     gap: 10px; /* Espacio entre los dos componentes */
     width: 100%; /* Ocupa todo el ancho disponible */
