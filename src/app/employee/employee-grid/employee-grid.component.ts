@@ -490,6 +490,7 @@ export class EmployeeGridComponent implements OnInit {
         const transformedItems: GridData[] = paginatedList.items.map(
             (employee: Employee): GridData => {
                 const gridData: GridData = {
+                    imgUrl: employee.imgUrl,
                     id: employee.id,
                     elipsisActions: this._setElipsisActions(employee),
                     name: employee.name,
