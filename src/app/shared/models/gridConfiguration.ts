@@ -65,12 +65,18 @@ export interface GridConfiguration {
     hasSorting?: {
         isServerSide: boolean;
     };
+    hasInfiniteScroll?: boolean;
 }
 
 // Function para crear la configuracion de la grilla por default
 export const createDefaultGridConfiguration = (
     config: Partial<GridConfiguration>,
 ): GridConfiguration => {
+    // Si se setea que tenga scroll infinito no puede tener paginación
+    if (config.hasInfiniteScroll) {
+        config.hasPagination = false;
+    }
+
     const defaultPagination: PaginationConfig = {
         pageIndex: 0,
         pageSize: 25,

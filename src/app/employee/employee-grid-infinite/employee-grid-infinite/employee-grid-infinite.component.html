@@ -1,1 +1,11 @@
-<p>employee-grid-infinite works!</p>
+<div class="employee-grid-infinite-container">
+    <app-grid
+        [config]="gridConfig"
+        [data]="gridData"
+        [isLoading]="isLoadingGridData"
+        (pageChange)="onGridPageChange($event)"
+        (sortChange)="onGridSortChange($event)"
+        (exportExcel)="onExportToExcel()"
+        (createButtonClicked)="onCreateEmployee()"
+    ></app-grid>
+</div>
