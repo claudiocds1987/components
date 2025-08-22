@@ -660,7 +660,7 @@ export class EmployeeGridComponent implements OnInit {
                 }
                 continue;
             }
-            // 3. Manejar todos los demás campos de manera genérica
+            // 3. Manejar todos los demás campos name, surname...
             if (value !== null && value !== undefined) {
                 (employeeFilterParams as any)[key] = value;
             }
