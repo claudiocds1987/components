@@ -8,23 +8,23 @@
     display: grid;
     /* Define las filas: la primera para los chips (auto) y la segunda para la grilla y el filtro */
     grid-template-rows: auto 1fr;
-    grid-template-columns: 5fr 1fr; /* Se define 2 columnas la 1ra toma la mayor parte (5 partes) y la 2da toma una parte (1 parte) */
-    gap: 10px; /* Espacio entre los dos componentes */
+    grid-template-columns: 1fr 260px; /* Se define 2 columnas la 1ra toma la mayor parte y la 2da 260px para el filtro*/
+    gap: 10px;
     width: 100%; /* Ocupa todo el ancho disponible */
     flex: 1; /* Ocupa todo el espacio disponible del host */
     min-height: 0; /* Permite que el grid se reduzca si es necesario */
-    align-items: stretch; /* Hace que ambos elementos tengan la misma altura */
+    align-items: stretch; /* Para que ambos elementos tengan la misma altura */
 
     /* Estilo para el componente de chips para que ocupe todas las columnas */
     app-chips {
         grid-column: 1 / -1; /* Hace que ocupe desde la primera columna hasta la última */
-        margin-bottom: 10px; /* Añade un pequeño espacio debajo de los chips */
+        margin-bottom: 10px;
     }
 
     .filter-container {
         width: 100%;
         min-height: 0; /* Permite que el contenedor se reduzca si es necesario */
-        display: flex; /* Hace que el contenedor sea flex */
-        flex-direction: column; /* Organiza el contenido verticalmente */
+        display: flex;
+        flex-direction: column;
     }
 }
