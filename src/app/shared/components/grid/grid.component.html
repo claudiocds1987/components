@@ -20,51 +20,85 @@
         </div>
     </div>
 </div>
+<!-- EL INPUT SEARCH SOLO SE MUESTRA CUANDO LA GRILLA NO ES PAGINADA -->
+<ng-container
+    [ngTemplateOutlet]="
+        !config.hasPagination ? searchInputTemplate : noSearchInputTemplate
+    "
+></ng-container>
 
-<mat-form-field
-    *ngIf="config.hasInputSearch && !isLoading"
-    appearance="outline"
-    class="search-field"
->
-    <mat-label>Buscar</mat-label>
-    <input
-        matInput
-        (input)="applyFilter($event)"
-        [placeholder]="config.filterByColumn || 'Buscar todo'"
-    />
-</mat-form-field>
+<ng-template #searchInputTemplate>
+    <div class="input-search-container" *ngIf="!isLoading">
+        <mat-form-field
+            appearance="outline"
+            class="search-field"
+            *ngIf="config.hasInputSearch"
+        >
+            <mat-label>Buscar</mat-label>
+            <input
+                matInput
+                (input)="applyFilter($event)"
+                [placeholder]="config.filterByColumn || 'Buscar todo'"
+            />
+        </mat-form-field>
 
-<div class="buttons-actions-container" *ngIf="!isLoading">
-    <div>
+        <div class="action-buttons-container">
+            <div class="buttons-actions">
+                <button
+                    *ngIf="config.hasCreateButton"
+                    mat-stroked-button
+                    color="primary"
+                    (click)="create()"
+                    style="border-radius: 50px"
+                >
+                    Crear
+                </button>
+                <button
+                    *ngIf="config.hasExcelDownload"
+                    class="button-action"
+                    mat-icon-button
+                    color="primary"
+                    (click)="exportToExcel()"
+                    [matTooltip]="'Descargar Excel'"
+                >
+                    <mat-icon>file_download</mat-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #noSearchInputTemplate>
+    <div class="chips-and-buttons-container" *ngIf="!isLoading">
         <app-chips
             *ngIf="config.hasChips"
             [chips]="chips"
             (chipRemoved)="onChipRemoved($event)"
         ></app-chips>
-    </div>
-    <div class="buttons-actions">
-        <button
-            *ngIf="config.hasCreateButton"
-            mat-stroked-button
-            color="primary"
-            (click)="create()"
-            style="border-radius: 50px"
-        >
-            Crear
-        </button>
 
-        <button
-            *ngIf="config.hasExcelDownload"
-            class="button-action"
-            mat-icon-button
-            color="primary"
-            (click)="exportToExcel()"
-            [matTooltip]="'Descargar Excel'"
-        >
-            <mat-icon>file_download</mat-icon>
-        </button>
+        <div class="buttons-actions">
+            <button
+                *ngIf="config.hasCreateButton"
+                mat-stroked-button
+                color="primary"
+                (click)="create()"
+                style="border-radius: 50px"
+            >
+                Crear
+            </button>
+            <button
+                *ngIf="config.hasExcelDownload"
+                class="button-action"
+                mat-icon-button
+                color="primary"
+                (click)="exportToExcel()"
+                [matTooltip]="'Descargar Excel'"
+            >
+                <mat-icon>file_download</mat-icon>
+            </button>
+        </div>
     </div>
-</div>
+</ng-template>
 
 <div class="table-container" *ngIf="!isLoading">
     <table

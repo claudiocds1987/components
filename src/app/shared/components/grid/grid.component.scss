@@ -8,7 +8,23 @@
     overflow: hidden; /* Evita el desbordamiento */
 }
 
-.buttons-actions-container {
+.input-search-container {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px; /* Espacio entre las columnas de la cuadrícula */
+    flex-wrap: wrap;
+    .action-buttons-container {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end; // Para alinear el contenido al final (derecha) del contenedor
+        .buttons-actions {
+            display: flex;
+            align-items: center;
+        }
+    }
+}
+
+.chips-and-buttons-container {
     display: grid;
     /* Definiendo dos columnas: la primera (para los chips) ocupa todo el espacio disponible (1fr),
        y la segunda (para los botones) ocupa solo el espacio que necesita (auto).
@@ -16,6 +32,7 @@
     grid-template-columns: 1fr auto;
     gap: 10px; /* Espacio entre las columnas de la cuadrícula */
     padding-bottom: 10px; /* Mantiene el padding inferior */
+    flex-wrap: wrap;
 
     .buttons-actions {
         display: flex;
