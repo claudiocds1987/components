@@ -112,14 +112,14 @@ export class GridComponent
     @ViewChild("scrollContainer") scrollContainer!: ElementRef; // Referencia al div de scroll
     /**
     NOTA: EN gridConfig HAY DOS PROPIEDADES IMPORTANTES:
-    
-    *  HasPaginator: Indica si la grilla debe tener paginación.
+
+    *  hasPaginator: Indica si la grilla debe tener paginación.
         - 'false': No muestra paginador.
         - 'PaginationConfig': Habilita la paginación. 'isServerSide' dentro de esta configuración
         determina si la paginación se maneja localmente por la grilla (false) o si se delega al backend (true).
         Si la propiedad HasPaginator no se defina por defecto es false.
 
-    * HasSorting: Configuración del ordenamiento (sorting).
+    * hasSorting: Configuración del ordenamiento (sorting).
         - 'isServerSide: true': El ordenamiento se delega al backend. La grilla solo emite
         el evento 'sortChange' con los parámetros de ordenamiento.
         - 'isServerSide: false': La grilla ordena los datos localmente en el cliente.
@@ -163,8 +163,7 @@ export class GridComponent
         if (changes["data"]) {
             this.dataSource.data = this.data;
             if (!this.gridConfig.hasInfiniteScroll) {
-                // Para asegurar que cuando no es scroll infinito el scroll quede siempre arriba de todo
-                // al cambiar de pagina.
+                // Para asegurar que cuando no es scroll infinito el scroll quede siempre arriba de todo al cambiar de pagina.
                 if (this.scrollContainer) {
                     this.scrollContainer.nativeElement.scrollTop = 0;
                 }
