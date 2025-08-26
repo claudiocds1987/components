@@ -528,11 +528,6 @@ export class EmployeeGridInfiniteComponent implements OnInit {
                     | "asc"
                     | "desc",
             },
-            hasSorting: {
-                // Indico a la grilla que el ordenamiento lo maneja el backend. La grilla solo emite el evento 'sortChange'.
-                // La grilla simplemente muestra los datos en el orden exacto en que los recibe del servidor.
-                isServerSide: true,
-            },
             filterByColumn: "",
             hasInputSearch: false,
             hasChips: false,

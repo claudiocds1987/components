@@ -64,8 +64,9 @@ export interface GridConfiguration {
     hasCreateButton?: boolean; // Muestra o no el botón de Crear
     OrderBy: OrderBy;
     // hasSorting.isServerSide: Le indica al GridComponent si debe reordenar la dataSource internamente (ordenamiento del cliente) o si debe dejar los datos como están y solo emitir un evento (sortChange) para que el componente padre solicite los datos reordenados al servidor.
+    // si isServerSide = true La grilla simplemente muestra los datos en el orden exacto en que los recibe del servidor.
     hasSorting?: {
-        isServerSide: boolean;
+        isServerSide: boolean; // pore defecto mas abajo esta en true
     };
     hasInfiniteScroll?: boolean;
 }
@@ -79,7 +80,7 @@ export const createDefaultGridConfiguration = (
         pageSize: 25,
         pageSizeOptions: [5, 10, 25, 100],
         totalCount: 0,
-        isServerSide: false,
+        isServerSide: true, // por default esta en true lo maneja el backend
     };
 
     const defaultOrderBy: OrderBy = {
@@ -88,13 +89,11 @@ export const createDefaultGridConfiguration = (
     };
 
     let finalPaginatornConfig: PaginationConfig | false;
-    // Si el scroll infinito está habilitado, forzar hasPagination a ser un objeto
-    // para llevar el totalCount para la detección de scroll infinito.
+
     if (config.hasInfiniteScroll) {
         finalPaginatornConfig = {
             ...defaultPaginator,
-            isServerSide: true, // Asumiendo que el scroll infinito siempre es server-side
-            // Usar los valores proporcionados si existen, de lo contrario usar los predeterminados.
+            isServerSide: true,
             totalCount:
                 config.hasPaginator && typeof config.hasPaginator === "object"
                     ? (config.hasPaginator.totalCount ?? 0)
@@ -122,16 +121,17 @@ export const createDefaultGridConfiguration = (
     let finalHasSorting: { isServerSide: boolean };
     if (config.hasSorting) {
         finalHasSorting = {
-            isServerSide: config.hasSorting.isServerSide ?? false,
+            isServerSide: config.hasSorting.isServerSide ?? true, // ¡Valor por defecto cambiado a 'true' para uso profesional!
         };
     } else {
-        finalHasSorting = { isServerSide: false };
+        finalHasSorting = { isServerSide: true }; // isServerSide = true por default
     }
+
     // Procesar las columnas para establecer isSortable por defecto
     const processedColumns: Column[] = (config.columns || []).map(
         (col: Column): Column => ({
             ...col,
-            isSortable: col.isSortable ?? true, // Si isSortable es undefined o null, se establece en true
+            isSortable: col.isSortable ?? true,
         }),
     );
 
