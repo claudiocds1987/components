@@ -112,7 +112,7 @@ export class GridComponent
     @Output() exportExcel = new EventEmitter<void>();
     @Output() chipRemoved = new EventEmitter<Chip>();
     @Output() createButtonClicked = new EventEmitter<void>();
-    @Output() inifinteScrolledToEnd = new EventEmitter<void>(); // Nuevo evento para scroll infinito
+    @Output() inifinteScroll = new EventEmitter<void>(); // Nuevo evento para scroll infinito
 
     dataSource = new MatTableDataSource<GridData>();
     private _ngZone = inject(NgZone);
@@ -411,7 +411,7 @@ export class GridComponent
 
             if (this.data.length < totalCount) {
                 this._ngZone.run((): void => {
-                    this.inifinteScrolledToEnd.emit();
+                    this.inifinteScroll.emit();
                 });
             }
         }

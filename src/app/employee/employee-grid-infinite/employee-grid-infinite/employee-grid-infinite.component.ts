@@ -7,7 +7,6 @@ import {
     OnInit,
 } from "@angular/core";
 
-import { FormControl, FormGroup } from "@angular/forms";
 import {
     createDefaultGridConfiguration,
     GridConfiguration,
@@ -81,7 +80,7 @@ export class EmployeeGridInfiniteComponent implements OnInit {
     }
 
     // Método para manejar el evento de scroll al final
-    onGridScrolledToEnd(): void {
+    onInfiniteGridScroll(): void {
         const totalCount =
             (this.gridConfig.hasPagination as PaginationConfig)?.totalCount ||
             0;
@@ -98,9 +97,6 @@ export class EmployeeGridInfiniteComponent implements OnInit {
             page: (this._employeeFilterParams.page || 1) + 1,
         };
 
-        console.log(
-            `Parent Log: Requesting new data for page: ${this._employeeFilterParams.page}`,
-        );
         this._getEmployees(true); // Pasamos 'true' para indicar que es una carga adicional por scroll.
     }
 
@@ -139,7 +135,9 @@ export class EmployeeGridInfiniteComponent implements OnInit {
         }
     }
 
-    onExportToExcel(): void {}
+    onExportToExcel(): void {
+        console.log("falta desarrollar exportacion de Excel");
+    }
 
     onCreateEmployee(): void {
         const dialogRef = this._dialog.open(EmployeeFormComponent, {
