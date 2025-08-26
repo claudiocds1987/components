@@ -72,6 +72,87 @@ export interface GridConfiguration {
 export const createDefaultGridConfiguration = (
     config: Partial<GridConfiguration>,
 ): GridConfiguration => {
+    const defaultPagination: PaginationConfig = {
+        pageIndex: 0,
+        pageSize: 25,
+        pageSizeOptions: [5, 10, 25, 100],
+        totalCount: 0,
+        isServerSide: false,
+    };
+
+    const defaultOrderBy: OrderBy = {
+        columnName: "id",
+        direction: "asc",
+    };
+
+    let finalPaginationConfig: PaginationConfig | false;
+
+    // Si el scroll infinito está habilitado, forzar hasPagination a ser un objeto
+    // para llevar el totalCount para la detección de scroll infinito.
+    if (config.hasInfiniteScroll) {
+        finalPaginationConfig = {
+            ...defaultPagination,
+            isServerSide: true, // Asumiendo que el scroll infinito siempre es server-side
+            // Usar los valores proporcionados si existen, de lo contrario usar los predeterminados.
+            totalCount:
+                config.hasPagination && typeof config.hasPagination === "object"
+                    ? (config.hasPagination.totalCount ?? 0)
+                    : 0,
+            pageIndex:
+                config.hasPagination && typeof config.hasPagination === "object"
+                    ? (config.hasPagination.pageIndex ?? 0)
+                    : 0,
+            pageSize:
+                config.hasPagination && typeof config.hasPagination === "object"
+                    ? (config.hasPagination.pageSize ?? 25)
+                    : 25,
+        };
+    } else if (config.hasPagination === false) {
+        finalPaginationConfig = false;
+    } else if (config.hasPagination) {
+        finalPaginationConfig = {
+            ...defaultPagination,
+            ...config.hasPagination,
+        };
+    } else {
+        finalPaginationConfig = defaultPagination;
+    }
+
+    let finalHasSorting: { isServerSide: boolean };
+    if (config.hasSorting) {
+        finalHasSorting = {
+            isServerSide: config.hasSorting.isServerSide ?? false,
+        };
+    } else {
+        finalHasSorting = { isServerSide: false };
+    }
+
+    // Procesar las columnas para establecer isSortable por defecto
+    const processedColumns: Column[] = (config.columns || []).map(
+        (col: Column): Column => ({
+            ...col,
+            isSortable: col.isSortable ?? true, // Si isSortable es undefined o null, se establece en true
+        }),
+    );
+
+    return {
+        columns: processedColumns,
+        hasPagination: finalPaginationConfig,
+        hasInputSearch: config.hasInputSearch ?? true,
+        filterByColumn: config.filterByColumn ?? "",
+        hasExcelDownload: config.hasExcelDownload ?? false,
+        hasCreateButton: config.hasCreateButton ?? false,
+        hasChips: config.hasChips ?? false,
+        OrderBy: config.OrderBy
+            ? { ...defaultOrderBy, ...config.OrderBy }
+            : defaultOrderBy,
+        hasSorting: finalHasSorting,
+        hasInfiniteScroll: config.hasInfiniteScroll ?? false,
+    };
+};
+/* export const createDefaultGridConfiguration = (
+    config: Partial<GridConfiguration>,
+): GridConfiguration => {
     // Si se setea que tenga scroll infinito no puede tener paginación
     if (config.hasInfiniteScroll) {
         config.hasPagination = false;
@@ -132,5 +213,6 @@ export const createDefaultGridConfiguration = (
             ? { ...defaultOrderBy, ...config.OrderBy }
             : defaultOrderBy,
         hasSorting: finalHasSorting,
+        hasInfiniteScroll: config.hasInfiniteScroll ?? false,
     };
-};
+}; */

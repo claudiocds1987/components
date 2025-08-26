@@ -27,8 +27,8 @@
 .chips-and-buttons-container {
     display: grid;
     /* Definiendo dos columnas: la primera (para los chips) ocupa todo el espacio disponible (1fr),
-       y la segunda (para los botones) ocupa solo el espacio que necesita (auto).
-       Esto logra el efecto de "space-between" al empujar los botones a la derecha. */
+        y la segunda (para los botones) ocupa solo el espacio que necesita (auto).
+        Esto logra el efecto de "space-between" al empujar los botones a la derecha. */
     grid-template-columns: 1fr auto;
     gap: 10px; /* Espacio entre las columnas de la cuadrícula */
     padding-bottom: 10px; /* Mantiene el padding inferior */
@@ -47,9 +47,7 @@
 
 .header .grid-cell {
     background-color: #f0f4f9;
-    //background-color: #262446;
     color: $primary-material-color;
-    //color: white;
     font-weight: bold;
 }
 
@@ -59,7 +57,7 @@
 
 .table-container {
     flex: 1; /* La tabla ocupa la mayor parte del espacio */
-    overflow: auto; /* Permite scroll en la tabla si es necesario */
+    overflow: auto; /* ¡MUY IMPORTANTE! Esto hace que el div sea scrollable */
     min-height: 0; /* Permite que se reduzca si es necesario */
     background: white;
     /* Reglas para navegadores basados en WebKit (Chrome, Safari, Edge) */
@@ -88,6 +86,13 @@
         scrollbar-width: thin;
         scrollbar-color: #c1c1c1 #f1f1f1;
     }
+}
+
+// Nueva clase para ocultar la tabla sin quitarla del DOM, manteniendo el espacio.
+.table-hidden {
+    visibility: hidden;
+    height: 0; /* Asegurarse de que no ocupe altura */
+    overflow: hidden; /* Ocultar contenido desbordante */
 }
 
 .paginator-container {

@@ -1,3 +1,6 @@
+// GRID.COMPONENT ACA EL SCROLL INFINITO FUNCIONA BIEN SOLO CON EL DETALLE DE QUE CUANDO CARGA NUEVOS REGISTROS EL SCROLL S EVA HACIA ARRIBA DE TODO
+// CUANDO DEBERIA QUEDAR SITUADO SOBRE LOS NUEVOS REGISTROS CARGADOS
+
 import {
     Component,
     ViewChild,
@@ -11,6 +14,8 @@ import {
     ChangeDetectionStrategy,
     Output,
     EventEmitter,
+    ElementRef,
+    OnDestroy,
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { MatTableModule } from "@angular/material/table";
@@ -91,9 +96,12 @@ export function getPaginatorIntl(): MatPaginatorIntl {
         },
     ],
 })
-export class GridComponent implements OnInit, AfterViewInit, OnChanges {
+export class GridComponent
+    implements OnInit, AfterViewInit, OnChanges, OnDestroy
+{
     @ViewChild(MatSort) sort!: MatSort;
     @ViewChild(MatPaginator) paginator!: MatPaginator;
+    @ViewChild("scrollContainer") scrollContainer!: ElementRef; // Referencia al div de scroll
 
     @Input() config!: GridConfiguration;
     @Input() data: GridData[] = [];
@@ -104,9 +112,11 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     @Output() exportExcel = new EventEmitter<void>();
     @Output() chipRemoved = new EventEmitter<Chip>();
     @Output() createButtonClicked = new EventEmitter<void>();
+    @Output() scrolledToEnd = new EventEmitter<void>(); // Nuevo evento para scroll infinito
 
     dataSource = new MatTableDataSource<GridData>();
     private _ngZone = inject(NgZone);
+    private _scrollListener: (() => void) | undefined; // Para almacenar y limpiar el listener
 
     get columns(): Column[] {
         return this.config?.columns || [];
@@ -118,20 +128,31 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
 
     get paginatorConfig(): PaginationConfig | null {
         const pagination = this.config?.hasPagination;
+        // Ahora, si pagination es 'false' (boolean), esto no entrará en el 'typeof object'
+        // Pero si config.hasInfiniteScroll es true, createDefaultGridConfiguration asegurará que hasPagination sea un objeto.
         return typeof pagination === "object" && pagination !== null
             ? pagination
             : null;
     }
 
     ngOnChanges(changes: SimpleChanges): void {
+        console.log("GridComponent ngOnChanges", changes);
         if (changes["data"]) {
             this.dataSource.data = this.data;
-            this._updatePaginatorForClientSide();
+            if (!this.config.hasInfiniteScroll) {
+                // Para asegurar que cuando no es scroll infinito el scroll quede siempre arriba de todo
+                // al cambiar de pagina.
+                this.scrollContainer.nativeElement.scrollTop = 0;
+                this._updatePaginatorForClientSide();
+            }
         }
 
         if (changes["config"]) {
             this._updateFilterPredicate();
             this._updatePaginatorAndSortConfig(changes["config"].currentValue);
+            if (this.config.hasInfiniteScroll) {
+                this._setupScrollListener(); // Re-evaluar el listener de scroll
+            }
         }
 
         if (changes["isLoading"]) {
@@ -140,21 +161,42 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     ngOnInit(): void {
+        console.log("GridComponent ngOnInit");
         this._updateFilterPredicate();
     }
 
     ngAfterViewInit(): void {
+        console.log("GridComponent ngAfterViewInit");
         this._ngZone.onStable.pipe(take(1)).subscribe((): void => {
+            console.log(
+                "GridComponent NgZone stable - Setting up sorting and scroll listener",
+            );
             this._setupSorting();
-            this._setupPaginator();
+            if (!this.config.hasInfiniteScroll) {
+                this._setupPaginator();
+            }
+            this._setupScrollListener(); // Configura el listener de scroll aquí
         });
+    }
+
+    ngOnDestroy(): void {
+        console.log("GridComponent ngOnDestroy - Removing scroll listener");
+        if (
+            this.scrollContainer &&
+            this.scrollContainer.nativeElement &&
+            this._scrollListener
+        ) {
+            this.scrollContainer.nativeElement.removeEventListener(
+                "scroll",
+                this._scrollListener,
+            );
+        }
     }
 
     getCellValue(row: GridData, colName: string): string {
         const value = row[colName];
-        // Si la columna es la de elipsis, no intentamos convertir el array de acciones a string
         if (colName === "elipsisActions" && Array.isArray(value)) {
-            return ""; // La celda de elipsis se renderiza con el botón, no con el texto del array
+            return "";
         }
         return value != null ? String(value) : "";
     }
@@ -218,7 +260,6 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
         if (!this.sort) {
             return;
         }
-
         if (!this.config?.hasSorting?.isServerSide) {
             this.dataSource.sort = this.sort;
             this.sort.sortChange.subscribe((): void => {
@@ -235,8 +276,6 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
             console.warn("GridComponent: MatPaginator no encontrado.");
             return;
         }
-
-        // Configuración inicial del paginador
         if (!this.paginatorConfig?.isServerSide) {
             this.dataSource.paginator = this.paginator;
         } else {
@@ -259,7 +298,11 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     private _updatePaginatorAndSortConfig(newConfig: GridConfiguration): void {
-        if (this.paginatorConfig?.isServerSide && this.paginator) {
+        if (
+            this.paginator &&
+            !newConfig.hasInfiniteScroll &&
+            this.paginatorConfig?.isServerSide
+        ) {
             const newTotalCount =
                 newConfig.hasPagination &&
                 typeof newConfig.hasPagination === "object"
@@ -283,7 +326,6 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
             );
         }
 
-        // Actualizar estado visual del sort en cambios de config (solo para server-side)
         if (this.sort && newConfig.hasSorting?.isServerSide) {
             if (newConfig.OrderBy) {
                 this.sort.active = newConfig.OrderBy.columnName;
@@ -297,16 +339,19 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
         pageIndex: number,
         pageSize: number,
     ): void {
-        // Evita actualizaciones si los valores no han cambiado para prevenir bucles o renderizados innecesarios.
-        if (
-            this.paginator.length !== length ||
-            this.paginator.pageIndex !== pageIndex ||
-            this.paginator.pageSize !== pageSize
-        ) {
-            this.paginator.length = length;
-            this.paginator.pageIndex = pageIndex;
-            this.paginator.pageSize = pageSize;
-            this.paginator._changePageSize(this.paginator.pageSize); // Forzar actualización visual
+        if (this.paginator) {
+            if (
+                this.paginator.length !== length ||
+                this.paginator.pageIndex !== pageIndex ||
+                this.paginator.pageSize !== pageSize
+            ) {
+                this.paginator.length = length;
+                this.paginator.pageIndex = pageIndex;
+                this.paginator.pageSize = pageSize;
+                if (this.paginator._changePageSize) {
+                    this.paginator._changePageSize(this.paginator.pageSize);
+                }
+            }
         }
     }
 
@@ -318,18 +363,96 @@ export class GridComponent implements OnInit, AfterViewInit, OnChanges {
             }
 
             if (this.config?.filterByColumn) {
-                // Si hay una columna específica para filtrar
                 const value = data[this.config.filterByColumn];
                 const stringValue = value?.toString() || "";
                 return stringValue.toLowerCase().includes(search);
             }
 
-            // Si no hay columna específica, buscar en todas las columnas sortables (o relevantes)
             return this.columns.some((col: Column): boolean => {
                 const value = data[col.name];
                 const stringValue = value?.toString() || "";
                 return stringValue.toLowerCase().includes(search);
             });
         };
+    }
+
+    private _setupScrollListener(): void {
+        console.log("GridComponent _setupScrollListener called");
+        // Limpiar cualquier listener previo para evitar duplicados
+        if (
+            this._scrollListener &&
+            this.scrollContainer &&
+            this.scrollContainer.nativeElement
+        ) {
+            console.log("Removing old scroll listener");
+            this.scrollContainer.nativeElement.removeEventListener(
+                "scroll",
+                this._scrollListener,
+            );
+            this._scrollListener = undefined;
+        }
+
+        // Verifica si config.hasInfiniteScroll es true y si scrollContainer está disponible
+        if (this.config?.hasInfiniteScroll && this.scrollContainer) {
+            const nativeElement = this.scrollContainer.nativeElement;
+            console.log(
+                "Attempting to add new scroll listener for infinite scroll to element:",
+                nativeElement,
+            );
+            this._scrollListener = this._ngZone.runOutsideAngular(() => {
+                return () => this._onScroll();
+            });
+            nativeElement.addEventListener("scroll", this._scrollListener);
+            console.log("Scroll listener added successfully.");
+        } else {
+            console.log(
+                "Scroll listener NOT added: hasInfiniteScroll is false or scrollContainer is not yet available.",
+            );
+            console.log("hasInfiniteScroll:", this.config?.hasInfiniteScroll);
+            console.log("scrollContainer reference:", this.scrollContainer);
+        }
+    }
+
+    private _onScroll(): void {
+        console.log("Scroll event fired inside grid.component._onScroll"); // Debugging log
+
+        if (!this.config?.hasInfiniteScroll || this.isLoading) {
+            console.log(
+                "Scroll ignored: infinite scroll not active or loading",
+            );
+            return;
+        }
+
+        const element = this.scrollContainer.nativeElement;
+        const scrollHeight = element.scrollHeight;
+        const scrollTop = element.scrollTop;
+        const clientHeight = element.clientHeight;
+        // const scrollThreshold es el valor que define cuán cerca del final de la grilla debe estar el scroll para que se emita el evento scrolledToEnd y se cargue la siguiente tanda de datos.
+        const scrollThreshold = 50;
+
+        console.log(
+            `Scroll details: scrollTop=${scrollTop}, clientHeight=${clientHeight}, scrollHeight=${scrollHeight}`,
+        );
+        console.log(
+            `Threshold condition: ${scrollTop + clientHeight} >= ${scrollHeight - scrollThreshold}`,
+        );
+
+        if (scrollTop + clientHeight >= scrollHeight - scrollThreshold) {
+            const totalCount = this.paginatorConfig?.totalCount ?? 0;
+            console.log(
+                `Potential end of scroll: data.length=${this.data.length}, totalCount=${totalCount}`,
+            );
+
+            if (this.data.length < totalCount) {
+                this._ngZone.run(() => {
+                    console.log("Emitting scrolledToEnd event"); // Debugging log
+                    this.scrolledToEnd.emit();
+                });
+            } else {
+                console.log(
+                    "Not emitting scrolledToEnd: all data loaded or totalCount is zero",
+                );
+            }
+        }
     }
 }

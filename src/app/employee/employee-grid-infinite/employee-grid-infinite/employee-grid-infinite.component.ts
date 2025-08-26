@@ -53,7 +53,7 @@ export class EmployeeGridInfiniteComponent implements OnInit {
     gridConfig: GridConfiguration;
     gridData: GridData[] = [];
     employees: Employee[] = [];
-    isLoadingGridData = true;
+    isLoadingGridData = true; // El input isLoading del GridComponent
 
     private _employeeFilterParams: EmployeeFilterParams = {};
     private _employeeServices = inject(EmployeeService);
@@ -80,6 +80,48 @@ export class EmployeeGridInfiniteComponent implements OnInit {
         this._loadData();
     }
 
+    // Método para manejar el evento de scroll al final
+    onGridScrolledToEnd(): void {
+        console.log(
+            "Parent Log: onGridScrolledToEnd triggered at:",
+            new Date().toLocaleTimeString(),
+        );
+        const totalCount =
+            (this.gridConfig.hasPagination as PaginationConfig)?.totalCount ||
+            0;
+        const currentDataCount = this.gridData.length;
+
+        console.log(
+            `Parent Log: Current state: isLoadingGridData=${this.isLoadingGridData}, currentDataCount=${currentDataCount}, totalCount=${totalCount}`,
+        );
+
+        // --- AJUSTE CRÍTICO: La comprobación debe ir ANTES de establecer isLoadingGridData a true ---
+        if (this.isLoadingGridData || currentDataCount >= totalCount) {
+            console.log(
+                `Parent Log: onGridScrolledToEnd returning early. Reason: isLoadingGridData=${this.isLoadingGridData} or currentDataCount >= totalCount (${currentDataCount} >= ${totalCount})`,
+            );
+            return; // Salimos si ya estamos cargando o si ya no hay más datos.
+        }
+
+        // Si no estamos cargando y hay más datos, entonces procedemos a cargar.
+        this.isLoadingGridData = true; // Establecemos a true para que el GridComponent sepa que estamos cargando.
+        console.log(
+            `Parent Log: isLoadingGridData set to TRUE in parent. Forcing detectChanges: ${this.isLoadingGridData}`,
+        );
+        // this._cdr.detectChanges(); // Forzamos la detección de cambios para actualizar el Input isLoading del hijo inmediatamente.
+
+        // Incrementamos la página para la siguiente solicitud
+        this._employeeFilterParams = {
+            ...this._employeeFilterParams,
+            page: (this._employeeFilterParams.page || 1) + 1,
+        };
+
+        console.log(
+            `Parent Log: Requesting new data for page: ${this._employeeFilterParams.page}`,
+        );
+        this._getEmployees(true); // Pasamos 'true' para indicar que es una carga adicional por scroll.
+    }
+
     onGridSortChange(sortEvent: Sort): void {
         // obteniendo nombre de la columna
         let sortColumnName = sortEvent.active;
@@ -104,57 +146,18 @@ export class EmployeeGridInfiniteComponent implements OnInit {
     }
 
     onGridPageChange(event: PageEvent): void {
-        this._employeeFilterParams = {
-            ...this._employeeFilterParams,
-            page: event.pageIndex + 1,
-            limit: event.pageSize,
-        };
-        this._getEmployees();
+        if (!this.gridConfig.hasInfiniteScroll) {
+            // Solo si NO es scroll infinito
+            this._employeeFilterParams = {
+                ...this._employeeFilterParams,
+                page: event.pageIndex + 1,
+                limit: event.pageSize,
+            };
+            this._getEmployees();
+        }
     }
 
-    onExportToExcel(): void {
-        /*   this._spinnerService.show();
-            // Obtener todos los valores del formulario
-            const filterValues = this.gridFilterForm.value;
-            // Pasa los valores del formulario a la función de mapeo.
-            const exportParams = this._mapToEmployeeFilterParams(filterValues);
-            // Asigna los parámetros de ordenamiento.
-            if (this._employeeFilterParams.sortColumn) {
-                exportParams.sortColumn = this._employeeFilterParams.sortColumn;
-            }
-            if (this._employeeFilterParams.sortOrder) {
-                exportParams.sortOrder = this._employeeFilterParams.sortOrder;
-            }
-            // El resto de la función se mantiene igual.
-            this._employeeServices
-                .getEmployeesForExportJsonServer(exportParams)
-                .pipe(
-                    map((employees: Employee[]): any =>
-                        this._mapEmployeesForExport(employees),
-                    ),
-                )
-                .subscribe({
-                    next: (processedData: any[]): void => {
-                        const fileName = "Empleados.xlsx";
-                        setTimeout((): void => {
-                            this._exportService.exportToExcel(
-                                processedData,
-                                fileName,
-                            );
-                            this._spinnerService.hide();
-                            this._cdr.markForCheck();
-                        }, 1500);
-                    },
-                    error: (error: unknown): void => {
-                        this._spinnerService.hide();
-                        this._cdr.markForCheck();
-                        console.error(
-                            "Error al descargar el archivo de Excel:",
-                            error,
-                        );
-                    },
-                }); */
-    }
+    onExportToExcel(): void {}
 
     onCreateEmployee(): void {
         const dialogRef = this._dialog.open(EmployeeFormComponent, {
@@ -206,27 +209,56 @@ export class EmployeeGridInfiniteComponent implements OnInit {
         this._employeeFilterParams.sortOrder = "asc";
     }
 
-    private _getEmployees(): void {
-        this.isLoadingGridData = true;
+    private _getEmployees(isScrolling = false): void {
+        if (!isScrolling) {
+            this.isLoadingGridData = true; // Para carga inicial o cambio de filtro/orden
+            console.log(
+                `Parent Log: _getEmployees (initial/filter/sort load): isLoadingGridData set to TRUE: ${this.isLoadingGridData}`,
+            );
+        } else {
+            console.log(
+                `Parent Log: _getEmployees (scrolling): isLoadingGridData is: ${this.isLoadingGridData}`,
+            );
+        }
+
         this._employeeServices
             .getEmployees(this._employeeFilterParams)
             .pipe(
                 map(this._mapPaginatedListToGridData.bind(this)),
                 finalize((): void => {
-                    this.isLoadingGridData = false;
-                    this._cdr.markForCheck();
+                    this.isLoadingGridData = false; // --- CRÍTICO: Establecer a false DESPUÉS de la API ---
+                    console.log(
+                        `Parent Log: _getEmployees: API call finished, isLoadingGridData set to FALSE: ${this.isLoadingGridData}`,
+                    );
+                    this._cdr.markForCheck(); // Forzar la detección de cambios
                 }),
             )
             .subscribe({
                 next: (
                     paginatedListGridData: PaginatedList<GridData>,
                 ): void => {
-                    this.gridData = paginatedListGridData.items;
+                    if (isScrolling) {
+                        console.log(
+                            `Parent Log: Appending new data. Old gridData length: ${this.gridData.length}, New items: ${paginatedListGridData.items.length}`,
+                        );
+                        this.gridData = [
+                            ...this.gridData,
+                            ...paginatedListGridData.items,
+                        ];
+                    } else {
+                        console.log(
+                            `Parent Log: Replacing data. Old gridData length: ${this.gridData.length}, New items: ${paginatedListGridData.items.length}`,
+                        );
+                        this.gridData = paginatedListGridData.items;
+                    }
                     this._updateGridConfig(paginatedListGridData);
+                    console.log(
+                        `Parent Log: gridData updated. New total length: ${this.gridData.length}`,
+                    );
                 },
                 error: (error: any): void => {
                     console.error(
-                        "EmployeeGridComponent: Error al obtener empleados:",
+                        "Parent Log: EmployeeGridComponent: Error al obtener empleados:",
                         error,
                     );
                 },
@@ -236,7 +268,10 @@ export class EmployeeGridInfiniteComponent implements OnInit {
     private _getPositions(): Observable<SelectItem[]> {
         return this._positionServices.getPositions().pipe(
             catchError((error: unknown): Observable<SelectItem[]> => {
-                console.error("Error al obtener posiciones:", error);
+                console.error(
+                    "Parent Log: Error al obtener posiciones:",
+                    error,
+                );
                 return of([]);
             }),
         );
@@ -244,7 +279,7 @@ export class EmployeeGridInfiniteComponent implements OnInit {
     private _getCountries(): Observable<SelectItem[]> {
         return this._countryServices.getCountries().pipe(
             catchError((error: unknown): Observable<SelectItem[]> => {
-                console.error("Error al obtener paises:", error);
+                console.error("Parent Log: Error al obtener paises:", error);
                 return of([]);
             }),
         );
@@ -252,6 +287,7 @@ export class EmployeeGridInfiniteComponent implements OnInit {
 
     private _loadData(): void {
         this._setEmployeeFilterParameters();
+        // Llamada a _getEmployees para la carga inicial
         this._getEmployees();
     }
 
@@ -314,47 +350,36 @@ export class EmployeeGridInfiniteComponent implements OnInit {
     }
 
     private _editEmployee(id: number): void {
-        console.log(`Editando empleado con ID: ${id}`);
+        console.log(`Parent Log: Editando empleado con ID: ${id}`);
         // Aquí iría tu lógica para navegar a la página de edición o abrir un modal
         // Por ejemplo: this._router.navigate(['/employees', id, 'edit']);
     }
 
     private _deleteEmployee(id: number): void {
         // QUE PONGA EL EMPLEADO COMO INACTIVO NO LO BORRE
-        console.log(`Intentando eliminar empleado con ID: ${id}`);
-        // Idealmente, aquí tendrías un diálogo de confirmación antes de la eliminación real.
-        //this.isLoadingData = true;
-        /* this._employeeServices
-                .deleteEmployee(id)
-                .pipe(
-                    finalize((): void => {
-                        // Tipo explícito para finalize
-                        this.isLoadingData = false;
-                        this._cdr.markForCheck(); // Forzar detección de cambios después de la eliminación
-                    }),
-                )
-                .subscribe({
-                    next: (): void => {
-                        // Tipo explícito para next
-                        console.log(`El registro con ID ${id} ha sido eliminado.`);
-                        // Después de eliminar, recargamos la grilla para reflejar el cambio.
-                        // Podrías también solo quitar el elemento de `gridData` si el backend confirma la eliminación.
-                        this._getEmployees();
-                    },
-                    error: (error: any): void => {
-                        // Tipo explícito para error
-                        console.error(
-                            `Error al eliminar el registro con ID ${id}:`,
-                            error,
-                        );
-                        // Manejar el error, mostrar un mensaje al usuario, etc.
-                    },
-                }); */
+        console.log(`Parent Log: Intentando eliminar empleado con ID: ${id}`);
     }
 
     private _updateGridConfigOnSortChange(sortEvent: Sort): void {
-        const basePaginationConfig =
-            this.gridConfig.hasPagination || this._defaultPaginatorOptions;
+        // Al ordenar, siempre creamos una nueva configuración para asegurar la reactividad
+        // y para reiniciar la paginación a la primera página si no es scroll infinito.
+        const newPaginationConfig = this.gridConfig.hasInfiniteScroll
+            ? {
+                  ...this._defaultPaginatorOptions,
+                  totalCount:
+                      (this.gridConfig.hasPagination as PaginationConfig)
+                          ?.totalCount || 0,
+                  pageIndex: 0,
+                  pageSize:
+                      (this.gridConfig.hasPagination as PaginationConfig)
+                          ?.pageSize || 25,
+                  isServerSide: true,
+              }
+            : {
+                  ...(this.gridConfig.hasPagination ||
+                      this._defaultPaginatorOptions),
+                  pageIndex: 0,
+              };
 
         this.gridConfig = {
             ...this.gridConfig,
@@ -362,11 +387,11 @@ export class EmployeeGridInfiniteComponent implements OnInit {
                 columnName: sortEvent.active,
                 direction: sortEvent.direction,
             },
-            hasPagination: {
-                ...basePaginationConfig,
-                pageIndex: 0,
-            },
+            hasPagination: newPaginationConfig,
         };
+        console.log(
+            "Parent Log: _updateGridConfigOnSortChange: gridConfig updated.",
+        );
     }
 
     private _updateGridConfig(
@@ -374,24 +399,73 @@ export class EmployeeGridInfiniteComponent implements OnInit {
     ): void {
         const { totalCount, pageIndex, pageSize } = paginatedListGridData;
         const { sortColumn = "", sortOrder = "" } = this._employeeFilterParams;
-        // Se crea el objeto de paginación
-        const paginationConfig = {
-            ...(this.gridConfig.hasPagination || this._defaultPaginatorOptions),
-            totalCount,
-            pageSize,
-            pageIndex,
-        };
-        // Se crea el objeto de ordenamiento
-        const orderByConfig = {
-            columnName: sortColumn,
-            direction: sortOrder as "asc" | "desc" | "",
-        };
-        // Actualiza la configuración de la grilla con los nuevos datos cambiando la referencia ...this.gridConfig
-        this.gridConfig = {
-            ...this.gridConfig,
-            hasPagination: paginationConfig,
-            OrderBy: orderByConfig,
-        };
+
+        if (!this.gridConfig.hasInfiniteScroll) {
+            // Lógica existente para paginación normal
+            const paginationConfig = {
+                ...(this.gridConfig.hasPagination ||
+                    this._defaultPaginatorOptions),
+                totalCount,
+                pageSize,
+                pageIndex,
+            };
+            this.gridConfig = {
+                ...this.gridConfig,
+                hasPagination: paginationConfig,
+                OrderBy: {
+                    columnName: sortColumn,
+                    direction: sortOrder as "asc" | "desc" | "",
+                },
+            };
+        } else {
+            // --- CAMBIO CLAVE AQUÍ: Mutar hasPagination si es scroll infinito ---
+            // Solo actualizamos las propiedades necesarias sin recrear el objeto completo si ya existe
+            if (
+                this.gridConfig.hasPagination &&
+                typeof this.gridConfig.hasPagination === "object"
+            ) {
+                (this.gridConfig.hasPagination as PaginationConfig).totalCount =
+                    totalCount;
+                (this.gridConfig.hasPagination as PaginationConfig).pageSize =
+                    pageSize;
+                (this.gridConfig.hasPagination as PaginationConfig).pageIndex =
+                    pageIndex;
+                console.log(
+                    `Parent Log: _updateGridConfig: Mutated existing hasPagination for infinite scroll. New totalCount: ${totalCount}`,
+                );
+            } else {
+                // Si hasPagination no era un objeto, lo creamos
+                this.gridConfig = {
+                    ...this.gridConfig,
+                    hasPagination: {
+                        ...this._defaultPaginatorOptions,
+                        totalCount: totalCount,
+                        pageSize: pageSize,
+                        pageIndex: pageIndex,
+                    },
+                };
+                console.log(
+                    `Parent Log: _updateGridConfig: Created new hasPagination object for infinite scroll. New totalCount: ${totalCount}`,
+                );
+            }
+
+            // Actualizar OrderBy si es necesario, también mutando para evitar cambios de referencia en config si no es absolutamente necesario
+            if (this.gridConfig.OrderBy) {
+                this.gridConfig.OrderBy.columnName = sortColumn;
+                this.gridConfig.OrderBy.direction = sortOrder as
+                    | "asc"
+                    | "desc"
+                    | "";
+            } else {
+                this.gridConfig = {
+                    ...this.gridConfig,
+                    OrderBy: {
+                        columnName: sortColumn,
+                        direction: sortOrder as "asc" | "desc" | "",
+                    },
+                };
+            }
+        }
     }
 
     private _mapToEmployeeFilterParams(obj: unknown): EmployeeFilterParams {
@@ -406,7 +480,7 @@ export class EmployeeGridInfiniteComponent implements OnInit {
                     continue;
                 }
             }
-            // 2. Para rango de fechas en json server desde(birthDate_gte) hasta (birthDate_lte)
+            // 2. Para rango de fechas en json-server desde(birthDate_gte) hasta (birthDate_lte)
             if (key === "birthDateRange" && value) {
                 const dateRangeValue = value as {
                     startDate: Date | string | null;
@@ -470,13 +544,15 @@ export class EmployeeGridInfiniteComponent implements OnInit {
                     type: "elipsis", // ¡Indica que es la columna de elipsis!
                 },
             ],
-            hasPagination: {
-                pageSize: this._employeeFilterParams.limit || 25,
-                pageSizeOptions: [25, 50],
-                totalCount: 0,
-                pageIndex: 0,
-                isServerSide: true,
-            },
+            hasInfiniteScroll: true,
+
+            /*  hasPagination: {
+                pageSize: this._employeeFilterParams.limit || 25,
+                pageSizeOptions: [25, 50],
+                totalCount: 0,
+                pageIndex: 0,
+                isServerSide: true,
+            }, */
             OrderBy: {
                 columnName: this._employeeFilterParams.sortColumn || "id",
                 direction: (this._employeeFilterParams.sortOrder || "asc") as

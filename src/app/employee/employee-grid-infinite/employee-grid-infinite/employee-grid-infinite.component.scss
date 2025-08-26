@@ -14,8 +14,18 @@
     grid-template-rows: auto 1fr;
     grid-template-columns: 1fr;
     gap: 10px;
-    width: 100%; /* Ocupa todo el ancho disponible */
-    flex: 1; /* Ocupa todo el espacio disponible del host */
-    min-height: 0; /* Permite que el grid se reduzca si es necesario */
-    align-items: stretch; /* Para que ambos elementos tengan la misma altura */
+    width: 100%; // Ocupa todo el ancho disponible
+    flex: 1; // Ocupa todo el espacio disponible del host
+    min-height: 0; // Permite que el grid se reduzca si es necesario
+    align-items: stretch; // Para que ambos elementos tengan la misma altura
 }
+
+// NO SIRVE
+/* .employee-grid-infinite-container {
+    display: flex; // Hacemos que este contenedor también sea un flex container
+    flex-direction: column; // Apila sus elementos hijos (app-grid) verticalmente
+    height: 100%; // Ocupa el 100% de la altura disponible de su propio padre
+    // IMPORTANTE: El padre de este contenedor también debe tener una altura definida (ej. body, html, otro div)
+      // para que 'height: 100%' tenga un efecto.
+    overflow: hidden; /* Oculta cualquier desbordamiento si el contenido excede la altura
+} */

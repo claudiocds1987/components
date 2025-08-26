@@ -100,16 +100,16 @@
     </div>
 </ng-template>
 
-<div class="table-container" *ngIf="!isLoading">
+<div class="table-container" #scrollContainer>
     <table
         mat-table
-        *ngIf="!isLoading && dataSource.data.length > 0"
         [dataSource]="dataSource"
         matSort
         [matSortActive]="config.OrderBy.columnName"
         [matSortDirection]="config.OrderBy.direction"
         (matSortChange)="onSortChange($event)"
         class="table"
+        [class.table-hidden]="isLoading || dataSource.data.length === 0"
     >
         <!-- Definición de columnas dinámicas -->
         <ng-container
@@ -168,66 +168,72 @@
                         col.type === 'elipsis' ? 'clip' : 'ellipsis',
                 }"
             >
-                <ng-container *ngIf="col.type === 'img' && row['imgUrl']">
-                    <img [src]="row['imgUrl']" alt="Imagen" class="table-img" />
-                </ng-container>
-
-                <ng-container *ngIf="col.type === 'elipsis'; else defaultCell">
-                    <button
-                        mat-icon-button
-                        [matMenuTriggerFor]="elipsisMenu"
-                        aria-label="Más opciones"
-                    >
-                        <mat-icon color="primary">more_vert</mat-icon>
-                    </button>
-                    <!-- El menú se define dentro del ng-container para que sea parte del mismo bloque lógico -->
-                    <mat-menu #elipsisMenu="matMenu">
-                        <ng-container
-                            *ngFor="let action of row['elipsisActions']"
-                        >
-                            <button
-                                mat-menu-item
-                                *ngIf="
-                                    action.condition
-                                        ? action.condition(row)
-                                        : true
-                                "
-                                (click)="action.action(row.id)"
-                            >
-                                <mat-icon *ngIf="action.icon">{{
-                                    action.icon
-                                }}</mat-icon>
-                                <span>{{ action.label }}</span>
-                            </button>
-                        </ng-container>
-                    </mat-menu>
-                </ng-container>
-
-                <ng-template #defaultCell>
-                    <ng-container
-                        *ngIf="
-                            col.style === 'status-circle';
-                            else standardContent
-                        "
-                    >
-                        <span
-                            class="status-circle"
-                            [ngClass]="{
-                                'status-circle-active': row[col.name],
-                                'status-circle-inactive': !row[col.name],
-                            }"
-                            [matTooltip]="getTooltipValue(row, col.name)"
-                        ></span>
+                <ng-container [ngSwitch]="col.type">
+                    <ng-container *ngSwitchCase="'img'">
+                        <img
+                            [src]="row['imgUrl']"
+                            alt="Imagen"
+                            class="table-img"
+                        />
                     </ng-container>
 
-                    <ng-template #standardContent>
-                        <span
-                            [matTooltip]="getLargeTooltipValue(row, col.name)"
+                    <ng-container *ngSwitchCase="'elipsis'">
+                        <button
+                            mat-icon-button
+                            [matMenuTriggerFor]="elipsisMenu"
+                            aria-label="Más opciones"
                         >
-                            {{ getTruncatedValue(row, col.name) }}
-                        </span>
-                    </ng-template>
-                </ng-template>
+                            <mat-icon color="primary">more_vert</mat-icon>
+                        </button>
+                        <mat-menu #elipsisMenu="matMenu">
+                            <ng-container
+                                *ngFor="let action of row['elipsisActions']"
+                            >
+                                <button
+                                    mat-menu-item
+                                    *ngIf="
+                                        action.condition
+                                            ? action.condition(row)
+                                            : true
+                                    "
+                                    (click)="action.action(row.id)"
+                                >
+                                    <mat-icon *ngIf="action.icon">{{
+                                        action.icon
+                                    }}</mat-icon>
+                                    <span>{{ action.label }}</span>
+                                </button>
+                            </ng-container>
+                        </mat-menu>
+                    </ng-container>
+
+                    <ng-container *ngSwitchDefault>
+                        <ng-container [ngSwitch]="col.style">
+                            <ng-container *ngSwitchCase="'status-circle'">
+                                <span
+                                    class="status-circle"
+                                    [ngClass]="{
+                                        'status-circle-active': row[col.name],
+                                        'status-circle-inactive':
+                                            !row[col.name],
+                                    }"
+                                    [matTooltip]="
+                                        getTooltipValue(row, col.name)
+                                    "
+                                ></span>
+                            </ng-container>
+                            <ng-container *ngSwitchDefault>
+                                <span
+                                    [matTooltip]="
+                                        getLargeTooltipValue(row, col.name)
+                                    "
+                                >
+                                    {{ getTruncatedValue(row, col.name) }}
+                                </span>
+                            </ng-container>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
             </td>
         </ng-container>
 
@@ -247,7 +253,7 @@
 
 <mat-paginator
     class="paginator"
-    *ngIf="paginatorConfig && !isLoading"
+    *ngIf="paginatorConfig && !isLoading && !config.hasInfiniteScroll"
     [pageSize]="paginatorConfig.pageSize"
     [pageSizeOptions]="paginatorConfig.pageSizeOptions"
     [showFirstLastButtons]="true"
