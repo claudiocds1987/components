@@ -35,11 +35,6 @@ import { SelectItem } from "../../../shared/models/select-item.model";
 import { PositionService } from "../../../shared/services/position.service";
 import { CountryService } from "../../../shared/services/country.service";
 
-interface DateRangeValue {
-    startDate: string | null;
-    endDate: string | null;
-}
-
 @Component({
     selector: "app-employee-grid-infinite",
     standalone: true,
