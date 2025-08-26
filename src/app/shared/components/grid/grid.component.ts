@@ -161,16 +161,11 @@ export class GridComponent
     }
 
     ngOnInit(): void {
-        console.log("GridComponent ngOnInit");
         this._updateFilterPredicate();
     }
 
     ngAfterViewInit(): void {
-        console.log("GridComponent ngAfterViewInit");
         this._ngZone.onStable.pipe(take(1)).subscribe((): void => {
-            console.log(
-                "GridComponent NgZone stable - Setting up sorting and scroll listener",
-            );
             this._setupSorting();
             if (!this.config.hasInfiniteScroll) {
                 this._setupPaginator();
@@ -273,7 +268,6 @@ export class GridComponent
 
     private _setupPaginator(): void {
         if (!this.paginator) {
-            console.warn("GridComponent: MatPaginator no encontrado.");
             return;
         }
         if (!this.paginatorConfig?.isServerSide) {
@@ -377,14 +371,12 @@ export class GridComponent
     }
 
     private _setupScrollListener(): void {
-        console.log("GridComponent _setupScrollListener called");
         // Limpiar cualquier listener previo para evitar duplicados
         if (
             this._scrollListener &&
             this.scrollContainer &&
             this.scrollContainer.nativeElement
         ) {
-            console.log("Removing old scroll listener");
             this.scrollContainer.nativeElement.removeEventListener(
                 "scroll",
                 this._scrollListener,
@@ -395,31 +387,15 @@ export class GridComponent
         // Verifica si config.hasInfiniteScroll es true y si scrollContainer está disponible
         if (this.config?.hasInfiniteScroll && this.scrollContainer) {
             const nativeElement = this.scrollContainer.nativeElement;
-            console.log(
-                "Attempting to add new scroll listener for infinite scroll to element:",
-                nativeElement,
-            );
             this._scrollListener = this._ngZone.runOutsideAngular(() => {
                 return () => this._onScroll();
             });
             nativeElement.addEventListener("scroll", this._scrollListener);
-            console.log("Scroll listener added successfully.");
-        } else {
-            console.log(
-                "Scroll listener NOT added: hasInfiniteScroll is false or scrollContainer is not yet available.",
-            );
-            console.log("hasInfiniteScroll:", this.config?.hasInfiniteScroll);
-            console.log("scrollContainer reference:", this.scrollContainer);
         }
     }
 
     private _onScroll(): void {
-        console.log("Scroll event fired inside grid.component._onScroll"); // Debugging log
-
         if (!this.config?.hasInfiniteScroll || this.isLoading) {
-            console.log(
-                "Scroll ignored: infinite scroll not active or loading",
-            );
             return;
         }
 
@@ -430,28 +406,13 @@ export class GridComponent
         // const scrollThreshold es el valor que define cuán cerca del final de la grilla debe estar el scroll para que se emita el evento scrolledToEnd y se cargue la siguiente tanda de datos.
         const scrollThreshold = 50;
 
-        console.log(
-            `Scroll details: scrollTop=${scrollTop}, clientHeight=${clientHeight}, scrollHeight=${scrollHeight}`,
-        );
-        console.log(
-            `Threshold condition: ${scrollTop + clientHeight} >= ${scrollHeight - scrollThreshold}`,
-        );
-
         if (scrollTop + clientHeight >= scrollHeight - scrollThreshold) {
             const totalCount = this.paginatorConfig?.totalCount ?? 0;
-            console.log(
-                `Potential end of scroll: data.length=${this.data.length}, totalCount=${totalCount}`,
-            );
 
             if (this.data.length < totalCount) {
                 this._ngZone.run(() => {
-                    console.log("Emitting scrolledToEnd event"); // Debugging log
                     this.scrolledToEnd.emit();
                 });
-            } else {
-                console.log(
-                    "Not emitting scrolledToEnd: all data loaded or totalCount is zero",
-                );
             }
         }
     }

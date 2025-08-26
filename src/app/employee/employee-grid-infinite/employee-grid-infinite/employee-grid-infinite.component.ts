@@ -82,34 +82,16 @@ export class EmployeeGridInfiniteComponent implements OnInit {
 
     // Método para manejar el evento de scroll al final
     onGridScrolledToEnd(): void {
-        console.log(
-            "Parent Log: onGridScrolledToEnd triggered at:",
-            new Date().toLocaleTimeString(),
-        );
         const totalCount =
             (this.gridConfig.hasPagination as PaginationConfig)?.totalCount ||
             0;
         const currentDataCount = this.gridData.length;
-
-        console.log(
-            `Parent Log: Current state: isLoadingGridData=${this.isLoadingGridData}, currentDataCount=${currentDataCount}, totalCount=${totalCount}`,
-        );
-
         // --- AJUSTE CRÍTICO: La comprobación debe ir ANTES de establecer isLoadingGridData a true ---
         if (this.isLoadingGridData || currentDataCount >= totalCount) {
-            console.log(
-                `Parent Log: onGridScrolledToEnd returning early. Reason: isLoadingGridData=${this.isLoadingGridData} or currentDataCount >= totalCount (${currentDataCount} >= ${totalCount})`,
-            );
-            return; // Salimos si ya estamos cargando o si ya no hay más datos.
+            return;
         }
 
-        // Si no estamos cargando y hay más datos, entonces procedemos a cargar.
         this.isLoadingGridData = true; // Establecemos a true para que el GridComponent sepa que estamos cargando.
-        console.log(
-            `Parent Log: isLoadingGridData set to TRUE in parent. Forcing detectChanges: ${this.isLoadingGridData}`,
-        );
-        // this._cdr.detectChanges(); // Forzamos la detección de cambios para actualizar el Input isLoading del hijo inmediatamente.
-
         // Incrementamos la página para la siguiente solicitud
         this._employeeFilterParams = {
             ...this._employeeFilterParams,
@@ -212,13 +194,6 @@ export class EmployeeGridInfiniteComponent implements OnInit {
     private _getEmployees(isScrolling = false): void {
         if (!isScrolling) {
             this.isLoadingGridData = true; // Para carga inicial o cambio de filtro/orden
-            console.log(
-                `Parent Log: _getEmployees (initial/filter/sort load): isLoadingGridData set to TRUE: ${this.isLoadingGridData}`,
-            );
-        } else {
-            console.log(
-                `Parent Log: _getEmployees (scrolling): isLoadingGridData is: ${this.isLoadingGridData}`,
-            );
         }
 
         this._employeeServices
@@ -226,10 +201,7 @@ export class EmployeeGridInfiniteComponent implements OnInit {
             .pipe(
                 map(this._mapPaginatedListToGridData.bind(this)),
                 finalize((): void => {
-                    this.isLoadingGridData = false; // --- CRÍTICO: Establecer a false DESPUÉS de la API ---
-                    console.log(
-                        `Parent Log: _getEmployees: API call finished, isLoadingGridData set to FALSE: ${this.isLoadingGridData}`,
-                    );
+                    this.isLoadingGridData = false;
                     this._cdr.markForCheck(); // Forzar la detección de cambios
                 }),
             )
@@ -238,23 +210,14 @@ export class EmployeeGridInfiniteComponent implements OnInit {
                     paginatedListGridData: PaginatedList<GridData>,
                 ): void => {
                     if (isScrolling) {
-                        console.log(
-                            `Parent Log: Appending new data. Old gridData length: ${this.gridData.length}, New items: ${paginatedListGridData.items.length}`,
-                        );
                         this.gridData = [
                             ...this.gridData,
                             ...paginatedListGridData.items,
                         ];
                     } else {
-                        console.log(
-                            `Parent Log: Replacing data. Old gridData length: ${this.gridData.length}, New items: ${paginatedListGridData.items.length}`,
-                        );
                         this.gridData = paginatedListGridData.items;
                     }
                     this._updateGridConfig(paginatedListGridData);
-                    console.log(
-                        `Parent Log: gridData updated. New total length: ${this.gridData.length}`,
-                    );
                 },
                 error: (error: any): void => {
                     console.error(
