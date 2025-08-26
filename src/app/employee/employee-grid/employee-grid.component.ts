@@ -273,6 +273,96 @@ export class EmployeeGridComponent implements OnInit {
         filterValues: Record<string, unknown>,
     ): Chip[] {
         const newChips: Chip[] = [];
+        // Helper para buscar un ítem por ID
+        const findDescriptionById = (
+            items: SelectItem[],
+            id: number,
+        ): string | null => {
+            const item = items.find((i: SelectItem): boolean => i.id === id);
+            return item ? item.description : null;
+        };
+
+        // Helper para generar las etiquetas de los chips de forma dinámica
+        const getChipLabel = (key: string, value: any): string => {
+            switch (key) {
+                case "position": {
+                    const positionDesc =
+                        typeof value === "number"
+                            ? findDescriptionById(this._positions, value)
+                            : null;
+                    return `Puesto: ${positionDesc || "Todos"}`;
+                }
+                case "country": {
+                    const countryDesc =
+                        typeof value === "number"
+                            ? findDescriptionById(this._countries, value)
+                            : null;
+                    return `País: ${countryDesc || "Todos"}`;
+                }
+                case "gender": {
+                    const genderDesc =
+                        typeof value === "number"
+                            ? findDescriptionById(this._genders, value)
+                            : null;
+                    return `Género: ${genderDesc || "Todos"}`;
+                }
+                case "active":
+                    return `Estado: ${value === "all" ? "Todos" : value ? "Activo" : "Inactivo"}`;
+                case "birthDateRange": {
+                    const dateRange = value as DateRangeValue;
+                    const startDate = dateRange.startDate
+                        ? DateTime.fromISO(dateRange.startDate).toFormat(
+                              "dd/MM/yyyy",
+                          )
+                        : "N/A";
+                    const endDate = dateRange.endDate
+                        ? DateTime.fromISO(dateRange.endDate).toFormat(
+                              "dd/MM/yyyy",
+                          )
+                        : "N/A";
+                    return `Fecha de Nacimiento: ${startDate} - ${endDate}`;
+                }
+                default:
+                    return `${key}: ${value}`;
+            }
+        };
+
+        for (const [key, value] of Object.entries(filterValues)) {
+            // Excluimos valores nulos, indefinidos y cadenas vacías para cualquier tipo de filtro.
+            if (value === null || value === undefined || value === "") {
+                continue;
+            }
+            // Excluimos los valores 'all' para campos de selección específicos.
+            const isSelectAll =
+                ["position", "country", "gender", "active"].includes(key) &&
+                value === "all";
+            if (isSelectAll) {
+                continue;
+            }
+            // Lógica específica para el rango de fechas
+            if (key === "birthDateRange") {
+                const dateRangeValue = value as DateRangeValue;
+                // Solo creamos el chip si al menos una de las fechas está establecida.
+                if (!dateRangeValue.startDate && !dateRangeValue.endDate) {
+                    continue; // Si ambos son nulos, saltamos la iteración.
+                }
+            }
+
+            newChips.push({
+                key,
+                label: getChipLabel(key, value),
+                value,
+                disabled: isSelectAll, // `isSelectAll` siempre será `false` en este punto.
+            });
+        }
+
+        return newChips;
+    }
+
+    /* private _mapToChipsDescription(
+        filterValues: Record<string, unknown>,
+    ): Chip[] {
+        const newChips: Chip[] = [];
 
         const specialCases = {
             position: (value: any): string => {
@@ -371,7 +461,7 @@ export class EmployeeGridComponent implements OnInit {
             }
         }
         return newChips;
-    }
+    } */
 
     private _mapEmployeesForExport(employees: Employee[]): any[] {
         return employees.map((employee: Employee): any => {
