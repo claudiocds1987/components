@@ -184,7 +184,7 @@ export class EmployeeGridComponent implements OnInit {
         if (this._employeeFilterParams.sortOrder) {
             exportParams.sortOrder = this._employeeFilterParams.sortOrder;
         }
-        // El resto de la función se mantiene igual.
+
         this._employeeServices
             .getEmployeesForExportJsonServer(exportParams)
             .pipe(
@@ -694,12 +694,9 @@ export class EmployeeGridComponent implements OnInit {
                 },
                 {
                     name: "elipsisActions", // Este es el nombre de la propiedad en GridData
-                    //label: "actions", // Opcional: la etiqueta de la columna en el encabezado
                     align: "center",
                     isSortable: false,
                     type: "elipsis", // ¡Indica que es la columna de elipsis!
-                    //hasHeaderTooltip: true,
-                    //headerIcon: "settings", // Icono para el encabezado de la columna de acciones
                 },
             ],
             hasPaginator: {
@@ -715,11 +712,11 @@ export class EmployeeGridComponent implements OnInit {
                     | "asc"
                     | "desc",
             },
-            filterByColumn: "", // Valor por defecto
-            hasInputSearch: false, // true para que aparezca
-            hasChips: true, // Para mostrar los chips de filtros aplicados
-            hasExcelDownload: true, // Valor por defecto
-            hasCreateButton: true, // Valor por defecto
+            filterByColumn: "",
+            hasInputSearch: false,
+            hasChips: true,
+            hasExcelDownload: true,
+            hasCreateButton: true,
         });
         return config;
     }

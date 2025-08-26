@@ -142,7 +142,9 @@ export class GridComponent
             if (!this.config.hasInfiniteScroll) {
                 // Para asegurar que cuando no es scroll infinito el scroll quede siempre arriba de todo
                 // al cambiar de pagina.
-                this.scrollContainer.nativeElement.scrollTop = 0;
+                if (this.scrollContainer) {
+                    this.scrollContainer.nativeElement.scrollTop = 0;
+                }
                 this._updatePaginatorForClientSide();
             }
         }

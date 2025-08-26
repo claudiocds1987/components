@@ -51,7 +51,7 @@ interface DateRangeValue {
 export class EmployeeGridInfiniteComponent implements OnInit {
     gridConfig: GridConfiguration;
     gridData: GridData[] = [];
-    employees: Employee[] = [];
+    //employees: Employee[] = [];
     isLoadingGridData = true; // El input isLoading del GridComponent
 
     private _employeeFilterParams: EmployeeFilterParams = {};
@@ -136,6 +136,34 @@ export class EmployeeGridInfiniteComponent implements OnInit {
 
     onExportToExcel(): void {
         console.log("falta desarrollar exportacion de Excel");
+        this._employeeServices
+            .getEmployeesForExportJsonServer(this._employeeFilterParams)
+            .pipe(
+                map((employees: Employee[]): any =>
+                    this._mapEmployeesForExport(employees),
+                ),
+            )
+            .subscribe({
+                next: (processedData: any[]): void => {
+                    const fileName = "Empleados.xlsx";
+                    setTimeout((): void => {
+                        this._exportService.exportToExcel(
+                            processedData,
+                            fileName,
+                        );
+                        this._spinnerService.hide();
+                        this._cdr.markForCheck();
+                    }, 1500);
+                },
+                error: (error: unknown): void => {
+                    this._spinnerService.hide();
+                    this._cdr.markForCheck();
+                    console.error(
+                        "Error al descargar el archivo de Excel:",
+                        error,
+                    );
+                },
+            });
     }
 
     onCreateEmployee(): void {
@@ -349,9 +377,6 @@ export class EmployeeGridInfiniteComponent implements OnInit {
             },
             hasPaginator: newPaginationConfig,
         };
-        console.log(
-            "Parent Log: _updateGridConfigOnSortChange: gridConfig updated.",
-        );
     }
 
     private _updateGridConfig(
@@ -378,7 +403,7 @@ export class EmployeeGridInfiniteComponent implements OnInit {
                 },
             };
         } else {
-            // --- CAMBIO CLAVE AQUÍ: Mutar hasPagination si es scroll infinito ---
+            // --- Mutar hasPaginator si es scroll infinito ---
             // Solo actualizamos las propiedades necesarias sin recrear el objeto completo si ya existe
             if (
                 this.gridConfig.hasPaginator &&
@@ -390,11 +415,8 @@ export class EmployeeGridInfiniteComponent implements OnInit {
                     pageSize;
                 (this.gridConfig.hasPaginator as PaginationConfig).pageIndex =
                     pageIndex;
-                console.log(
-                    `Parent Log: _updateGridConfig: Mutated existing hasPagination for infinite scroll. New totalCount: ${totalCount}`,
-                );
             } else {
-                // Si hasPagination no era un objeto, lo creamos
+                // Si hasPaginator no era un objeto, lo creamos
                 this.gridConfig = {
                     ...this.gridConfig,
                     hasPaginator: {
@@ -404,11 +426,7 @@ export class EmployeeGridInfiniteComponent implements OnInit {
                         pageIndex: pageIndex,
                     },
                 };
-                console.log(
-                    `Parent Log: _updateGridConfig: Created new hasPagination object for infinite scroll. New totalCount: ${totalCount}`,
-                );
             }
-
             // Actualizar OrderBy si es necesario, también mutando para evitar cambios de referencia en config si no es absolutamente necesario
             if (this.gridConfig.OrderBy) {
                 this.gridConfig.OrderBy.columnName = sortColumn;
@@ -505,25 +523,17 @@ export class EmployeeGridInfiniteComponent implements OnInit {
                 },
             ],
             hasInfiniteScroll: true,
-
-            /*  hasPagination: {
-                pageSize: this._employeeFilterParams.limit || 25,
-                pageSizeOptions: [25, 50],
-                totalCount: 0,
-                pageIndex: 0,
-                isServerSide: true,
-            }, */
             OrderBy: {
                 columnName: this._employeeFilterParams.sortColumn || "id",
                 direction: (this._employeeFilterParams.sortOrder || "asc") as
                     | "asc"
                     | "desc",
             },
-            filterByColumn: "", // Valor por defecto
-            hasInputSearch: true,
-            hasChips: true, // Para mostrar los chips de filtros aplicados
-            hasExcelDownload: true, // Valor por defecto
-            hasCreateButton: true, // Valor por defecto
+            filterByColumn: "",
+            hasInputSearch: false,
+            hasChips: false,
+            hasExcelDownload: true,
+            hasCreateButton: true,
         });
         return config;
     }
