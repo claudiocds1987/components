@@ -112,7 +112,7 @@ export class GridComponent
     @Output() exportExcel = new EventEmitter<void>();
     @Output() chipRemoved = new EventEmitter<Chip>();
     @Output() createButtonClicked = new EventEmitter<void>();
-    @Output() scrolledToEnd = new EventEmitter<void>(); // Nuevo evento para scroll infinito
+    @Output() inifinteScrolledToEnd = new EventEmitter<void>(); // Nuevo evento para scroll infinito
 
     dataSource = new MatTableDataSource<GridData>();
     private _ngZone = inject(NgZone);
@@ -151,7 +151,7 @@ export class GridComponent
             this._updateFilterPredicate();
             this._updatePaginatorAndSortConfig(changes["config"].currentValue);
             if (this.config.hasInfiniteScroll) {
-                this._setupScrollListener(); // Re-evaluar el listener de scroll
+                this._setupScrollListener();
             }
         }
 
@@ -170,12 +170,11 @@ export class GridComponent
             if (!this.config.hasInfiniteScroll) {
                 this._setupPaginator();
             }
-            this._setupScrollListener(); // Configura el listener de scroll aquí
+            this._setupScrollListener(); // Configura el listener de scroll
         });
     }
 
     ngOnDestroy(): void {
-        console.log("GridComponent ngOnDestroy - Removing scroll listener");
         if (
             this.scrollContainer &&
             this.scrollContainer.nativeElement &&
@@ -384,7 +383,6 @@ export class GridComponent
             this._scrollListener = undefined;
         }
 
-        // Verifica si config.hasInfiniteScroll es true y si scrollContainer está disponible
         if (this.config?.hasInfiniteScroll && this.scrollContainer) {
             const nativeElement = this.scrollContainer.nativeElement;
             this._scrollListener = this._ngZone.runOutsideAngular(
@@ -413,7 +411,7 @@ export class GridComponent
 
             if (this.data.length < totalCount) {
                 this._ngZone.run((): void => {
-                    this.scrolledToEnd.emit();
+                    this.inifinteScrolledToEnd.emit();
                 });
             }
         }

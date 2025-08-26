@@ -1,16 +1,3 @@
-<!-- <div class="employee-grid-infinite-container">
-    <app-grid
-        [config]="gridConfig"
-        [data]="gridData"
-        [isLoading]="isLoadingGridData"
-        (pageChange)="onGridPageChange($event)"
-        (sortChange)="onGridSortChange($event)"
-        (exportExcel)="onExportToExcel()"
-        (createButtonClicked)="onCreateEmployee()"
-    ></app-grid>
-</div>
- -->
-
 <div class="employee-grid-infinite-container">
     <app-grid
         [config]="gridConfig"
@@ -19,7 +6,7 @@
         (sortChange)="onGridSortChange($event)"
         (exportExcel)="onExportToExcel()"
         (createButtonClicked)="onCreateEmployee()"
-        (scrolledToEnd)="onGridScrolledToEnd()"
+        (inifinteScrolledToEnd)="onGridScrolledToEnd()"
         (pageChange)="onGridPageChange($event)"
     ></app-grid>
 </div>
