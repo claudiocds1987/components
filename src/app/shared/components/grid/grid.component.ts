@@ -159,7 +159,6 @@ export class GridComponent
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        console.log("GridComponent ngOnChanges", changes);
         if (changes["data"]) {
             this.dataSource.data = this.data;
             if (!this.gridConfig.hasInfiniteScroll) {
