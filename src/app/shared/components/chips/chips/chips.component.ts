@@ -8,6 +8,7 @@ import {
 } from "@angular/core";
 import { MatChipsModule } from "@angular/material/chips";
 import { MatIconModule } from "@angular/material/icon";
+import { MatTooltipModule } from "@angular/material/tooltip";
 
 // Definimos la interfaz para la estructura de los chips
 export interface Chip {
@@ -21,7 +22,7 @@ export interface Chip {
 @Component({
     selector: "app-chips",
     standalone: true,
-    imports: [CommonModule, MatChipsModule, MatIconModule],
+    imports: [CommonModule, MatChipsModule, MatIconModule, MatTooltipModule],
     templateUrl: "./chips.component.html",
     styleUrl: "./chips.component.scss",
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,6 +31,11 @@ export class ChipsComponent {
     @Input() chips: Chip[] = [];
     @Output() chipRemoved = new EventEmitter<Chip>();
     @Output() defaultChips = new EventEmitter<Chip[]>();
+
+    truncate(label: string): string {
+        const value = label.substring(label.indexOf(":") + 1);
+        return value.length > 25 ? value.substring(0, 25) + "..." : value;
+    }
 
     trackByChipKey(index: number, chip: Chip): string {
         return chip.key;

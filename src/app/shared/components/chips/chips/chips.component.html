@@ -3,12 +3,13 @@
         class="chip-row"
         *ngFor="let chip of chips; trackBy: trackByChipKey"
         [disabled]="chip.disabled"
+        [matTooltip]="chip.label"
     >
         <!-- Mostrando la etiqueta del filtro -->
         <span class="chip-label">{{
             chip.label.substring(0, chip.label.indexOf(":") + 1)
         }}</span
-        >{{ chip.label.substring(chip.label.indexOf(":") + 1) }}
+        >{{ truncate(chip.label) }}
         <mat-icon
             *ngIf="!chip.disabled"
             class="icon-remove"

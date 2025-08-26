@@ -16,7 +16,7 @@ export class HomeComponent {
         this.menuCards = [
             {
                 id: "1",
-                title: "Grilla paginada dinámica con filtro dinámico",
+                title: "Grilla paginada dinámica con filtro dinámico y chips",
                 description: "Gestión y visualización de empleados.",
                 resource: "",
                 path: "/employee-grid",

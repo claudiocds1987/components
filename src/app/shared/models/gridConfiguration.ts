@@ -121,7 +121,7 @@ export const createDefaultGridConfiguration = (
     let finalHasSorting: { isServerSide: boolean };
     if (config.hasSorting) {
         finalHasSorting = {
-            isServerSide: config.hasSorting.isServerSide ?? true, // ¡Valor por defecto cambiado a 'true' para uso profesional!
+            isServerSide: config.hasSorting.isServerSide ?? true, // Valor por defecto 'true' para que lo maneje el backend
         };
     } else {
         finalHasSorting = { isServerSide: true }; // isServerSide = true por default
