@@ -96,14 +96,37 @@ export function getPaginatorIntl(): MatPaginatorIntl {
         },
     ],
 })
+
+/************************************************************************************************* 
+El GridComponent es un componente genérico de tabla que puede funcionar en dos modos:
+    1. Modo Cliente: La grilla gestiona la paginación, el ordenamiento y el filtrado localmente.
+    2. Modo Servidor: La grilla delega la paginación y el ordenamiento al backend, y solo se encarga 
+    de emitir eventos de cambio para que el componente padre los gestione.
+El comportamiento se define a través del objeto @Input() config.
+ **************************************************************************************************/
 export class GridComponent
     implements OnInit, AfterViewInit, OnChanges, OnDestroy
 {
     @ViewChild(MatSort) sort!: MatSort;
     @ViewChild(MatPaginator) paginator!: MatPaginator;
     @ViewChild("scrollContainer") scrollContainer!: ElementRef; // Referencia al div de scroll
+    /**
+    NOTA: EN gridConfig HAY DOS PROPIEDADES IMPORTANTES:
+    
+    *  HasPaginator: Indica si la grilla debe tener paginación.
+        - 'false': No muestra paginador.
+        - 'PaginationConfig': Habilita la paginación. 'isServerSide' dentro de esta configuración
+        determina si la paginación se maneja localmente por la grilla (false) o si se delega al backend (true).
+        Si la propiedad HasPaginator no se defina por defecto es false.
 
-    @Input() config!: GridConfiguration;
+    * HasSorting: Configuración del ordenamiento (sorting).
+        - 'isServerSide: true': El ordenamiento se delega al backend. La grilla solo emite
+        el evento 'sortChange' con los parámetros de ordenamiento.
+        - 'isServerSide: false': La grilla ordena los datos localmente en el cliente.
+        Esta es la configuración por defecto si la propiedad 'hasSorting' no se define.
+    */
+
+    @Input() gridConfig!: GridConfiguration;
     @Input() data: GridData[] = [];
     @Input() isLoading = false;
     @Input() chips: Chip[] = [];
@@ -119,7 +142,7 @@ export class GridComponent
     private _scrollListener: (() => void) | undefined; // Para almacenar y limpiar el listener
 
     get columns(): Column[] {
-        return this.config?.columns || [];
+        return this.gridConfig?.columns || [];
     }
 
     get columnNames(): string[] {
@@ -127,7 +150,7 @@ export class GridComponent
     }
 
     get paginatorConfig(): PaginationConfig | null {
-        const paginator = this.config?.hasPaginator;
+        const paginator = this.gridConfig?.hasPaginator;
         // Ahora, si pagination es 'false' (boolean), esto no entrará en el 'typeof object'
         // Pero si config.hasInfiniteScroll es true, createDefaultGridConfiguration asegurará que hasPagination sea un objeto.
         return typeof paginator === "object" && paginator !== null
@@ -139,7 +162,7 @@ export class GridComponent
         console.log("GridComponent ngOnChanges", changes);
         if (changes["data"]) {
             this.dataSource.data = this.data;
-            if (!this.config.hasInfiniteScroll) {
+            if (!this.gridConfig.hasInfiniteScroll) {
                 // Para asegurar que cuando no es scroll infinito el scroll quede siempre arriba de todo
                 // al cambiar de pagina.
                 if (this.scrollContainer) {
@@ -152,7 +175,7 @@ export class GridComponent
         if (changes["config"]) {
             this._updateFilterPredicate();
             this._updatePaginatorAndSortConfig(changes["config"].currentValue);
-            if (this.config.hasInfiniteScroll) {
+            if (this.gridConfig.hasInfiniteScroll) {
                 this._setupScrollListener();
             }
         }
@@ -169,7 +192,7 @@ export class GridComponent
     ngAfterViewInit(): void {
         this._ngZone.onStable.pipe(take(1)).subscribe((): void => {
             this._setupSorting();
-            if (!this.config.hasInfiniteScroll) {
+            if (!this.gridConfig.hasInfiniteScroll) {
                 this._setupPaginator();
             }
             this._setupScrollListener(); // Configura el listener de scroll
@@ -256,7 +279,8 @@ export class GridComponent
         if (!this.sort) {
             return;
         }
-        if (!this.config?.hasSorting?.isServerSide) {
+        // Si el ordenamiento no es del lado del servidor, se delega al MatTableDataSource para que lo haga localmente.
+        if (!this.gridConfig?.hasSorting?.isServerSide) {
             this.dataSource.sort = this.sort;
             this.sort.sortChange.subscribe((): void => {
                 this.dataSource.data = this.dataSource.sortData(
@@ -357,8 +381,8 @@ export class GridComponent
                 return true;
             }
 
-            if (this.config?.filterByColumn) {
-                const value = data[this.config.filterByColumn];
+            if (this.gridConfig?.filterByColumn) {
+                const value = data[this.gridConfig.filterByColumn];
                 const stringValue = value?.toString() || "";
                 return stringValue.toLowerCase().includes(search);
             }
@@ -385,7 +409,7 @@ export class GridComponent
             this._scrollListener = undefined;
         }
 
-        if (this.config?.hasInfiniteScroll && this.scrollContainer) {
+        if (this.gridConfig?.hasInfiniteScroll && this.scrollContainer) {
             const nativeElement = this.scrollContainer.nativeElement;
             this._scrollListener = this._ngZone.runOutsideAngular(
                 (): (() => void) => {
@@ -397,7 +421,7 @@ export class GridComponent
     }
 
     private _onScroll(): void {
-        if (!this.config?.hasInfiniteScroll || this.isLoading) {
+        if (!this.gridConfig?.hasInfiniteScroll || this.isLoading) {
             return;
         }
 

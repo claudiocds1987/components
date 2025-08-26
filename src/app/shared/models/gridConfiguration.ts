@@ -55,6 +55,7 @@ export type GridData = Record<
 
 export interface GridConfiguration {
     columns: Column[];
+    /* hasPaginator.isServerSide: Le dice al GridComponent si debe usar el MatPaginator para controlar la paginación localmente o si debe limitarse a mostrar los datos que recibe y notificar al componente padre cuando se solicita una nueva página.*/
     hasPaginator?: PaginationConfig | false; // "false" porque puede no tener paginacion la grilla
     hasInputSearch?: boolean; // Para mostrar o no el input search arriba de la grilla
     filterByColumn?: string; // indica a el input search en que columna hacer la búsqueda
@@ -62,6 +63,7 @@ export interface GridConfiguration {
     hasExcelDownload?: boolean; // Muestra o no el boton para descargar el excel
     hasCreateButton?: boolean; // Muestra o no el botón de Crear
     OrderBy: OrderBy;
+    /* hasSorting.isServerSide: Le indica al GridComponent si debe reordenar la dataSource internamente (ordenamiento del cliente) o si debe dejar los datos como están y solo emitir un evento (sortChange) para que el componente padre solicite los datos reordenados al servidor.*/
     hasSorting?: {
         isServerSide: boolean;
     };

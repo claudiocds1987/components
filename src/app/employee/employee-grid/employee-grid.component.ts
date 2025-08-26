@@ -495,6 +495,7 @@ export class EmployeeGridComponent implements OnInit {
                     elipsisActions: this._setElipsisActions(employee),
                     name: employee.name,
                     surname: employee.surname,
+                    birthDate: employee.birthDate,
                     active: employee.active,
                     position: employee.position?.description,
                     gender: employee.gender?.description,
@@ -704,13 +705,18 @@ export class EmployeeGridComponent implements OnInit {
                 pageSizeOptions: [25, 50],
                 totalCount: 0,
                 pageIndex: 0,
-                isServerSide: true,
+                isServerSide: true, // Indico a la grilla que la paginación es controlada por el backend. La grilla solo emite el evento 'pageChange'.
             },
             OrderBy: {
                 columnName: this._employeeFilterParams.sortColumn || "id",
                 direction: (this._employeeFilterParams.sortOrder || "asc") as
                     | "asc"
                     | "desc",
+            },
+            hasSorting: {
+                // Indico a la grilla que el ordenamiento lo maneja el backend. La grilla solo emite el evento 'sortChange'.
+                // La grilla simplemente muestra los datos en el orden exacto en que los recibe del servidor.
+                isServerSide: true,
             },
             filterByColumn: "",
             hasInputSearch: false,

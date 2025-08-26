@@ -22,7 +22,7 @@ import { EmployeeService } from "../../../shared/services/employee.service";
 import { EmployeeFilterParams } from "../../../shared/models/employee-filter-params.model";
 import { PaginatedList } from "../../../shared/models/paginated-list.model";
 import { Employee } from "../../../shared/models/employee.model";
-import { catchError, finalize, forkJoin, map, Observable, of } from "rxjs";
+import { catchError, finalize, map, Observable, of } from "rxjs";
 import { HttpClientModule } from "@angular/common/http";
 import { PageEvent } from "@angular/material/paginator";
 import { Sort } from "@angular/material/sort";
@@ -51,8 +51,7 @@ interface DateRangeValue {
 export class EmployeeGridInfiniteComponent implements OnInit {
     gridConfig: GridConfiguration;
     gridData: GridData[] = [];
-    //employees: Employee[] = [];
-    isLoadingGridData = true; // El input isLoading del GridComponent
+    isLoadingGridData = true;
 
     private _employeeFilterParams: EmployeeFilterParams = {};
     private _employeeServices = inject(EmployeeService);
@@ -84,12 +83,12 @@ export class EmployeeGridInfiniteComponent implements OnInit {
         const totalCount =
             (this.gridConfig.hasPaginator as PaginationConfig)?.totalCount || 0;
         const currentDataCount = this.gridData.length;
-        // --- AJUSTE CRÍTICO: La comprobación debe ir ANTES de establecer isLoadingGridData a true ---
+
         if (this.isLoadingGridData || currentDataCount >= totalCount) {
             return;
         }
 
-        this.isLoadingGridData = true; // Establecemos a true para que el GridComponent sepa que estamos cargando.
+        this.isLoadingGridData = true;
         // Incrementamos la página para la siguiente solicitud
         this._employeeFilterParams = {
             ...this._employeeFilterParams,
@@ -528,6 +527,11 @@ export class EmployeeGridInfiniteComponent implements OnInit {
                 direction: (this._employeeFilterParams.sortOrder || "asc") as
                     | "asc"
                     | "desc",
+            },
+            hasSorting: {
+                // Indico a la grilla que el ordenamiento lo maneja el backend. La grilla solo emite el evento 'sortChange'.
+                // La grilla simplemente muestra los datos en el orden exacto en que los recibe del servidor.
+                isServerSide: true,
             },
             filterByColumn: "",
             hasInputSearch: false,

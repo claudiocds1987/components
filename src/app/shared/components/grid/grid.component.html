@@ -1,5 +1,5 @@
 <div
-    *ngIf="config?.hasInputSearch && isLoading"
+    *ngIf="gridConfig?.hasInputSearch && isLoading"
     class="skeleton-search-container"
 >
     <div class="skeleton-search-label">Buscar</div>
@@ -23,7 +23,7 @@
 <!-- EL INPUT SEARCH SOLO SE MUESTRA CUANDO LA GRILLA NO ES PAGINADA -->
 <ng-container
     [ngTemplateOutlet]="
-        !config.hasPaginator ? searchInputTemplate : noSearchInputTemplate
+        !gridConfig.hasPaginator ? searchInputTemplate : noSearchInputTemplate
     "
 ></ng-container>
 
@@ -32,20 +32,20 @@
         <mat-form-field
             appearance="outline"
             class="search-field"
-            *ngIf="config.hasInputSearch"
+            *ngIf="gridConfig.hasInputSearch"
         >
             <mat-label>Buscar</mat-label>
             <input
                 matInput
                 (input)="applyFilter($event)"
-                [placeholder]="config.filterByColumn || 'Buscar todo'"
+                [placeholder]="gridConfig.filterByColumn || 'Buscar todo'"
             />
         </mat-form-field>
 
         <div class="action-buttons-container">
             <div class="buttons-actions">
                 <button
-                    *ngIf="config.hasCreateButton"
+                    *ngIf="gridConfig.hasCreateButton"
                     mat-stroked-button
                     color="primary"
                     (click)="create()"
@@ -54,7 +54,7 @@
                     Crear
                 </button>
                 <button
-                    *ngIf="config.hasExcelDownload"
+                    *ngIf="gridConfig.hasExcelDownload"
                     class="button-action"
                     mat-icon-button
                     color="primary"
@@ -71,14 +71,14 @@
 <ng-template #noSearchInputTemplate>
     <div class="chips-and-buttons-container" *ngIf="!isLoading">
         <app-chips
-            *ngIf="config.hasChips"
+            *ngIf="gridConfig.hasChips"
             [chips]="chips"
             (chipRemoved)="onChipRemoved($event)"
         ></app-chips>
 
         <div class="buttons-actions">
             <button
-                *ngIf="config.hasCreateButton"
+                *ngIf="gridConfig.hasCreateButton"
                 mat-stroked-button
                 color="primary"
                 (click)="create()"
@@ -87,7 +87,7 @@
                 Crear
             </button>
             <button
-                *ngIf="config.hasExcelDownload"
+                *ngIf="gridConfig.hasExcelDownload"
                 class="button-action"
                 mat-icon-button
                 color="primary"
@@ -105,8 +105,8 @@
         mat-table
         [dataSource]="dataSource"
         matSort
-        [matSortActive]="config.OrderBy.columnName"
-        [matSortDirection]="config.OrderBy.direction"
+        [matSortActive]="gridConfig.OrderBy.columnName"
+        [matSortDirection]="gridConfig.OrderBy.direction"
         (matSortChange)="onSortChange($event)"
         class="table"
         [class.table-hidden]="isLoading || dataSource.data.length === 0"
@@ -253,7 +253,7 @@
 
 <mat-paginator
     class="paginator"
-    *ngIf="paginatorConfig && !isLoading && !config.hasInfiniteScroll"
+    *ngIf="paginatorConfig && !isLoading && !gridConfig.hasInfiniteScroll"
     [pageSize]="paginatorConfig.pageSize"
     [pageSizeOptions]="paginatorConfig.pageSizeOptions"
     [showFirstLastButtons]="true"
