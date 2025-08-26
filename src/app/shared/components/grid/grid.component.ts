@@ -387,9 +387,11 @@ export class GridComponent
         // Verifica si config.hasInfiniteScroll es true y si scrollContainer está disponible
         if (this.config?.hasInfiniteScroll && this.scrollContainer) {
             const nativeElement = this.scrollContainer.nativeElement;
-            this._scrollListener = this._ngZone.runOutsideAngular(() => {
-                return () => this._onScroll();
-            });
+            this._scrollListener = this._ngZone.runOutsideAngular(
+                (): (() => void) => {
+                    return (): void => this._onScroll();
+                },
+            );
             nativeElement.addEventListener("scroll", this._scrollListener);
         }
     }
@@ -410,7 +412,7 @@ export class GridComponent
             const totalCount = this.paginatorConfig?.totalCount ?? 0;
 
             if (this.data.length < totalCount) {
-                this._ngZone.run(() => {
+                this._ngZone.run((): void => {
                     this.scrolledToEnd.emit();
                 });
             }
