@@ -23,7 +23,7 @@
 <!-- EL INPUT SEARCH SOLO SE MUESTRA CUANDO LA GRILLA NO ES PAGINADA -->
 <ng-container
     [ngTemplateOutlet]="
-        !config.hasPagination ? searchInputTemplate : noSearchInputTemplate
+        !config.hasPaginator ? searchInputTemplate : noSearchInputTemplate
     "
 ></ng-container>
 

@@ -133,8 +133,8 @@ export class EmployeeGridComponent implements OnInit {
             Object.assign(this._employeeFilterParams, filterParamsForBackend);
         }
         // Lógica de paginación y obtención de datos que se aplica en ambos casos
-        if (this.gridConfig.hasPagination) {
-            this.gridConfig.hasPagination.pageIndex = 0;
+        if (this.gridConfig.hasPaginator) {
+            this.gridConfig.hasPaginator.pageIndex = 0;
         }
         this._getEmployees();
     }
@@ -583,7 +583,7 @@ export class EmployeeGridComponent implements OnInit {
 
     private _updateGridConfigOnSortChange(sortEvent: Sort): void {
         const basePaginationConfig =
-            this.gridConfig.hasPagination || this._defaultPaginatorOptions;
+            this.gridConfig.hasPaginator || this._defaultPaginatorOptions;
 
         this.gridConfig = {
             ...this.gridConfig,
@@ -591,7 +591,7 @@ export class EmployeeGridComponent implements OnInit {
                 columnName: sortEvent.active,
                 direction: sortEvent.direction,
             },
-            hasPagination: {
+            hasPaginator: {
                 ...basePaginationConfig,
                 pageIndex: 0,
             },
@@ -605,7 +605,7 @@ export class EmployeeGridComponent implements OnInit {
         const { sortColumn = "", sortOrder = "" } = this._employeeFilterParams;
         // Se crea el objeto de paginación
         const paginationConfig = {
-            ...(this.gridConfig.hasPagination || this._defaultPaginatorOptions),
+            ...(this.gridConfig.hasPaginator || this._defaultPaginatorOptions),
             totalCount,
             pageSize,
             pageIndex,
@@ -618,7 +618,7 @@ export class EmployeeGridComponent implements OnInit {
         // Actualiza la configuración de la grilla con los nuevos datos cambiando la referencia ...this.gridConfig
         this.gridConfig = {
             ...this.gridConfig,
-            hasPagination: paginationConfig,
+            hasPaginator: paginationConfig,
             OrderBy: orderByConfig,
         };
     }
@@ -702,7 +702,7 @@ export class EmployeeGridComponent implements OnInit {
                     //headerIcon: "settings", // Icono para el encabezado de la columna de acciones
                 },
             ],
-            hasPagination: {
+            hasPaginator: {
                 pageSize: this._employeeFilterParams.limit || 25,
                 pageSizeOptions: [25, 50],
                 totalCount: 0,

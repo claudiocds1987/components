@@ -127,11 +127,11 @@ export class GridComponent
     }
 
     get paginatorConfig(): PaginationConfig | null {
-        const pagination = this.config?.hasPagination;
+        const paginator = this.config?.hasPaginator;
         // Ahora, si pagination es 'false' (boolean), esto no entrará en el 'typeof object'
         // Pero si config.hasInfiniteScroll es true, createDefaultGridConfiguration asegurará que hasPagination sea un objeto.
-        return typeof pagination === "object" && pagination !== null
-            ? pagination
+        return typeof paginator === "object" && paginator !== null
+            ? paginator
             : null;
     }
 
@@ -297,19 +297,19 @@ export class GridComponent
             this.paginatorConfig?.isServerSide
         ) {
             const newTotalCount =
-                newConfig.hasPagination &&
-                typeof newConfig.hasPagination === "object"
-                    ? (newConfig.hasPagination.totalCount ?? 0)
+                newConfig.hasPaginator &&
+                typeof newConfig.hasPaginator === "object"
+                    ? (newConfig.hasPaginator.totalCount ?? 0)
                     : 0;
             const newPageIndex =
-                newConfig.hasPagination &&
-                typeof newConfig.hasPagination === "object"
-                    ? (newConfig.hasPagination.pageIndex ?? 0)
+                newConfig.hasPaginator &&
+                typeof newConfig.hasPaginator === "object"
+                    ? (newConfig.hasPaginator.pageIndex ?? 0)
                     : 0;
             const newPageSize =
-                newConfig.hasPagination &&
-                typeof newConfig.hasPagination === "object"
-                    ? (newConfig.hasPagination.pageSize ?? 25)
+                newConfig.hasPaginator &&
+                typeof newConfig.hasPaginator === "object"
+                    ? (newConfig.hasPaginator.pageSize ?? 25)
                     : 25;
 
             this._updatePaginatorProperties(

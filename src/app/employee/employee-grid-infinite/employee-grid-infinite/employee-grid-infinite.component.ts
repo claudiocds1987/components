@@ -82,8 +82,7 @@ export class EmployeeGridInfiniteComponent implements OnInit {
     // Método para manejar el evento de scroll al final
     onInfiniteGridScroll(): void {
         const totalCount =
-            (this.gridConfig.hasPagination as PaginationConfig)?.totalCount ||
-            0;
+            (this.gridConfig.hasPaginator as PaginationConfig)?.totalCount || 0;
         const currentDataCount = this.gridData.length;
         // --- AJUSTE CRÍTICO: La comprobación debe ir ANTES de establecer isLoadingGridData a true ---
         if (this.isLoadingGridData || currentDataCount >= totalCount) {
@@ -328,16 +327,16 @@ export class EmployeeGridInfiniteComponent implements OnInit {
             ? {
                   ...this._defaultPaginatorOptions,
                   totalCount:
-                      (this.gridConfig.hasPagination as PaginationConfig)
+                      (this.gridConfig.hasPaginator as PaginationConfig)
                           ?.totalCount || 0,
                   pageIndex: 0,
                   pageSize:
-                      (this.gridConfig.hasPagination as PaginationConfig)
+                      (this.gridConfig.hasPaginator as PaginationConfig)
                           ?.pageSize || 25,
                   isServerSide: true,
               }
             : {
-                  ...(this.gridConfig.hasPagination ||
+                  ...(this.gridConfig.hasPaginator ||
                       this._defaultPaginatorOptions),
                   pageIndex: 0,
               };
@@ -348,7 +347,7 @@ export class EmployeeGridInfiniteComponent implements OnInit {
                 columnName: sortEvent.active,
                 direction: sortEvent.direction,
             },
-            hasPagination: newPaginationConfig,
+            hasPaginator: newPaginationConfig,
         };
         console.log(
             "Parent Log: _updateGridConfigOnSortChange: gridConfig updated.",
@@ -364,7 +363,7 @@ export class EmployeeGridInfiniteComponent implements OnInit {
         if (!this.gridConfig.hasInfiniteScroll) {
             // Lógica existente para paginación normal
             const paginationConfig = {
-                ...(this.gridConfig.hasPagination ||
+                ...(this.gridConfig.hasPaginator ||
                     this._defaultPaginatorOptions),
                 totalCount,
                 pageSize,
@@ -372,7 +371,7 @@ export class EmployeeGridInfiniteComponent implements OnInit {
             };
             this.gridConfig = {
                 ...this.gridConfig,
-                hasPagination: paginationConfig,
+                hasPaginator: paginationConfig,
                 OrderBy: {
                     columnName: sortColumn,
                     direction: sortOrder as "asc" | "desc" | "",
@@ -382,14 +381,14 @@ export class EmployeeGridInfiniteComponent implements OnInit {
             // --- CAMBIO CLAVE AQUÍ: Mutar hasPagination si es scroll infinito ---
             // Solo actualizamos las propiedades necesarias sin recrear el objeto completo si ya existe
             if (
-                this.gridConfig.hasPagination &&
-                typeof this.gridConfig.hasPagination === "object"
+                this.gridConfig.hasPaginator &&
+                typeof this.gridConfig.hasPaginator === "object"
             ) {
-                (this.gridConfig.hasPagination as PaginationConfig).totalCount =
+                (this.gridConfig.hasPaginator as PaginationConfig).totalCount =
                     totalCount;
-                (this.gridConfig.hasPagination as PaginationConfig).pageSize =
+                (this.gridConfig.hasPaginator as PaginationConfig).pageSize =
                     pageSize;
-                (this.gridConfig.hasPagination as PaginationConfig).pageIndex =
+                (this.gridConfig.hasPaginator as PaginationConfig).pageIndex =
                     pageIndex;
                 console.log(
                     `Parent Log: _updateGridConfig: Mutated existing hasPagination for infinite scroll. New totalCount: ${totalCount}`,
@@ -398,7 +397,7 @@ export class EmployeeGridInfiniteComponent implements OnInit {
                 // Si hasPagination no era un objeto, lo creamos
                 this.gridConfig = {
                     ...this.gridConfig,
-                    hasPagination: {
+                    hasPaginator: {
                         ...this._defaultPaginatorOptions,
                         totalCount: totalCount,
                         pageSize: pageSize,
