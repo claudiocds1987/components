@@ -242,7 +242,8 @@ export class EmployeeGridComponent implements OnInit {
             resetStrategies[fieldName as keyof typeof resetStrategies] ||
             resetStrategies.default;
         resetAction();
-
+        // Al quitar un chip deshabilitamos con markAsPristine() el boton Aplicar filtro de grid-filter.component
+        this.gridFilterForm.markAsPristine();
         this.applyFilter(this.gridFilterForm.value);
     }
 
