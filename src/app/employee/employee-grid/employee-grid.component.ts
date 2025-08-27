@@ -30,11 +30,13 @@ import { Sort } from "@angular/material/sort";
 import { ExportService } from "../../shared/services/export.service";
 import { SpinnerService } from "../../shared/services/spinner.service";
 import { Chip } from "../../shared/components/chips/chips/chips.component";
-import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatDialogModule } from "@angular/material/dialog";
 
 import { SelectItem } from "../../shared/models/select-item.model";
 import { PositionService } from "../../shared/services/position.service";
 import { CountryService } from "../../shared/services/country.service";
+import { BreadcrumbComponent } from "../../shared/components/breadcrumb/breadcrumb.component";
+import { BreadcrumbService } from "../../shared/services/breadcrumb.service";
 
 interface DateRangeValue {
     startDate: string | null;
@@ -50,6 +52,7 @@ interface DateRangeValue {
         GridComponent,
         GridFilterComponent,
         MatDialogModule,
+        BreadcrumbComponent,
     ],
     templateUrl: "./employee-grid.component.html",
     styleUrl: "./employee-grid.component.scss",
@@ -89,7 +92,7 @@ export class EmployeeGridComponent implements OnInit {
     private _exportService = inject(ExportService);
     private _cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
     private _spinnerService = inject(SpinnerService);
-    private _dialog: MatDialog = inject(MatDialog);
+    private _breadcrumbService = inject(BreadcrumbService);
 
     private _defaultPaginatorOptions: PaginationConfig = {
         pageIndex: 0,
@@ -100,6 +103,7 @@ export class EmployeeGridComponent implements OnInit {
     };
 
     constructor() {
+        this._setBreadcrumb();
         this.gridConfig = this._setGridConfiguration(); // seteando la grilla para grid.component
         this._setGridFilterConfig(); // se definen los tipos de inputs(text, date, select) para grod-filter.component
         this._setGridFilterForm(); // se define el formulario en funcion de setGridFilterConfig()
@@ -908,5 +912,13 @@ export class EmployeeGridComponent implements OnInit {
                 );
             }
         });
+    }
+
+    private _setBreadcrumb(): void {
+        this._breadcrumbService.setBreadcrumbs([
+            { label: "Inicio", path: "/" },
+            { label: "Empleados", path: "/employees" },
+            // { label: employeeName, path: `/employees/${this.employeeId}` }
+        ]);
     }
 }
