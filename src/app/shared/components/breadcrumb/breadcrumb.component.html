@@ -1,11 +1,16 @@
 <nav>
-    <div>
+    <div class="breadcrumb">
         <ng-container *ngFor="let breadcrumb of breadcrumbs; let last = last">
-            <a *ngIf="!last" [routerLink]="breadcrumb.path">{{
-                breadcrumb.label
-            }}</a>
-            <span *ngIf="last">{{ breadcrumb.label }}</span>
-            <span *ngIf="!last"> / </span>
+            <a
+                *ngIf="!last"
+                [routerLink]="breadcrumb.path"
+                class="breadcrumb-link"
+                >{{ breadcrumb.label }}</a
+            >
+            <span *ngIf="last" class="breadcrumb-text">
+                {{ breadcrumb.label }}
+            </span>
+            <span *ngIf="!last" class="breadcrumb-divider"> / </span>
         </ng-container>
     </div>
 </nav>

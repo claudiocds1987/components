@@ -921,7 +921,7 @@ export class EmployeeGridComponent implements OnInit {
     private _setBreadcrumb(): void {
         this._breadcrumbService.setBreadcrumbs([
             { label: "Inicio", path: "/" },
-            { label: "Empleados", path: "/employees" },
+            { label: "Grilla Full", path: "/employees" },
             // { label: employeeName, path: `/employees/${this.employeeId}` }
         ]);
     }

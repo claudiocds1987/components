@@ -7,11 +7,12 @@ import {
     BreadcrumbService,
     Breadcrumb,
 } from "../../services/breadcrumb.service";
+import { MatIcon } from "@angular/material/icon";
 
 @Component({
     selector: "app-breadcrumb",
     standalone: true,
-    imports: [NgForOf, AsyncPipe, NgIf, RouterLink],
+    imports: [NgForOf, AsyncPipe, NgIf, RouterLink, MatIcon],
     templateUrl: "./breadcrumb.component.html",
     styleUrl: "./breadcrumb.component.scss",
 })

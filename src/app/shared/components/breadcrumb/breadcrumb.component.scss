@@ -1,0 +1,28 @@
+@import "../../../shared/styles/colors.scss";
+.breadcrumb {
+    color: $primary-material-color;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 15px 0;
+}
+
+.breadcrumb-link {
+    font-weight: bold;
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.breadcrumb-text {
+    font-weight: bold;
+    color: $primary-material-color;
+}
+
+.breadcrumb-divider {
+    font-weight: bold;
+    color: $primary-material-color;
+}

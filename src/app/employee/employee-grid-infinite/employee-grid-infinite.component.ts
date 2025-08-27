@@ -34,11 +34,19 @@ import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { SelectItem } from "../../shared/models/select-item.model";
 import { PositionService } from "../../shared/services/position.service";
 import { CountryService } from "../../shared/services/country.service";
+import { BreadcrumbComponent } from "../../shared/components/breadcrumb/breadcrumb.component";
+import { BreadcrumbService } from "../../shared/services/breadcrumb.service";
 
 @Component({
     selector: "app-employee-grid-infinite",
     standalone: true,
-    imports: [CommonModule, HttpClientModule, GridComponent, MatDialogModule],
+    imports: [
+        CommonModule,
+        HttpClientModule,
+        GridComponent,
+        MatDialogModule,
+        BreadcrumbComponent,
+    ],
     templateUrl: "./employee-grid-infinite.component.html",
     styleUrl: "./employee-grid-infinite.component.scss",
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,6 +63,7 @@ export class EmployeeGridInfiniteComponent implements OnInit {
     private _exportService = inject(ExportService);
     private _cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
     private _spinnerService = inject(SpinnerService);
+    private _breadcrumbService = inject(BreadcrumbService);
     private _dialog: MatDialog = inject(MatDialog);
 
     private _defaultPaginatorOptions: PaginationConfig = {
@@ -66,6 +75,7 @@ export class EmployeeGridInfiniteComponent implements OnInit {
     };
 
     constructor() {
+        this._setBreadcrumb();
         this.gridConfig = this._setGridConfiguration(); // seteando la grilla para grid.component
     }
 
@@ -530,5 +540,13 @@ export class EmployeeGridInfiniteComponent implements OnInit {
             hasCreateButton: true,
         });
         return config;
+    }
+
+    private _setBreadcrumb(): void {
+        this._breadcrumbService.setBreadcrumbs([
+            { label: "Inicio", path: "/" },
+            { label: "Grilla Infinita", path: "/employees" },
+            // { label: employeeName, path: `/employees/${this.employeeId}` }
+        ]);
     }
 }
