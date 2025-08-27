@@ -4,9 +4,9 @@
  lo que hace que tus componentes sean más reutilizables y previene conflictos de estilos.
 */
 :host {
-    flex: 1; // Permite que employee-grid ocupe todo el espacio disponible del padre
-    display: flex; // Hace que el host sea un contenedor flex
-    min-height: 0; // Permite que el contenido se reduzca si es necesario
+    //flex: 1; // Permite que employee-grid ocupe todo el espacio disponible del padre
+    //display: flex; // Hace que el host sea un contenedor flex
+    //min-height: 0; // Permite que el contenido se reduzca si es necesario
 }
 
 .employee-grid-container {
@@ -19,6 +19,7 @@
     flex: 1; // Ocupa todo el espacio disponible del host
     min-height: 0; // Permite que el grid se reduzca si es necesario
     align-items: stretch; // Para que ambos elementos tengan la misma altura
+    height: 500px;
 
     // Estilo para el componente de chips para que ocupe todas las columnas
     app-chips {

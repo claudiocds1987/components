@@ -26,9 +26,6 @@ body,
 
 .main-content {
     margin-top: 64px; /* Espacio para el banner fijo */
-    height: calc(100vh - 64px); /* Altura total menos la altura del banner */
+    //height: calc(100vh - 64px); /* Altura total menos la altura del banner */
     padding: 20px;
-    box-sizing: border-box; /* Incluye padding en el cálculo de altura */
-    display: flex; /* Hace que el contenido principal sea un contenedor flex */
-    flex-direction: column; /* Organiza el contenido verticalmente */
 }

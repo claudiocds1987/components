@@ -277,6 +277,7 @@ export class EmployeeGridComponent implements OnInit {
         filterValues: Record<string, unknown>,
     ): Chip[] {
         const newChips: Chip[] = [];
+
         // Helper para buscar un ítem por ID
         const findDescriptionById = (
             items: SelectItem[],
@@ -285,6 +286,7 @@ export class EmployeeGridComponent implements OnInit {
             const item = items.find((i: SelectItem): boolean => i.id === id);
             return item ? item.description : null;
         };
+
         // Helper para generar las etiquetas de los chips de forma dinámica
         const getChipLabel = (key: string, value: any): string => {
             switch (key) {
@@ -335,33 +337,35 @@ export class EmployeeGridComponent implements OnInit {
             if (value === null || value === undefined || value === "") {
                 continue;
             }
-            // Excluimos los valores 'all' para campos de selección específicos.
-            const isDisabled =
-                ["position", "country", "gender", "active"].includes(key) &&
-                value === "all";
-            if (isDisabled) {
-                continue;
-            }
+
+            // Se elimina la condición que excluía los valores 'all'. Ahora se generan los chips de "Todos".
+            const shouldCreateChip =
+                value !== "all" ||
+                ["position", "country", "gender", "active"].includes(key);
+
+            // Los chips de "Todos" ahora están deshabilitados.
+            const isDisabled = value === "all";
+
             // Lógica específica para el rango de fechas
             if (key === "birthDateRange") {
                 const dateRangeValue = value as DateRangeValue;
-                // Solo creamos el chip si al menos una de las fechas está establecida.
                 if (!dateRangeValue.startDate && !dateRangeValue.endDate) {
                     continue; // Si ambos son nulos, saltamos la iteración.
                 }
             }
 
-            newChips.push({
-                key,
-                label: getChipLabel(key, value),
-                value,
-                disabled: isDisabled,
-            });
+            if (shouldCreateChip) {
+                newChips.push({
+                    key,
+                    label: getChipLabel(key, value),
+                    value,
+                    disabled: isDisabled, // Los chips de 'Todos' están deshabilitados
+                });
+            }
         }
 
         return newChips;
     }
-
     /* private _mapToChipsDescription(
         filterValues: Record<string, unknown>,
     ): Chip[] {
