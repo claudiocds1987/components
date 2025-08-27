@@ -31,7 +31,7 @@ import { ExportService } from "../../shared/services/export.service";
 import { SpinnerService } from "../../shared/services/spinner.service";
 import { Chip } from "../../shared/components/chips/chips/chips.component";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
-import { EmployeeFormComponent } from "../employee-form/employee-form/employee-form.component";
+
 import { SelectItem } from "../../shared/models/select-item.model";
 import { PositionService } from "../../shared/services/position.service";
 import { CountryService } from "../../shared/services/country.service";
@@ -248,7 +248,7 @@ export class EmployeeGridComponent implements OnInit {
     }
 
     onCreateEmployee(): void {
-        const dialogRef = this._dialog.open(EmployeeFormComponent, {
+        /* const dialogRef = this._dialog.open(EmployeeFormComponent, {
             width: "500px",
             disableClose: true, // para evitar que el modal se cierre al hacer clic fuera
         });
@@ -262,7 +262,7 @@ export class EmployeeGridComponent implements OnInit {
             } else {
                 console.log("Formulario de empleado cancelado.");
             }
-        });
+        }); */
     }
 
     private _createChips(filterValues: Record<string, unknown>): void {
@@ -281,7 +281,6 @@ export class EmployeeGridComponent implements OnInit {
             const item = items.find((i: SelectItem): boolean => i.id === id);
             return item ? item.description : null;
         };
-
         // Helper para generar las etiquetas de los chips de forma dinámica
         const getChipLabel = (key: string, value: any): string => {
             switch (key) {
@@ -333,10 +332,10 @@ export class EmployeeGridComponent implements OnInit {
                 continue;
             }
             // Excluimos los valores 'all' para campos de selección específicos.
-            const isSelectAll =
+            const isDisabled =
                 ["position", "country", "gender", "active"].includes(key) &&
                 value === "all";
-            if (isSelectAll) {
+            if (isDisabled) {
                 continue;
             }
             // Lógica específica para el rango de fechas
@@ -352,7 +351,7 @@ export class EmployeeGridComponent implements OnInit {
                 key,
                 label: getChipLabel(key, value),
                 value,
-                disabled: isSelectAll, // `isSelectAll` siempre será `false` en este punto.
+                disabled: isDisabled,
             });
         }
 

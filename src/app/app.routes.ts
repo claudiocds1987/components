@@ -1,6 +1,6 @@
 import { Routes } from "@angular/router";
 import { EmployeeGridComponent } from "./employee/employee-grid/employee-grid.component";
-import { EmployeeGridInfiniteComponent } from "./employee/employee-grid-infinite/employee-grid-infinite/employee-grid-infinite.component";
+import { EmployeeGridInfiniteComponent } from "./employee/employee-grid-infinite/employee-grid-infinite.component";
 import { HomeComponent } from "./home/home/home.component";
 
 export const routes: Routes = [

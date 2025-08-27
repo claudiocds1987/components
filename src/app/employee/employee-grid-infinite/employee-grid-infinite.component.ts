@@ -13,27 +13,27 @@ import {
     GridData,
     PaginationConfig,
     ElipsisAction,
-} from "../../../shared/models/gridConfiguration";
-import { GridComponent } from "../../../shared/components/grid/grid.component";
+} from "../../shared/models/gridConfiguration";
+import { GridComponent } from "../../shared/components/grid/grid.component";
 
 import { CommonModule } from "@angular/common";
 import { DateTime } from "luxon";
-import { EmployeeService } from "../../../shared/services/employee.service";
-import { EmployeeFilterParams } from "../../../shared/models/employee-filter-params.model";
-import { PaginatedList } from "../../../shared/models/paginated-list.model";
-import { Employee } from "../../../shared/models/employee.model";
+import { EmployeeService } from "../../shared/services/employee.service";
+import { EmployeeFilterParams } from "../../shared/models/employee-filter-params.model";
+import { PaginatedList } from "../../shared/models/paginated-list.model";
+import { Employee } from "../../shared/models/employee.model";
 import { catchError, finalize, map, Observable, of } from "rxjs";
 import { HttpClientModule } from "@angular/common/http";
 import { PageEvent } from "@angular/material/paginator";
 import { Sort } from "@angular/material/sort";
-import { ExportService } from "../../../shared/services/export.service";
-import { SpinnerService } from "../../../shared/services/spinner.service";
+import { ExportService } from "../../shared/services/export.service";
+import { SpinnerService } from "../../shared/services/spinner.service";
 
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
-import { EmployeeFormComponent } from "../../employee-form/employee-form/employee-form.component";
-import { SelectItem } from "../../../shared/models/select-item.model";
-import { PositionService } from "../../../shared/services/position.service";
-import { CountryService } from "../../../shared/services/country.service";
+
+import { SelectItem } from "../../shared/models/select-item.model";
+import { PositionService } from "../../shared/services/position.service";
+import { CountryService } from "../../shared/services/country.service";
 
 @Component({
     selector: "app-employee-grid-infinite",
@@ -161,7 +161,7 @@ export class EmployeeGridInfiniteComponent implements OnInit {
     }
 
     onCreateEmployee(): void {
-        const dialogRef = this._dialog.open(EmployeeFormComponent, {
+        /*  const dialogRef = this._dialog.open(EmployeeFormComponent, {
             width: "500px",
             disableClose: true, // para evitar que el modal se cierre al hacer clic fuera
         });
@@ -175,7 +175,7 @@ export class EmployeeGridInfiniteComponent implements OnInit {
             } else {
                 console.log("Formulario de empleado cancelado.");
             }
-        });
+        }); */
     }
 
     private _mapEmployeesForExport(employees: Employee[]): any[] {
