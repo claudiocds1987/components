@@ -4,6 +4,7 @@ import {
     ChangeDetectorRef,
     Component,
     inject,
+    OnDestroy,
     OnInit,
 } from "@angular/core";
 
@@ -51,7 +52,7 @@ import { BreadcrumbService } from "../../shared/services/breadcrumb.service";
     styleUrl: "./employee-grid-infinite.component.scss",
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EmployeeGridInfiniteComponent implements OnInit {
+export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
     gridConfig: GridConfiguration;
     gridData: GridData[] = [];
     isLoadingGridData = true;
@@ -81,6 +82,11 @@ export class EmployeeGridInfiniteComponent implements OnInit {
 
     ngOnInit(): void {
         this._loadData();
+    }
+
+    ngOnDestroy(): void {
+        // Limpio breadcrumb al salir del componente para evitar fugas de memoria.
+        this._breadcrumbService.clearBreadcrumbs();
     }
 
     // Método para manejar el evento de scroll al final

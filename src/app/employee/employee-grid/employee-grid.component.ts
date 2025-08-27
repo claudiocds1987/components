@@ -4,6 +4,7 @@ import {
     ChangeDetectorRef,
     Component,
     inject,
+    OnDestroy,
     OnInit,
 } from "@angular/core";
 import { GridFilterConfig } from "../../shared/models/grid-filter-config.model";
@@ -58,7 +59,7 @@ interface DateRangeValue {
     styleUrl: "./employee-grid.component.scss",
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EmployeeGridComponent implements OnInit {
+export class EmployeeGridComponent implements OnInit, OnDestroy {
     gridFilterConfig: GridFilterConfig[] = [];
     gridFilterForm!: FormGroup;
     gridConfig: GridConfiguration;
@@ -112,6 +113,11 @@ export class EmployeeGridComponent implements OnInit {
 
     ngOnInit(): void {
         this._loadData();
+    }
+
+    ngOnDestroy(): void {
+        // Limpio breadcrumb al salir del componente para evitar fugas de memoria.
+        this._breadcrumbService.clearBreadcrumbs();
     }
 
     applyFilter(filterValues: Record<string, unknown>): void {
