@@ -68,8 +68,8 @@ export class AlertService implements OnDestroy {
     public alerts$: Observable<Alert[]>;
     // Subject interno para emitir los cambios en las alertas
     private alertsSubject = new Subject<Alert[]>();
-    // Array que contiene todas las alertas activas actualmente
-    private activeAlerts: Alert[] = [];
+    // Array que contiene todas las alertas
+    private alertsList: Alert[] = [];
     // Subject para gestionar la desuscripción de los observables al destruir el servicio
     private destroy$ = new Subject<void>();
     private _router = Inject(Router);
@@ -102,40 +102,36 @@ export class AlertService implements OnDestroy {
         this.destroy$.complete(); // Completa el Subject
     }
 
-    showAlert(type: AlertType, message: string): string {
-        const id = this.generateUniqueId();
-        const newAlert: Alert = { id, type, message };
-        this.activeAlerts.push(newAlert); // Añade la nueva alerta
-        this.alertsSubject.next([...this.activeAlerts]); // Emite una copia del array para actualizar los suscriptores
-        return id; // Devuelve el ID de la alerta para posibles gestiones individuales (aunque ya no se usa en este enfoque)
-    }
-
     removeAlert(id: string): void {
-        this.activeAlerts = this.activeAlerts.filter(
+        this.alertsList = this.alertsList.filter(
             (alert: Alert): boolean => alert.id !== id,
         ); // Filtra la alerta a eliminar
-        this.alertsSubject.next([...this.activeAlerts]); // Emite la lista actualizada
-    }
-
-    showSuccess(message: string): string {
-        return this.showAlert("success", message);
+        this.alertsSubject.next([...this.alertsList]); // Emite la lista actualizada
     }
 
     showInfo(message: string): string {
-        return this.showAlert("info", message);
+        return this._createAlert("info", message);
     }
 
     showWarning(message: string): string {
-        return this.showAlert("warning", message);
+        return this._createAlert("warning", message);
     }
 
     showDanger(message: string): string {
-        return this.showAlert("danger", message);
+        return this._createAlert("danger", message);
     }
 
     clearAlerts(): void {
-        this.activeAlerts = []; // Vacía la lista de alertas
+        this.alertsList = []; // Vacía la lista de alertas
         this.alertsSubject.next([]); // Emite un array vacío para que se borren de la vista
+    }
+
+    private _createAlert(type: AlertType, message: string): string {
+        const id = this.generateUniqueId();
+        const newAlert: Alert = { id, type, message };
+        this.alertsList.push(newAlert); // Añade la nueva alerta
+        this.alertsSubject.next([...this.alertsList]); // Emite una copia del array para actualizar los suscriptores
+        return id; // Devuelve el ID de la alerta para posibles gestiones individuales (aunque ya no se usa en este enfoque)
     }
 
     // Genera un ID único aleatorio para cada alerta

@@ -590,9 +590,14 @@ export class EmployeeGridComponent implements OnInit, OnDestroy {
 
     private _loadData(): void {
         this._loadSelects().subscribe((): void => {
+            // si cargaron los Select hacemos el resto
             this._setGridFilterConfig();
             this._setEmployeeFilterParameters();
             this._getEmployees();
+            // si de entrada quisiera mostrar un alert
+            /* this._alertService.showInfo(
+                "Info: Esto es un mensaje de prueba Info.",
+            ); */
         });
     }
 
