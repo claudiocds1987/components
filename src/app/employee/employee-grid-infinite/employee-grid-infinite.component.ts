@@ -24,7 +24,7 @@ import { EmployeeFilterParams } from "../../shared/models/employee-filter-params
 import { PaginatedList } from "../../shared/models/paginated-list.model";
 import { Employee } from "../../shared/models/employee.model";
 import { catchError, finalize, map, Observable, of } from "rxjs";
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClientModule, HttpErrorResponse } from "@angular/common/http";
 import { PageEvent } from "@angular/material/paginator";
 import { Sort } from "@angular/material/sort";
 import { ExportService } from "../../shared/services/export.service";
@@ -37,6 +37,8 @@ import { PositionService } from "../../shared/services/position.service";
 import { CountryService } from "../../shared/services/country.service";
 import { BreadcrumbComponent } from "../../shared/components/breadcrumb/breadcrumb.component";
 import { BreadcrumbService } from "../../shared/services/breadcrumb.service";
+import { AlertComponent } from "../../shared/components/alert/alert.component";
+import { AlertService } from "../../shared/services/alert.service";
 
 @Component({
     selector: "app-employee-grid-infinite",
@@ -47,6 +49,7 @@ import { BreadcrumbService } from "../../shared/services/breadcrumb.service";
         GridComponent,
         MatDialogModule,
         BreadcrumbComponent,
+        AlertComponent,
     ],
     templateUrl: "./employee-grid-infinite.component.html",
     styleUrl: "./employee-grid-infinite.component.scss",
@@ -66,6 +69,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
     private _spinnerService = inject(SpinnerService);
     private _breadcrumbService = inject(BreadcrumbService);
     private _dialog: MatDialog = inject(MatDialog);
+    private _alertService = inject(AlertService);
 
     private _defaultPaginatorOptions: PaginationConfig = {
         pageIndex: 0,
@@ -76,6 +80,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
     };
 
     constructor() {
+        this._alertService.clearAlerts();
         this._setBreadcrumb();
         this.gridConfig = this._setGridConfiguration(); // seteando la grilla para grid.component
     }
@@ -165,13 +170,10 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                         this._cdr.markForCheck();
                     }, 1500);
                 },
-                error: (error: unknown): void => {
+                error: (): void => {
                     this._spinnerService.hide();
                     this._cdr.markForCheck();
-                    console.error(
-                        "Error al descargar el archivo de Excel:",
-                        error,
-                    );
+                    this._alertService.showDanger("Error al descargar Excel");
                 },
             });
     }
@@ -254,16 +256,15 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                     }
                     this._updateGridConfig(paginatedListGridData);
                 },
-                error: (error: any): void => {
-                    console.error(
-                        "Parent Log: EmployeeGridComponent: Error al obtener empleados:",
-                        error,
+                error: (error: HttpErrorResponse): void => {
+                    this._alertService.showDanger(
+                        `Error al obtener empleados ca. ${error.statusText}`,
                     );
                 },
             });
     }
 
-    private _getPositions(): Observable<SelectItem[]> {
+    /* private _getPositions(): Observable<SelectItem[]> {
         return this._positionServices.getPositions().pipe(
             catchError((error: unknown): Observable<SelectItem[]> => {
                 console.error(
@@ -281,7 +282,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                 return of([]);
             }),
         );
-    }
+    } */
 
     private _loadData(): void {
         this._setEmployeeFilterParameters();

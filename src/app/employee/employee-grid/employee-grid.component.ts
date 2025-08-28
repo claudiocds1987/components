@@ -116,6 +116,7 @@ export class EmployeeGridComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this._alertService.clearAlerts();
         this._loadData();
     }
 
