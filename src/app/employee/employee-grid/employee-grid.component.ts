@@ -136,7 +136,7 @@ export class EmployeeGridComponent implements OnInit, OnDestroy {
                     value !== null &&
                     Object.values(value).every((val): boolean => val === null)),
         );
-        // si el filtro de grid-filter.component esta vacio
+        // si el filtro de grid-filter.component esta vacio hay que crear los chips por default
         if (isClearFilter) {
             // Se crean los chips Estado, Puesto y Genero por default
             this._createChips(this._defaultChips);
@@ -147,7 +147,8 @@ export class EmployeeGridComponent implements OnInit, OnDestroy {
                 this._mapToEmployeeFilterParams(filterValues);
             Object.assign(this._employeeFilterParams, filterParamsForBackend);
         }
-        // Lógica de paginación y obtención de datos que se aplica en ambos casos
+        // Siempre que se aplica un filtro la paginación vuelve a cargar los datos de la primera página.
+        // por eso con this.gridConfig.hasPaginator.pageIndex = 0; el mat-paginator en grid.component va a mostrar página 1
         if (this.gridConfig.hasPaginator) {
             this.gridConfig.hasPaginator.pageIndex = 0;
         }
