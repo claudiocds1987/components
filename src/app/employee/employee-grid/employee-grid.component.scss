@@ -1,14 +1,3 @@
-/*
- Uso de :host
- porque separa los estilos internos de un componente de sus estilos de diseño externos, 
- lo que hace que tus componentes sean más reutilizables y previene conflictos de estilos.
-*/
-:host {
-    //flex: 1; // Permite que employee-grid ocupe todo el espacio disponible del padre
-    //display: flex; // Hace que el host sea un contenedor flex
-    //min-height: 0; // Permite que el contenido se reduzca si es necesario
-}
-
 .employee-grid-container {
     display: grid;
     // Define las filas: la primera para los chips (auto) y la segunda para la grilla y el filtro

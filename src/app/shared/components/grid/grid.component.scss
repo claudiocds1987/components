@@ -1,17 +1,17 @@
 @import "../../../shared/styles/colors.scss";
 @import "../../../shared/styles/status-circle.scss";
 :host {
-    display: flex; /* Hace que el elemento host sea un contenedor flex */
-    flex-direction: column; /* Apila su contenido verticalmente */
-    flex: 1; /* Ocupa todo el espacio disponible del padre */
-    min-height: 0; /* Permite que se reduzca si es necesario */
-    overflow: hidden; /* Evita el desbordamiento */
+    display: flex;
+    flex-direction: column; // Apila su contenido verticalmente
+    flex: 1; // Ocupa todo el espacio disponible del padre
+    min-height: 0; // Permite que se reduzca si es necesario
+    overflow: hidden; // Evita el desbordamiento
 }
 
 .input-search-container {
     display: grid;
     grid-template-columns: 1fr auto;
-    gap: 10px; /* Espacio entre las columnas de la cuadrícula */
+    gap: 10px; // Espacio entre las columnas de la cuadrícula
     flex-wrap: wrap;
     .action-buttons-container {
         display: flex;
@@ -26,12 +26,12 @@
 
 .chips-and-buttons-container {
     display: grid;
-    /* Definiendo dos columnas: la primera (para los chips) ocupa todo el espacio disponible (1fr),
-        y la segunda (para los botones) ocupa solo el espacio que necesita (auto).
-        Esto logra el efecto de "space-between" al empujar los botones a la derecha. */
+    // Definiendo dos columnas: la primera (para los chips) ocupa todo el espacio disponible (1fr),
+    // y la segunda (para los botones) ocupa solo el espacio que necesita (auto).
+    // Esto logra el efecto de "space-between" al empujar los botones a la derecha.
     grid-template-columns: 1fr auto;
-    gap: 10px; /* Espacio entre las columnas de la cuadrícula */
-    padding-bottom: 10px; /* Mantiene el padding inferior */
+    gap: 10px; // Espacio entre las columnas de la cuadrícula
+    padding-bottom: 10px; // Mantiene el padding inferior
     flex-wrap: wrap;
 
     .buttons-actions {
@@ -56,11 +56,11 @@
 }
 
 .table-container {
-    flex: 1; /* La tabla ocupa la mayor parte del espacio */
-    overflow: auto; /* ¡MUY IMPORTANTE! Esto hace que el div sea scrollable */
-    min-height: 0; /* Permite que se reduzca si es necesario */
+    flex: 1; // La tabla ocupa la mayor parte del espacio
+    overflow: auto; // para que el div sea scrollable
+    min-height: 0; // Permite que se reduzca si es necesario
     background: white;
-    /* Reglas para navegadores basados en WebKit (Chrome, Safari, Edge) */
+    // Reglas para navegadores basados en WebKit (Chrome, Safari, Edge)
     &::-webkit-scrollbar {
         width: 3px;
         height: 6px;
@@ -80,7 +80,7 @@
         background: #a8a8a8;
     }
 
-    /* Reglas para Firefox */
+    // Reglas para Firefox
     // Usamos @supports para que Chrome ignore estas reglas y use las de arriba
     @supports not selector(::-webkit-scrollbar) {
         scrollbar-width: thin;
@@ -91,13 +91,13 @@
 // Nueva clase para ocultar la tabla sin quitarla del DOM, manteniendo el espacio.
 .table-hidden {
     visibility: hidden;
-    height: 0; /* Asegurarse de que no ocupe altura */
-    overflow: hidden; /* Ocultar contenido desbordante */
+    height: 0; // Asegurarse de que no ocupe altura
+    overflow: hidden; // Ocultar contenido desbordante
 }
 
 .paginator-container {
-    flex-shrink: 0; /* El paginador no se encoge */
-    padding: 10px 0; /* Espacio arriba y abajo del paginador */
+    flex-shrink: 0; // El paginador no se encoge
+    padding: 10px 0; // Espacio arriba y abajo del paginador
 }
 
 .search-field {
@@ -108,10 +108,10 @@
 
 .table-img {
     display: flex;
-    width: 40px; /* Ajusta el tamaño según tus necesidades */
-    height: 40px; /* Ajusta el tamaño según tus necesidades */
-    border-radius: 50%; /* Para hacer la imagen circular */
-    object-fit: cover; /* Para asegurar que la imagen cubra el área sin distorsionarse */
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover; // la imagen cubra el área sin distorsionarse
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -130,7 +130,7 @@
     display: flex;
 }
 
-/* Simula un th */
+// Simula un th
 .skeleton-header-cell {
     flex: 1;
     height: 48px;
@@ -142,7 +142,7 @@
     border-right: none;
 }
 
-/* Simula una td */
+// Simula una td
 .skeleton-cell {
     flex: 1;
     padding: 12px 16px;
@@ -175,7 +175,7 @@
     }
 }
 
-/* Skeleton del input de búsqueda */
+// Skeleton del input de búsqueda
 .skeleton-search-container {
     position: relative;
     width: 212px;

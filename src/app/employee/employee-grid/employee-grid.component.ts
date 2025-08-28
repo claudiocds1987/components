@@ -798,13 +798,13 @@ export class EmployeeGridComponent implements OnInit, OnDestroy {
                     width: "20px",
                     isSortable: false,
                 },
-                { name: "id", label: "ID", width: "20px" }, // Añadido label
-                { name: "name", label: "Nombre" }, // Añadido label
-                { name: "surname", label: "Apellido" /*isSortable: false*/ }, // Añadido label
-                { name: "birthDate", label: "Nacimiento" }, // Añadido label
+                { name: "id", label: "ID", width: "20px" },
+                { name: "name", label: "Nombre" },
+                { name: "surname", label: "Apellido" /*isSortable: false*/ },
+                { name: "birthDate", label: "Nacimiento" },
                 { name: "gender", label: "genero", isSortable: false },
-                { name: "position", label: "Puesto" }, // Añadido label
-                { name: "country", label: "Pais" }, // Añadido label
+                { name: "position", label: "Puesto" },
+                { name: "country", label: "Pais" },
                 {
                     name: "active",
                     label: "Activo",
@@ -815,7 +815,7 @@ export class EmployeeGridComponent implements OnInit, OnDestroy {
                     name: "elipsisActions", // Este es el nombre de la propiedad en GridData
                     align: "center",
                     isSortable: false,
-                    type: "elipsis", // ¡Indica que es la columna de elipsis!
+                    type: "elipsis", // Indica que es la columna de elipsis
                 },
             ],
             hasPaginator: {
@@ -823,7 +823,7 @@ export class EmployeeGridComponent implements OnInit, OnDestroy {
                 pageSizeOptions: [25, 50],
                 totalCount: 0,
                 pageIndex: 0,
-                //isServerSide: false, // En caso que no lo maneje el backend
+                // isServerSide: false, // En caso que el orden de la data no la maneje el backend
             },
             OrderBy: {
                 columnName: this._employeeFilterParams.sortColumn || "id",
@@ -918,13 +918,13 @@ export class EmployeeGridComponent implements OnInit, OnDestroy {
                 );
                 return;
             }
-
-            if (filter.fieldType === "date") {
+            // si queremos un input de fecha sin rango usamos "date"
+            /* if (filter.fieldType === "date") {
                 this.gridFilterForm.addControl(
                     filter.fieldName,
                     new FormControl(null),
                 );
-            }
+            } */
 
             if (filter.fieldType === "dateRange") {
                 this.gridFilterForm.addControl(

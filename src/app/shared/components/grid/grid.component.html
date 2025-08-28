@@ -20,7 +20,7 @@
         </div>
     </div>
 </div>
-<!-- EL INPUT SEARCH SOLO SE MUESTRA CUANDO LA GRILLA NO ES PAGINADA -->
+<!-- EL INPUT SEARCH SOLO SE MUESTRA CUANDO LA GRILLA NO TIENE MAT-PAGINADOR -->
 <ng-container
     [ngTemplateOutlet]="
         !gridConfig.hasPaginator ? searchInputTemplate : noSearchInputTemplate

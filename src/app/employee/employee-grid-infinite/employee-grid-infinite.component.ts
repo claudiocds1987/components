@@ -23,18 +23,15 @@ import { EmployeeService } from "../../shared/services/employee.service";
 import { EmployeeFilterParams } from "../../shared/models/employee-filter-params.model";
 import { PaginatedList } from "../../shared/models/paginated-list.model";
 import { Employee } from "../../shared/models/employee.model";
-import { catchError, finalize, map, Observable, of } from "rxjs";
+import { finalize, map } from "rxjs";
 import { HttpClientModule, HttpErrorResponse } from "@angular/common/http";
 import { PageEvent } from "@angular/material/paginator";
 import { Sort } from "@angular/material/sort";
 import { ExportService } from "../../shared/services/export.service";
 import { SpinnerService } from "../../shared/services/spinner.service";
 
-import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatDialogModule } from "@angular/material/dialog";
 
-import { SelectItem } from "../../shared/models/select-item.model";
-import { PositionService } from "../../shared/services/position.service";
-import { CountryService } from "../../shared/services/country.service";
 import { BreadcrumbComponent } from "../../shared/components/breadcrumb/breadcrumb.component";
 import { BreadcrumbService } from "../../shared/services/breadcrumb.service";
 import { AlertComponent } from "../../shared/components/alert/alert.component";
@@ -62,13 +59,10 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
 
     private _employeeFilterParams: EmployeeFilterParams = {};
     private _employeeServices = inject(EmployeeService);
-    private _positionServices = inject(PositionService);
-    private _countryServices = inject(CountryService);
     private _exportService = inject(ExportService);
     private _cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
     private _spinnerService = inject(SpinnerService);
     private _breadcrumbService = inject(BreadcrumbService);
-    private _dialog: MatDialog = inject(MatDialog);
     private _alertService = inject(AlertService);
 
     private _defaultPaginatorOptions: PaginationConfig = {
@@ -179,21 +173,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
     }
 
     onCreateEmployee(): void {
-        /*  const dialogRef = this._dialog.open(EmployeeFormComponent, {
-            width: "500px",
-            disableClose: true, // para evitar que el modal se cierre al hacer clic fuera
-        });
-        // Suscribirse al evento 'afterClosed' para obtener los datos del formulario
-        dialogRef.afterClosed().subscribe((formData): void => {
-            if (formData) {
-                // 'result' contendrá los datos del formulario si el usuario hizo clic en "Guardar"
-                console.log("Datos del formulario recibidos:", formData);
-                // Aca llamar a tu servicio para guardar los datos
-                //this._saveNewEmployee(result);
-            } else {
-                console.log("Formulario de empleado cancelado.");
-            }
-        }); */
+        // hacer redireccion a url de employee-form
     }
 
     private _mapEmployeesForExport(employees: Employee[]): any[] {
@@ -230,7 +210,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
 
     private _getEmployees(isScrolling = false): void {
         if (!isScrolling) {
-            this.isLoadingGridData = true; // Para carga inicial o cambio de filtro/orden
+            this.isLoadingGridData = true; // Para carga inicial o cambio de orden con mat-sort
         }
 
         this._employeeServices
@@ -264,29 +244,8 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
             });
     }
 
-    /* private _getPositions(): Observable<SelectItem[]> {
-        return this._positionServices.getPositions().pipe(
-            catchError((error: unknown): Observable<SelectItem[]> => {
-                console.error(
-                    "Parent Log: Error al obtener posiciones:",
-                    error,
-                );
-                return of([]);
-            }),
-        );
-    }
-    private _getCountries(): Observable<SelectItem[]> {
-        return this._countryServices.getCountries().pipe(
-            catchError((error: unknown): Observable<SelectItem[]> => {
-                console.error("Parent Log: Error al obtener paises:", error);
-                return of([]);
-            }),
-        );
-    } */
-
     private _loadData(): void {
         this._setEmployeeFilterParameters();
-        // Llamada a _getEmployees para la carga inicial
         this._getEmployees();
     }
 
@@ -414,7 +373,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                 },
             };
         } else {
-            // --- Mutar hasPaginator si es scroll infinito ---
+            // Mutar hasPaginator si es scroll infinito -
             // Solo actualizamos las propiedades necesarias sin recrear el objeto completo si ya existe
             if (
                 this.gridConfig.hasPaginator &&
@@ -457,53 +416,6 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
         }
     }
 
-    /*  private _mapToEmployeeFilterParams(obj: unknown): EmployeeFilterParams {
-        const employeeFilterParams: EmployeeFilterParams = {};
-        const source = obj as Record<string, unknown>;
-
-        for (const key in source) {
-            const value = source[key];
-            // 1. ignorars campos con valores "all" o "Todos"
-            if (["active", "position", "gender", "country"].includes(key)) {
-                if (value === "all" || value === "Todos" || value === "") {
-                    continue;
-                }
-            }
-            // 2. Para rango de fechas en json-server desde(birthDate_gte) hasta (birthDate_lte)
-            if (key === "birthDateRange" && value) {
-                const dateRangeValue = value as {
-                    startDate: Date | string | null;
-                    endDate: Date | string | null;
-                };
-                if (dateRangeValue.startDate) {
-                    const luxonStartDate = DateTime.fromJSDate(
-                        new Date(dateRangeValue.startDate),
-                    );
-                    if (luxonStartDate.isValid) {
-                        (employeeFilterParams as any)["birthDate_gte"] =
-                            luxonStartDate.toFormat("yyyy-MM-dd");
-                    }
-                }
-                if (dateRangeValue.endDate) {
-                    const luxonEndDate = DateTime.fromJSDate(
-                        new Date(dateRangeValue.endDate),
-                    );
-                    if (luxonEndDate.isValid) {
-                        (employeeFilterParams as any)["birthDate_lte"] =
-                            luxonEndDate.toFormat("yyyy-MM-dd");
-                    }
-                }
-                continue;
-            }
-            // 3. Manejar todos los demás campos name, surname...
-            if (value !== null && value !== undefined) {
-                (employeeFilterParams as any)[key] = value;
-            }
-        }
-
-        return employeeFilterParams;
-    } */
-
     private _setGridConfiguration(): GridConfiguration {
         const config = createDefaultGridConfiguration({
             columns: [
@@ -514,13 +426,13 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                     width: "20px",
                     isSortable: false,
                 },
-                { name: "id", label: "ID", width: "20px" }, // Añadido label
-                { name: "name", label: "Nombre" }, // Añadido label
-                { name: "surname", label: "Apellido" }, // Añadido label
-                { name: "birthDate", label: "Nacimiento" }, // Añadido label
+                { name: "id", label: "ID", width: "20px" },
+                { name: "name", label: "Nombre" },
+                { name: "surname", label: "Apellido" },
+                { name: "birthDate", label: "Nacimiento" },
                 { name: "gender", label: "genero", isSortable: false },
-                { name: "position", label: "Puesto" }, // Añadido label
-                { name: "country", label: "Pais" }, // Añadido label
+                { name: "position", label: "Puesto" },
+                { name: "country", label: "Pais" },
                 {
                     name: "active",
                     label: "Activo",
@@ -532,7 +444,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                     name: "elipsisActions", // Este es el nombre de la propiedad en GridData
                     align: "center",
                     isSortable: false,
-                    type: "elipsis", // ¡Indica que es la columna de elipsis!
+                    type: "elipsis", // Indica que es la columna de elipsis
                 },
             ],
             hasInfiniteScroll: true,
