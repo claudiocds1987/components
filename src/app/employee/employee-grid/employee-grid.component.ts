@@ -795,9 +795,10 @@ export class EmployeeGridComponent implements OnInit, OnDestroy {
                     name: "foto",
                     type: "img",
                     label: "img",
+                    width: "20px",
                     isSortable: false,
                 },
-                { name: "id", label: "ID" }, // Añadido label
+                { name: "id", label: "ID", width: "20px" }, // Añadido label
                 { name: "name", label: "Nombre" }, // Añadido label
                 { name: "surname", label: "Apellido" /*isSortable: false*/ }, // Añadido label
                 { name: "birthDate", label: "Nacimiento" }, // Añadido label

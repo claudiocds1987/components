@@ -122,6 +122,7 @@
                 *matHeaderCellDef
                 class="grid-cell"
                 [style.width]="col.width || 'auto'"
+                [style.flex]="col.width ? 'none' : '1'"
                 [style.text-align]="col.align || 'left'"
                 [matTooltip]="col.hasHeaderTooltip ? col.label || col.name : ''"
             >

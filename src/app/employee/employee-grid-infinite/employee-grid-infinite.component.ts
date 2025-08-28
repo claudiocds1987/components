@@ -457,7 +457,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
         }
     }
 
-    private _mapToEmployeeFilterParams(obj: unknown): EmployeeFilterParams {
+    /*  private _mapToEmployeeFilterParams(obj: unknown): EmployeeFilterParams {
         const employeeFilterParams: EmployeeFilterParams = {};
         const source = obj as Record<string, unknown>;
 
@@ -502,7 +502,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
         }
 
         return employeeFilterParams;
-    }
+    } */
 
     private _setGridConfiguration(): GridConfiguration {
         const config = createDefaultGridConfiguration({
@@ -511,11 +511,12 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                     name: "foto",
                     type: "img",
                     label: "img",
+                    width: "20px",
                     isSortable: false,
                 },
-                { name: "id", label: "ID" }, // Añadido label
+                { name: "id", label: "ID", width: "20px" }, // Añadido label
                 { name: "name", label: "Nombre" }, // Añadido label
-                { name: "surname", label: "Apellido" /*isSortable: false*/ }, // Añadido label
+                { name: "surname", label: "Apellido" }, // Añadido label
                 { name: "birthDate", label: "Nacimiento" }, // Añadido label
                 { name: "gender", label: "genero", isSortable: false },
                 { name: "position", label: "Puesto" }, // Añadido label
@@ -525,6 +526,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                     label: "Activo",
                     style: "status-circle",
                     align: "center",
+                    width: "20px",
                 },
                 {
                     name: "elipsisActions", // Este es el nombre de la propiedad en GridData
