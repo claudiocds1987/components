@@ -3,7 +3,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100%; // Ocupa la altura completa del contenedor padre
     text-align: center;
     padding: 20px;
     box-sizing: border-box;
@@ -14,12 +13,10 @@
         object-fit: contain; // Asegura que la imagen se ajuste sin distorsionarse
         margin-bottom: 15px;
     }
-    
+
     .feedback-message {
         font-size: 1.2rem;
         color: #757575;
         font-weight: 500;
     }
 }
-
-
