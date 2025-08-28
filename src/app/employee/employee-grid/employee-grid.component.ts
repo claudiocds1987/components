@@ -25,7 +25,7 @@ import { EmployeeFilterParams } from "../../shared/models/employee-filter-params
 import { PaginatedList } from "../../shared/models/paginated-list.model";
 import { Employee } from "../../shared/models/employee.model";
 import { catchError, finalize, forkJoin, map, Observable, of } from "rxjs";
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClientModule, HttpErrorResponse } from "@angular/common/http";
 import { PageEvent } from "@angular/material/paginator";
 import { Sort } from "@angular/material/sort";
 import { ExportService } from "../../shared/services/export.service";
@@ -38,6 +38,8 @@ import { PositionService } from "../../shared/services/position.service";
 import { CountryService } from "../../shared/services/country.service";
 import { BreadcrumbComponent } from "../../shared/components/breadcrumb/breadcrumb.component";
 import { BreadcrumbService } from "../../shared/services/breadcrumb.service";
+import { AlertComponent } from "../../shared/components/alert/alert.component";
+import { AlertService } from "../../shared/services/alert.service";
 
 interface DateRangeValue {
     startDate: string | null;
@@ -54,6 +56,7 @@ interface DateRangeValue {
         GridFilterComponent,
         MatDialogModule,
         BreadcrumbComponent,
+        AlertComponent,
     ],
     templateUrl: "./employee-grid.component.html",
     styleUrl: "./employee-grid.component.scss",
@@ -94,6 +97,7 @@ export class EmployeeGridComponent implements OnInit, OnDestroy {
     private _cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
     private _spinnerService = inject(SpinnerService);
     private _breadcrumbService = inject(BreadcrumbService);
+    private _alertService = inject(AlertService);
 
     private _defaultPaginatorOptions: PaginationConfig = {
         pageIndex: 0,
@@ -214,12 +218,11 @@ export class EmployeeGridComponent implements OnInit, OnDestroy {
                         this._cdr.markForCheck();
                     }, 1500);
                 },
-                error: (error: unknown): void => {
+                error: (): void => {
                     this._spinnerService.hide();
                     this._cdr.markForCheck();
-                    console.error(
-                        "Error al descargar el archivo de Excel:",
-                        error,
+                    this._alertService.showDanger(
+                        "Error al descargar el archivo de Excel",
                     );
                 },
             });
@@ -526,10 +529,9 @@ export class EmployeeGridComponent implements OnInit, OnDestroy {
                     this.gridData = paginatedListGridData.items;
                     this._updateGridConfig(paginatedListGridData);
                 },
-                error: (error: any): void => {
-                    console.error(
-                        "EmployeeGridComponent: Error al obtener empleados:",
-                        error,
+                error: (error: HttpErrorResponse): void => {
+                    this._alertService.showDanger(
+                        `Error al obtener empleados. ${error.statusText}`,
                     );
                 },
             });
@@ -537,16 +539,21 @@ export class EmployeeGridComponent implements OnInit, OnDestroy {
 
     private _getPositions(): Observable<SelectItem[]> {
         return this._positionServices.getPositions().pipe(
-            catchError((error: unknown): Observable<SelectItem[]> => {
-                console.error("Error al obtener posiciones:", error);
+            catchError((error: HttpErrorResponse): Observable<SelectItem[]> => {
+                console.log("error: ", error);
+                this._alertService.showDanger(
+                    `Error al cargar la lista de puestos. ${error.statusText}`,
+                );
                 return of([]);
             }),
         );
     }
     private _getCountries(): Observable<SelectItem[]> {
         return this._countryServices.getCountries().pipe(
-            catchError((error: unknown): Observable<SelectItem[]> => {
-                console.error("Error al obtener paises:", error);
+            catchError((error: HttpErrorResponse): Observable<SelectItem[]> => {
+                this._alertService.showDanger(
+                    `Error al cargar la lista de paises. ${error.statusText}`,
+                );
                 return of([]);
             }),
         );
