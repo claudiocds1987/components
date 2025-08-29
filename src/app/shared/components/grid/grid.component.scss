@@ -62,8 +62,8 @@
     background: white;
     // Reglas para navegadores basados en WebKit (Chrome, Safari, Edge)
     &::-webkit-scrollbar {
-        width: 3px;
-        height: 6px;
+        width: 3px; // ancho para scroll vertical
+        height: 3px; // ancho para scroll horizontal
     }
 
     &::-webkit-scrollbar-track {

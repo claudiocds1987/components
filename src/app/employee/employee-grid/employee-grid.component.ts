@@ -595,10 +595,10 @@ export class EmployeeGridComponent implements OnInit, OnDestroy {
             this._setGridFilterConfig();
             this._setEmployeeFilterParameters();
             this._getEmployees();
-            // si de entrada quisiera mostrar un alert
-            /* this._alertService.showInfo(
-                "Info: Esto es un mensaje de prueba Info.",
-            ); */
+
+            this._alertService.showInfo(
+                "En este caso como la grilla tiene muchas columnas se muestra un scroll horizontal.",
+            );
         });
     }
 
