@@ -27,7 +27,8 @@
     overflow-y: auto; // Scroll cuando sea necesario
     padding-right: 5px; // Espacio para la barra de scroll
     padding-top: 5px; // Espacio superior para que el label flotante de material no se vea cortado
-    max-height: 500px;
+    height: auto;
+    //max-height: 500px;
     // Reglas para navegadores basados en WebKit (Chrome, Safari, Edge)
     &::-webkit-scrollbar {
         width: 3px;

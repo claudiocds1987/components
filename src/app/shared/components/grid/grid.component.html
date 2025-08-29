@@ -105,8 +105,6 @@
         mat-table
         [dataSource]="dataSource"
         matSort
-        [matSortActive]="gridConfig.OrderBy.columnName"
-        [matSortDirection]="gridConfig.OrderBy.direction"
         (matSortChange)="onSortChange($event)"
         class="table"
         [class.table-hidden]="isLoading || dataSource.data.length === 0"

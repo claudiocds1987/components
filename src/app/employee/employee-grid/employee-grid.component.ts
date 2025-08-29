@@ -155,7 +155,35 @@ export class EmployeeGridComponent implements OnInit, OnDestroy {
         this._getEmployees();
     }
 
+    // En tu componente padre (EmployeeListComponent)
     onGridSortChange(sortEvent: Sort): void {
+        let sortColumnName = sortEvent.active;
+        const sortOrder = sortEvent.direction;
+
+        // Ajusta el nombre de la columna para JSON Server si es una propiedad anidada.
+        if (sortEvent.active === "country") {
+            sortColumnName = "country.description";
+        }
+
+        if (sortEvent.active === "position") {
+            sortColumnName = "position.description";
+        }
+
+        // Actualiza los parámetros con los valores del evento, que ahora son correctos.
+        this._employeeFilterParams = {
+            ...this._employeeFilterParams,
+            sortColumn: sortColumnName,
+            sortOrder: sortOrder,
+            page: 1,
+        };
+
+        // También actualiza la configuración de la grilla para que refleje el nuevo estado visualmente.
+        // Tu metodo _updateGridConfigOnSortChange
+        this._updateGridConfigOnSortChange(sortEvent);
+        this._getEmployees();
+    }
+    /*  onGridSortChange(sortEvent: Sort): void {
+        console.log("Sort Event:", sortEvent);
         // obteniendo nombre de la columna
         let sortColumnName = sortEvent.active;
         // Para que ordene por descripción en json-server
@@ -167,16 +195,21 @@ export class EmployeeGridComponent implements OnInit, OnDestroy {
             sortColumnName = "country.description";
         }
 
+        //console.log("onGridSortChange: ", sortEvent);
+
         this._employeeFilterParams = {
             ...this._employeeFilterParams,
             sortColumn: sortColumnName,
             sortOrder: sortEvent.direction,
             page: 1,
         };
+
+        console.log("onGridSortChange: ", this._employeeFilterParams);
+
         // Actualiza la configuración de la grilla con el nuevo
         this._updateGridConfigOnSortChange(sortEvent);
         this._getEmployees();
-    }
+    } */
 
     onGridPageChange(event: PageEvent): void {
         this._employeeFilterParams = {
@@ -754,6 +787,7 @@ export class EmployeeGridComponent implements OnInit, OnDestroy {
                     continue;
                 }
             }
+
             // 2. Para rango de fechas en json server desde(birthDate_gte) hasta (birthDate_lte)
             if (key === "birthDateRange" && value) {
                 const dateRangeValue = value as {

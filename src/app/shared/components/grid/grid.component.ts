@@ -245,6 +245,7 @@ export class GridComponent
     }
 
     onSortChange(sortState: Sort): void {
+        console.log("OnSortChange grid.component: ", sortState);
         this.sortChange.emit(sortState);
     }
 
