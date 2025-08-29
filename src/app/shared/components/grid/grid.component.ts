@@ -220,13 +220,13 @@ export class GridComponent
 
     getTruncatedValue(row: GridData, colName: string): string {
         const value = this.getCellValue(row, colName);
-        return this._truncate(value, 25);
+        return this._truncate(value, 20);
     }
 
     getLargeTooltipValue(row: GridData, colName: string): string {
         const val = this.getCellValue(row, colName);
         const str = String(val ?? "");
-        return str.length > 25 ? str : "";
+        return str.length > 20 ? str : "";
     }
 
     getTooltipValue(row: GridData, colName: string): string {

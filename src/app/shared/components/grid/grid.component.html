@@ -137,6 +137,11 @@
                 <ng-container *ngIf="col.type !== 'elipsis'">
                     <ng-container *ngIf="col.isSortable; else noSortableHeader">
                         <span
+                            style="
+                                white-space: nowrap;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                            "
                             [mat-sort-header]="col.name"
                             [ngStyle]="{
                                 display: 'flex',
@@ -167,6 +172,8 @@
                 [ngStyle]="{
                     'text-overflow':
                         col.type === 'elipsis' ? 'clip' : 'ellipsis',
+                    overflow: 'hidden',
+                    'white-space': 'nowrap',
                 }"
             >
                 <ng-container [ngSwitch]="col.type">
