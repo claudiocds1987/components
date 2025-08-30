@@ -548,12 +548,14 @@ export class EmployeeGridComponent implements OnInit, OnDestroy {
 
     private _getEmployees(): void {
         this.isLoadingGridData = true;
+        this.isLoadingFilterGridData = true;
         this._employeeServices
             .getEmployees(this._employeeFilterParams)
             .pipe(
                 map(this._mapPaginatedListToGridData.bind(this)),
                 finalize((): void => {
                     this.isLoadingGridData = false;
+                    this.isLoadingFilterGridData = false;
                     this._cdr.markForCheck();
                 }),
             )
@@ -595,7 +597,6 @@ export class EmployeeGridComponent implements OnInit, OnDestroy {
     }
 
     private _loadSelects(): Observable<boolean> {
-        this.isLoadingFilterGridData = true;
         return forkJoin({
             positions: this._getPositions(),
             countries: this._getCountries(),
@@ -614,8 +615,6 @@ export class EmployeeGridComponent implements OnInit, OnDestroy {
                     };
                     this._positions.unshift(allItem);
                     this._countries.unshift(allItem);
-
-                    this.isLoadingFilterGridData = false;
                     return true;
                 },
             ),

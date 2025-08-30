@@ -15,6 +15,7 @@ import {
 } from "@angular/forms";
 import { DateTime } from "luxon";
 import { MatLuxonDateModule } from "@angular/material-luxon-adapter";
+import { SkeletonDirective } from "../../directives/skeleton.directive";
 
 @Component({
     selector: "app-date-input",
@@ -27,6 +28,7 @@ import { MatLuxonDateModule } from "@angular/material-luxon-adapter";
         MatDatepickerModule,
         MatIconModule,
         MatLuxonDateModule,
+        SkeletonDirective,
     ],
     templateUrl: "./date-input.component.html",
     styleUrl: "./date-input.component.scss",
@@ -47,6 +49,7 @@ export class DateInputComponent implements ControlValueAccessor, OnInit {
     @Input() label = "Fecha";
     @Input() placeholder = "";
     @Input() isDisabled = false;
+    @Input() isLoading = false;
 
     /*-----------------------------------------------------------------------------------------------------
      *  "internalControl" es el cerebro del componente. Es un FormControl de Angular que maneja el valor
