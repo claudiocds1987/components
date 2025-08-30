@@ -49,7 +49,6 @@ export class DateInputComponent implements ControlValueAccessor, OnInit {
     @Input() label = "Fecha";
     @Input() placeholder = "";
     @Input() isDisabled = false;
-    @Input() isLoading = false;
 
     /*-----------------------------------------------------------------------------------------------------
      *  "internalControl" es el cerebro del componente. Es un FormControl de Angular que maneja el valor

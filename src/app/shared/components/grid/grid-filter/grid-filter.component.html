@@ -37,13 +37,17 @@
                     [label]="filter.label"
                     [placeholder]="filter.label"
                     [isDisabled]="false"
-                    [isLoading]="isLoading"
+                    [appSkeleton]="isLoading"
                 ></app-date-input>
             </ng-container>
 
             <ng-container *ngIf="filter.fieldType === 'dateRange'">
                 <div [formGroupName]="filter.fieldName">
-                    <mat-form-field appearance="outline" class="width">
+                    <mat-form-field
+                        appearance="outline"
+                        class="width"
+                        [appSkeleton]="isLoading"
+                    >
                         <mat-label>{{ filter.label }}</mat-label>
                         <mat-date-range-input [rangePicker]="picker">
                             <input
