@@ -1,5 +1,5 @@
 :host {
-    display: block; // Cambiamos a block para simplificar
+    //display: block; // Cambiamos a block para simplificar
     height: 100%; // Altura completa del contenedor padre
     overflow: hidden; // Evita que se desborde el host
 }
@@ -29,6 +29,7 @@
     padding-top: 5px; // Espacio superior para que el label flotante de material no se vea cortado
     height: auto;
     //max-height: 500px;
+
     // Reglas para navegadores basados en WebKit (Chrome, Safari, Edge)
     &::-webkit-scrollbar {
         width: 3px;
