@@ -7,7 +7,7 @@ import {
     OnDestroy,
     OnInit,
 } from "@angular/core";
-import { GridFilterConfig } from "../../shared/models/grid-filter-config.model";
+import { GridFilterConfig } from "../../shared/models/grid-filter-configuration.model";
 import { FormControl, FormGroup } from "@angular/forms";
 import {
     createDefaultGridConfiguration,
@@ -15,7 +15,7 @@ import {
     GridData,
     PaginationConfig,
     ElipsisAction,
-} from "../../shared/models/grid-configuration";
+} from "../../shared/models/grid-configuration.model";
 import { GridComponent } from "../../shared/components/grid/grid.component"; // Correct path for GridComponent
 import { GridFilterComponent } from "../../shared/components/grid/grid-filter/grid-filter.component"; // Correct path for GridFilterComponent
 import { CommonModule } from "@angular/common";

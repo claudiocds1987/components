@@ -23,7 +23,7 @@ import {
     GridConfiguration,
     GridData,
     PaginationConfig,
-} from "../../models/grid-configuration";
+} from "../../models/grid-configuration.model";
 import {
     MatPaginator,
     MatPaginatorIntl,

@@ -13,7 +13,7 @@ import { MatSelectModule } from "@angular/material/select";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { MatButtonModule } from "@angular/material/button";
-import { GridFilterConfig } from "../../../models/grid-filter-config.model";
+import { GridFilterConfig } from "../../../models/grid-filter-configuration.model";
 import { DateInputComponent } from "../../date-input/date-input.component";
 import { SkeletonDirective } from "../../../directives/skeleton.directive";
 
