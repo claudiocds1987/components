@@ -15,7 +15,7 @@ import {
     GridData,
     PaginationConfig,
     ElipsisAction,
-} from "../../shared/models/gridConfiguration";
+} from "../../shared/models/grid-configuration";
 import { GridComponent } from "../../shared/components/grid/grid.component"; // Correct path for GridComponent
 import { GridFilterComponent } from "../../shared/components/grid/grid-filter/grid-filter.component"; // Correct path for GridFilterComponent
 import { CommonModule } from "@angular/common";

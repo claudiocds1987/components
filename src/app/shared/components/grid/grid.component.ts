@@ -1,6 +1,3 @@
-// GRID.COMPONENT ACA EL SCROLL INFINITO FUNCIONA BIEN SOLO CON EL DETALLE DE QUE CUANDO CARGA NUEVOS REGISTROS EL SCROLL S EVA HACIA ARRIBA DE TODO
-// CUANDO DEBERIA QUEDAR SITUADO SOBRE LOS NUEVOS REGISTROS CARGADOS
-
 import {
     Component,
     ViewChild,
@@ -26,7 +23,7 @@ import {
     GridConfiguration,
     GridData,
     PaginationConfig,
-} from "../../models/gridConfiguration";
+} from "../../models/grid-configuration";
 import {
     MatPaginator,
     MatPaginatorIntl,

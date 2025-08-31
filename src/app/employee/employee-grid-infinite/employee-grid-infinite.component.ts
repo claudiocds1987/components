@@ -14,7 +14,7 @@ import {
     GridData,
     PaginationConfig,
     ElipsisAction,
-} from "../../shared/models/gridConfiguration";
+} from "../../shared/models/grid-configuration";
 import { GridComponent } from "../../shared/components/grid/grid.component";
 
 import { CommonModule } from "@angular/common";
