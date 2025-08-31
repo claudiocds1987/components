@@ -47,7 +47,7 @@ interface DateRangeValue {
 }
 
 @Component({
-    selector: "app-employee-grid",
+    selector: "app-employee-grid-pagination",
     standalone: true,
     imports: [
         CommonModule,
@@ -58,11 +58,11 @@ interface DateRangeValue {
         BreadcrumbComponent,
         AlertComponent,
     ],
-    templateUrl: "./employee-grid.component.html",
-    styleUrl: "./employee-grid.component.scss",
+    templateUrl: "./employee-grid-pagination.component.html",
+    styleUrl: "./employee-grid-pagination.component.scss",
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EmployeeGridComponent implements OnInit, OnDestroy {
+export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     gridFilterConfig: GridFilterConfig[] = [];
     gridFilterForm!: FormGroup;
     gridConfig: GridConfiguration;

@@ -1,5 +1,5 @@
 import { Routes } from "@angular/router";
-import { EmployeeGridComponent } from "./employee/employee-grid/employee-grid.component";
+import { EmployeeGridPaginationComponent } from "./employee/employee-grid-pagination/employee-grid-pagination.component";
 import { EmployeeGridInfiniteComponent } from "./employee/employee-grid-infinite/employee-grid-infinite.component";
 import { HomeComponent } from "./home/home/home.component";
 
@@ -8,7 +8,7 @@ export const routes: Routes = [
     { path: "", component: HomeComponent },
 
     // Route for the paginated employee grid
-    { path: "employee-grid", component: EmployeeGridComponent },
+    { path: "employee-grid", component: EmployeeGridPaginationComponent },
 
     // Route for the infinite scroll employee grid
     {

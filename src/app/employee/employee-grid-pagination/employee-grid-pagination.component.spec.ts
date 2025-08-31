@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { EmployeeGridComponent } from "./employee-grid.component";
+import { EmployeeGridPaginationComponent } from "./employee-grid-pagination.component";
 
 describe("EmployeeGridComponent", (): void => {
-    let component: EmployeeGridComponent;
-    let fixture: ComponentFixture<EmployeeGridComponent>;
+    let component: EmployeeGridPaginationComponent;
+    let fixture: ComponentFixture<EmployeeGridPaginationComponent>;
 
     beforeEach(async (): Promise<void> => {
         await TestBed.configureTestingModule({
-            imports: [EmployeeGridComponent],
+            imports: [EmployeeGridPaginationComponent],
         }).compileComponents();
 
-        fixture = TestBed.createComponent(EmployeeGridComponent);
+        fixture = TestBed.createComponent(EmployeeGridPaginationComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
