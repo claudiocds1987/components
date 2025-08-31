@@ -109,10 +109,10 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
 
     constructor() {
         this._setBreadcrumb();
-        this.gridConfig = this._setGridConfiguration(); // seteando la grilla para grid.component
-        this._setGridFilterConfig(); // se definen los tipos de inputs(text, date, select) para grod-filter.component
-        this._setGridFilterForm(); // se define el formulario en funcion de setGridFilterConfig()
-        this._createChips(this._defaultChips); // se crean los chips por default estado,puesto y genero
+        this.gridConfig = this._setGridConfiguration();
+        this._setGridFilterConfig();
+        this._setGridFilterForm();
+        this._createChips(this._defaultChips);
     }
 
     ngOnInit(): void {
@@ -121,14 +121,12 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        // Limpio breadcrumb al salir del componente para evitar fugas de memoria.
         this._breadcrumbService.clearBreadcrumbs();
     }
 
     applyFilter(filterValues: Record<string, unknown>): void {
         this._employeeFilterParams = {};
         this._setEmployeeFilterParameters();
-        // En caso que desde grid-filter.component se hizo clic en boton Limpiar filtros, el filtro viene vacio
         const isClearFilter = Object.values(filterValues).every(
             (value): boolean =>
                 value === null ||
@@ -136,40 +134,32 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                     value !== null &&
                     Object.values(value).every((val): boolean => val === null)),
         );
-        // si el filtro de grid-filter.component esta vacio hay que crear los chips por default
         if (isClearFilter) {
-            // Se crean los chips Estado, Puesto y Genero por default
             this._createChips(this._defaultChips);
-            this._setGridFilterForm(); // ser resetea el formulario de grid-filter.component
+            this._setGridFilterForm();
         } else {
             this._createChips(filterValues);
             const filterParamsForBackend =
                 this._mapToEmployeeFilterParams(filterValues);
             Object.assign(this._employeeFilterParams, filterParamsForBackend);
         }
-        // Siempre que se aplica un filtro la paginación vuelve a cargar los datos de la primera página.
-        // por eso con this.gridConfig.hasPaginator.pageIndex = 0; el mat-paginator en grid.component va a mostrar página 1
         if (this.gridConfig.hasPaginator) {
             this.gridConfig.hasPaginator.pageIndex = 0;
         }
-        this._getEmployees();
+        this._reloadGridData(); // Llama a la nueva función
     }
 
-    // En tu componente padre (EmployeeListComponent)
     onGridSortChange(sortEvent: Sort): void {
         let sortColumnName = sortEvent.active;
         const sortOrder = sortEvent.direction;
 
-        // Ajusta el nombre de la columna para JSON Server si es una propiedad anidada.
         if (sortEvent.active === "country") {
             sortColumnName = "country.description";
         }
-
         if (sortEvent.active === "position") {
             sortColumnName = "position.description";
         }
 
-        // Actualiza los parámetros con los valores del evento, que ahora son correctos.
         this._employeeFilterParams = {
             ...this._employeeFilterParams,
             sortColumn: sortColumnName,
@@ -177,39 +167,9 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
             page: 1,
         };
 
-        // También actualiza la configuración de la grilla para que refleje el nuevo estado visualmente.
-        // Tu metodo _updateGridConfigOnSortChange
         this._updateGridConfigOnSortChange(sortEvent);
-        this._getEmployees();
+        this._reloadGridData(); // Llama a la nueva función
     }
-    /*  onGridSortChange(sortEvent: Sort): void {
-        console.log("Sort Event:", sortEvent);
-        // obteniendo nombre de la columna
-        let sortColumnName = sortEvent.active;
-        // Para que ordene por descripción en json-server
-        if (sortEvent.active === "position") {
-            sortColumnName = "position.description";
-        }
-
-        if (sortEvent.active === "country") {
-            sortColumnName = "country.description";
-        }
-
-        //console.log("onGridSortChange: ", sortEvent);
-
-        this._employeeFilterParams = {
-            ...this._employeeFilterParams,
-            sortColumn: sortColumnName,
-            sortOrder: sortEvent.direction,
-            page: 1,
-        };
-
-        console.log("onGridSortChange: ", this._employeeFilterParams);
-
-        // Actualiza la configuración de la grilla con el nuevo
-        this._updateGridConfigOnSortChange(sortEvent);
-        this._getEmployees();
-    } */
 
     onGridPageChange(event: PageEvent): void {
         this._employeeFilterParams = {
@@ -217,16 +177,13 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
             page: event.pageIndex + 1,
             limit: event.pageSize,
         };
-        this._getEmployees();
+        this._reloadGridData(); // Llama a la nueva función
     }
 
     onExportToExcel(): void {
         this._spinnerService.show();
-        // Obtener todos los valores del formulario
         const filterValues = this.gridFilterForm.value;
-        // Pasa los valores del formulario a la función de mapeo.
         const exportParams = this._mapToEmployeeFilterParams(filterValues);
-        // Asigna los parámetros de ordenamiento.
         if (this._employeeFilterParams.sortColumn) {
             exportParams.sortColumn = this._employeeFilterParams.sortColumn;
         }
@@ -244,6 +201,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (processedData: any[]): void => {
                     const fileName = "Empleados.xlsx";
+                    // hago simular tiempo de descarga con setTimeout porque json-server responde muy rapido por ser local
                     setTimeout((): void => {
                         this._exportService.exportToExcel(
                             processedData,
@@ -265,8 +223,6 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
 
     onRemoveChip(chip: Chip): void {
         const fieldName = chip.key;
-        // Definiendo un mapa de estrategias para manejar los filtros puesto, pais, active, genero y fecha nacimiento
-        // para setear el valor a all de estos filtros en el formulario de grid-filter.component cuando
         const resetStrategies = {
             position: (): void =>
                 this.gridFilterForm.get(fieldName)?.patchValue("all"),
@@ -281,37 +237,18 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                     startDate: null,
                     endDate: null,
                 }),
-            // Estrategia por defecto para otros campos (name, surname, etc.)
             default: (): void =>
                 this.gridFilterForm.get(fieldName)?.patchValue(null),
         };
-        // Obtenemos la estrategia correspondiente o usamos la por defecto
         const resetAction =
             resetStrategies[fieldName as keyof typeof resetStrategies] ||
             resetStrategies.default;
         resetAction();
-        // Al quitar un chip deshabilitamos con markAsPristine() el boton Aplicar filtro de grid-filter.component
         this.gridFilterForm.markAsPristine();
         this.applyFilter(this.gridFilterForm.value);
     }
 
-    onCreateEmployee(): void {
-        /* const dialogRef = this._dialog.open(EmployeeFormComponent, {
-            width: "500px",
-            disableClose: true, // para evitar que el modal se cierre al hacer clic fuera
-        });
-        // Suscribirse al evento 'afterClosed' para obtener los datos del formulario
-        dialogRef.afterClosed().subscribe((formData): void => {
-            if (formData) {
-                // 'result' contendrá los datos del formulario si el usuario hizo clic en "Guardar"
-                console.log("Datos del formulario recibidos:", formData);
-                // Aca llamar a tu servicio para guardar los datos
-                //this._saveNewEmployee(result);
-            } else {
-                console.log("Formulario de empleado cancelado.");
-            }
-        }); */
-    }
+    onCreateEmployee(): void {}
 
     private _createChips(filterValues: Record<string, unknown>): void {
         this.chips = this._mapToChipsDescription(filterValues);
@@ -321,8 +258,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
         filterValues: Record<string, unknown>,
     ): Chip[] {
         const newChips: Chip[] = [];
-
-        // Helper para buscar un ítem por ID
+        // Helper para buscar un ítem por ID y retornar su descripción
         const findDescriptionById = (
             items: SelectItem[],
             id: number,
@@ -330,7 +266,6 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
             const item = items.find((i: SelectItem): boolean => i.id === id);
             return item ? item.description : null;
         };
-
         // Helper para generar las etiquetas de los chips de forma dinámica
         const getChipLabel = (key: string, value: any): string => {
             switch (key) {
@@ -377,24 +312,20 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
         };
 
         for (const [key, value] of Object.entries(filterValues)) {
-            // Excluimos valores nulos, indefinidos y cadenas vacías para cualquier tipo de filtro.
             if (value === null || value === undefined || value === "") {
                 continue;
             }
 
-            // Se elimina la condición que excluía los valores 'all'. Ahora se generan los chips de "Todos".
             const shouldCreateChip =
                 value !== "all" ||
                 ["position", "country", "gender", "active"].includes(key);
 
-            // Los chips de "Todos" ahora están deshabilitados.
             const isDisabled = value === "all";
 
-            // Lógica específica para el rango de fechas
             if (key === "birthDateRange") {
                 const dateRangeValue = value as DateRangeValue;
                 if (!dateRangeValue.startDate && !dateRangeValue.endDate) {
-                    continue; // Si ambos son nulos, saltamos la iteración.
+                    continue;
                 }
             }
 
@@ -403,116 +334,13 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                     key,
                     label: getChipLabel(key, value),
                     value,
-                    disabled: isDisabled, // Los chips de 'Todos' están deshabilitados
+                    disabled: isDisabled,
                 });
             }
         }
 
         return newChips;
     }
-    /* private _mapToChipsDescription(
-        filterValues: Record<string, unknown>,
-    ): Chip[] {
-        const newChips: Chip[] = [];
-
-        const specialCases = {
-            position: (value: any): string => {
-                if (typeof value === "number") {
-                    const item = this._positions.find(
-                        (position: SelectItem): boolean =>
-                            position.id === value,
-                    );
-                    return item
-                        ? `Puesto: ${item.description}`
-                        : `Puesto: ${value}`;
-                }
-                return "Puesto: Todos";
-            },
-            country: (value: any): string => {
-                if (typeof value === "number") {
-                    const item = this._countries.find(
-                        (country: SelectItem): boolean => country.id === value,
-                    );
-                    return item
-                        ? `Pais: ${item.description}`
-                        : `Pais: ${value}`;
-                }
-                return "Pais: Todos";
-            },
-            gender: (value: any): string => {
-                if (typeof value === "number") {
-                    const item = this._genders.find(
-                        (gender: SelectItem): boolean => gender.id === value,
-                    );
-                    return item
-                        ? `Género: ${item.description}`
-                        : `Género: ${value}`;
-                }
-                return "Género: Todos";
-            },
-            active: (value: any): string => {
-                // Maneja el valor 'all' para el caso de 'Estado'
-                if (value === "all") {
-                    return "Estado: Todos";
-                }
-                return `Estado: ${value ? "Activo" : "Inactivo"}`;
-            },
-        };
-
-        for (const [key, value] of Object.entries(filterValues)) {
-            if (value === null || value === undefined || value === "") {
-                continue;
-            }
-
-            let labelText: string;
-            const isDisabled: boolean = value === "all";
-
-            if (
-                key === "birthDateRange" &&
-                typeof value === "object" &&
-                value !== null
-            ) {
-                const dateRangeValue = value as DateRangeValue;
-                if (dateRangeValue.startDate || dateRangeValue.endDate) {
-                    const formattedStartDate = dateRangeValue.startDate
-                        ? DateTime.fromISO(dateRangeValue.startDate).toFormat(
-                              "dd/MM/yyyy",
-                          )
-                        : "N/A";
-                    const formattedEndDate = dateRangeValue.endDate
-                        ? DateTime.fromISO(dateRangeValue.endDate).toFormat(
-                              "dd/MM/yyyy",
-                          )
-                        : "N/A";
-                    labelText = `Fecha de Nacimiento: ${formattedStartDate} - ${formattedEndDate}`;
-                    newChips.push({
-                        key,
-                        label: labelText,
-                        value,
-                        disabled: isDisabled,
-                    });
-                }
-            } else if (key in specialCases) {
-                const creator = specialCases[key as keyof typeof specialCases];
-                labelText = creator(value);
-                newChips.push({
-                    key,
-                    label: labelText,
-                    value,
-                    disabled: isDisabled,
-                });
-            } else {
-                labelText = `${key}: ${value}`;
-                newChips.push({
-                    key,
-                    label: labelText,
-                    value,
-                    disabled: isDisabled,
-                });
-            }
-        }
-        return newChips;
-    } */
 
     private _mapEmployeesForExport(employees: Employee[]): any[] {
         return employees.map((employee: Employee): any => {
@@ -520,7 +348,6 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
             const formattedBirthDate = birthDateString
                 ? DateTime.fromISO(birthDateString).toFormat("dd/MM/yyyy")
                 : null;
-
             return {
                 id: employee.id,
                 nombre: employee.name || null,
@@ -546,7 +373,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
         this._employeeFilterParams.sortOrder = "asc";
     }
 
-    private _getEmployees(): void {
+    private _reloadGridData(): void {
         this.isLoadingGridData = true;
         this.isLoadingFilterGridData = true;
         this._employeeServices
@@ -585,6 +412,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
             }),
         );
     }
+
     private _getCountries(): Observable<SelectItem[]> {
         return this._countryServices.getCountries().pipe(
             catchError((error: HttpErrorResponse): Observable<SelectItem[]> => {
@@ -596,16 +424,30 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
         );
     }
 
-    private _loadSelects(): Observable<boolean> {
-        return forkJoin({
+    private _loadData(): void {
+        this.isLoadingGridData = true;
+        this.isLoadingFilterGridData = true;
+        this._setEmployeeFilterParameters(); // Inicializa los parámetros de filtro
+        forkJoin({
             positions: this._getPositions(),
             countries: this._getCountries(),
-        }).pipe(
-            map(
-                (results: {
+            employees: this._employeeServices.getEmployees(
+                this._employeeFilterParams,
+            ),
+        })
+            .pipe(
+                finalize((): void => {
+                    this.isLoadingGridData = false;
+                    this.isLoadingFilterGridData = false;
+                    this._cdr.markForCheck();
+                }),
+            )
+            .subscribe({
+                next: (results: {
                     positions: SelectItem[];
                     countries: SelectItem[];
-                }): boolean => {
+                    employees: PaginatedList<Employee>;
+                }): void => {
                     this._positions = results.positions;
                     this._countries = results.countries;
 
@@ -615,23 +457,20 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                     };
                     this._positions.unshift(allItem);
                     this._countries.unshift(allItem);
-                    return true;
+                    this._setGridFilterConfig();
+                    // Mapear y actualizar la grilla con los datos de empleados
+                    const paginatedGridData = this._mapPaginatedListToGridData(
+                        results.employees,
+                    );
+                    this.gridData = paginatedGridData.items;
+                    this._updateGridConfig(paginatedGridData);
                 },
-            ),
-        );
-    }
-
-    private _loadData(): void {
-        this._loadSelects().subscribe((): void => {
-            // si cargaron los Select hacemos el resto
-            this._setGridFilterConfig();
-            this._setEmployeeFilterParameters();
-            this._getEmployees();
-
-            /* this._alertService.showInfo(
-                "Si la resolucion de pantalla es chica la grilla muestra un scroll horizontal.",
-            ); */
-        });
+                error: (error: HttpErrorResponse): void => {
+                    this._alertService.showDanger(
+                        `Error al cargar datos. ${error.statusText}`,
+                    );
+                },
+            });
     }
 
     private _mapPaginatedListToGridData(
@@ -651,7 +490,6 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                     gender: employee.gender?.description,
                     country: employee.country?.description,
                 };
-
                 if (typeof employee.birthDate === "string") {
                     const luxonDate = DateTime.fromISO(
                         employee["birthDate"] as string,
@@ -662,7 +500,6 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                 } else {
                     gridData["birthDate"] = employee.birthDate;
                 }
-
                 return gridData;
             },
         );
@@ -687,7 +524,6 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                 label: "Eliminar",
                 icon: "delete_forever",
                 action: (id: number): void => this._deleteEmployee(id),
-                // Condición de ejemplo: solo eliminable si el usuario esta activo
                 condition: (): boolean => employee.active === true,
             },
         ];
@@ -695,41 +531,11 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
 
     private _editEmployee(id: number): void {
         console.log(`Editando empleado con ID: ${id}`);
-        // Aquí iría tu lógica para navegar a la página de edición o abrir un modal
-        // Por ejemplo: this._router.navigate(['/employees', id, 'edit']);
     }
 
     private _deleteEmployee(id: number): void {
-        // QUE PONGA EL EMPLEADO COMO INACTIVO NO LO BORRE
+        // no eliminar pasasr el empleado de activo a inactivo
         console.log(`Intentando eliminar empleado con ID: ${id}`);
-        // Idealmente, aquí tendrías un diálogo de confirmación antes de la eliminación real.
-        //this.isLoadingData = true;
-        /* this._employeeServices
-            .deleteEmployee(id)
-            .pipe(
-                finalize((): void => {
-                    // Tipo explícito para finalize
-                    this.isLoadingData = false;
-                    this._cdr.markForCheck(); // Forzar detección de cambios después de la eliminación
-                }),
-            )
-            .subscribe({
-                next: (): void => {
-                    // Tipo explícito para next
-                    console.log(`El registro con ID ${id} ha sido eliminado.`);
-                    // Después de eliminar, recargamos la grilla para reflejar el cambio.
-                    // Podrías también solo quitar el elemento de `gridData` si el backend confirma la eliminación.
-                    this._getEmployees();
-                },
-                error: (error: any): void => {
-                    // Tipo explícito para error
-                    console.error(
-                        `Error al eliminar el registro con ID ${id}:`,
-                        error,
-                    );
-                    // Manejar el error, mostrar un mensaje al usuario, etc.
-                },
-            }); */
     }
 
     private _updateGridConfigOnSortChange(sortEvent: Sort): void {
@@ -754,19 +560,16 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     ): void {
         const { totalCount, pageIndex, pageSize } = paginatedListGridData;
         const { sortColumn = "", sortOrder = "" } = this._employeeFilterParams;
-        // Se crea el objeto de paginación
         const paginationConfig = {
             ...(this.gridConfig.hasPaginator || this._defaultPaginatorOptions),
             totalCount,
             pageSize,
             pageIndex,
         };
-        // Se crea el objeto de ordenamiento
         const orderByConfig = {
             columnName: sortColumn,
             direction: sortOrder as "asc" | "desc" | "",
         };
-        // Actualiza la configuración de la grilla con los nuevos datos cambiando la referencia ...this.gridConfig
         this.gridConfig = {
             ...this.gridConfig,
             hasPaginator: paginationConfig,
@@ -777,17 +580,13 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     private _mapToEmployeeFilterParams(obj: unknown): EmployeeFilterParams {
         const employeeFilterParams: EmployeeFilterParams = {};
         const source = obj as Record<string, unknown>;
-
         for (const key in source) {
             const value = source[key];
-            // 1. ignorars campos con valores "all" o "Todos"
             if (["active", "position", "gender", "country"].includes(key)) {
                 if (value === "all" || value === "Todos" || value === "") {
                     continue;
                 }
             }
-
-            // 2. Para rango de fechas en json server desde(birthDate_gte) hasta (birthDate_lte)
             if (key === "birthDateRange" && value) {
                 const dateRangeValue = value as {
                     startDate: Date | string | null;
@@ -813,12 +612,10 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                 }
                 continue;
             }
-            // 3. Manejar todos los demás campos name, surname...
             if (value !== null && value !== undefined) {
                 (employeeFilterParams as any)[key] = value;
             }
         }
-
         return employeeFilterParams;
     }
 
@@ -833,7 +630,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                 },
                 { name: "id", label: "ID" },
                 { name: "name", label: "Nombre" },
-                { name: "surname", label: "Apellido" /*isSortable: false*/ },
+                { name: "surname", label: "Apellido" },
                 { name: "birthDate", label: "Nacimiento" },
                 { name: "gender", label: "genero", isSortable: false },
                 { name: "position", label: "Puesto" },
@@ -845,10 +642,10 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                     align: "center",
                 },
                 {
-                    name: "elipsisActions", // Este es el nombre de la propiedad en GridData
+                    name: "elipsisActions",
                     align: "center",
                     isSortable: false,
-                    type: "elipsis", // Indica que es la columna de elipsis
+                    type: "elipsis",
                 },
             ],
             hasPaginator: {
@@ -856,7 +653,6 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                 pageSizeOptions: [25, 50],
                 totalCount: 0,
                 pageIndex: 0,
-                // isServerSide: false, // En caso que el orden de la data no la maneje el backend
             },
             OrderBy: {
                 columnName: this._employeeFilterParams.sortColumn || "id",
@@ -942,23 +738,13 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                 );
                 return;
             }
-
             if (filter.fieldType === "select") {
-                // Inicializamos los select con 'all'
                 this.gridFilterForm.addControl(
                     filter.fieldName,
                     new FormControl("all"),
                 );
                 return;
             }
-            // si queremos un input de fecha sin rango usamos "date"
-            /* if (filter.fieldType === "date") {
-                this.gridFilterForm.addControl(
-                    filter.fieldName,
-                    new FormControl(null),
-                );
-            } */
-
             if (filter.fieldType === "dateRange") {
                 this.gridFilterForm.addControl(
                     filter.fieldName,
@@ -975,7 +761,6 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
         this._breadcrumbService.setBreadcrumbs([
             { label: "Inicio", path: "/" },
             { label: "Grilla Full", path: "/employees" },
-            // { label: employeeName, path: `/employees/${this.employeeId}` }
         ]);
     }
 }

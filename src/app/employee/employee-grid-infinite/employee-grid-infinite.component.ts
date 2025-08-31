@@ -155,6 +155,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (processedData: any[]): void => {
                     const fileName = "Empleados.xlsx";
+                    // hago simular tiempo de descarga con setTimeout porque json-server responde muy rapido por ser local
                     setTimeout((): void => {
                         this._exportService.exportToExcel(
                             processedData,
