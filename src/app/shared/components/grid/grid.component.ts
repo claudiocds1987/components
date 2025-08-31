@@ -118,9 +118,8 @@ export class GridComponent
 
     * hasSorting: Configuración del ordenamiento (sorting).
         - 'isServerSide: true': El ordenamiento se delega al backend. La grilla solo emite
-        el evento 'sortChange' con los parámetros de ordenamiento.
-        - 'isServerSide: false': La grilla ordena los datos localmente en el cliente.
-        Esta es la configuración por defecto si la propiedad 'hasSorting' no se define.
+        el evento 'sortChange' con los parámetros de ordenamiento. Esta es la configuración por defecto si la propiedad 'hasSorting' no se define.
+        - 'isServerSide: false': La grilla ordena los datos localmente en el cliente.   
     */
 
     @Input() gridConfig!: GridConfiguration;
