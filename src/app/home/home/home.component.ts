@@ -19,7 +19,7 @@ export class HomeComponent {
                 title: "Grilla paginada dinámica con filtro dinámico y chips",
                 description: "Gestión y visualización de empleados.",
                 resource: "",
-                path: "/employee-grid",
+                path: "/employee-grid-pagination",
             },
             {
                 id: "2",

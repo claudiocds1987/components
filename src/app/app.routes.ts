@@ -8,7 +8,10 @@ export const routes: Routes = [
     { path: "", component: HomeComponent },
 
     // Route for the paginated employee grid
-    { path: "employee-grid", component: EmployeeGridPaginationComponent },
+    {
+        path: "employee-grid-pagination",
+        component: EmployeeGridPaginationComponent,
+    },
 
     // Route for the infinite scroll employee grid
     {
