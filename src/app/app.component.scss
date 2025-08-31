@@ -15,6 +15,15 @@
     letter-spacing: 1px;
     height: 64px; /* Define altura específica del banner */
     box-sizing: border-box; /* Incluye padding en la altura total */
+    display: flex;
+    justify-content: center; /* Centra horizontalmente los elementos hijos */
+    align-items: center; /* Centra verticalmente los elementos hijos */
+    img {
+        position: absolute;
+        left: 1rem;
+        width: 32px;
+        height: 32px;
+    }
 }
 
 body,
