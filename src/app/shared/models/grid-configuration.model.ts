@@ -10,11 +10,12 @@ export interface ElipsisAction {
 }
 
 export interface Column {
-    name: string; // Nombre de la columna que aparece en el header de la tabla
+    name: string; // "(Nombre de la columna que aparece en el header) Es obligatorio porque en grid.component mat-table requiere que todas las columnas definidas tengan un identificador (matColumnDef)
     width?: string;
     align?: "left" | "center" | "right";
     isSortable?: boolean;
-    headerTooltip?: string; // Propiedad para el tooltip de la cabecera de la columna
+    hasHeader?: boolean; // para indicar si la columna tiene un header visible
+    headerTooltip?: string; // Para mostrar tooltip en la cabecera de la columna en caso de necesitarlo
     // propiedad para el icono de la cabecera de la columna (si aplica, ej. 'more_vert')
     headerIcon?: string;
     //label?: string; // Añadido para etiquetas de columna personalizadas
@@ -23,7 +24,6 @@ export interface Column {
     // para que muestra una imagen como en el caso de las imagenes el empleado
     // si "type" es "component" lalogica del html va estar preparada para llamar a un componente en el html.
     type?: "img" | "elipsis" | "component";
-    hasHeader?: boolean; // para indicar si la columna tiene un header visible
 }
 
 export interface PaginationConfig {
