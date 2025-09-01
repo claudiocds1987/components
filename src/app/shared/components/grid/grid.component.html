@@ -1,25 +1,24 @@
-<div
-    *ngIf="gridConfig?.hasInputSearch && isLoading"
-    class="skeleton-search-container"
->
-    <div class="skeleton-search-label">Buscar</div>
-    <div class="skeleton-search-input"></div>
-</div>
-
-<div *ngIf="isLoading" class="skeleton-table">
-    <div class="skeleton-header-row">
-        <div class="skeleton-header-cell" *ngFor="let col of columns"></div>
+<ng-container *ngIf="isLoading">
+    <div *ngIf="gridConfig?.hasInputSearch" class="skeleton-search-container">
+        <div class="skeleton-search-label">Buscar</div>
+        <div class="skeleton-search-input"></div>
     </div>
 
-    <div
-        class="skeleton-row"
-        *ngFor="let i of [].constructor(paginatorConfig?.pageSize || 25)"
-    >
-        <div class="skeleton-cell" *ngFor="let col of columns">
-            <div class="skeleton-line"></div>
+    <div *ngIf="isLoading" class="skeleton-table">
+        <div class="skeleton-header-row">
+            <div class="skeleton-header-cell" *ngFor="let col of columns"></div>
+        </div>
+
+        <div
+            class="skeleton-row"
+            *ngFor="let i of [].constructor(paginatorConfig?.pageSize || 25)"
+        >
+            <div class="skeleton-cell" *ngFor="let col of columns">
+                <div class="skeleton-line"></div>
+            </div>
         </div>
     </div>
-</div>
+</ng-container>
 <!-- EL INPUT SEARCH SOLO SE MUESTRA CUANDO LA GRILLA NO TIENE MAT-PAGINADOR -->
 <ng-container
     [ngTemplateOutlet]="
@@ -100,174 +99,179 @@
     </div>
 </ng-template>
 
-<div class="table-container" #scrollContainer>
-    <table
-        mat-table
-        [dataSource]="dataSource"
-        matSort
-        (matSortChange)="onSortChange($event)"
-        class="table"
-        [class.table-hidden]="isLoading || dataSource.data.length === 0"
-    >
-        <!-- Definición de columnas dinámicas -->
-        <ng-container
-            *ngFor="let col of columns; trackBy: trackColumnByName"
-            [matColumnDef]="col.name"
+<ng-container *ngIf="!isLoading">
+    <div class="table-container" #scrollContainer>
+        <table
+            mat-table
+            [dataSource]="dataSource"
+            matSort
+            (matSortChange)="onSortChange($event)"
+            class="table"
         >
-            <!-- Encabezado de la columna -->
-            <th
-                mat-header-cell
-                *matHeaderCellDef
-                class="grid-cell"
-                [style.width]="col.width || 'auto'"
-                [style.flex]="col.width ? 'none' : '1'"
-                [style.text-align]="col.align || 'left'"
-                [matTooltip]="col.headerTooltip ? col.headerTooltip : ''"
+            <!-- Definición de columnas dinámicas -->
+            <ng-container
+                *ngFor="let col of columns; trackBy: trackColumnByName"
+                [matColumnDef]="col.name"
             >
-                <ng-container *ngIf="col.hasHeader !== false">
-                    <ng-container [ngSwitch]="col.type">
-                        <ng-container *ngSwitchCase="'elipsis'">
-                            <span *ngIf="col.name">{{ col.name }}</span>
-                            <mat-icon *ngIf="col.headerIcon">{{
-                                col.headerIcon
-                            }}</mat-icon>
-                        </ng-container>
-                        <ng-container *ngSwitchDefault>
-                            <ng-container
-                                *ngIf="col.isSortable; else noSortableHeader"
-                            >
-                                <span
-                                    style="
-                                        white-space: nowrap;
-                                        overflow: hidden;
-                                        text-overflow: ellipsis;
-                                    "
-                                    [mat-sort-header]="col.name"
-                                    [ngStyle]="{
-                                        display: 'flex',
-                                        'justify-content':
-                                            col.align === 'center'
-                                                ? 'center'
-                                                : col.align === 'right'
-                                                  ? 'flex-end'
-                                                  : 'flex-start',
-                                    }"
-                                >
-                                    {{ col.name | titlecase }}
-                                </span>
-                            </ng-container>
-                            <ng-template #noSortableHeader>
-                                {{ col.name | titlecase }}
-                            </ng-template>
-                        </ng-container>
-                    </ng-container>
-                </ng-container>
-            </th>
-
-            <!-- Celda de la columna -->
-            <td
-                mat-cell
-                *matCellDef="let row"
-                class="grid-cell"
-                [style.width]="col.width || 'auto'"
-                [style.text-align]="col.align || 'left'"
-                [ngStyle]="{
-                    'text-overflow':
-                        col.type === 'elipsis' ? 'clip' : 'ellipsis',
-                    overflow: 'hidden',
-                    'white-space': 'nowrap',
-                }"
-            >
-                <ng-container [ngSwitch]="col.type">
-                    <ng-container *ngSwitchCase="'img'">
-                        <img
-                            [src]="row['imgUrl']"
-                            alt="Imagen"
-                            class="table-img"
-                        />
-                    </ng-container>
-
-                    <ng-container *ngSwitchCase="'elipsis'">
-                        <button
-                            mat-icon-button
-                            [matMenuTriggerFor]="elipsisMenu"
-                            aria-label="Más opciones"
-                        >
-                            <mat-icon color="primary">more_vert</mat-icon>
-                        </button>
-                        <mat-menu #elipsisMenu="matMenu">
-                            <ng-container
-                                *ngFor="let action of row['elipsisActions']"
-                            >
-                                <button
-                                    mat-menu-item
-                                    *ngIf="
-                                        action.condition
-                                            ? action.condition(row)
-                                            : true
-                                    "
-                                    (click)="action.action(row.id)"
-                                >
-                                    <mat-icon *ngIf="action.icon">{{
-                                        action.icon
-                                    }}</mat-icon>
-                                    <span>{{ action.label }}</span>
-                                </button>
-                            </ng-container>
-                        </mat-menu>
-                    </ng-container>
-
-                    <ng-container *ngSwitchDefault>
-                        <ng-container [ngSwitch]="col.style">
-                            <ng-container *ngSwitchCase="'status-circle'">
-                                <span
-                                    class="status-circle"
-                                    [ngClass]="{
-                                        'status-circle-active': row[col.name],
-                                        'status-circle-inactive':
-                                            !row[col.name],
-                                    }"
-                                    [matTooltip]="
-                                        getTooltipValue(row, col.name)
-                                    "
-                                ></span>
+                <!-- Encabezado de la columna -->
+                <th
+                    mat-header-cell
+                    *matHeaderCellDef
+                    class="grid-cell"
+                    [style.width]="col.width || 'auto'"
+                    [style.flex]="col.width ? 'none' : '1'"
+                    [style.text-align]="col.align || 'left'"
+                    [matTooltip]="col.headerTooltip ? col.headerTooltip : ''"
+                >
+                    <ng-container *ngIf="col.hasHeader !== false">
+                        <ng-container [ngSwitch]="col.type">
+                            <ng-container *ngSwitchCase="'elipsis'">
+                                <span *ngIf="col.name">{{ col.name }}</span>
+                                <mat-icon *ngIf="col.headerIcon">{{
+                                    col.headerIcon
+                                }}</mat-icon>
                             </ng-container>
                             <ng-container *ngSwitchDefault>
-                                <span
-                                    [matTooltip]="
-                                        getLargeTooltipValue(row, col.name)
+                                <ng-container
+                                    *ngIf="
+                                        col.isSortable;
+                                        else noSortableHeader
                                     "
                                 >
-                                    {{ getTruncatedValue(row, col.name) }}
-                                </span>
+                                    <span
+                                        style="
+                                            white-space: nowrap;
+                                            overflow: hidden;
+                                            text-overflow: ellipsis;
+                                        "
+                                        [mat-sort-header]="col.name"
+                                        [ngStyle]="{
+                                            display: 'flex',
+                                            'justify-content':
+                                                col.align === 'center'
+                                                    ? 'center'
+                                                    : col.align === 'right'
+                                                      ? 'flex-end'
+                                                      : 'flex-start',
+                                        }"
+                                    >
+                                        {{ col.name | titlecase }}
+                                    </span>
+                                </ng-container>
+                                <ng-template #noSortableHeader>
+                                    {{ col.name | titlecase }}
+                                </ng-template>
                             </ng-container>
                         </ng-container>
                     </ng-container>
-                </ng-container>
-            </td>
-        </ng-container>
+                </th>
 
-        <tr
-            mat-header-row
-            class="header"
-            *matHeaderRowDef="columnNames; sticky: 'sticky'"
-        ></tr>
-        <tr mat-row *matRowDef="let row; columns: columnNames"></tr>
-    </table>
-    <!-- Mostrar FeedbackComponent cuando no hay datos y no está cargando -->
-    <app-feedback
-        *ngIf="!isLoading && dataSource.data.length === 0"
-        [imageUrl]="'assets/no-result.svg'"
-    ></app-feedback>
-</div>
+                <!-- Celda de la columna -->
+                <td
+                    mat-cell
+                    *matCellDef="let row"
+                    class="grid-cell"
+                    [style.width]="col.width || 'auto'"
+                    [style.text-align]="col.align || 'left'"
+                    [ngStyle]="{
+                        'text-overflow':
+                            col.type === 'elipsis' ? 'clip' : 'ellipsis',
+                        overflow: 'hidden',
+                        'white-space': 'nowrap',
+                    }"
+                >
+                    <ng-container [ngSwitch]="col.type">
+                        <ng-container *ngSwitchCase="'img'">
+                            <img
+                                [src]="row['imgUrl']"
+                                alt="Imagen"
+                                class="table-img"
+                            />
+                        </ng-container>
 
-<mat-paginator
-    class="paginator"
-    *ngIf="paginatorConfig && !isLoading && !gridConfig.hasInfiniteScroll"
-    [pageSize]="paginatorConfig.pageSize"
-    [pageSizeOptions]="paginatorConfig.pageSizeOptions"
-    [showFirstLastButtons]="true"
-    [length]="paginatorConfig.totalCount"
-    [pageIndex]="paginatorConfig.pageIndex"
-    (page)="onPaginatorPageChange($event)"
-></mat-paginator>
+                        <ng-container *ngSwitchCase="'elipsis'">
+                            <button
+                                mat-icon-button
+                                [matMenuTriggerFor]="elipsisMenu"
+                                aria-label="Más opciones"
+                            >
+                                <mat-icon color="primary">more_vert</mat-icon>
+                            </button>
+                            <mat-menu #elipsisMenu="matMenu">
+                                <ng-container
+                                    *ngFor="let action of row['elipsisActions']"
+                                >
+                                    <button
+                                        mat-menu-item
+                                        *ngIf="
+                                            action.condition
+                                                ? action.condition(row)
+                                                : true
+                                        "
+                                        (click)="action.action(row.id)"
+                                    >
+                                        <mat-icon *ngIf="action.icon">{{
+                                            action.icon
+                                        }}</mat-icon>
+                                        <span>{{ action.label }}</span>
+                                    </button>
+                                </ng-container>
+                            </mat-menu>
+                        </ng-container>
+
+                        <ng-container *ngSwitchDefault>
+                            <ng-container [ngSwitch]="col.style">
+                                <ng-container *ngSwitchCase="'status-circle'">
+                                    <span
+                                        class="status-circle"
+                                        [ngClass]="{
+                                            'status-circle-active':
+                                                row[col.name],
+                                            'status-circle-inactive':
+                                                !row[col.name],
+                                        }"
+                                        [matTooltip]="
+                                            getTooltipValue(row, col.name)
+                                        "
+                                    ></span>
+                                </ng-container>
+                                <ng-container *ngSwitchDefault>
+                                    <span
+                                        [matTooltip]="
+                                            getLargeTooltipValue(row, col.name)
+                                        "
+                                    >
+                                        {{ getTruncatedValue(row, col.name) }}
+                                    </span>
+                                </ng-container>
+                            </ng-container>
+                        </ng-container>
+                    </ng-container>
+                </td>
+            </ng-container>
+
+            <tr
+                mat-header-row
+                class="header"
+                *matHeaderRowDef="columnNames; sticky: 'sticky'"
+            ></tr>
+            <tr mat-row *matRowDef="let row; columns: columnNames"></tr>
+        </table>
+        <!-- Mostrar FeedbackComponent cuando no hay datos y no está cargando -->
+        <app-feedback
+            *ngIf="dataSource.data.length === 0"
+            [imageUrl]="'assets/no-result.svg'"
+        ></app-feedback>
+    </div>
+
+    <mat-paginator
+        class="paginator"
+        *ngIf="paginatorConfig && !gridConfig.hasInfiniteScroll"
+        [pageSize]="paginatorConfig.pageSize"
+        [pageSizeOptions]="paginatorConfig.pageSizeOptions"
+        [showFirstLastButtons]="true"
+        [length]="paginatorConfig.totalCount"
+        [pageIndex]="paginatorConfig.pageIndex"
+        (page)="onPaginatorPageChange($event)"
+    ></mat-paginator>
+</ng-container>
