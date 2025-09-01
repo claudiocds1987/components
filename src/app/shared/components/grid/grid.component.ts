@@ -176,7 +176,6 @@ export class GridComponent
 
         if (changes["isLoading"]) {
             this.isLoading = changes["isLoading"].currentValue;
-            console.log("isLoading changed to: ", this.isLoading);
         }
     }
 
@@ -190,13 +189,7 @@ export class GridComponent
             if (!this.gridConfig.hasInfiniteScroll) {
                 this._setupPaginator();
             }
-            console.log("Setting up scroll listener...");
-            console.log(
-                "hasInfiniteScroll: ",
-                this.gridConfig?.hasInfiniteScroll,
-                "isLoading: ",
-                this.isLoading,
-            );
+
             this._setupScrollListener(); // Configura el listener de scroll
         });
     }
@@ -398,11 +391,6 @@ export class GridComponent
     }
 
     private _setupScrollListener(): void {
-        console.log(
-            "_setupScrollListener called: ",
-            this.gridConfig?.hasInfiniteScroll,
-            this.scrollContainer,
-        );
         // Limpiar cualquier listener previo para evitar duplicados
         if (
             this._scrollListener &&
@@ -414,11 +402,9 @@ export class GridComponent
                 this._scrollListener,
             );
             this._scrollListener = undefined;
-            console.log("_setupScrollListener Entra aca 1");
         }
 
         if (this.gridConfig?.hasInfiniteScroll && this.scrollContainer) {
-            console.log("_setupScrollListener Entra aca 2");
             const nativeElement = this.scrollContainer.nativeElement;
             this._scrollListener = this._ngZone.runOutsideAngular(
                 (): (() => void) => {
@@ -430,7 +416,6 @@ export class GridComponent
     }
 
     private _onScroll(): void {
-        console.log("Scroll event detected");
         if (!this.gridConfig?.hasInfiniteScroll || this.isLoading) {
             return;
         }

@@ -404,7 +404,6 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     private _getPositions(): Observable<SelectItem[]> {
         return this._positionServices.getPositions().pipe(
             catchError((error: HttpErrorResponse): Observable<SelectItem[]> => {
-                console.log("error: ", error);
                 this._alertService.showDanger(
                     `Error al cargar la lista de puestos. ${error.statusText}`,
                 );

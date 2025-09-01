@@ -144,7 +144,6 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
     }
 
     onExportToExcel(): void {
-        console.log("falta desarrollar exportacion de Excel");
         this._employeeServices
             .getEmployeesForExportJsonServer(this._employeeFilterParams)
             .pipe(
