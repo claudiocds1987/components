@@ -623,21 +623,21 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
         const config = createDefaultGridConfiguration({
             columns: [
                 {
-                    name: "foto",
+                    name: "imgUrl",
                     type: "img",
-                    label: "img",
                     isSortable: false,
+                    hasHeader: false,
                 },
-                { name: "id", label: "ID" },
-                { name: "name", label: "Nombre" },
-                { name: "surname", label: "Apellido" },
-                { name: "birthDate", label: "Nacimiento" },
-                { name: "gender", label: "genero", isSortable: false },
-                { name: "position", label: "Puesto" },
-                { name: "country", label: "Pais" },
+                { name: "id" },
+                { name: "name" /*headerTooltip: "nombre completo"*/ },
+                { name: "surname" },
+                { name: "birthDate" },
+                { name: "gender", isSortable: false },
+                { name: "position" },
+                { name: "country" },
                 {
                     name: "active",
-                    label: "Activo",
+
                     style: "status-circle",
                     align: "center",
                 },
@@ -646,6 +646,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                     align: "center",
                     isSortable: false,
                     type: "elipsis",
+                    hasHeader: false,
                 },
             ],
             hasPaginator: {

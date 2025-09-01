@@ -122,41 +122,45 @@
                 [style.width]="col.width || 'auto'"
                 [style.flex]="col.width ? 'none' : '1'"
                 [style.text-align]="col.align || 'left'"
-                [matTooltip]="col.hasHeaderTooltip ? col.label || col.name : ''"
+                [matTooltip]="col.headerTooltip ? col.headerTooltip : ''"
             >
-                <!-- Si es una columna de elipsis, -->
-                <ng-container *ngIf="col.type === 'elipsis'">
-                    <span *ngIf="col.label">{{ col.label }}</span>
-                    <mat-icon *ngIf="col.headerIcon">{{
-                        col.headerIcon
-                    }}</mat-icon>
-                </ng-container>
-                <!-- Si es una columna normal, mostrar texto y sortable -->
-                <ng-container *ngIf="col.type !== 'elipsis'">
-                    <ng-container *ngIf="col.isSortable; else noSortableHeader">
-                        <span
-                            style="
-                                white-space: nowrap;
-                                overflow: hidden;
-                                text-overflow: ellipsis;
-                            "
-                            [mat-sort-header]="col.name"
-                            [ngStyle]="{
-                                display: 'flex',
-                                'justify-content':
-                                    col.align === 'center'
-                                        ? 'center'
-                                        : col.align === 'right'
-                                          ? 'flex-end'
-                                          : 'flex-start',
-                            }"
-                        >
-                            {{ col.label || col.name | titlecase }}
-                        </span>
+                <ng-container *ngIf="col.hasHeader !== false">
+                    <ng-container [ngSwitch]="col.type">
+                        <ng-container *ngSwitchCase="'elipsis'">
+                            <span *ngIf="col.name">{{ col.name }}</span>
+                            <mat-icon *ngIf="col.headerIcon">{{
+                                col.headerIcon
+                            }}</mat-icon>
+                        </ng-container>
+                        <ng-container *ngSwitchDefault>
+                            <ng-container
+                                *ngIf="col.isSortable; else noSortableHeader"
+                            >
+                                <span
+                                    style="
+                                        white-space: nowrap;
+                                        overflow: hidden;
+                                        text-overflow: ellipsis;
+                                    "
+                                    [mat-sort-header]="col.name"
+                                    [ngStyle]="{
+                                        display: 'flex',
+                                        'justify-content':
+                                            col.align === 'center'
+                                                ? 'center'
+                                                : col.align === 'right'
+                                                  ? 'flex-end'
+                                                  : 'flex-start',
+                                    }"
+                                >
+                                    {{ col.name | titlecase }}
+                                </span>
+                            </ng-container>
+                            <ng-template #noSortableHeader>
+                                {{ col.name | titlecase }}
+                            </ng-template>
+                        </ng-container>
                     </ng-container>
-                    <ng-template #noSortableHeader>
-                        {{ col.label || col.name | titlecase }}
-                    </ng-template>
                 </ng-container>
             </th>
 
