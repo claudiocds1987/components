@@ -8,8 +8,8 @@
     box-sizing: border-box;
 
     .feedback-image {
-        width: 150px;
-        height: 150px;
+        width: auto;
+        height: auto;
         object-fit: contain; // Asegura que la imagen se ajuste sin distorsionarse
         margin-bottom: 15px;
     }

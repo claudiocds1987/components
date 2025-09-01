@@ -131,7 +131,7 @@ export class GridComponent
     @Output() exportExcel = new EventEmitter<void>();
     @Output() chipRemoved = new EventEmitter<Chip>();
     @Output() createButtonClicked = new EventEmitter<void>();
-    @Output() inifinteScroll = new EventEmitter<void>(); // Nuevo evento para scroll infinito
+    @Output() infiniteScroll = new EventEmitter<void>(); // Nuevo evento para scroll infinito
 
     dataSource = new MatTableDataSource<GridData>();
     private _ngZone = inject(NgZone);
@@ -176,6 +176,7 @@ export class GridComponent
 
         if (changes["isLoading"]) {
             this.isLoading = changes["isLoading"].currentValue;
+            console.log("isLoading changed to: ", this.isLoading);
         }
     }
 
@@ -189,6 +190,13 @@ export class GridComponent
             if (!this.gridConfig.hasInfiniteScroll) {
                 this._setupPaginator();
             }
+            console.log("Setting up scroll listener...");
+            console.log(
+                "hasInfiniteScroll: ",
+                this.gridConfig?.hasInfiniteScroll,
+                "isLoading: ",
+                this.isLoading,
+            );
             this._setupScrollListener(); // Configura el listener de scroll
         });
     }
@@ -390,6 +398,11 @@ export class GridComponent
     }
 
     private _setupScrollListener(): void {
+        console.log(
+            "_setupScrollListener called: ",
+            this.gridConfig?.hasInfiniteScroll,
+            this.scrollContainer,
+        );
         // Limpiar cualquier listener previo para evitar duplicados
         if (
             this._scrollListener &&
@@ -401,9 +414,11 @@ export class GridComponent
                 this._scrollListener,
             );
             this._scrollListener = undefined;
+            console.log("_setupScrollListener Entra aca 1");
         }
 
         if (this.gridConfig?.hasInfiniteScroll && this.scrollContainer) {
+            console.log("_setupScrollListener Entra aca 2");
             const nativeElement = this.scrollContainer.nativeElement;
             this._scrollListener = this._ngZone.runOutsideAngular(
                 (): (() => void) => {
@@ -415,6 +430,7 @@ export class GridComponent
     }
 
     private _onScroll(): void {
+        console.log("Scroll event detected");
         if (!this.gridConfig?.hasInfiniteScroll || this.isLoading) {
             return;
         }
@@ -431,7 +447,7 @@ export class GridComponent
 
             if (this.data.length < totalCount) {
                 this._ngZone.run((): void => {
-                    this.inifinteScroll.emit();
+                    this.infiniteScroll.emit();
                 });
             }
         }

@@ -9,7 +9,8 @@
     min-height: 0; // Permite que el grid se reduzca si es necesario
     align-items: stretch; // Para que ambos elementos tengan la misma altura
     //height: 500px;
-    height: auto;
+    //height: auto;
+    //max-height: 1200px;
 
     // Estilo para el componente de chips para que ocupe todas las columnas
     app-chips {
