@@ -136,6 +136,10 @@ export class EmployeeService {
             );
     }
 
+    getEmployeesAll(): Observable<Employee[]> {
+        return this._http.get<Employee[]>(this.apiUrl);
+    }
+
     getEmployeesForExportJsonServer(
         params: EmployeeFilterParams,
     ): Observable<Employee[]> {

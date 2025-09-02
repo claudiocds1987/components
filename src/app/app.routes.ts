@@ -2,21 +2,22 @@ import { Routes } from "@angular/router";
 import { EmployeeGridPaginationComponent } from "./employee/employee-grid-pagination/employee-grid-pagination.component";
 import { EmployeeGridInfiniteComponent } from "./employee/employee-grid-infinite/employee-grid-infinite.component";
 import { HomeComponent } from "./home/home/home.component";
+import { EmployeeGridAllComponent } from "./employee/employee-grid-all/employee-grid-all.component";
 
 export const routes: Routes = [
     // Route for the main menu page
     { path: "", component: HomeComponent },
-
-    // Route for the paginated employee grid
     {
         path: "employee-grid-pagination",
         component: EmployeeGridPaginationComponent,
     },
-
-    // Route for the infinite scroll employee grid
     {
         path: "employee-grid-infinite",
         component: EmployeeGridInfiniteComponent,
+    },
+    {
+        path: "employee-grid-all",
+        component: EmployeeGridAllComponent,
     },
 
     /* { 

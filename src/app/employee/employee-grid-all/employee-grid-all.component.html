@@ -1,0 +1,11 @@
+<app-breadcrumb></app-breadcrumb>
+<app-alert></app-alert>
+<div class="employee-grid-all-container">
+    <app-grid
+        [gridConfig]="gridConfig"
+        [data]="gridData"
+        [isLoading]="isLoadingGridData"
+        (exportExcel)="onExportToExcel()"
+        (createButtonClicked)="onCreateEmployee()"
+    ></app-grid>
+</div>

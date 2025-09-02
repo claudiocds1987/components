@@ -28,6 +28,13 @@ export class HomeComponent {
                 resource: "",
                 path: "employee-grid-infinite",
             },
+            {
+                id: "3",
+                title: "Grilla no paginada",
+                description: "Gestión y visualización de empleados.",
+                resource: "",
+                path: "employee-grid-all",
+            },
         ];
     }
 }
