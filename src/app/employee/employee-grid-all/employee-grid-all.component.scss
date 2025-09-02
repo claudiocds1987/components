@@ -1,0 +1,10 @@
+.employee-grid-all-container {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    width: 100%; // Ocupa todo el ancho disponible
+    flex: 1; // Ocupa todo el espacio disponible del host
+    height: 500px;
+    align-items: stretch; // Para que ambos elementos tengan la misma altura
+}

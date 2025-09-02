@@ -164,6 +164,9 @@ export class GridComponent
                 }
                 this._updatePaginatorForClientSide();
             }
+            if (this.paginatorConfig && !this.paginatorConfig.isServerSide) {
+                this._updatePaginatorForClientSide();
+            }
         }
 
         if (changes["config"]) {
@@ -271,6 +274,13 @@ export class GridComponent
     }
 
     private _setupSorting(): void {
+        if (!this.sort || this.gridConfig?.hasSorting?.isServerSide) {
+            return;
+        }
+        this.dataSource.sort = this.sort;
+    }
+
+    /* private _setupSorting(): void {
         if (!this.sort) {
             return;
         }
@@ -284,7 +294,7 @@ export class GridComponent
                 );
             });
         }
-    }
+    } */
 
     private _setupPaginator(): void {
         if (!this.paginator) {
