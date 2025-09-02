@@ -32,7 +32,7 @@ import {
 } from "@angular/material/paginator";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
-import { take } from "rxjs";
+
 import { MatTooltipModule } from "@angular/material/tooltip";
 
 import { MatMenuModule } from "@angular/material/menu";
@@ -104,23 +104,26 @@ El comportamiento se define a través del objeto @Input() config.
 export class GridComponent
     implements OnInit, AfterViewInit, OnChanges, OnDestroy
 {
-    @ViewChild(MatSort) sort!: MatSort;
-    @ViewChild(MatPaginator) paginator!: MatPaginator;
-    @ViewChild("scrollContainer") scrollContainer!: ElementRef; // Referencia al div de scroll
-    /**
-    NOTA: EN gridConfig HAY DOS PROPIEDADES IMPORTANTES:
-
-    *  hasPaginator: Indica si la grilla debe tener paginación.
-        - 'false': No muestra paginador.
-        - 'PaginationConfig': Habilita la paginación. 'isServerSide' dentro de esta configuración
-        determina si la paginación se maneja localmente por la grilla (false) o si se delega al backend (true).
-        Si la propiedad HasPaginator no se defina por defecto es false.
-
-    * hasSorting: Configuración del ordenamiento (sorting).
-        - 'isServerSide: true': El ordenamiento se delega al backend. La grilla solo emite
-        el evento 'sortChange' con los parámetros de ordenamiento. Esta es la configuración por defecto si la propiedad 'hasSorting' no se define.
-        - 'isServerSide: false': La grilla ordena los datos localmente en el cliente.   
-    */
+    @ViewChild(MatSort) set matSort(sort: MatSort) {
+        if (!this.gridConfig?.hasSorting?.isServerSide) {
+            this.dataSource.sort = sort;
+        } else {
+            this.dataSource.sort = null;
+        }
+    }
+    @ViewChild(MatPaginator) set matPaginator(paginator: MatPaginator) {
+        const paginatorConfig = this.gridConfig?.hasPaginator;
+        const isClientSidePaginator =
+            paginatorConfig === false ||
+            (typeof paginatorConfig === "object" &&
+                !paginatorConfig.isServerSide);
+        if (isClientSidePaginator) {
+            this.dataSource.paginator = paginator;
+        } else {
+            this.dataSource.paginator = null;
+        }
+    }
+    @ViewChild("scrollContainer") scrollContainer!: ElementRef;
 
     @Input() gridConfig!: GridConfiguration;
     @Input() data: GridData[] = [];
@@ -131,11 +134,11 @@ export class GridComponent
     @Output() exportExcel = new EventEmitter<void>();
     @Output() chipRemoved = new EventEmitter<Chip>();
     @Output() createButtonClicked = new EventEmitter<void>();
-    @Output() infiniteScroll = new EventEmitter<void>(); // Nuevo evento para scroll infinito
+    @Output() infiniteScroll = new EventEmitter<void>();
 
     dataSource = new MatTableDataSource<GridData>();
     private _ngZone = inject(NgZone);
-    private _scrollListener: (() => void) | undefined; // Para almacenar y limpiar el listener
+    private _scrollListener: (() => void) | undefined;
 
     get columns(): Column[] {
         return this.gridConfig?.columns || [];
@@ -147,40 +150,21 @@ export class GridComponent
 
     get paginatorConfig(): PaginationConfig | null {
         const paginator = this.gridConfig?.hasPaginator;
-        // Ahora, si pagination es 'false' (boolean), esto no entrará en el 'typeof object'
-        // Pero si config.hasInfiniteScroll es true, createDefaultGridConfiguration asegurará que hasPagination sea un objeto.
         return typeof paginator === "object" && paginator !== null
             ? paginator
             : null;
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (changes["data"]) {
+        if (changes["data"] && this.data) {
             this.dataSource.data = this.data;
-            if (!this.gridConfig.hasInfiniteScroll) {
-                // Para asegurar que cuando no es scroll infinito el scroll quede siempre arriba de todo al cambiar de pagina.
-                if (this.scrollContainer) {
-                    this.scrollContainer.nativeElement.scrollTop = 0;
-                }
-                //this._updatePaginatorForClientSide(); // no tiene sentido esta linea aca
-            }
-            if (this.paginatorConfig && !this.paginatorConfig.isServerSide) {
-                this._updatePaginatorForClientSide();
-            }
-
-            if (!this.gridConfig?.hasSorting?.isServerSide) {
-                this.sort = this.dataSource.sort = this.sort;
-            }
         }
-
-        if (changes["config"]) {
+        if (changes["gridConfig"]) {
             this._updateFilterPredicate();
-            this._updatePaginatorAndSortConfig(changes["config"].currentValue);
-            if (this.gridConfig.hasInfiniteScroll) {
-                this._setupScrollListener();
+            if (this.gridConfig?.hasSorting?.isServerSide) {
+                this.dataSource.sort = null;
             }
         }
-
         if (changes["isLoading"]) {
             this.isLoading = changes["isLoading"].currentValue;
         }
@@ -191,14 +175,9 @@ export class GridComponent
     }
 
     ngAfterViewInit(): void {
-        this._ngZone.onStable.pipe(take(1)).subscribe((): void => {
-            this._setupSorting();
-            if (!this.gridConfig.hasInfiniteScroll) {
-                this._setupPaginator();
-            }
-
-            this._setupScrollListener(); // Configura el listener de scroll
-        });
+        if (this.gridConfig?.hasInfiniteScroll) {
+            this._setupScrollListener();
+        }
     }
 
     ngOnDestroy(): void {
@@ -268,6 +247,25 @@ export class GridComponent
         this.chipRemoved.emit(chip);
     }
 
+    private _updateFilterPredicate(): void {
+        this.dataSource.filterPredicate = (data, filter: string): boolean => {
+            const search = filter.trim().toLowerCase();
+            if (!search) {
+                return true;
+            }
+            if (this.gridConfig?.filterByColumn) {
+                const value = data[this.gridConfig.filterByColumn];
+                const stringValue = value?.toString() || "";
+                return stringValue.toLowerCase().includes(search);
+            }
+            return this.columns.some((col: Column): boolean => {
+                const value = data[col.name];
+                const stringValue = value?.toString() || "";
+                return stringValue.toLowerCase().includes(search);
+            });
+        };
+    }
+
     private _truncate(
         text: string | number | undefined | null,
         maxLength = 25,
@@ -277,135 +275,7 @@ export class GridComponent
         return str.length > maxLength ? str.slice(0, maxLength) + "..." : str;
     }
 
-    private _setupSorting(): void {
-        if (!this.sort || this.gridConfig?.hasSorting?.isServerSide) {
-            return;
-        }
-        this.dataSource.sort = this.sort;
-    }
-
-    /* private _setupSorting(): void {
-        if (!this.sort) {
-            return;
-        }
-        // Si el ordenamiento no es del lado del servidor, se delega al MatTableDataSource para que lo haga localmente.
-        if (!this.gridConfig?.hasSorting?.isServerSide) {
-            this.dataSource.sort = this.sort;
-            this.sort.sortChange.subscribe((): void => {
-                this.dataSource.data = this.dataSource.sortData(
-                    this.dataSource.data,
-                    this.sort,
-                );
-            });
-        }
-    } */
-
-    private _setupPaginator(): void {
-        if (!this.paginator) {
-            return;
-        }
-        if (!this.paginatorConfig?.isServerSide) {
-            this.dataSource.paginator = this.paginator;
-        } else {
-            this._updatePaginatorProperties(
-                this.paginatorConfig.totalCount ?? 0,
-                this.paginatorConfig.pageIndex ?? 0,
-                this.paginatorConfig.pageSize ?? 25,
-            );
-        }
-    }
-
-    private _updatePaginatorForClientSide(): void {
-        if (
-            this.paginatorConfig &&
-            !this.paginatorConfig.isServerSide &&
-            this.paginator
-        ) {
-            this.paginator.length = this.data.length;
-        }
-    }
-
-    private _updatePaginatorAndSortConfig(newConfig: GridConfiguration): void {
-        if (
-            this.paginator &&
-            !newConfig.hasInfiniteScroll &&
-            this.paginatorConfig?.isServerSide
-        ) {
-            const newTotalCount =
-                newConfig.hasPaginator &&
-                typeof newConfig.hasPaginator === "object"
-                    ? (newConfig.hasPaginator.totalCount ?? 0)
-                    : 0;
-            const newPageIndex =
-                newConfig.hasPaginator &&
-                typeof newConfig.hasPaginator === "object"
-                    ? (newConfig.hasPaginator.pageIndex ?? 0)
-                    : 0;
-            const newPageSize =
-                newConfig.hasPaginator &&
-                typeof newConfig.hasPaginator === "object"
-                    ? (newConfig.hasPaginator.pageSize ?? 25)
-                    : 25;
-
-            this._updatePaginatorProperties(
-                newTotalCount,
-                newPageIndex,
-                newPageSize,
-            );
-        }
-
-        if (this.sort && newConfig.hasSorting?.isServerSide) {
-            if (newConfig.OrderBy) {
-                this.sort.active = newConfig.OrderBy.columnName;
-                this.sort.direction = newConfig.OrderBy.direction;
-            }
-        }
-    }
-
-    private _updatePaginatorProperties(
-        length: number,
-        pageIndex: number,
-        pageSize: number,
-    ): void {
-        if (this.paginator) {
-            if (
-                this.paginator.length !== length ||
-                this.paginator.pageIndex !== pageIndex ||
-                this.paginator.pageSize !== pageSize
-            ) {
-                this.paginator.length = length;
-                this.paginator.pageIndex = pageIndex;
-                this.paginator.pageSize = pageSize;
-                if (this.paginator._changePageSize) {
-                    this.paginator._changePageSize(this.paginator.pageSize);
-                }
-            }
-        }
-    }
-
-    private _updateFilterPredicate(): void {
-        this.dataSource.filterPredicate = (data, filter: string): boolean => {
-            const search = filter.trim().toLowerCase();
-            if (!search) {
-                return true;
-            }
-
-            if (this.gridConfig?.filterByColumn) {
-                const value = data[this.gridConfig.filterByColumn];
-                const stringValue = value?.toString() || "";
-                return stringValue.toLowerCase().includes(search);
-            }
-
-            return this.columns.some((col: Column): boolean => {
-                const value = data[col.name];
-                const stringValue = value?.toString() || "";
-                return stringValue.toLowerCase().includes(search);
-            });
-        };
-    }
-
     private _setupScrollListener(): void {
-        // Limpiar cualquier listener previo para evitar duplicados
         if (
             this._scrollListener &&
             this.scrollContainer &&
@@ -443,7 +313,6 @@ export class GridComponent
 
         if (scrollTop + clientHeight >= scrollHeight - scrollThreshold) {
             const totalCount = this.paginatorConfig?.totalCount ?? 0;
-
             if (this.data.length < totalCount) {
                 this._ngZone.run((): void => {
                     this.infiniteScroll.emit();

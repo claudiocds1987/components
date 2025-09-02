@@ -1,4 +1,4 @@
-import { Component, inject, Inject, OnDestroy, OnInit } from "@angular/core";
+import { Component, inject, OnDestroy, OnInit } from "@angular/core";
 import { EmployeeService } from "../../shared/services/employee.service";
 import { AlertService } from "../../shared/services/alert.service";
 import { BreadcrumbService } from "../../shared/services/breadcrumb.service";
@@ -108,12 +108,6 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
             },
         );
         return transformedItems;
-
-        /* return {
-                ...paginatedList,
-                items: transformedItems,
-                pageIndex: paginatedList.page - 1,
-            }; */
     }
 
     private _setGridConfiguration(): GridConfiguration {
@@ -147,13 +141,6 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
                     hasHeader: false,
                 },
             ],
-            //hasInfiniteScroll: true,
-            /* OrderBy: {
-                    columnName: this._employeeFilterParams.sortColumn || "id",
-                    direction: (this._employeeFilterParams.sortOrder || "asc") as
-                        | "asc"
-                        | "desc",
-                }, */
             filterByColumn: "",
             hasInputSearch: true,
             hasChips: false,
@@ -161,9 +148,9 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
             hasCreateButton: true,
             hasPaginator: {
                 pageSizeOptions: [25, 50],
-                pageSize: 10,
+                pageSize: 25,
                 pageIndex: 0,
-                totalCount: 0, // Set an initial value for totalCount
+                totalCount: 0,
                 isServerSide: false,
             },
             hasSorting: {
