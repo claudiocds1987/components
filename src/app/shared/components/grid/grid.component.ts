@@ -162,10 +162,14 @@ export class GridComponent
                 if (this.scrollContainer) {
                     this.scrollContainer.nativeElement.scrollTop = 0;
                 }
-                this._updatePaginatorForClientSide();
+                //this._updatePaginatorForClientSide(); // no tiene sentido esta linea aca
             }
             if (this.paginatorConfig && !this.paginatorConfig.isServerSide) {
                 this._updatePaginatorForClientSide();
+            }
+
+            if (!this.gridConfig?.hasSorting?.isServerSide) {
+                this.sort = this.dataSource.sort = this.sort;
             }
         }
 
