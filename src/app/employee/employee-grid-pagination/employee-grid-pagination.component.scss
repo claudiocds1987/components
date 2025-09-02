@@ -1,3 +1,9 @@
+/* :host {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; // Ejemplo: 100% de la altura de la ventana
+} */
+
 .employee-grid-container {
     display: grid;
     // Define las filas: la primera para los chips (auto) y la segunda para la grilla y el filtro
@@ -5,13 +11,11 @@
     grid-template-columns: 1fr 260px; // Se define 2 columnas la 1ra toma la mayor parte y la 2da 260px para el filtro
     gap: 10px;
     width: 100%; // Ocupa todo el ancho disponible
-    flex: 1; // Ocupa todo el espacio disponible del host
+    flex: 1; // el contenido se va a estirar hasta que alcance el límite de max-height
     min-height: 0; // Permite que el grid se reduzca si es necesario
-    align-items: stretch; // Para que ambos elementos tengan la misma altura
-    //height: 500px;
-    //height: auto;
-    //max-height: 1200px;
-
+    align-items: stretch; // Para que el componente grid.component y grid-filter.component ambos elementos tengan la misma altura
+    max-height: 800px;
+    overflow: hidden; // Evita el desbordamiento
     // Estilo para el componente de chips para que ocupe todas las columnas
     app-chips {
         grid-column: 1 / -1; // Hace que ocupe desde la primera columna hasta la última

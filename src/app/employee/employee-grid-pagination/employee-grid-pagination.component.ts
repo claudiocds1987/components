@@ -248,7 +248,9 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
         this.applyFilter(this.gridFilterForm.value);
     }
 
-    onCreateEmployee(): void {}
+    onCreateEmployee(): void {
+        console.log("Crear nuevo empleado");
+    }
 
     private _createChips(filterValues: Record<string, unknown>): void {
         this.chips = this._mapToChipsDescription(filterValues);
