@@ -238,7 +238,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                 },
                 error: (error: HttpErrorResponse): void => {
                     this._alertService.showDanger(
-                        `Error al obtener empleados ca. ${error.statusText}`,
+                        `Error al obtener empleados. ${error.statusText}`,
                     );
                 },
             });
