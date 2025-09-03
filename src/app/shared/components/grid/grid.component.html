@@ -19,7 +19,7 @@
         </div>
     </div>
 </ng-container>
-<!-- EL INPUT SEARCH SOLO SE MUESTRA CUANDO LA GRILLA NO TIENE MAT-PAGINADOR -->
+
 <ng-container
     [ngTemplateOutlet]="
         !gridConfig.hasPaginator ? searchInputTemplate : noSearchInputTemplate
@@ -102,7 +102,6 @@
 <div class="table-container" #scrollContainer>
     <table
         mat-table
-        *ngIf="!isLoading && dataSource.data.length > 0"
         [dataSource]="dataSource"
         matSort
         (matSortChange)="onSortChange($event)"
@@ -133,38 +132,23 @@
                             }}</mat-icon>
                         </ng-container>
                         <ng-container *ngSwitchDefault>
-                            <ng-container
-                                *ngIf="col.isSortable; else noSortableHeader"
+                            <span
+                                *ngIf="col.isSortable"
+                                mat-sort-header
+                                [mat-sort-header]="col.name"
+                                [disabled]="!col.isSortable"
+                                class="sortable-header"
                             >
-                                <span
-                                    style="
-                                        white-space: nowrap;
-                                        overflow: hidden;
-                                        text-overflow: ellipsis;
-                                    "
-                                    [mat-sort-header]="col.name"
-                                    [ngStyle]="{
-                                        display: 'flex',
-                                        'justify-content':
-                                            col.align === 'center'
-                                                ? 'center'
-                                                : col.align === 'right'
-                                                  ? 'flex-end'
-                                                  : 'flex-start',
-                                    }"
-                                >
-                                    {{ col.name | titlecase }}
-                                </span>
-                            </ng-container>
-                            <ng-template #noSortableHeader>
                                 {{ col.name | titlecase }}
-                            </ng-template>
+                            </span>
+                            <span *ngIf="!col.isSortable">
+                                {{ col.name | titlecase }}
+                            </span>
                         </ng-container>
                     </ng-container>
                 </ng-container>
             </th>
 
-            <!-- Celda de la columna -->
             <td
                 mat-cell
                 *matCellDef="let row"
@@ -254,7 +238,7 @@
         ></tr>
         <tr mat-row *matRowDef="let row; columns: columnNames"></tr>
     </table>
-    <!-- Mostrar FeedbackComponent cuando no hay datos y no está cargando -->
+
     <app-feedback
         *ngIf="dataSource.data.length === 0"
         [imageUrl]="'assets/no-result.svg'"

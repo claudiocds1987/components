@@ -104,25 +104,6 @@ El comportamiento se define a través del objeto @Input() config.
 export class GridComponent
     implements OnInit, AfterViewInit, OnChanges, OnDestroy
 {
-    @ViewChild(MatSort) set matSort(sort: MatSort) {
-        if (!this.gridConfig?.hasSorting?.isServerSide) {
-            this.dataSource.sort = sort;
-        } else {
-            this.dataSource.sort = null;
-        }
-    }
-    @ViewChild(MatPaginator) set matPaginator(paginator: MatPaginator) {
-        const paginatorConfig = this.gridConfig?.hasPaginator;
-        const isClientSidePaginator =
-            paginatorConfig === false ||
-            (typeof paginatorConfig === "object" &&
-                !paginatorConfig.isServerSide);
-        if (isClientSidePaginator) {
-            this.dataSource.paginator = paginator;
-        } else {
-            this.dataSource.paginator = null;
-        }
-    }
     @ViewChild("scrollContainer") scrollContainer!: ElementRef;
 
     @Input() gridConfig!: GridConfiguration;
@@ -139,6 +120,8 @@ export class GridComponent
     dataSource = new MatTableDataSource<GridData>();
     private _ngZone = inject(NgZone);
     private _scrollListener: (() => void) | undefined;
+    @ViewChild(MatSort) private _matSort!: MatSort;
+    @ViewChild(MatPaginator) private _matPaginator!: MatPaginator;
 
     get columns(): Column[] {
         return this.gridConfig?.columns || [];
@@ -158,15 +141,7 @@ export class GridComponent
     ngOnChanges(changes: SimpleChanges): void {
         if (changes["data"] && this.data) {
             this.dataSource.data = this.data;
-        }
-        if (changes["gridConfig"]) {
-            this._updateFilterPredicate();
-            if (this.gridConfig?.hasSorting?.isServerSide) {
-                this.dataSource.sort = null;
-            }
-        }
-        if (changes["isLoading"]) {
-            this.isLoading = changes["isLoading"].currentValue;
+            this._applySortAndPaginator(); // 👈 El cambio está aquí
         }
     }
 
@@ -247,6 +222,39 @@ export class GridComponent
         this.chipRemoved.emit(chip);
     }
 
+    // Este método asegura que las referencias se establezcan solo cuando están disponibles
+    private _applySortAndPaginator(): void {
+        const isServerSideSort = this.gridConfig?.hasSorting?.isServerSide;
+        const paginatorConfig = this.gridConfig?.hasPaginator;
+        const isClientSidePaginator =
+            paginatorConfig === false ||
+            (typeof paginatorConfig === "object" &&
+                !paginatorConfig.isServerSide);
+
+        // Si la grilla no está visible, las referencias no existen,
+        // por lo que no hacemos nada.
+        if (!this._matSort || !this._matPaginator) {
+            return;
+        }
+
+        // Si el ordenamiento es del lado del cliente, se vincula el MatSort.
+        // En caso contrario, se deja a la directiva matSort manejar el estado visual.
+        if (!isServerSideSort) {
+            this.dataSource.sort = this._matSort;
+        } else {
+            // Se desvincula la fuente de datos del sort local,
+            // pero MatSort en el HTML seguirá funcionando.
+            this.dataSource.sort = null;
+        }
+
+        // Si la paginación es del lado del cliente, se vincula el MatPaginator.
+        if (isClientSidePaginator) {
+            this.dataSource.paginator = this._matPaginator;
+        } else {
+            this.dataSource.paginator = null;
+        }
+    }
+
     private _updateFilterPredicate(): void {
         this.dataSource.filterPredicate = (data, filter: string): boolean => {
             const search = filter.trim().toLowerCase();
@@ -308,7 +316,6 @@ export class GridComponent
         const scrollHeight = element.scrollHeight;
         const scrollTop = element.scrollTop;
         const clientHeight = element.clientHeight;
-        // const scrollThreshold es el valor que define cuán cerca del final de la grilla debe estar el scroll para que se emita el evento scrolledToEnd y se cargue la siguiente tanda de datos.
         const scrollThreshold = 50;
 
         if (scrollTop + clientHeight >= scrollHeight - scrollThreshold) {

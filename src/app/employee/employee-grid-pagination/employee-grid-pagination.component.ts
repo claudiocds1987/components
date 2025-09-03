@@ -655,7 +655,9 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                 pageSizeOptions: [25, 50],
                 totalCount: 0,
                 pageIndex: 0,
+                isServerSide: true,
             },
+            hasSorting: { isServerSide: true },
             OrderBy: {
                 columnName: this._employeeFilterParams.sortColumn || "id",
                 direction: (this._employeeFilterParams.sortOrder || "asc") as
