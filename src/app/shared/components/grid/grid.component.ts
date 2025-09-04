@@ -141,7 +141,7 @@ export class GridComponent
     ngOnChanges(changes: SimpleChanges): void {
         if (changes["data"] && this.data) {
             this.dataSource.data = this.data;
-            this._applySortAndPaginator(); // 👈 El cambio está aquí
+            this._applySortAndPaginator();
         }
     }
 
@@ -236,7 +236,6 @@ export class GridComponent
         if (!this._matSort || !this._matPaginator) {
             return;
         }
-
         // Si el ordenamiento es del lado del cliente, se vincula el MatSort.
         // En caso contrario, se deja a la directiva matSort manejar el estado visual.
         if (!isServerSideSort) {
@@ -246,7 +245,6 @@ export class GridComponent
             // pero MatSort en el HTML seguirá funcionando.
             this.dataSource.sort = null;
         }
-
         // Si la paginación es del lado del cliente, se vincula el MatPaginator.
         if (isClientSidePaginator) {
             this.dataSource.paginator = this._matPaginator;
@@ -316,6 +314,7 @@ export class GridComponent
         const scrollHeight = element.scrollHeight;
         const scrollTop = element.scrollTop;
         const clientHeight = element.clientHeight;
+        // "scrollThreshold" es el valor que define que tan cerca del final de la grilla debe estar el scroll para que se emita el evento infiniteScroll y se cargue la siguiente tanda de datos.
         const scrollThreshold = 50;
 
         if (scrollTop + clientHeight >= scrollHeight - scrollThreshold) {

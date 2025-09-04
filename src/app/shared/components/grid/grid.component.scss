@@ -98,18 +98,6 @@
     }
 }
 
-// Nueva clase para ocultar la tabla sin quitarla del DOM, manteniendo el espacio.
-.table-hidden {
-    visibility: hidden;
-    height: 0; // Asegurarse de que no ocupe altura
-    overflow: hidden; // Ocultar contenido desbordante
-}
-
-.paginator-container {
-    flex-shrink: 0; // El paginador no se encoge
-    padding: 10px 0; // Espacio arriba y abajo del paginador
-}
-
 .search-field {
     margin-top: 5px;
     width: auto;
