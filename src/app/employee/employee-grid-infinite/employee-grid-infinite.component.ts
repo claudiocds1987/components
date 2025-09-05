@@ -65,13 +65,13 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
     private _breadcrumbService = inject(BreadcrumbService);
     private _alertService = inject(AlertService);
 
-    private _defaultPaginatorOptions: PaginationConfig = {
+    /* private _defaultPaginatorOptions: PaginationConfig = {
         pageIndex: 0,
         pageSize: 25,
         pageSizeOptions: [5, 10, 25, 100],
         totalCount: 0,
         isServerSide: true,
-    };
+    }; */
 
     constructor() {
         this._alertService.clearAlerts();
@@ -127,7 +127,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
             page: 1,
         };
         // Actualiza la configuración de la grilla con el nuevo
-        this._updateGridConfigOnSortChange(sortEvent);
+        //this._updateGridConfigOnSortChange(sortEvent);
         this._getEmployees();
     }
 
@@ -144,6 +144,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
     }
 
     onExportToExcel(): void {
+        this._spinnerService.show();
         this._employeeServices
             .getEmployeesForExportJsonServer(this._employeeFilterParams)
             .pipe(
@@ -318,26 +319,18 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
         console.log(`Parent Log: Intentando eliminar empleado con ID: ${id}`);
     }
 
-    private _updateGridConfigOnSortChange(sortEvent: Sort): void {
+    /* private _updateGridConfigOnSortChange(sortEvent: Sort): void {
         // Al ordenar, siempre creamos una nueva configuración para asegurar la reactividad
-        // y para reiniciar la paginación a la primera página si no es scroll infinito.
-        const newPaginationConfig = this.gridConfig.hasInfiniteScroll
-            ? {
-                  ...this._defaultPaginatorOptions,
-                  totalCount:
-                      (this.gridConfig.hasPaginator as PaginationConfig)
-                          ?.totalCount || 0,
-                  pageIndex: 0,
-                  pageSize:
-                      (this.gridConfig.hasPaginator as PaginationConfig)
-                          ?.pageSize || 25,
-                  isServerSide: true,
-              }
-            : {
-                  ...(this.gridConfig.hasPaginator ||
-                      this._defaultPaginatorOptions),
-                  pageIndex: 0,
-              };
+        // y para reiniciar la paginación a la primera página.
+        const newPaginationConfig: PaginationConfig = {
+            pageIndex: 0,
+            pageSize: 25,
+            pageSizeOptions: [], // Oculta el selector de tamaño de página
+            totalCount:
+                (this.gridConfig.hasPaginator as PaginationConfig)
+                    ?.totalCount || 0,
+            isServerSide: true,
+        };
 
         this.gridConfig = {
             ...this.gridConfig,
@@ -347,7 +340,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
             },
             hasPaginator: newPaginationConfig,
         };
-    }
+    } */
 
     private _updateGridConfig(
         paginatedListGridData: PaginatedList<GridData>,
@@ -355,65 +348,28 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
         const { totalCount, pageIndex, pageSize } = paginatedListGridData;
         const { sortColumn = "", sortOrder = "" } = this._employeeFilterParams;
 
-        if (!this.gridConfig.hasInfiniteScroll) {
-            // Lógica existente para paginación normal
-            const paginationConfig = {
-                ...(this.gridConfig.hasPaginator ||
-                    this._defaultPaginatorOptions),
-                totalCount,
-                pageSize,
-                pageIndex,
-            };
-            this.gridConfig = {
-                ...this.gridConfig,
-                hasPaginator: paginationConfig,
-                OrderBy: {
-                    columnName: sortColumn,
-                    direction: sortOrder as "asc" | "desc" | "",
-                },
-            };
-        } else {
-            // Mutar hasPaginator si es scroll infinito -
-            // Solo actualizamos las propiedades necesarias sin recrear el objeto completo si ya existe
-            if (
-                this.gridConfig.hasPaginator &&
-                typeof this.gridConfig.hasPaginator === "object"
-            ) {
-                (this.gridConfig.hasPaginator as PaginationConfig).totalCount =
-                    totalCount;
-                (this.gridConfig.hasPaginator as PaginationConfig).pageSize =
-                    pageSize;
-                (this.gridConfig.hasPaginator as PaginationConfig).pageIndex =
-                    pageIndex;
-            } else {
-                // Si hasPaginator no era un objeto, lo creamos
-                this.gridConfig = {
-                    ...this.gridConfig,
-                    hasPaginator: {
-                        ...this._defaultPaginatorOptions,
-                        totalCount: totalCount,
-                        pageSize: pageSize,
-                        pageIndex: pageIndex,
-                    },
-                };
-            }
-            // Actualizar OrderBy si es necesario, también mutando para evitar cambios de referencia en config si no es absolutamente necesario
-            if (this.gridConfig.OrderBy) {
-                this.gridConfig.OrderBy.columnName = sortColumn;
-                this.gridConfig.OrderBy.direction = sortOrder as
-                    | "asc"
-                    | "desc"
-                    | "";
-            } else {
-                this.gridConfig = {
-                    ...this.gridConfig,
-                    OrderBy: {
-                        columnName: sortColumn,
-                        direction: sortOrder as "asc" | "desc" | "",
-                    },
-                };
-            }
+        // Actualizamos la configuración de la paginación con los datos del servidor.
+        // Usamos el operador de nulidad para asegurar que 'hasPaginator' es un objeto.
+        const currentPaginator = this.gridConfig
+            .hasPaginator as PaginationConfig;
+        if (currentPaginator) {
+            currentPaginator.totalCount = totalCount;
+            currentPaginator.pageSize = pageSize;
+            currentPaginator.pageIndex = pageIndex;
         }
+
+        // Actualizamos el ordenamiento de la grilla.
+        const newOrderBy = {
+            columnName: sortColumn,
+            direction: sortOrder as "asc" | "desc",
+        };
+
+        // Creamos un nuevo objeto de configuración para asegurar la reactividad.
+        this.gridConfig = {
+            ...this.gridConfig,
+            hasPaginator: currentPaginator, // O usa un nuevo objeto si es necesario
+            OrderBy: newOrderBy,
+        };
     }
 
     private _setGridConfiguration(): GridConfiguration {

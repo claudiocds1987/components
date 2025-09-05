@@ -151,6 +151,7 @@ export class GridComponent
 
     ngAfterViewInit(): void {
         if (this.gridConfig?.hasInfiniteScroll) {
+            console.log("grid config: ", this.gridConfig);
             this._setupScrollListener();
         }
     }

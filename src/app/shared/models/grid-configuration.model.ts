@@ -27,10 +27,11 @@ export interface Column {
 }
 
 export interface PaginationConfig {
-    pageIndex: number;
-    pageSize: number;
+    pageIndex: number | string; // si es infinite scroll puede ser string vacio ""
+    pageSize: number | string; // si es infinite scroll puede ser string vacio ""
     pageSizeOptions: number[];
     totalCount: number;
+    showFirstLastButtons?: boolean;
     isServerSide?: boolean; // True if pagination is handled by the server
 }
 
@@ -76,11 +77,12 @@ export interface GridConfiguration {
 export const createDefaultGridConfiguration = (
     config: Partial<GridConfiguration>,
 ): GridConfiguration => {
-    const defaultPaginator: PaginationConfig = {
+    let defaultPaginator: PaginationConfig = {
         pageIndex: 0,
         pageSize: 25,
         pageSizeOptions: [5, 10, 25, 100],
         totalCount: 0,
+        showFirstLastButtons: true,
         isServerSide: true, // por default esta en true lo maneja el backend
     };
 
@@ -91,22 +93,14 @@ export const createDefaultGridConfiguration = (
 
     let finalPaginatornConfig: PaginationConfig | false;
 
+    // Si tiene scroll infinito, se mantiene el paginador pero se le quitan las opciones de tamaño y los botones
     if (config.hasInfiniteScroll) {
         finalPaginatornConfig = {
             ...defaultPaginator,
+            ...config.hasPaginator,
+            pageSizeOptions: [], // <-- Esto oculta 'Registros por página' y su valor
+            showFirstLastButtons: false, // <-- Esto oculta los botones << y >>
             isServerSide: true,
-            totalCount:
-                config.hasPaginator && typeof config.hasPaginator === "object"
-                    ? (config.hasPaginator.totalCount ?? 0)
-                    : 0,
-            pageIndex:
-                config.hasPaginator && typeof config.hasPaginator === "object"
-                    ? (config.hasPaginator.pageIndex ?? 0)
-                    : 0,
-            pageSize:
-                config.hasPaginator && typeof config.hasPaginator === "object"
-                    ? (config.hasPaginator.pageSize ?? 25)
-                    : 25,
         };
     } else if (config.hasPaginator === false) {
         finalPaginatornConfig = false;
