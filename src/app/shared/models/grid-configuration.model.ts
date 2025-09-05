@@ -77,7 +77,7 @@ export interface GridConfiguration {
 export const createDefaultGridConfiguration = (
     config: Partial<GridConfiguration>,
 ): GridConfiguration => {
-    let defaultPaginator: PaginationConfig = {
+    const defaultPaginator: PaginationConfig = {
         pageIndex: 0,
         pageSize: 25,
         pageSizeOptions: [5, 10, 25, 100],
@@ -91,26 +91,31 @@ export const createDefaultGridConfiguration = (
         direction: "asc",
     };
 
-    let finalPaginatornConfig: PaginationConfig | false;
+    let finalPaginatorConfig: PaginationConfig | false;
 
-    // Si tiene scroll infinito, se mantiene el paginador pero se le quitan las opciones de tamaño y los botones
     if (config.hasInfiniteScroll) {
-        finalPaginatornConfig = {
-            ...defaultPaginator,
-            ...config.hasPaginator,
-            pageSizeOptions: [], // <-- Esto oculta 'Registros por página' y su valor
-            showFirstLastButtons: false, // <-- Esto oculta los botones << y >>
+        // Cuando hay scroll infinito, se necesita una configuración mínima del paginador
+        // para indicar que la paginación es del lado del servidor.
+        finalPaginatorConfig = {
+            pageIndex: 0,
+            pageSize: 25, // o la cantidad de registros que quieras cargar por lote
+            pageSizeOptions: [],
+            totalCount: 0,
+            showFirstLastButtons: false,
             isServerSide: true,
         };
     } else if (config.hasPaginator === false) {
-        finalPaginatornConfig = false;
+        // Si el paginador se desactiva explícitamente, se retorna false.
+        finalPaginatorConfig = false;
     } else if (config.hasPaginator) {
-        finalPaginatornConfig = {
+        // Si se proporciona una configuración de paginador, se combina.
+        finalPaginatorConfig = {
             ...defaultPaginator,
             ...config.hasPaginator,
         };
     } else {
-        finalPaginatornConfig = defaultPaginator;
+        // Si no se especifica nada, se usa la configuración por defecto.
+        finalPaginatorConfig = defaultPaginator;
     }
 
     let finalHasSorting: { isServerSide: boolean };
@@ -132,7 +137,7 @@ export const createDefaultGridConfiguration = (
 
     return {
         columns: processedColumns,
-        hasPaginator: finalPaginatornConfig,
+        hasPaginator: finalPaginatorConfig,
         hasInputSearch: config.hasInputSearch ?? true,
         filterByColumn: config.filterByColumn ?? "",
         hasExcelDownload: config.hasExcelDownload ?? false,
