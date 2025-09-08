@@ -1,7 +1,7 @@
-<h2 mat-dialog-title>Crear nuevo empleado</h2>
-<div mat-dialog-content>
-    <form [formGroup]="employeeForm">
-        <div class="employee-form-container">
+<div class="form-wrapper">
+    <h2>Crear nuevo empleado</h2>
+    <div class="employee-form-container">
+        <form [formGroup]="employeeForm">
             <mat-form-field appearance="outline">
                 <mat-label>Nombre</mat-label>
                 <input matInput formControlName="name" />
@@ -10,14 +10,12 @@
                 <mat-label>Apellido</mat-label>
                 <input matInput formControlName="surname" />
             </mat-form-field>
-
             <app-date-input
                 [formControlName]="'birthDate'"
                 [label]="'Fecha de nacimiento'"
                 [placeholder]="'Fecha de nacimiento'"
                 [isDisabled]="false"
             ></app-date-input>
-
             <mat-form-field appearance="outline">
                 <mat-label>Puesto</mat-label>
                 <mat-select formControlName="position">
@@ -29,17 +27,17 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-        </div>
-    </form>
-</div>
-<div class="actions-container" mat-dialog-actions>
-    <button mat-button (click)="onCancel()">Cancelar</button>
-    <button
-        mat-flat-button
-        color="primary"
-        [disabled]="employeeForm.invalid"
-        (click)="onSave()"
-    >
-        Guardar
-    </button>
+        </form>
+    </div>
+    <div class="actions-container">
+        <button mat-button (click)="onCancel()">Cancelar</button>
+        <button
+            mat-flat-button
+            color="primary"
+            [disabled]="employeeForm.invalid"
+            (click)="onSave()"
+        >
+            Guardar
+        </button>
+    </div>
 </div>

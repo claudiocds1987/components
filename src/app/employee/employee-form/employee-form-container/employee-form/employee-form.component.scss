@@ -1,15 +1,20 @@
-/* .full-width-input {
-    width: 100%;
-} */
- .employee-form-container{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    padding: 5px 0
- }
+.form-wrapper {
+    margin: auto;
+    max-width: 300px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
- .actions-container{
-    display:flex;
-    justify-content: flex-end;
-    padding: 0 25px 20px 0;
- }
+.employee-form-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.actions-container {
+    display: flex;
+    justify-content: flex-end; /* Alinea los botones a la derecha */
+    margin-top: 20px;
+}

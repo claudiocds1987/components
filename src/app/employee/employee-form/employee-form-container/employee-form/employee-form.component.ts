@@ -7,12 +7,12 @@ import {
     FormControl,
     Validators,
 } from "@angular/forms";
-import { MatDialogModule, MatDialogRef } from "@angular/material/dialog";
+import { MatDialogModule } from "@angular/material/dialog";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatButtonModule } from "@angular/material/button";
-import { DateInputComponent } from "../../../shared/components/date-input/date-input.component";
 import { MatSelectModule } from "@angular/material/select";
+import { DateInputComponent } from "../../../../shared/components/date-input/date-input.component";
 
 @Component({
     selector: "app-employee-form",
@@ -34,7 +34,6 @@ import { MatSelectModule } from "@angular/material/select";
 export class EmployeeFormComponent {
     employeeForm: FormGroup;
     employeePositions: string[] = [];
-    private _dialogRef = inject(MatDialogRef<EmployeeFormComponent>);
 
     constructor() {
         this.employeeForm = this._createForm();
@@ -50,12 +49,10 @@ export class EmployeeFormComponent {
     }
     onCancel(): void {
         // Cierra el diálogo sin pasar ningún dato
-        this._dialogRef.close();
     }
 
     onSave(): void {
         // Cierra el diálogo y pasa los datos del formulario al componente padre
-        this._dialogRef.close(this.employeeForm.value);
     }
 
     private _createForm(): FormGroup {
