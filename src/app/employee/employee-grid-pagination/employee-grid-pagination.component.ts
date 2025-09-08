@@ -40,6 +40,7 @@ import { BreadcrumbComponent } from "../../shared/components/breadcrumb/breadcru
 import { BreadcrumbService } from "../../shared/services/breadcrumb.service";
 import { AlertComponent } from "../../shared/components/alert/alert.component";
 import { AlertService } from "../../shared/services/alert.service";
+import { Router } from "@angular/router";
 
 interface DateRangeValue {
     startDate: string | null;
@@ -106,6 +107,8 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
         totalCount: 0,
         isServerSide: true,
     };
+
+    private _router = inject(Router);
 
     constructor() {
         this._setBreadcrumb();
@@ -249,7 +252,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     }
 
     onCreateEmployee(): void {
-        console.log("Crear nuevo empleado");
+        this._router.navigate(["/employee-create"]);
     }
 
     private _createChips(filterValues: Record<string, unknown>): void {
