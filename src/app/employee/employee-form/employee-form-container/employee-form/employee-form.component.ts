@@ -28,6 +28,7 @@ import { MatRadioModule } from "@angular/material/radio";
 import { ActivatedRoute } from "@angular/router";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
+import { Employee } from "../../../../shared/models/employee.model";
 
 @Component({
     selector: "app-employee-form",
@@ -67,7 +68,7 @@ export class EmployeeFormComponent implements OnInit {
     private _spinnerService = inject(SpinnerService);
     private _breadcrumbService = inject(BreadcrumbService);
     private _alertService = inject(AlertService);
-    private _employeeServices = inject(EmployeeService);
+    private _employeeService = inject(EmployeeService);
     private _positionServices = inject(PositionService);
     private _countryServices = inject(CountryService);
 
@@ -87,7 +88,19 @@ export class EmployeeFormComponent implements OnInit {
     }
 
     onSave(): void {
-        console.log(this.employeeForm.value);
+        const employee: Employee = {
+            id: 0, // en el servicio employeeService en el post con Omit le ignoro el id
+            imgUrl: "",
+            name: this.employeeForm.value.name,
+            surname: this.employeeForm.value.surname,
+            birthDate: this.employeeForm.value.birthDate,
+            gender: this.employeeForm.value.gender,
+            country: this.employeeForm.value.country,
+            position: this.employeeForm.value.position,
+            active: this.employeeForm.value.active,
+        };
+
+        this._createEmployee(employee);
     }
 
     isReadyToSave(): boolean {
@@ -154,6 +167,23 @@ export class EmployeeFormComponent implements OnInit {
                 return of([]);
             }),
         );
+    }
+
+    private _createEmployee(employee: Employee): void {
+        this._spinnerService.show();
+        this._employeeService.createEmployee(employee).subscribe({
+            next: (createdEmployee: Employee): void => {
+                // mostrar el componente success
+                this._spinnerService.hide();
+                console.log("Empleado creado con éxito:", createdEmployee);
+            },
+            error: (error: HttpErrorResponse): void => {
+                this._spinnerService.hide();
+                this._alertService.showDanger(
+                    `Error al obtener empleados. ${error.statusText}`,
+                );
+            },
+        });
     }
 
     private _setBreadcrumb(): void {

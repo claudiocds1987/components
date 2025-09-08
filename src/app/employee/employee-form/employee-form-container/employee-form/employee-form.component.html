@@ -21,10 +21,7 @@
             <mat-form-field appearance="outline">
                 <mat-label>Género</mat-label>
                 <mat-select formControlName="gender">
-                    <mat-option
-                        *ngFor="let gender of genders"
-                        [value]="gender.id"
-                    >
+                    <mat-option *ngFor="let gender of genders" [value]="gender">
                         {{ gender.description }}
                     </mat-option>
                 </mat-select>
@@ -34,7 +31,7 @@
                 <mat-select formControlName="country">
                     <mat-option
                         *ngFor="let country of countries"
-                        [value]="country.id"
+                        [value]="country"
                     >
                         {{ country.description }}
                     </mat-option>
@@ -45,7 +42,7 @@
                 <mat-select formControlName="position">
                     <mat-option
                         *ngFor="let position of positions"
-                        [value]="position.id"
+                        [value]="position"
                     >
                         {{ position.description }}
                     </mat-option>

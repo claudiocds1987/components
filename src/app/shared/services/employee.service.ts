@@ -13,6 +13,14 @@ export class EmployeeService {
 
     // eslint-disable-next-line @angular-eslint/prefer-inject
     constructor(private _http: HttpClient) {}
+    // Omit<Employee, "id"> para que json-server ignore el id que le mando y cree automaticamente uno nuevo
+    createEmployee(employee: Omit<Employee, "id">): Observable<Employee> {
+        return this._http.post<Employee>(this.apiUrl, employee);
+    }
+
+    getEmployee(id: number): Observable<Employee> {
+        return this._http.get<Employee>(`${this.apiUrl}/${id}`);
+    }
 
     getEmployees(
         params: EmployeeFilterParams,
