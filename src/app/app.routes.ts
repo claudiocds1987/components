@@ -22,15 +22,15 @@ export const routes: Routes = [
     },
 
     {
-        path: "employee-create",
+        path: "employee/create",
         component: EmployeeFormComponent,
-        data: { condition: "create" },
+        data: { operation: "create" },
     },
-    /* { 
-      path: "employees/edit/:id", 
-      component: EmployeeFormComponent, 
-      data: { condition: "edit" } 
-    }, */
+    {
+        path: "employees/edit/:id",
+        component: EmployeeFormComponent,
+        data: { operation: "edit" },
+    },
 
     // Add a wildcard route for any path that doesn't match a route.
     // This is good practice for handling 404s.

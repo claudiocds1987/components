@@ -19,16 +19,56 @@
                 [isDisabled]="false"
             ></app-date-input>
             <mat-form-field appearance="outline">
-                <mat-label>Puesto</mat-label>
-                <mat-select formControlName="position">
+                <mat-label>Género</mat-label>
+                <mat-select formControlName="gender">
                     <mat-option
-                        *ngFor="let position of employeePositions"
-                        [value]="position"
+                        *ngFor="let gender of genders"
+                        [value]="gender.id"
                     >
-                        {{ position }}
+                        {{ gender.description }}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Pais</mat-label>
+                <mat-select formControlName="country">
+                    <mat-option
+                        *ngFor="let country of countries"
+                        [value]="country.id"
+                    >
+                        {{ country.description }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Puesto</mat-label>
+                <mat-select formControlName="position">
+                    <mat-option
+                        *ngFor="let position of positions"
+                        [value]="position.id"
+                    >
+                        {{ position.description }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <div class="radio-group-container" *ngIf="operation === 'edit'">
+                <span>Activo</span>
+                <mat-radio-group
+                    aria-label="Seleccionar una opción"
+                    formControlName="active"
+                >
+                    <span>Si</span
+                    ><mat-radio-button
+                        class="radio-option"
+                        [value]="true"
+                    ></mat-radio-button>
+                    <span>No</span
+                    ><mat-radio-button
+                        class="radio-option"
+                        [value]="false"
+                    ></mat-radio-button>
+                </mat-radio-group>
+            </div>
         </form>
     </div>
     <div class="actions-container">

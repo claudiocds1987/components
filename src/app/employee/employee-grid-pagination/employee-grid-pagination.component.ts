@@ -252,7 +252,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     }
 
     onCreateEmployee(): void {
-        this._router.navigate(["/employee-create"]);
+        this._router.navigate(["/employee/create"]);
     }
 
     private _createChips(filterValues: Record<string, unknown>): void {

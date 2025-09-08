@@ -244,6 +244,12 @@ export class DateInputComponent implements ControlValueAccessor, OnInit {
             // Si no se pudo parsear o es inválida, establece a null
             this.internalControl.setValue(null);
         }
+        // Notifica al formulario padre con el valor actual
+        let formattedValue: string | null = null;
+        if (finalParsedDate && finalParsedDate.isValid) {
+            formattedValue = finalParsedDate.toFormat("yyyy-MM-dd");
+        }
+        this.onChange(formattedValue);
         this.onTouched(); // Notifica al formulario padre que el campo fue tocado
     }
 
