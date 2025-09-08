@@ -245,7 +245,7 @@
         [imageUrl]="'assets/no-result.svg'"
     ></app-feedback>
 </div>
-
+<!-- si la grilla tiene scroll infinito no se va a mostrar el paginador -->
 <mat-paginator
     class="paginator"
     *ngIf="paginatorConfig && !gridConfig.hasInfiniteScroll"

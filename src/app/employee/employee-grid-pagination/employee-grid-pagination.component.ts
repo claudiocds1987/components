@@ -625,6 +625,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
             columns: [
                 {
                     name: "imgUrl",
+                    width: "20px",
                     type: "img",
                     isSortable: false,
                     hasHeader: false,
@@ -638,7 +639,6 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                 { name: "country" },
                 {
                     name: "active",
-
                     style: "status-circle",
                     align: "center",
                 },

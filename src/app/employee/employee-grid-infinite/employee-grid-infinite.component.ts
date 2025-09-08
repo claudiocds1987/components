@@ -65,14 +65,6 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
     private _breadcrumbService = inject(BreadcrumbService);
     private _alertService = inject(AlertService);
 
-    /* private _defaultPaginatorOptions: PaginationConfig = {
-        pageIndex: 0,
-        pageSize: 25,
-        pageSizeOptions: [5, 10, 25, 100],
-        totalCount: 0,
-        isServerSide: true,
-    }; */
-
     constructor() {
         this._alertService.clearAlerts();
         this._setBreadcrumb();
@@ -126,8 +118,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
             sortOrder: sortEvent.direction,
             page: 1,
         };
-        // Actualiza la configuración de la grilla con el nuevo
-        //this._updateGridConfigOnSortChange(sortEvent);
+
         this._getEmployees();
     }
 
@@ -318,29 +309,6 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
         // QUE PONGA EL EMPLEADO COMO INACTIVO NO LO BORRE
         console.log(`Parent Log: Intentando eliminar empleado con ID: ${id}`);
     }
-
-    /* private _updateGridConfigOnSortChange(sortEvent: Sort): void {
-        // Al ordenar, siempre creamos una nueva configuración para asegurar la reactividad
-        // y para reiniciar la paginación a la primera página.
-        const newPaginationConfig: PaginationConfig = {
-            pageIndex: 0,
-            pageSize: 25,
-            pageSizeOptions: [], // Oculta el selector de tamaño de página
-            totalCount:
-                (this.gridConfig.hasPaginator as PaginationConfig)
-                    ?.totalCount || 0,
-            isServerSide: true,
-        };
-
-        this.gridConfig = {
-            ...this.gridConfig,
-            OrderBy: {
-                columnName: sortEvent.active,
-                direction: sortEvent.direction,
-            },
-            hasPaginator: newPaginationConfig,
-        };
-    } */
 
     private _updateGridConfig(
         paginatedListGridData: PaginatedList<GridData>,
