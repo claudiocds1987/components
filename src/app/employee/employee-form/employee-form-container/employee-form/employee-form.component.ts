@@ -13,6 +13,11 @@ import { MatInputModule } from "@angular/material/input";
 import { MatButtonModule } from "@angular/material/button";
 import { MatSelectModule } from "@angular/material/select";
 import { DateInputComponent } from "../../../../shared/components/date-input/date-input.component";
+import { SpinnerService } from "../../../../shared/services/spinner.service";
+import { BreadcrumbService } from "../../../../shared/services/breadcrumb.service";
+import { AlertService } from "../../../../shared/services/alert.service";
+import { BreadcrumbComponent } from "../../../../shared/components/breadcrumb/breadcrumb.component";
+import { AlertComponent } from "../../../../shared/components/alert/alert.component";
 
 @Component({
     selector: "app-employee-form",
@@ -27,6 +32,8 @@ import { DateInputComponent } from "../../../../shared/components/date-input/dat
         MatButtonModule,
         DateInputComponent,
         MatSelectModule,
+        BreadcrumbComponent,
+        AlertComponent,
     ],
     templateUrl: "./employee-form.component.html",
     styleUrl: "./employee-form.component.scss",
@@ -35,7 +42,12 @@ export class EmployeeFormComponent {
     employeeForm: FormGroup;
     employeePositions: string[] = [];
 
+    private _spinnerService = inject(SpinnerService);
+    private _breadcrumbService = inject(BreadcrumbService);
+    private _alertService = inject(AlertService);
+
     constructor() {
+        this._setBreadcrumb();
         this.employeeForm = this._createForm();
         this.employeePositions = [
             "Todos",
@@ -65,5 +77,13 @@ export class EmployeeFormComponent {
             active: new FormControl(true),
             // poner propiedad "active" y agregarla a interface Employee
         });
+    }
+
+    private _setBreadcrumb(): void {
+        this._breadcrumbService.setBreadcrumbs([
+            { label: "Inicio", path: "/" },
+            { label: "Grilla full", path: "/employee-grid-pagination" },
+            { label: "Empleado", path: "" },
+        ]);
     }
 }
