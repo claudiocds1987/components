@@ -111,6 +111,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     private _router = inject(Router);
 
     constructor() {
+        this._alertService.clearAlerts();
         this._setBreadcrumb();
         this.gridConfig = this._setGridConfiguration();
         this._setGridFilterConfig();
@@ -119,7 +120,6 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this._alertService.clearAlerts();
         this._loadData();
     }
 
@@ -149,7 +149,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
         if (this.gridConfig.hasPaginator) {
             this.gridConfig.hasPaginator.pageIndex = 0;
         }
-        this._reloadGridData(); // Llama a la nueva función
+        this._reloadGridData();
     }
 
     onGridSortChange(sortEvent: Sort): void {
@@ -172,7 +172,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
         };
 
         this._updateGridConfigOnSortChange(sortEvent);
-        this._reloadGridData(); // Llama a la nueva función
+        this._reloadGridData();
     }
 
     onGridPageChange(event: PageEvent): void {
@@ -660,9 +660,9 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                 { name: "name" /*headerTooltip: "nombre completo"*/ },
                 { name: "surname" },
                 { name: "birthDate" },
-                { name: "gender", isSortable: false },
-                { name: "position" },
-                { name: "country" },
+                { name: "gender", isSortable: false }, // false por que ordenaria por id no alfabeticamente
+                { name: "position", isSortable: false }, // false por que ordenaria por id no alfabeticamente
+                { name: "country", isSortable: false }, // false por que ordenaria por id no alfabeticamente
                 {
                     name: "active",
                     style: "status-circle",

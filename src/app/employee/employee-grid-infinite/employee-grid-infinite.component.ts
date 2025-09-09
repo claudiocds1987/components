@@ -23,7 +23,7 @@ import { EmployeeService } from "../../shared/services/employee.service";
 import { EmployeeFilterParams } from "../../shared/models/employee-filter-params.model";
 import { PaginatedList } from "../../shared/models/paginated-list.model";
 import { Employee } from "../../shared/models/employee.model";
-import { finalize, map } from "rxjs";
+import { catchError, finalize, forkJoin, map, Observable, of } from "rxjs";
 import { HttpClientModule, HttpErrorResponse } from "@angular/common/http";
 import { PageEvent } from "@angular/material/paginator";
 import { Sort } from "@angular/material/sort";
@@ -36,6 +36,9 @@ import { BreadcrumbComponent } from "../../shared/components/breadcrumb/breadcru
 import { BreadcrumbService } from "../../shared/services/breadcrumb.service";
 import { AlertComponent } from "../../shared/components/alert/alert.component";
 import { AlertService } from "../../shared/services/alert.service";
+import { SelectItem } from "../../shared/models/select-item.model";
+import { PositionService } from "../../shared/services/position.service";
+import { CountryService } from "../../shared/services/country.service";
 
 @Component({
     selector: "app-employee-grid-infinite",
@@ -57,6 +60,16 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
     gridData: GridData[] = [];
     isLoadingGridData = true;
 
+    private _positions: SelectItem[] = [];
+    private _countries: SelectItem[] = [];
+    private _genders: SelectItem[] = [
+        { id: "all", description: "Todos" },
+        { id: 0, description: "No binario" },
+        { id: 1, description: "Masculino" },
+        { id: 2, description: "Femenino" },
+    ];
+    //private _paginatedListGridData: PaginatedList<GridData>;
+
     private _employeeFilterParams: EmployeeFilterParams = {};
     private _employeeServices = inject(EmployeeService);
     private _exportService = inject(ExportService);
@@ -64,6 +77,8 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
     private _spinnerService = inject(SpinnerService);
     private _breadcrumbService = inject(BreadcrumbService);
     private _alertService = inject(AlertService);
+    private _positionServices = inject(PositionService);
+    private _countryServices = inject(CountryService);
 
     constructor() {
         this._alertService.clearAlerts();
@@ -91,13 +106,14 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
         }
 
         this.isLoadingGridData = true;
-        // Incrementamos la página para la siguiente solicitud
+
         this._employeeFilterParams = {
             ...this._employeeFilterParams,
             page: (this._employeeFilterParams.page || 1) + 1,
         };
 
-        this._getEmployees(true); // Pasamos 'true' para indicar que es una carga adicional por scroll.
+        // Llamada unificada a la función de carga de empleados
+        this._getEmployees(true); // Pasar true para indicar que es un scroll
     }
 
     onGridSortChange(sortEvent: Sort): void {
@@ -105,11 +121,11 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
         let sortColumnName = sortEvent.active;
         // Para que ordene por descripción en json-server
         if (sortEvent.active === "position") {
-            sortColumnName = "position.description";
+            sortColumnName = "positionId";
         }
 
         if (sortEvent.active === "country") {
-            sortColumnName = "country.description";
+            sortColumnName = "countryId";
         }
 
         this._employeeFilterParams = {
@@ -179,9 +195,9 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                 id: employee.id,
                 nombre: employee.name || null,
                 apellido: employee.surname || null,
-                puesto: employee.positionId || null,
-                pais: employee.countryId || null,
-                genero: employee.genderId || null,
+                puesto: this._getPositionDescription(employee.positionId),
+                pais: this._getCountryDescription(employee.countryId),
+                genero: this._getGenderDescription(employee.genderId),
                 estado:
                     typeof employee.active === "boolean"
                         ? employee.active
@@ -201,34 +217,39 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
     }
 
     private _getEmployees(isScrolling = false): void {
+        this.isLoadingGridData = true;
         if (!isScrolling) {
-            this.isLoadingGridData = true; // Para carga inicial o cambio de orden con mat-sort
+            // Para limpiar la grilla para carga inicial o al cambiar de página
+            this.gridData = [];
         }
 
         this._employeeServices
             .getEmployees(this._employeeFilterParams)
             .pipe(
-                map(this._mapPaginatedListToGridData.bind(this)),
+                map(
+                    (
+                        paginatedList: PaginatedList<Employee>,
+                    ): PaginatedList<GridData> => {
+                        return this._mapPaginatedListToGridData(paginatedList);
+                    },
+                ),
                 finalize((): void => {
                     this.isLoadingGridData = false;
-                    this._cdr.markForCheck(); // Forzar la detección de cambios
+                    this._cdr.markForCheck();
                 }),
             )
             .subscribe({
-                next: (
-                    paginatedListGridData: PaginatedList<GridData>,
-                ): void => {
-                    if (isScrolling) {
-                        this.gridData = [
-                            ...this.gridData,
-                            ...paginatedListGridData.items,
-                        ];
-                    } else {
-                        this.gridData = paginatedListGridData.items;
-                    }
-                    this._updateGridConfig(paginatedListGridData);
+                next: (paginatedGridData: PaginatedList<GridData>): void => {
+                    // Si es scroll, se concatenan los datos.
+                    // Si es carga inicial, se reemplazan los datos.
+                    this.gridData = isScrolling
+                        ? [...this.gridData, ...paginatedGridData.items]
+                        : paginatedGridData.items;
+
+                    this._updateGridConfig(paginatedGridData);
                 },
                 error: (error: HttpErrorResponse): void => {
+                    this.isLoadingGridData = false;
                     this._alertService.showDanger(
                         `Error al obtener empleados. ${error.statusText}`,
                     );
@@ -238,7 +259,51 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
 
     private _loadData(): void {
         this._setEmployeeFilterParameters();
-        this._getEmployees();
+        forkJoin({
+            positions: this._getPositions(),
+            countries: this._getCountries(),
+        })
+            .pipe(
+                finalize((): void => {
+                    this._cdr.markForCheck();
+                }),
+            )
+            .subscribe({
+                next: (results): void => {
+                    this._positions = results.positions;
+                    this._countries = results.countries;
+                    // Llama a _getEmployees para la carga inicial de la grilla
+                    this._getEmployees();
+                },
+                error: (error: HttpErrorResponse): void => {
+                    this.isLoadingGridData = false;
+                    this._alertService.showDanger(
+                        `Error al cargar datos. ${error.statusText}`,
+                    );
+                },
+            });
+    }
+
+    private _getPositions(): Observable<SelectItem[]> {
+        return this._positionServices.getPositions().pipe(
+            catchError((error: HttpErrorResponse): Observable<SelectItem[]> => {
+                this._alertService.showDanger(
+                    `Error al cargar la lista de puestos. ${error.statusText}`,
+                );
+                return of([]);
+            }),
+        );
+    }
+
+    private _getCountries(): Observable<SelectItem[]> {
+        return this._countryServices.getCountries().pipe(
+            catchError((error: HttpErrorResponse): Observable<SelectItem[]> => {
+                this._alertService.showDanger(
+                    `Error al cargar la lista de paises. ${error.statusText}`,
+                );
+                return of([]);
+            }),
+        );
     }
 
     private _mapPaginatedListToGridData(
@@ -252,10 +317,11 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                     elipsisActions: this._setElipsisActions(employee),
                     name: employee.name,
                     surname: employee.surname,
+                    birthDate: employee.birthDate,
                     active: employee.active,
-                    position: employee.positionId,
-                    gender: employee.genderId,
-                    country: employee.countryId,
+                    position: this._getPositionDescription(employee.positionId),
+                    gender: this._getGenderDescription(employee.genderId),
+                    country: this._getCountryDescription(employee.countryId),
                 };
 
                 if (typeof employee.birthDate === "string") {
@@ -278,6 +344,28 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
             items: transformedItems,
             pageIndex: paginatedList.page - 1,
         };
+    }
+
+    private _getCountryDescription(countryId: number): string {
+        return (
+            this._countries.find((c): boolean => c.id === countryId)
+                ?.description || ""
+        );
+    }
+
+    private _getPositionDescription(positionId: number): string {
+        return (
+            this._positions.find(
+                (position): boolean => position.id === positionId,
+            )?.description || ""
+        );
+    }
+
+    private _getGenderDescription(genderId: number): string {
+        return (
+            this._genders.find((gender): boolean => gender.id === genderId)
+                ?.description || ""
+        );
     }
 
     private _setElipsisActions(employee: Employee): ElipsisAction[] {
@@ -354,9 +442,9 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                 { name: "name" },
                 { name: "surname" },
                 { name: "birthDate" },
-                { name: "gender", isSortable: false },
-                { name: "position" },
-                { name: "country" },
+                { name: "gender", isSortable: false }, // false por que ordenaria por id no alfabeticamente
+                { name: "position", isSortable: false }, // false por que ordenaria por id no alfabeticamente
+                { name: "country", isSortable: false }, // false por que ordenaria por id no alfabeticamente
                 {
                     name: "active",
                     style: "status-circle",
