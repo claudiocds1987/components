@@ -56,16 +56,16 @@ export class EmployeeService {
         }
 
         if (params.position && params.position !== "all") {
-            httpParams = httpParams.set("position.id", params.position);
+            httpParams = httpParams.set("positionId", params.position);
         }
 
         if (params.country && params.country !== "all") {
-            httpParams = httpParams.set("country.id", params.country);
+            httpParams = httpParams.set("countryId", params.country);
         }
 
         if (params.gender !== null && params.gender !== undefined) {
             if (params.gender !== "all") {
-                httpParams = httpParams.set("gender.id", params.gender);
+                httpParams = httpParams.set("genderId", params.gender);
             }
         }
 
@@ -190,17 +190,17 @@ export class EmployeeService {
 
         if (params.gender !== null && params.gender !== undefined) {
             if (params.gender !== "all") {
-                httpParams = httpParams.set("gender.id", params.gender);
+                httpParams = httpParams.set("genderId", params.gender);
             }
         }
 
         // Aca está el filtro de position con la sintaxis correcta
         if (params.position && params.position !== "all") {
-            httpParams = httpParams.set("position.id", params.position);
+            httpParams = httpParams.set("positionId", params.position);
         }
 
         if (params.country && params.country !== "all") {
-            httpParams = httpParams.set("country.id", params.country);
+            httpParams = httpParams.set("countryId", params.country);
         }
 
         if (params.active !== undefined && params.active !== null) {

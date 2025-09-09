@@ -4,12 +4,12 @@ export interface Employee {
     id: number;
     name: string;
     surname: string;
-    country: SelectItem;
+    countryId: number;
     birthDate: Date;
-    position: SelectItem;
+    positionId: number;
     active: boolean;
     imgUrl: string;
-    gender: SelectItem;
+    genderId: number;
 
     // ¡NUEVA LÍNEA! Firma de índice para compatibilidad con Record<string, string | number>
     [key: string]: string | number | Date | boolean | SelectItem | undefined;

@@ -88,9 +88,9 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
                     name: employee.name,
                     surname: employee.surname,
                     active: employee.active,
-                    position: employee.position?.description,
-                    gender: employee.gender?.description,
-                    country: employee.country?.description,
+                    position: employee.positionId,
+                    gender: employee.genderId,
+                    country: employee.countryId,
                 };
 
                 if (typeof employee.birthDate === "string") {

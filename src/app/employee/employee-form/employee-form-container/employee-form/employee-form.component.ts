@@ -93,9 +93,9 @@ export class EmployeeFormComponent implements OnInit {
             name: this.employeeForm.value.name,
             surname: this.employeeForm.value.surname,
             birthDate: this.employeeForm.value.birthDate,
-            gender: this.employeeForm.value.gender,
-            country: this.employeeForm.value.country,
-            position: this.employeeForm.value.position,
+            genderId: this.employeeForm.value.genderId,
+            countryId: this.employeeForm.value.countryId,
+            positionId: this.employeeForm.value.positionId,
             active: this.employeeForm.value.active,
         };
 

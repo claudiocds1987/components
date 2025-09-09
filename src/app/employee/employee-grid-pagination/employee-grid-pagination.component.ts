@@ -155,12 +155,13 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     onGridSortChange(sortEvent: Sort): void {
         let sortColumnName = sortEvent.active;
         const sortOrder = sortEvent.direction;
+        console.log("sorEvent: ", sortEvent);
 
         if (sortEvent.active === "country") {
-            sortColumnName = "country.description";
+            sortColumnName = "countryId";
         }
         if (sortEvent.active === "position") {
-            sortColumnName = "position.description";
+            sortColumnName = "positionId";
         }
 
         this._employeeFilterParams = {
@@ -357,9 +358,9 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                 id: employee.id,
                 nombre: employee.name || null,
                 apellido: employee.surname || null,
-                puesto: employee.position?.description || null,
-                pais: employee.country?.description || null,
-                genero: employee.gender?.description || null,
+                puesto: this._getPositionDescription(employee.positionId),
+                pais: this._getCountryDescription(employee.countryId),
+                genero: this._getGenderDescription(employee.genderId),
                 estado:
                     typeof employee.active === "boolean"
                         ? employee.active
@@ -490,9 +491,9 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                     surname: employee.surname,
                     birthDate: employee.birthDate,
                     active: employee.active,
-                    position: employee.position?.description,
-                    gender: employee.gender?.description,
-                    country: employee.country?.description,
+                    position: this._getPositionDescription(employee.positionId),
+                    gender: this._getGenderDescription(employee.genderId),
+                    country: this._getCountryDescription(employee.countryId),
                 };
                 if (typeof employee.birthDate === "string") {
                     const luxonDate = DateTime.fromISO(
@@ -513,6 +514,28 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
             items: transformedItems,
             pageIndex: paginatedList.page - 1,
         };
+    }
+
+    private _getCountryDescription(countryId: number): string {
+        return (
+            this._countries.find((c): boolean => c.id === countryId)
+                ?.description || ""
+        );
+    }
+
+    private _getPositionDescription(positionId: number): string {
+        return (
+            this._positions.find(
+                (position): boolean => position.id === positionId,
+            )?.description || ""
+        );
+    }
+
+    private _getGenderDescription(genderId: number): string {
+        return (
+            this._genders.find((gender): boolean => gender.id === genderId)
+                ?.description || ""
+        );
     }
 
     private _setElipsisActions(employee: Employee): ElipsisAction[] {

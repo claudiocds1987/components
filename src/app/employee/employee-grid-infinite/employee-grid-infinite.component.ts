@@ -179,9 +179,9 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                 id: employee.id,
                 nombre: employee.name || null,
                 apellido: employee.surname || null,
-                puesto: employee.position?.description || null,
-                pais: employee.country?.description || null,
-                genero: employee.gender?.description || null,
+                puesto: employee.positionId || null,
+                pais: employee.countryId || null,
+                genero: employee.genderId || null,
                 estado:
                     typeof employee.active === "boolean"
                         ? employee.active
@@ -253,9 +253,9 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                     name: employee.name,
                     surname: employee.surname,
                     active: employee.active,
-                    position: employee.position?.description,
-                    gender: employee.gender?.description,
-                    country: employee.country?.description,
+                    position: employee.positionId,
+                    gender: employee.genderId,
+                    country: employee.countryId,
                 };
 
                 if (typeof employee.birthDate === "string") {
