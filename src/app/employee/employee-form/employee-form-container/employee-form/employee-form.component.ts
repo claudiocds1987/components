@@ -54,7 +54,7 @@ import { Employee } from "../../../../shared/models/employee.model";
 export class EmployeeFormComponent implements OnInit {
     employeeForm: FormGroup;
     isLoading = true;
-    operation: string; // "create" o "edit"
+    operation: string;
     positions: SelectItem[] = [];
     countries: SelectItem[] = [];
     genders: SelectItem[] = [
@@ -74,7 +74,6 @@ export class EmployeeFormComponent implements OnInit {
 
     constructor() {
         this.operation = this._route.snapshot.data["operation"]; // "create" o "edit"
-        console.log("Operación:", this.operation);
         this._setBreadcrumb();
         this.employeeForm = this._createForm();
     }
@@ -139,12 +138,29 @@ export class EmployeeFormComponent implements OnInit {
                     this.positions = result.positions;
                     this.countries = result.countries;
                     if (this.operation === "edit") {
-                        // Aquí cargarías los datos del empleado a editar y los pondrías en el formulario
-                        // Por ejemplo:
-                        // this.employeeForm.patchValue(employeeData);
+                        const employeeId =
+                            this._route.snapshot.paramMap.get("id");
+                        this._getEmployeeById(Number(employeeId)).subscribe({
+                            next: (employee: Employee): void => {
+                                console.log(employee);
+                                // no esta mostrando genero, pais y puesto
+                                this.employeeForm.patchValue(employee);
+                            },
+                        });
                     }
                 },
             });
+    }
+
+    private _getEmployeeById(id: number): Observable<Employee> {
+        return this._employeeService.getEmployee(id).pipe(
+            catchError((error: HttpErrorResponse): Observable<Employee> => {
+                this._alertService.showDanger(
+                    `Error al cargar los datos del empleado. ${error.statusText}`,
+                );
+                return of();
+            }),
+        );
     }
 
     private _getPositions(): Observable<SelectItem[]> {

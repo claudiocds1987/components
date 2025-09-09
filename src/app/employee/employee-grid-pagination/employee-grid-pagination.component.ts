@@ -534,7 +534,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     }
 
     private _editEmployee(id: number): void {
-        console.log(`Editando empleado con ID: ${id}`);
+        this._router.navigate([`/employee/edit/${id}`]);
     }
 
     private _deleteEmployee(id: number): void {

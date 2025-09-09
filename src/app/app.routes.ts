@@ -27,7 +27,7 @@ export const routes: Routes = [
         data: { operation: "create" },
     },
     {
-        path: "employees/edit/:id",
+        path: "employee/edit/:id",
         component: EmployeeFormComponent,
         data: { operation: "edit" },
     },
