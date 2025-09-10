@@ -260,7 +260,7 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
                 { name: "id", width: "20px" },
                 { name: "name" },
                 { name: "surname" },
-                { name: "birthDate" },
+                { name: "birthDate", type: "date" },
                 { name: "gender", isSortable: false },
                 { name: "position" },
                 { name: "country" },
