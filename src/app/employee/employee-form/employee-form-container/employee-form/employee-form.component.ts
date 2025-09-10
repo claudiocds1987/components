@@ -55,6 +55,7 @@ export class EmployeeFormComponent implements OnInit {
     employeeForm: FormGroup;
     isLoading = true;
     operation: string;
+    title: string;
     positions: SelectItem[] = [];
     countries: SelectItem[] = [];
     genders: SelectItem[] = [
@@ -74,6 +75,10 @@ export class EmployeeFormComponent implements OnInit {
 
     constructor() {
         this.operation = this._route.snapshot.data["operation"]; // "create" o "edit"
+        this.title =
+            this.operation === "create"
+                ? "Crear nuevo empleado"
+                : "Editar empleado";
         this._setBreadcrumb();
         this.employeeForm = this._createForm();
     }
@@ -99,7 +104,11 @@ export class EmployeeFormComponent implements OnInit {
             active: this.employeeForm.value.active,
         };
 
-        this._createEmployee(employee);
+        if (this.operation === "create") {
+            this._createEmployee(employee);
+        } else {
+            //editar
+        }
     }
 
     isReadyToSave(): boolean {
@@ -113,9 +122,9 @@ export class EmployeeFormComponent implements OnInit {
             name: new FormControl("", Validators.required),
             surname: new FormControl("", Validators.required),
             birthDate: new FormControl("", Validators.required),
-            gender: new FormControl("", Validators.required),
-            country: new FormControl("", Validators.required),
-            position: new FormControl("", Validators.required),
+            genderId: new FormControl("", Validators.required),
+            countryId: new FormControl("", Validators.required),
+            positionId: new FormControl("", Validators.required),
             active: new FormControl(true),
         });
     }

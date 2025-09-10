@@ -152,7 +152,6 @@ export class GridComponent
 
     ngAfterViewInit(): void {
         if (this.gridConfig?.hasInfiniteScroll) {
-            console.log("grid config: ", this.gridConfig);
             this._setupScrollListener();
         }
     }
@@ -366,7 +365,10 @@ export class GridComponent
         const clientHeight = element.clientHeight;
         // "scrollThreshold" es el valor que define que tan cerca del final de la grilla debe estar el scroll para que se emita el evento infiniteScroll y se cargue la siguiente tanda de datos.
         const scrollThreshold = 50;
-
+        // scrollTop: Es la distancia que se ha desplazado el scroll desde la parte superior del contenedor.
+        // clientHeight: Es la altura visible del área de contenido del contenedor.
+        // scrollHeight: Es la altura total del contenido dentro del contenedor (incluida la parte que no está visible).
+        // scrollThreshold: Es un valor de margen que define qué tan cerca del final debe estar el scroll para que se active la carga (en este caso, 50 píxeles).
         if (scrollTop + clientHeight >= scrollHeight - scrollThreshold) {
             const totalCount = this.paginatorConfig?.totalCount ?? 0;
             if (this.data.length < totalCount) {

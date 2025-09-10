@@ -334,8 +334,8 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
                 label: "Eliminar",
                 icon: "delete_forever",
                 action: (id: number): void => this._deleteEmployee(id),
-                // Condición de ejemplo: solo eliminable si el usuario esta activo
-                condition: (): boolean => employee.active === true,
+                // Condición de ejemplo: solo eliminable si el usuario esta inactivo
+                condition: (): boolean => employee.active === false,
             },
         ];
     }

@@ -553,7 +553,8 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                 label: "Eliminar",
                 icon: "delete_forever",
                 action: (id: number): void => this._deleteEmployee(id),
-                condition: (): boolean => employee.active === true,
+                // Condición de ejemplo: solo eliminable si el usuario esta inactivo
+                condition: (): boolean => employee.active === false,
             },
         ];
     }

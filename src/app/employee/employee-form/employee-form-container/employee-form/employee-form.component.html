@@ -1,7 +1,7 @@
 <app-breadcrumb></app-breadcrumb>
 <app-alert></app-alert>
 <div class="form-wrapper">
-    <h2>Crear nuevo empleado</h2>
+    <h2>{{ title }}</h2>
     <div class="employee-form-container">
         <form [formGroup]="employeeForm">
             <mat-form-field appearance="outline">
@@ -20,18 +20,21 @@
             ></app-date-input>
             <mat-form-field appearance="outline">
                 <mat-label>Género</mat-label>
-                <mat-select formControlName="gender">
-                    <mat-option *ngFor="let gender of genders" [value]="gender">
+                <mat-select formControlName="genderId">
+                    <mat-option
+                        *ngFor="let gender of genders"
+                        [value]="gender.id"
+                    >
                         {{ gender.description }}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
             <mat-form-field appearance="outline">
                 <mat-label>Pais</mat-label>
-                <mat-select formControlName="country">
+                <mat-select formControlName="countryId">
                     <mat-option
                         *ngFor="let country of countries"
-                        [value]="country"
+                        [value]="country.id"
                     >
                         {{ country.description }}
                     </mat-option>
@@ -39,10 +42,10 @@
             </mat-form-field>
             <mat-form-field appearance="outline">
                 <mat-label>Puesto</mat-label>
-                <mat-select formControlName="position">
+                <mat-select formControlName="positionId">
                     <mat-option
                         *ngFor="let position of positions"
-                        [value]="position"
+                        [value]="position.id"
                     >
                         {{ position.description }}
                     </mat-option>
