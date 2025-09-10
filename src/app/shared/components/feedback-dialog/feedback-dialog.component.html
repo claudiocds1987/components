@@ -1,0 +1,22 @@
+<div class="feedback-dialog-container">
+    <img [src]="getFeedbackIcon()" alt="Feedback icon" class="feedback-icon" />
+    <p class="feedback-message">{{ data.message }}</p>
+
+    <div class="feedback-actions" *ngIf="data.showButtons">
+        <button
+            *ngIf="data.cancelButtonText"
+            mat-button
+            (click)="onCancelClick()"
+        >
+            {{ data.cancelButtonText }}
+        </button>
+        <button
+            *ngIf="data.acceptButtonText"
+            mat-flat-button
+            color="primary"
+            (click)="onAcceptClick()"
+        >
+            {{ data.acceptButtonText || "Aceptar" }}
+        </button>
+    </div>
+</div>
