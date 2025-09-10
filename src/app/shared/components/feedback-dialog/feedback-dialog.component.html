@@ -5,7 +5,8 @@
     <div class="feedback-actions" *ngIf="data.showButtons">
         <button
             *ngIf="data.cancelButtonText"
-            mat-button
+            mat-flat-button
+            color="primary"
             (click)="onCancelClick()"
         >
             {{ data.cancelButtonText }}

@@ -244,16 +244,9 @@ export class EmployeeFormComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe((result): void => {
             if (result === true) {
-                // Si el resultado es true (botón "Crear otro" presionado), resetea el formulario.
                 this.employeeForm.reset();
-                // Opcional: podrías navegar a la misma ruta de creación para limpiar la URL
-                this._router.navigate(["/employee/create"]);
             } else if (result === false) {
-                // Si el resultado es false (botón "Ver empleados" presionado), redirige.
                 this._router.navigate(["/employee-grid-pagination"]);
-            } else {
-                // Si el diálogo se cierra de otra forma (por ejemplo, con la tecla 'Esc'), no hace nada.
-                console.log("El diálogo se cerró sin seleccionar una opción.");
             }
         });
     }

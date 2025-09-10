@@ -2,14 +2,14 @@
   "employees": [
     {
       "id": 1,
+      "imgUrl": "https://randomuser.me/api/portraits/men/1.jpg",
       "name": "Liam Brian Joseph Carter Coleman",
       "surname": "Johnson",
       "birthDate": "1990-03-15",
-      "positionId": 1,
-      "active": true,
-      "imgUrl": "https://randomuser.me/api/portraits/men/1.jpg",
       "genderId": 0,
-      "countryId": 1
+      "countryId": 1,
+      "positionId": 1,
+      "active": true
     },
     {
       "id": 2,
@@ -2276,6 +2276,39 @@
       "countryId": 1,
       "positionId": 1,
       "active": true
+    },
+    {
+      "id": 208,
+      "imgUrl": "",
+      "name": "Mario",
+      "surname": "Uri",
+      "birthDate": "1987-12-20",
+      "genderId": 1,
+      "countryId": 1,
+      "positionId": 4,
+      "active": true
+    },
+    {
+      "id": 209,
+      "imgUrl": "",
+      "name": "Sebastian",
+      "surname": "Francis",
+      "birthDate": "1994-10-09",
+      "genderId": 1,
+      "countryId": 1,
+      "positionId": 5,
+      "active": true
+    },
+    {
+      "id": 210,
+      "imgUrl": "",
+      "name": "Olga",
+      "surname": "Perez",
+      "birthDate": "1979-10-10",
+      "genderId": 2,
+      "countryId": 2,
+      "positionId": 1,
+      "active": null
     }
   ],
   "positions": [
