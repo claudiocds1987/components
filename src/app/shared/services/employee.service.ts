@@ -18,6 +18,11 @@ export class EmployeeService {
         return this._http.post<Employee>(this.apiUrl, employee);
     }
 
+    updateEmployee(employee: Employee): Observable<Employee> {
+        const url = `${this.apiUrl}/${employee.id}`;
+        return this._http.put<Employee>(url, employee);
+    }
+
     getEmployee(id: number): Observable<Employee> {
         return this._http.get<Employee>(`${this.apiUrl}/${id}`);
     }

@@ -93,8 +93,8 @@ export class EmployeeFormComponent implements OnInit {
 
     onSave(): void {
         const employee: Employee = {
-            id: 0, // en el servicio employeeService en el post con Omit le ignoro el id
-            imgUrl: "",
+            id: this.employeeForm.value.id, // en el servicio employeeService en el post con Omit le ignoro el id
+            imgUrl: this.employeeForm.value.imgUrl || "",
             name: this.employeeForm.value.name,
             surname: this.employeeForm.value.surname,
             birthDate: this.employeeForm.value.birthDate,
@@ -107,7 +107,7 @@ export class EmployeeFormComponent implements OnInit {
         if (this.operation === "create") {
             this._createEmployee(employee);
         } else {
-            //editar
+            this._editEmployee(employee);
         }
     }
 
@@ -119,6 +119,7 @@ export class EmployeeFormComponent implements OnInit {
     private _createForm(): FormGroup {
         return new FormGroup({
             id: new FormControl(""),
+            imgUrl: new FormControl(""),
             name: new FormControl("", Validators.required),
             surname: new FormControl("", Validators.required),
             birthDate: new FormControl("", Validators.required),
@@ -151,8 +152,6 @@ export class EmployeeFormComponent implements OnInit {
                             this._route.snapshot.paramMap.get("id");
                         this._getEmployeeById(Number(employeeId)).subscribe({
                             next: (employee: Employee): void => {
-                                console.log(employee);
-                                // no esta mostrando genero, pais y puesto
                                 this.employeeForm.patchValue(employee);
                             },
                         });
@@ -198,9 +197,32 @@ export class EmployeeFormComponent implements OnInit {
         this._spinnerService.show();
         this._employeeService.createEmployee(employee).subscribe({
             next: (createdEmployee: Employee): void => {
-                // mostrar el componente success
+                // agregado de setTimeout para simular un delay con json-server
+                setTimeout((): void => {
+                    console.log("empleado creado: ", createdEmployee);
+                    // mostrar el componente success
+                    this._spinnerService.hide();
+                }, 1500);
+            },
+            error: (error: HttpErrorResponse): void => {
                 this._spinnerService.hide();
-                console.log("Empleado creado con éxito:", createdEmployee);
+                this._alertService.showDanger(
+                    `Error al obtener empleados. ${error.statusText}`,
+                );
+            },
+        });
+    }
+
+    private _editEmployee(employee: Employee): void {
+        this._spinnerService.show();
+        this._employeeService.updateEmployee(employee).subscribe({
+            next: (updatedEmployee: Employee): void => {
+                // agregado de setTimeout para simular un delay con json-server
+                setTimeout((): void => {
+                    console.log("empleado editado: ", updatedEmployee);
+                    // mostrar el componente success
+                    this._spinnerService.hide();
+                }, 1500);
             },
             error: (error: HttpErrorResponse): void => {
                 this._spinnerService.hide();

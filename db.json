@@ -13,25 +13,25 @@
     },
     {
       "id": 2,
-      "name": "Evelyn Olivia Sophie Adams",
+      "imgUrl": "https://randomuser.me/api/portraits/women/2.jpg",
+      "name": "Evelyn Olivia",
       "surname": "Williams",
       "birthDate": "1992-07-22",
+      "genderId": 2,
+      "countryId": 2,
       "positionId": 2,
-      "active": false,
-      "imgUrl": "https://randomuser.me/api/portraits/women/2.jpg",
-      "genderId": 1,
-      "countryId": 2
+      "active": false
     },
     {
       "id": 3,
-      "name": "Noah Alexander Michael Jones",
+      "imgUrl": "https://randomuser.me/api/portraits/men/3.jpg",
+      "name": "Jazmin",
       "surname": "Brown",
       "birthDate": "1988-11-10",
-      "positionId": 3,
-      "active": false,
-      "imgUrl": "https://randomuser.me/api/portraits/men/3.jpg",
       "genderId": 2,
-      "countryId": 3
+      "countryId": 3,
+      "positionId": 3,
+      "active": false
     },
     {
       "id": 4,

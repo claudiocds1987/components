@@ -1,9 +1,17 @@
 <app-breadcrumb></app-breadcrumb>
 <app-alert></app-alert>
 <div class="form-wrapper">
-    <h2>{{ title }}</h2>
     <div class="employee-form-container">
         <form [formGroup]="employeeForm">
+            <div class="header-with-image">
+                <h2>{{ title }}</h2>
+                <img
+                    *ngIf="operation === 'edit'"
+                    [src]="employeeForm.get('imgUrl')?.value"
+                    alt="Foto del empleado"
+                    class="employee-photo"
+                />
+            </div>
             <mat-form-field appearance="outline">
                 <mat-label>Nombre</mat-label>
                 <input matInput formControlName="name" />

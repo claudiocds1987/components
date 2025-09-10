@@ -25,3 +25,23 @@
     align-items: center;
     gap: 20px;
 }
+
+.header-with-image {
+    display: flex; /* Alinea los elementos en una fila */
+    align-items: center; /* Centra los elementos verticalmente */
+    justify-content: space-between;
+    //gap: 15px; /* Crea una separación entre el título y la imagen */
+}
+
+.employee-photo {
+    width: 60px; /* Define el tamaño de la imagen */
+    height: 60px;
+    border-radius: 50%; /* Le da forma circular a la imagen */
+    object-fit: cover; /* Asegura que la imagen no se distorsione */
+    border: 2px solid #ddd; /* Añade un borde sutil */
+}
+
+/* Opcional: Estilo para el título */
+.header-with-image h2 {
+    margin: 0;
+}
