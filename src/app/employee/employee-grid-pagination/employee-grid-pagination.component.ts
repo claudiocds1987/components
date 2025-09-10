@@ -518,23 +518,25 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
 
     private _getCountryDescription(countryId: number): string {
         return (
-            this._countries.find((c): boolean => c.id === countryId)
-                ?.description || ""
+            this._countries.find(
+                (country: SelectItem): boolean => country.id === countryId,
+            )?.description || ""
         );
     }
 
     private _getPositionDescription(positionId: number): string {
         return (
             this._positions.find(
-                (position): boolean => position.id === positionId,
+                (position: SelectItem): boolean => position.id === positionId,
             )?.description || ""
         );
     }
 
     private _getGenderDescription(genderId: number): string {
         return (
-            this._genders.find((gender): boolean => gender.id === genderId)
-                ?.description || ""
+            this._genders.find(
+                (gender: SelectItem): boolean => gender.id === genderId,
+            )?.description || ""
         );
     }
 

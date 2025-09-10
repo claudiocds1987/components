@@ -1,4 +1,11 @@
-import { Component, inject, OnDestroy, OnInit } from "@angular/core";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+    ChangeDetectorRef,
+    Component,
+    inject,
+    OnDestroy,
+    OnInit,
+} from "@angular/core";
 import { EmployeeService } from "../../shared/services/employee.service";
 import { AlertService } from "../../shared/services/alert.service";
 import { BreadcrumbService } from "../../shared/services/breadcrumb.service";
@@ -16,6 +23,13 @@ import { GridComponent } from "../../shared/components/grid/grid.component";
 import { MatDialogModule } from "@angular/material/dialog";
 import { BreadcrumbComponent } from "../../shared/components/breadcrumb/breadcrumb.component";
 import { AlertComponent } from "../../shared/components/alert/alert.component";
+import { catchError, finalize, forkJoin, Observable, of } from "rxjs";
+import { SelectItem } from "../../shared/models/select-item.model";
+import { PositionService } from "../../shared/services/position.service";
+import { CountryService } from "../../shared/services/country.service";
+import { ExportService } from "../../shared/services/export.service";
+import { SpinnerService } from "../../shared/services/spinner.service";
+import { Sort } from "@angular/material/sort";
 
 @Component({
     selector: "app-employee-grid-all",
@@ -35,11 +49,26 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
     gridConfig: GridConfiguration;
     gridData: GridData[] = [];
     isLoadingGridData = true;
-    employees: Employee[] = [];
+    //employees: Employee[] = [];
+
+    private _employees: Employee[] = [];
+    private _positions: SelectItem[] = [];
+    private _countries: SelectItem[] = [];
+    private _genders: SelectItem[] = [
+        { id: "all", description: "Todos" },
+        { id: 0, description: "No binario" },
+        { id: 1, description: "Masculino" },
+        { id: 2, description: "Femenino" },
+    ];
 
     private _employeeService = inject(EmployeeService);
+    private _exportService = inject(ExportService);
+    private _spinnerService = inject(SpinnerService);
+    private _cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
     private _alertService = inject(AlertService);
     private _breadcrumbService = inject(BreadcrumbService);
+    private _positionServices = inject(PositionService);
+    private _countryServices = inject(CountryService);
 
     constructor() {
         this._alertService.clearAlerts();
@@ -59,23 +88,130 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
         // hacer redireccion a url de employee-form
     }
 
-    onExportToExcel(): void {
-        // lógica para exportar a excel
+    // 2. Modifica la función onExportToExcel() para que reciba el sort
+    onExportToExcel(sort?: Sort | void): void {
+        this._spinnerService.show();
+        console.log("sortData: ", sort);
+
+        let sortedData;
+
+        if (sort) {
+            sortedData = this._sortGridData(this._employees, sort);
+        } else {
+            sortedData = this._employees;
+        }
+
+        const processedData = this._mapEmployeesForExport(sortedData);
+
+        const fileName = "Empleados.xlsx";
+        setTimeout((): void => {
+            this._exportService.exportToExcel(processedData, fileName);
+            this._spinnerService.hide();
+            this._cdr.markForCheck();
+        }, 1500);
+    }
+
+    // función para ordenar la data localmente
+    private _sortGridData(data: Employee[], sort: Sort): Employee[] {
+        if (!sort.active || sort.direction === "") {
+            return data;
+        }
+
+        return data.sort((a, b): number => {
+            const isAsc = sort.direction === "asc";
+            const valueA = a[sort.active] ?? "";
+            const valueB = b[sort.active] ?? "";
+
+            return (valueA < valueB ? -1 : 1) * (isAsc ? 1 : -1);
+        });
+    }
+
+    private _mapEmployeesForExport(employees: Employee[]): any[] {
+        return employees.map((employee: Employee): any => {
+            const birthDateString = employee.birthDate as unknown as string;
+            const formattedBirthDate = birthDateString
+                ? DateTime.fromISO(birthDateString).toFormat("dd/MM/yyyy")
+                : null;
+
+            return {
+                id: employee.id,
+                nombre: employee.name || null,
+                apellido: employee.surname || null,
+                puesto: this._getPositionDescription(employee.positionId),
+                pais: this._getCountryDescription(employee.countryId),
+                genero: this._getGenderDescription(employee.genderId),
+                estado:
+                    typeof employee.active === "boolean"
+                        ? employee.active
+                            ? "Activo"
+                            : "Inactivo"
+                        : null,
+                nacimiento: formattedBirthDate,
+            };
+        });
     }
 
     private _loadData(): void {
-        this._employeeService.getEmployeesAll().subscribe({
-            next: (employees: Employee[]): void => {
-                this.gridData = this._mapEmployeeListToGridData(employees);
-                this.isLoadingGridData = false;
-            },
-            error: (error: HttpErrorResponse): void => {
-                this.isLoadingGridData = false;
+        forkJoin({
+            positions: this._getPositions(),
+            countries: this._getCountries(),
+            employees: this._getEmployeeAll(),
+        })
+            .pipe(
+                finalize((): void => {
+                    this.isLoadingGridData = false;
+                    this._cdr.markForCheck();
+                }),
+            )
+            .subscribe({
+                next: (results): void => {
+                    this._positions = results.positions;
+                    this._countries = results.countries;
+                    this._employees = results.employees;
+                    this.gridData = this._mapEmployeeListToGridData(
+                        this._employees,
+                    );
+                },
+                error: (error: HttpErrorResponse): void => {
+                    this.isLoadingGridData = false;
+                    this._alertService.showDanger(
+                        `Error al cargar datos. ${error.statusText}`,
+                    );
+                },
+            });
+    }
+
+    private _getEmployeeAll(): Observable<Employee[]> {
+        return this._employeeService.getEmployeesAll().pipe(
+            catchError((error: HttpErrorResponse): Observable<Employee[]> => {
                 this._alertService.showDanger(
-                    `Error al obtener empleados. ${error.statusText}`,
+                    `Error al cargar la lista de empleados. ${error.statusText}`,
                 );
-            },
-        });
+                return of([]);
+            }),
+        );
+    }
+
+    private _getPositions(): Observable<SelectItem[]> {
+        return this._positionServices.getPositions().pipe(
+            catchError((error: HttpErrorResponse): Observable<SelectItem[]> => {
+                this._alertService.showDanger(
+                    `Error al cargar la lista de puestos. ${error.statusText}`,
+                );
+                return of([]);
+            }),
+        );
+    }
+
+    private _getCountries(): Observable<SelectItem[]> {
+        return this._countryServices.getCountries().pipe(
+            catchError((error: HttpErrorResponse): Observable<SelectItem[]> => {
+                this._alertService.showDanger(
+                    `Error al cargar la lista de paises. ${error.statusText}`,
+                );
+                return of([]);
+            }),
+        );
     }
 
     private _mapEmployeeListToGridData(employeeList: Employee[]): GridData[] {
@@ -87,10 +223,11 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
                     elipsisActions: this._setElipsisActions(employee),
                     name: employee.name,
                     surname: employee.surname,
+                    birthDate: employee.birthDate,
                     active: employee.active,
-                    position: employee.positionId,
-                    gender: employee.genderId,
-                    country: employee.countryId,
+                    position: this._getPositionDescription(employee.positionId),
+                    gender: this._getGenderDescription(employee.genderId),
+                    country: this._getCountryDescription(employee.countryId),
                 };
 
                 if (typeof employee.birthDate === "string") {
@@ -158,6 +295,30 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
             },
         });
         return config;
+    }
+
+    private _getCountryDescription(countryId: number): string {
+        return (
+            this._countries.find(
+                (country: SelectItem): boolean => country.id === countryId,
+            )?.description || ""
+        );
+    }
+
+    private _getPositionDescription(positionId: number): string {
+        return (
+            this._positions.find(
+                (position: SelectItem): boolean => position.id === positionId,
+            )?.description || ""
+        );
+    }
+
+    private _getGenderDescription(genderId: number): string {
+        return (
+            this._genders.find(
+                (gender: SelectItem): boolean => gender.id === genderId,
+            )?.description || ""
+        );
     }
 
     private _setElipsisActions(employee: Employee): ElipsisAction[] {

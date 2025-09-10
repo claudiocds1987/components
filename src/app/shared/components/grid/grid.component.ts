@@ -112,7 +112,7 @@ export class GridComponent
     @Input() chips: Chip[] = [];
     @Output() pageChange = new EventEmitter<PageEvent>();
     @Output() sortChange = new EventEmitter<Sort>();
-    @Output() exportExcel = new EventEmitter<void>();
+    @Output() exportExcel = new EventEmitter<Sort | void>();
     @Output() chipRemoved = new EventEmitter<Chip>();
     @Output() createButtonClicked = new EventEmitter<void>();
     @Output() infiniteScroll = new EventEmitter<void>();
@@ -216,7 +216,24 @@ export class GridComponent
     }
 
     exportToExcel(): void {
-        this.exportExcel.emit();
+        // 2. Verificar si el sort es del lado del cliente o del servidor
+        const isServerSideSort = this.gridConfig?.hasSorting?.isServerSide;
+
+        if (isServerSideSort) {
+            // Si el sort es del lado del servidor, simplemente emite void.
+            // El componente padre ya tiene el estado del sort en sus filtros.
+            this.exportExcel.emit();
+        } else {
+            // Si el sort es del lado del cliente, emite el estado actual del MatSort.
+            // Esto le permite al componente padre obtener el ordenamiento actual
+            // para aplicarlo a la descarga de datos.
+            if (this._matSort) {
+                this.exportExcel.emit(this._matSort);
+            } else {
+                // Emite void si MatSort no está disponible
+                this.exportExcel.emit();
+            }
+        }
     }
 
     onChipRemoved(chip: Chip): void {

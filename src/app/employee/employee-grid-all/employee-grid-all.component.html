@@ -5,7 +5,7 @@
         [gridConfig]="gridConfig"
         [data]="gridData"
         [isLoading]="isLoadingGridData"
-        (exportExcel)="onExportToExcel()"
+        (exportExcel)="onExportToExcel($event)"
         (createButtonClicked)="onCreateEmployee()"
     ></app-grid>
 </div>
