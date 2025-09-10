@@ -39,7 +39,7 @@ import { MatMenuModule } from "@angular/material/menu";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { Chip, ChipsComponent } from "../chips/chips/chips.component";
-import { FeedbackComponent } from "../feedback/feedback/feedback.component";
+import { FeedbackComponent } from "../feedback/feedback.component";
 
 // --- función para el setear paginador ---
 export function getPaginatorIntl(): MatPaginatorIntl {
