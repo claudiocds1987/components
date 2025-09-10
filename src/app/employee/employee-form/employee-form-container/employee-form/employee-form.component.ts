@@ -91,7 +91,11 @@ export class EmployeeFormComponent implements OnInit {
     }
 
     onCancel(): void {
-        // Cierra el diálogo sin pasar ningún dato
+        if (this.employeeForm.dirty) {
+            this._openFeedbackDialogWarningr();
+            return;
+        }
+        this._router.navigate(["/employee-grid-pagination"]);
     }
 
     onSave(): void {
@@ -115,7 +119,6 @@ export class EmployeeFormComponent implements OnInit {
     }
 
     isReadyToSave(): boolean {
-        console.log(this.employeeForm.valid, this.employeeForm.dirty);
         return this.employeeForm.valid && this.employeeForm.dirty;
     }
 
@@ -206,11 +209,9 @@ export class EmployeeFormComponent implements OnInit {
                     this._openFeedbackDialogSuccess();
                 }, 1500);
             },
-            error: (error: HttpErrorResponse): void => {
+            error: (): void => {
                 this._spinnerService.hide();
-                this._alertService.showDanger(
-                    `Error al obtener empleados. ${error.statusText}`,
-                );
+                this._openFeedbackDialogDanger();
             },
         });
     }
@@ -238,8 +239,8 @@ export class EmployeeFormComponent implements OnInit {
             type: "success",
             message: `Empleado ${action} con éxito.`,
             showButtons: true, // Esto es importante, para mostrar los botones
+            cancelButtonText: action === "creado" ? "Cancelar" : "Aceptar", // El botón de "Cancelar" será para ver empleados
             acceptButtonText: action === "creado" ? "Crear otro" : "",
-            cancelButtonText: "Ver empleados", // El botón de "Cancelar" será para ver empleados
         });
 
         dialogRef.afterClosed().subscribe((result): void => {
@@ -252,14 +253,32 @@ export class EmployeeFormComponent implements OnInit {
     }
     private _openFeedbackDialogDanger(): void {
         const action = this.operation === "create" ? "crear" : "editar";
-        this._feedbackDialogService.openFeedbackDialog({
-            type: "success",
+        const dialogRef = this._feedbackDialogService.openFeedbackDialog({
+            type: "danger",
             message: `No se pudo ${action} el empleado.`,
             showButtons: true,
-            acceptButtonText: "Ver empleados",
-            acceptRoute: "/employee-grid-pagination",
-            cancelButtonText: "Crear otro",
-            cancelRoute: "/employee-create",
+            cancelButtonText: "Cancelar",
+            acceptButtonText: "Volver a intentar",
+        });
+        dialogRef.afterClosed().subscribe((result): void => {
+            if (result === false) {
+                this._router.navigate(["/employee-grid-pagination"]);
+            }
+        });
+    }
+
+    private _openFeedbackDialogWarningr(): void {
+        const dialogRef = this._feedbackDialogService.openFeedbackDialog({
+            type: "Warning",
+            message: "los cambios se perderán. ¿Esta seguro/a que desea salir?",
+            showButtons: true,
+            cancelButtonText: "Cancelar",
+            acceptButtonText: "Aceptar",
+        });
+        dialogRef.afterClosed().subscribe((result): void => {
+            if (result === true) {
+                this._router.navigate(["/employee-grid-pagination"]);
+            }
         });
     }
 

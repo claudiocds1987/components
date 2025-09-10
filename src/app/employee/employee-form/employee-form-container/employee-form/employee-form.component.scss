@@ -16,6 +16,7 @@
 .actions-container {
     display: flex;
     justify-content: flex-end; /* Alinea los botones a la derecha */
+    gap: 16px;
     margin-top: 20px;
 }
 

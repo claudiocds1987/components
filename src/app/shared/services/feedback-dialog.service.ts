@@ -4,7 +4,7 @@ import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { FeedbackDialogComponent } from "../components/feedback-dialog/feedback-dialog.component";
 
 export interface FeedbackData {
-    type: "success" | "danger";
+    type: "success" | "danger" | "warning";
     message: string;
     showButtons?: boolean;
     acceptButtonText?: string;
