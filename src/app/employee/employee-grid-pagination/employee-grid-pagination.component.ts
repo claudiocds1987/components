@@ -127,6 +127,10 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
         this._breadcrumbService.clearBreadcrumbs();
     }
 
+    onRowDblClick(rowData: any): void {
+        this._editEmployee(rowData.id);
+    }
+
     applyFilter(filterValues: Record<string, unknown>): void {
         this._employeeFilterParams = {};
         this._setEmployeeFilterParameters();

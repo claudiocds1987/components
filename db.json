@@ -2331,6 +2331,17 @@
       "countryId": 1,
       "positionId": 1,
       "active": false
+    },
+    {
+      "id": 213,
+      "imgUrl": "",
+      "name": "Juan",
+      "surname": "Perez",
+      "birthDate": "1997-04-25",
+      "genderId": 1,
+      "countryId": 1,
+      "positionId": 1,
+      "active": true
     }
   ],
   "positions": [

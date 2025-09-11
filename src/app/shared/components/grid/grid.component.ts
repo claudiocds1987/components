@@ -116,6 +116,7 @@ export class GridComponent
     @Output() chipRemoved = new EventEmitter<Chip>();
     @Output() createButtonClicked = new EventEmitter<void>();
     @Output() infiniteScroll = new EventEmitter<void>();
+    @Output() rowDblClick = new EventEmitter<GridData>();
 
     dataSource = new MatTableDataSource<GridData>();
     private _ngZone = inject(NgZone);
@@ -197,6 +198,10 @@ export class GridComponent
     applyFilter(event: Event): void {
         const filterValue = (event.target as HTMLInputElement).value;
         this.dataSource.filter = filterValue.trim().toLowerCase();
+    }
+
+    onRowDblClick(row: GridData): void {
+        this.rowDblClick.emit(row);
     }
 
     onPaginatorPageChange(event: PageEvent): void {

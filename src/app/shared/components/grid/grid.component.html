@@ -176,6 +176,8 @@
                             mat-icon-button
                             [matMenuTriggerFor]="elipsisMenu"
                             aria-label="Más opciones"
+                            (click)="$event.stopPropagation()"
+                            (dblclick)="$event.stopPropagation()"
                         >
                             <mat-icon color="primary">more_vert</mat-icon>
                         </button>
@@ -236,7 +238,11 @@
             class="header"
             *matHeaderRowDef="columnNames; sticky: 'sticky'"
         ></tr>
-        <tr mat-row *matRowDef="let row; columns: columnNames"></tr>
+        <tr
+            mat-row
+            *matRowDef="let row; columns: columnNames"
+            (dblclick)="onRowDblClick(row)"
+        ></tr>
     </table>
 
     <app-feedback
