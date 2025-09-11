@@ -141,116 +141,79 @@ export class DateInputComponent implements ControlValueAccessor, OnInit {
     }
 
     /*---------------------------------------------------------------------------------------------------------------------------
-     *  "onInputBlur": Esta funcion se dispara cuando el usuario sale del campo de texto (evento blur)
-     *  o presiona "Enter" (keydown.enter).
+     *  "onInputChange": Se ejecuta cada vez que el usuario escribe, borra o edita un carácter en el campo de texto.
+     *   Su propósito es validar la entrada de la fecha de forma inmediata y notificar al formulario padre.
      *
-     *  Su propósito es tomar lo que el usuario escribió manualmente en el campo, intentar entenderlo como
-     *  una fecha y convertirlo en un formato que Angular pueda manejar.
+     *  1. Captura y Normaliza el Valor: La función toma el valor del campo de texto y estandariza el formato, convirtiendo todos los guiones (-) en barras (/).
      *
-     *  1. Obtiene el texto ingresado:
-     *     Consigue el valor actual del campo de texto (inputValue).
+     *  2. Validación de Formato y Valor:
+     *    - Solo se intenta validar si el usuario ha completado el formato dd/mm/yyyy. Esto evita que el campo se borre o marque como inválido mientras
+     *      se está escribiendo.
+     *    - Utiliza la librería Luxon para parsear la fecha y confirmar si es una fecha válida.
+     *    - Realiza una verificación de consistencia (candidateDate.day === day && candidateDate.month === month && candidateDate.year === year)
+     *      para asegurar que la fecha parseada por Luxon coincide exactamente con lo que el usuario escribió. Esto evita que Luxon "corrija" fechas imposibles
+     *      Ejemplo: Como febrero solo tiene 28 o 29 días, los días extra se suman a marzo.
+     *      Si el año no es bisiesto (28 días): Febrero 29 -> marzo 1, Febrero 30 -> marzo 2, Febrero 31 -> marzo 3
+     *      Si el año es bisiesto (29 días): Febrero 30 -> marzo 1, Febrero 31 -> marzo 2
      *
-     *  2. Manejo de campo vacío: Si inputValue está vacío, el campo se reinicia a null (sin fecha) y notifica
-     *     al formulario padre que se interactuó con el campo.
-     *
-     *  3. Normalización del formato:
-     *     Antes de intentar dividir la fecha, reemplaza cualquier guion (-) por una barra (/).
-     *     Esto significa que si el usuario escribe 10-05-1985 o 10/05/1985, ambos se convertirán internamente a 10/05/1985.
-     *     Así, el resto de la lógica solo necesita manejar un formato.
-     *
-     *  4. Intenta "parsear" la fecha:
-     *      - Divide la cadena normalizada (10/05/1985) por el / para obtener las partes del día, mes y año.
-     *      - Convierte esas partes en números (parseInt).
-     *      - Realiza varias validaciones básicas para asegurar que los números sean válidos
-     *        (ej. el día entre 1 y 31, el mes entre 1 y 12, el año entre 1000 y 9999).
-     *      - Si los números parecen válidos, usa DateTime.fromObject de la librería Luxon para
-     *        intentar crear un objeto de fecha.
-     *      - Incluye una validación extra (candidateDate.day === day && candidateDate.month === month && candidateDate.year === year)
-     *        para evitar que Luxon "corrija" fechas imposibles (como el 31/02/2024 que se convertiría a 02/03/2024).
-     *        Esta comprobación asegura que la fecha parseada por Luxon coincida exactamente con lo que el usuario pretendía.
-     *
-     *  5. Actualiza el control interno:
-     *      - Si logra parsear una fecha válida (finalParsedDate.isValid), convierte ese objeto Luxon a
-     *        un objeto Date nativo de JavaScript (finalParsedDate.toJSDate()) y lo establece como el valor
-     *        de internalControl.
-     *      - Si no se pudo parsear o la fecha no es válida, internalControl se establece a null.
-     *
-     *  6. Notifica al formulario padre:
-     *      - Finalmente, llama a this.onTouched() para indicarle al FormGroup o FormControl superior
-     *        que el usuario interactuó con este campo.
+     *  3. Sincronización con el Formulario Padre:
+     *     - Si la fecha es válida, la función asigna el objeto Date correspondiente al internalControl, lo que notifica automáticamente al formulario padre
+     *       sobre el cambio y su validez.
+     *     - Si la entrada es un formato completo pero inválido (ej., 31/02/2024), el valor del internalControl se establece en null. Esto marca el control
+     *       del formulario padre como inválido y deshabilita el botón de "Guardar".
      *-----------------------------------------------------------------------------------------------------------------------------------------*/
-    onInputBlur(event: Event): void {
+    onInputChange(event: Event): void {
         const inputElement = event.target as HTMLInputElement;
         const inputValue = inputElement.value;
-
-        if (!inputValue) {
-            this.internalControl.setValue(null);
-            this.onTouched();
-            return;
-        }
-
         let finalParsedDate: DateTime | null = null;
-        const normalizedInputValue = inputValue.replace(/-/g, "/"); // Reemplaza todos los '-' por '/'
-        const parts = normalizedInputValue.split("/"); // Ahora usa la cadena normalizada
 
-        if (parts.length === 3) {
-            const dayStr = parts[0];
-            const monthStr = parts[1];
-            const yearStr = parts[2];
+        if (inputValue) {
+            const normalizedInputValue = inputValue.replace(/-/g, "/");
+            const parts = normalizedInputValue.split("/");
 
-            const day = parseInt(dayStr, 10);
-            const month = parseInt(monthStr, 10);
-            const year = parseInt(yearStr, 10);
+            // 💡 Validar solo si el año tiene 4 dígitos
+            if (parts.length === 3 && parts[2].length === 4) {
+                const day = parseInt(parts[0], 10);
+                const month = parseInt(parts[1], 10);
+                const year = parseInt(parts[2], 10);
 
-            if (
-                !isNaN(day) &&
-                day >= 1 &&
-                day <= 31 &&
-                !isNaN(month) &&
-                month >= 1 &&
-                month <= 12 &&
-                !isNaN(year) &&
-                year >= 1000 &&
-                year <= 9999
-            ) {
-                // Intenta crear la fecha con Luxon
                 const candidateDate = DateTime.fromObject(
-                    { year: year, month: month, day: day },
+                    { year, month, day },
                     { locale: "es-AR" },
                 );
 
                 if (candidateDate.isValid) {
-                    // Verificación extra para evitar conversiones no deseadas (ej. 31/02 -> 02/03)
                     if (
                         candidateDate.day === day &&
                         candidateDate.month === month &&
                         candidateDate.year === year
                     ) {
                         finalParsedDate = candidateDate;
-                    } else {
-                        // Opcional: loguear una advertencia si la fecha no coincide exactamente
-                        console.warn(
-                            `onInputBlur - Fecha ambigua o inválida para ${inputValue}. Luxon interpretó como ${candidateDate.toISODate()}.`,
-                        );
                     }
                 }
             }
         }
 
-        if (finalParsedDate && finalParsedDate.isValid) {
-            // Establece el valor en el control interno como un Date nativo
+        // 💡 Actualiza el control solo si hay una fecha válida
+        if (finalParsedDate) {
             this.internalControl.setValue(finalParsedDate.toJSDate());
-        } else {
-            // Si no se pudo parsear o es inválida, establece a null
+        } else if (inputValue.length === 10) {
+            // Si tiene 10 caracteres pero es inválida, establece el valor en null
             this.internalControl.setValue(null);
         }
-        // Notifica al formulario padre con el valor actual
-        let formattedValue: string | null = null;
-        if (finalParsedDate && finalParsedDate.isValid) {
-            formattedValue = finalParsedDate.toFormat("yyyy-MM-dd");
-        }
-        this.onChange(formattedValue);
-        this.onTouched(); // Notifica al formulario padre que el campo fue tocado
+        // Notifica el cambio al formulario padre
+        this.onChange(
+            this.internalControl.value
+                ? DateTime.fromJSDate(this.internalControl.value).toFormat(
+                      "yyyy-MM-dd",
+                  )
+                : null,
+        );
+        this.onTouched();
+    }
+
+    onInputBlur(): void {
+        this.onTouched();
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

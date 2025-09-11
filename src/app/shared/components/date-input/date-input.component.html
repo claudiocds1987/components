@@ -6,8 +6,8 @@
         [placeholder]="placeholder"
         [disabled]="isDisabled"
         #dateInputRef
-        (blur)="onInputBlur($event)"
-        (keydown.enter)="onInputBlur($event)"
+        (input)="onInputChange($event)"
+        (blur)="onInputBlur()"
         [matDatepicker]="picker"
     />
     <mat-datepicker-toggle
