@@ -237,7 +237,7 @@ export class EmployeeFormComponent implements OnInit {
         const action = this.operation === "create" ? "creado" : "editado";
         const dialogRef = this._feedbackDialogService.openFeedbackDialog({
             type: "success",
-            message: `Empleado ${action} con éxito.`,
+            title: `Empleado ${action} con éxito.`,
             showButtons: true, // Esto es importante, para mostrar los botones
             cancelButtonText: action === "creado" ? "Cancelar" : "Aceptar", // El botón de "Cancelar" será para ver empleados
             acceptButtonText: action === "creado" ? "Crear otro" : "",
@@ -269,8 +269,9 @@ export class EmployeeFormComponent implements OnInit {
 
     private _openFeedbackDialogWarningr(): void {
         const dialogRef = this._feedbackDialogService.openFeedbackDialog({
-            type: "Warning",
-            message: "los cambios se perderán. ¿Esta seguro/a que desea salir?",
+            type: "warning",
+            title: "los cambios se perderán.",
+            message: " ¿Esta seguro/a que desea salir?",
             showButtons: true,
             cancelButtonText: "Cancelar",
             acceptButtonText: "Aceptar",

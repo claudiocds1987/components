@@ -5,6 +5,7 @@ import { FeedbackDialogComponent } from "../components/feedback-dialog/feedback-
 
 export interface FeedbackData {
     type: "success" | "danger" | "warning";
+    title: string;
     message: string;
     showButtons?: boolean;
     acceptButtonText?: string;
@@ -24,8 +25,6 @@ export class FeedbackDialogService {
     ): MatDialogRef<FeedbackDialogComponent> {
         const dialogRef = this._dialog.open(FeedbackDialogComponent, {
             data: config,
-            //width: "400px",
-            //height: "400px",
             disableClose: true, // Para evitar que se cierre al hacer clic fuera
         });
 

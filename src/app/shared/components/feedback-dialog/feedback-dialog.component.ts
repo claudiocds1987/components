@@ -28,6 +28,8 @@ export class FeedbackDialogComponent {
     getFeedbackIcon(): string {
         return this.data.type === "success"
             ? "assets/success.svg"
-            : "assets/danger.svg";
+            : this.data.type === "warning"
+              ? "assets/warning.svg"
+              : "assets/danger.svg";
     }
 }
