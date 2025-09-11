@@ -1,4 +1,10 @@
-import { Component, inject, OnInit } from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    inject,
+    OnInit,
+} from "@angular/core";
 import { CommonModule } from "@angular/common";
 import {
     FormsModule,
@@ -22,7 +28,7 @@ import { SelectItem } from "../../../../shared/models/select-item.model";
 import { EmployeeService } from "../../../../shared/services/employee.service";
 import { PositionService } from "../../../../shared/services/position.service";
 import { CountryService } from "../../../../shared/services/country.service";
-import { catchError, finalize, forkJoin, Observable, of } from "rxjs";
+import { catchError, delay, finalize, forkJoin, Observable, of } from "rxjs";
 import { HttpErrorResponse } from "@angular/common/http";
 import { MatRadioModule } from "@angular/material/radio";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -30,6 +36,7 @@ import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { Employee } from "../../../../shared/models/employee.model";
 import { FeedbackDialogService } from "../../../../shared/services/feedback-dialog.service";
+import { SkeletonDirective } from "../../../../shared/directives/skeleton.directive";
 
 @Component({
     selector: "app-employee-form",
@@ -48,9 +55,14 @@ import { FeedbackDialogService } from "../../../../shared/services/feedback-dial
         BreadcrumbComponent,
         AlertComponent,
         MatRadioModule,
+        SkeletonDirective,
     ],
     templateUrl: "./employee-form.component.html",
-    styleUrl: "./employee-form.component.scss",
+    styleUrls: [
+        "./employee-form.component.scss",
+        "../../../../shared/styles/skeleton.scss",
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmployeeFormComponent implements OnInit {
     employeeForm: FormGroup;
@@ -75,6 +87,7 @@ export class EmployeeFormComponent implements OnInit {
     private _positionService = inject(PositionService);
     private _countryService = inject(CountryService);
     private _feedbackDialogService = inject(FeedbackDialogService);
+    private _changeDetectorRef: ChangeDetectorRef = inject(ChangeDetectorRef);
 
     constructor() {
         this.operation = this._activeRoute.snapshot.data["operation"]; // "create" o "edit"
@@ -142,6 +155,7 @@ export class EmployeeFormComponent implements OnInit {
             countries: this._getCountries(),
         })
             .pipe(
+                delay(1500),
                 finalize((): void => {
                     this.isLoading = false;
                 }),
@@ -153,14 +167,28 @@ export class EmployeeFormComponent implements OnInit {
                 }): void => {
                     this.positions = result.positions;
                     this.countries = result.countries;
+
                     if (this.operation === "edit") {
+                        this.isLoading = true;
                         const employeeId =
                             this._activeRoute.snapshot.paramMap.get("id");
-                        this._getEmployeeById(Number(employeeId)).subscribe({
-                            next: (employee: Employee): void => {
-                                this.employeeForm.patchValue(employee);
-                            },
-                        });
+                        this._getEmployeeById(Number(employeeId))
+                            .pipe(
+                                // delay para simular tiempo de carga con json-server
+                                delay(1500),
+                            )
+                            .subscribe({
+                                next: (employee: Employee): void => {
+                                    this.employeeForm.patchValue(employee);
+                                    this.isLoading = false;
+                                },
+                            });
+                    } else {
+                        // setTimeOut para simular tiempo de recarga con json-server en los selects modo Crear
+                        setTimeout((): void => {
+                            this.isLoading = false;
+                            this._changeDetectorRef.markForCheck();
+                        }, 1500);
                     }
                 },
             });

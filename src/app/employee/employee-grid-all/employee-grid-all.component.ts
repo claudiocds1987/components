@@ -64,7 +64,7 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
     private _employeeService = inject(EmployeeService);
     private _exportService = inject(ExportService);
     private _spinnerService = inject(SpinnerService);
-    private _cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
+    private _changeDetectorRef: ChangeDetectorRef = inject(ChangeDetectorRef);
     private _alertService = inject(AlertService);
     private _breadcrumbService = inject(BreadcrumbService);
     private _positionServices = inject(PositionService);
@@ -107,7 +107,7 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
         setTimeout((): void => {
             this._exportService.exportToExcel(processedData, fileName);
             this._spinnerService.hide();
-            this._cdr.markForCheck();
+            this._changeDetectorRef.markForCheck();
         }, 1500);
     }
 
@@ -160,7 +160,7 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
             .pipe(
                 finalize((): void => {
                     this.isLoadingGridData = false;
-                    this._cdr.markForCheck();
+                    this._changeDetectorRef.markForCheck();
                 }),
             )
             .subscribe({
