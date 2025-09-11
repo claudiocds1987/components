@@ -128,7 +128,8 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     }
 
     onRowDblClick(rowData: any): void {
-        this._editEmployee(rowData.id);
+        const employee = rowData as Employee;
+        this._editEmployee(employee.id);
     }
 
     applyFilter(filterValues: Record<string, unknown>): void {
