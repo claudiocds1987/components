@@ -153,45 +153,38 @@ export class EmployeeFormComponent implements OnInit {
         forkJoin({
             positions: this._getPositions(),
             countries: this._getCountries(),
-        })
-            .pipe(
-                delay(1500),
-                finalize((): void => {
-                    this.isLoading = false;
-                }),
-            )
-            .subscribe({
-                next: (result: {
-                    positions: SelectItem[];
-                    countries: SelectItem[];
-                }): void => {
-                    this.positions = result.positions;
-                    this.countries = result.countries;
+        }).subscribe({
+            next: (result: {
+                positions: SelectItem[];
+                countries: SelectItem[];
+            }): void => {
+                this.positions = result.positions;
+                this.countries = result.countries;
 
-                    if (this.operation === "edit") {
-                        this.isLoading = true;
-                        const employeeId =
-                            this._activeRoute.snapshot.paramMap.get("id");
-                        this._getEmployeeById(Number(employeeId))
-                            .pipe(
-                                // delay para simular tiempo de carga con json-server
-                                delay(1500),
-                            )
-                            .subscribe({
-                                next: (employee: Employee): void => {
-                                    this.employeeForm.patchValue(employee);
-                                    this.isLoading = false;
-                                },
-                            });
-                    } else {
-                        // setTimeOut para simular tiempo de recarga con json-server en los selects modo Crear
-                        setTimeout((): void => {
-                            this.isLoading = false;
-                            this._changeDetectorRef.markForCheck();
-                        }, 1500);
-                    }
-                },
-            });
+                if (this.operation === "edit") {
+                    this.isLoading = true;
+                    const employeeId =
+                        this._activeRoute.snapshot.paramMap.get("id");
+                    this._getEmployeeById(Number(employeeId))
+                        .pipe(
+                            // delay para simular tiempo de carga con json-server
+                            delay(500),
+                        )
+                        .subscribe({
+                            next: (employee: Employee): void => {
+                                this.employeeForm.patchValue(employee);
+                                this.isLoading = false;
+                            },
+                        });
+                } else {
+                    // setTimeOut para simular tiempo de recarga con json-server en los selects modo Crear
+                    setTimeout((): void => {
+                        this.isLoading = false;
+                        this._changeDetectorRef.markForCheck();
+                    }, 500);
+                }
+            },
+        });
     }
 
     private _getEmployeeById(id: number): Observable<Employee> {
