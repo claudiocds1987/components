@@ -103,11 +103,8 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
         });
     }
 
-    // 2. Modifica la función onExportToExcel() para que reciba el sort
     onExportToExcel(sort?: Sort | void): void {
         this._spinnerService.show();
-        console.log("sortData: ", sort);
-
         let sortedData;
 
         if (sort) {
