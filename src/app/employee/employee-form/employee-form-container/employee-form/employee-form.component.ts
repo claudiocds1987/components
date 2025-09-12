@@ -96,21 +96,7 @@ export class EmployeeFormComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this._activeRoute.queryParams.subscribe((params): void => {
-            // employee-form es llamado de 3 grillas diferentes se necesita saber de que componente
-            // fue llamado para que al terminar "guardar" o "editar" o al "Cancelar haga la redireccion al componente de donde
-            // employee-form fue llamado.
-            this._fromComponentPathCalled = params["componentPath"];
-            this._fromComponentNameCalled = params["componentName"];
-        });
-
-        this.operation = this._activeRoute.snapshot.data["operation"]; // "create" o "edit"
-
-        this.title =
-            this.operation === "create"
-                ? "Crear nuevo empleado"
-                : "Editar empleado";
-
+        this._loadRouteData();
         this._setBreadcrumb();
         this._loadData();
     }
@@ -145,6 +131,23 @@ export class EmployeeFormComponent implements OnInit {
 
     isReadyToSave(): boolean {
         return this.employeeForm.valid && this.employeeForm.dirty;
+    }
+
+    private _loadRouteData(): void {
+        this._activeRoute.queryParams.subscribe((params): void => {
+            // employee-form es llamado de 3 grillas diferentes se necesita saber de que componente
+            // fue llamado para que al terminar "guardar" o "editar" o al "Cancelar haga la redireccion al componente de donde
+            // employee-form fue llamado.
+            this._fromComponentPathCalled = params["componentPath"]; // ruta del componente origen
+            this._fromComponentNameCalled = params["componentName"]; // nombre del componente para el breadcrumb
+        });
+
+        this.operation = this._activeRoute.snapshot.data["operation"]; // "create" o "edit"
+
+        this.title =
+            this.operation === "create"
+                ? "Crear nuevo empleado"
+                : "Editar empleado";
     }
 
     private _createForm(): FormGroup {
