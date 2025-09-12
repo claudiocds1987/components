@@ -73,7 +73,6 @@ export class EmployeeFormComponent implements OnInit {
     positions: SelectItem[] = [];
     countries: SelectItem[] = [];
     genders: SelectItem[] = [
-        { id: "all", description: "Todos" },
         { id: 0, description: "No binario" },
         { id: 1, description: "Masculino" },
         { id: 2, description: "Femenino" },
