@@ -67,8 +67,9 @@ import { SkeletonDirective } from "../../../../shared/directives/skeleton.direct
 export class EmployeeFormComponent implements OnInit {
     employeeForm: FormGroup;
     isLoading = true;
-    operation: string;
-    title: string;
+    operation: string | undefined;
+    action: string | undefined;
+    title: string | undefined;
     positions: SelectItem[] = [];
     countries: SelectItem[] = [];
     genders: SelectItem[] = [
@@ -78,6 +79,7 @@ export class EmployeeFormComponent implements OnInit {
         { id: 2, description: "Femenino" },
     ];
 
+    private _fromComponentCalled: string | null = null;
     private _activeRoute = inject(ActivatedRoute);
     private _router = inject(Router);
     private _spinnerService = inject(SpinnerService);
@@ -90,17 +92,25 @@ export class EmployeeFormComponent implements OnInit {
     private _changeDetectorRef: ChangeDetectorRef = inject(ChangeDetectorRef);
 
     constructor() {
-        console.log("spanshot: ", this._activeRoute.snapshot);
-        this.operation = this._activeRoute.snapshot.data["operation"]; // "create" o "edit"
-        this.title =
-            this.operation === "create"
-                ? "Crear nuevo empleado"
-                : "Editar empleado";
-        this._setBreadcrumb();
         this.employeeForm = this._createForm();
     }
 
     ngOnInit(): void {
+        this._activeRoute.queryParams.subscribe((params): void => {
+            // employee-form es llamado de 3 grillas diferentes se necesita saber de que componente
+            // fue llamado para que al terminar "guardar" o "editar" o al "Cancelar haga la redireccion al componente de donde
+            // employee-form fue llamado.
+            this._fromComponentCalled = params["componentPath"];
+        });
+
+        this.operation = this._activeRoute.snapshot.data["operation"]; // "create" o "edit"
+
+        this.title =
+            this.operation === "create"
+                ? "Crear nuevo empleado"
+                : "Editar empleado";
+
+        this._setBreadcrumb();
         this._loadData();
     }
 
@@ -109,7 +119,7 @@ export class EmployeeFormComponent implements OnInit {
             this._openFeedbackDialogWarningr();
             return;
         }
-        this._router.navigate(["/employee-grid-pagination"]);
+        this._router.navigate([`/${this._fromComponentCalled}`]);
     }
 
     onSave(): void {
@@ -269,7 +279,7 @@ export class EmployeeFormComponent implements OnInit {
             if (result === true) {
                 this.employeeForm.reset();
             } else if (result === false) {
-                this._router.navigate(["/employee-grid-pagination"]);
+                this._router.navigate([`/${this._fromComponentCalled}`]);
             }
         });
     }
@@ -284,7 +294,7 @@ export class EmployeeFormComponent implements OnInit {
         });
         dialogRef.afterClosed().subscribe((result): void => {
             if (result === false) {
-                this._router.navigate(["/employee-grid-pagination"]);
+                this._router.navigate([`/${this._fromComponentCalled}`]);
             }
         });
     }
@@ -300,7 +310,7 @@ export class EmployeeFormComponent implements OnInit {
         });
         dialogRef.afterClosed().subscribe((result): void => {
             if (result === true) {
-                this._router.navigate(["/employee-grid-pagination"]);
+                this._router.navigate([`/${this._fromComponentCalled}`]);
             }
         });
     }
@@ -308,8 +318,8 @@ export class EmployeeFormComponent implements OnInit {
     private _setBreadcrumb(): void {
         this._breadcrumbService.setBreadcrumbs([
             { label: "Inicio", path: "/" },
-            { label: "Grilla full", path: "/employee-grid-pagination" },
-            { label: "Empleado", path: "" },
+            { label: "Grilla", path: `/${this._fromComponentCalled}` },
+            { label: `${this.title}`, path: "" },
         ]);
     }
 }

@@ -132,6 +132,15 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
         this._editEmployee(employee.id);
     }
 
+    onCreateEmployee(): void {
+        // Navega al formulario de creación del empleado y la ruta del componente de origen ("employee-grid-pagination")
+        // como parámetro de consulta. Esto permite que el formulario de creación sepa a qué grilla debe regresar al cancelar
+        // o al finalizar la creación.
+        this._router.navigate(["/employee/create"], {
+            queryParams: { componentPath: "employee-grid-pagination" },
+        });
+    }
+
     applyFilter(filterValues: Record<string, unknown>): void {
         this._employeeFilterParams = {};
         this._setEmployeeFilterParameters();
@@ -255,10 +264,6 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
         resetAction();
         this.gridFilterForm.markAsPristine();
         this.applyFilter(this.gridFilterForm.value);
-    }
-
-    onCreateEmployee(): void {
-        this._router.navigate(["/employee/create"]);
     }
 
     private _createChips(filterValues: Record<string, unknown>): void {
@@ -565,7 +570,12 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     }
 
     private _editEmployee(id: number): void {
-        this._router.navigate([`/employee/edit/${id}`]);
+        // Navega al formulario de edición del empleado, pasando el ID como parámetro de la URL
+        // y la ruta del componente de origen ("employee-grid-pagination") como parámetro de consulta.
+        // Esto permite que el formulario de edición sepa a qué grilla debe regresar al cancelar o al finalizar la edición.
+        this._router.navigate([`/employee/edit/${id}`], {
+            queryParams: { componentPath: "employee-grid-pagination" },
+        });
     }
 
     private _deleteEmployee(id: number): void {

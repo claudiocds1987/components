@@ -103,7 +103,12 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
     }
 
     onCreateEmployee(): void {
-        this._router.navigate(["/employee/create"]);
+        // Navega al formulario de creación del empleado y la ruta del componente origen ("employee-grid-pagination")
+        // como parámetro de consulta. Esto permite que el formulario de creación sepa a qué grilla debe regresar al cancelar
+        // o al finalizar la creación.
+        this._router.navigate(["/employee/create"], {
+            queryParams: { componentPath: "employee-grid-infinite" },
+        });
     }
 
     // Método para manejar el evento de scroll al final
@@ -397,7 +402,12 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
     }
 
     private _editEmployee(id: number): void {
-        this._router.navigate([`/employee/edit/${id}`]);
+        // Navega al formulario de edición del empleado, pasando el ID como parámetro de la URL
+        // y la ruta del componente origen ("employee-grid-pagination") como parámetro de consulta.
+        // Esto permite que el formulario de edición sepa a qué grilla debe regresar al cancelar o al finalizar la edición.
+        this._router.navigate([`/employee/edit/${id}`], {
+            queryParams: { componentPath: "employee-grid-infinite" },
+        });
     }
 
     private _deleteEmployee(id: number): void {
