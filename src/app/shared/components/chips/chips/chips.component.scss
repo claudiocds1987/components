@@ -6,8 +6,8 @@
     max-height: 110px;
     /* Reglas para navegadores basados en WebKit (Chrome, Safari, Edge) */
     &::-webkit-scrollbar {
-        width: 3px;
-        height: 6px;
+        width: 3px; // ancho de barra de scroll
+        height: 3px; // largo de barra de scroll
     }
 
     &::-webkit-scrollbar-track {
