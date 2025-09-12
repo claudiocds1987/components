@@ -28,7 +28,7 @@ import { SelectItem } from "../../../../shared/models/select-item.model";
 import { EmployeeService } from "../../../../shared/services/employee.service";
 import { PositionService } from "../../../../shared/services/position.service";
 import { CountryService } from "../../../../shared/services/country.service";
-import { catchError, delay, finalize, forkJoin, Observable, of } from "rxjs";
+import { catchError, delay, forkJoin, Observable, of } from "rxjs";
 import { HttpErrorResponse } from "@angular/common/http";
 import { MatRadioModule } from "@angular/material/radio";
 import { ActivatedRoute, Router } from "@angular/router";

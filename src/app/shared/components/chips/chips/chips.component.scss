@@ -2,39 +2,38 @@
     display: flex;
     flex-wrap: wrap;
     gap: 10px; /* Espacio entre los chips */
-    overflow-x: auto;
-    max-height: 105px;
+    overflow-y: auto;
+    max-height: 110px;
     /* Reglas para navegadores basados en WebKit (Chrome, Safari, Edge) */
     &::-webkit-scrollbar {
-      width: 3px;
-      height: 6px;
-    } 
-  
+        width: 3px;
+        height: 6px;
+    }
+
     &::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 3px;
+        background: #f1f1f1;
+        border-radius: 3px;
     }
-  
+
     &::-webkit-scrollbar-thumb {
-      background: #c1c1c1;
-      border-radius: 3px;
+        background: #c1c1c1;
+        border-radius: 3px;
     }
-  
+
     &::-webkit-scrollbar-thumb:hover {
-      background: #a8a8a8;
+        background: #a8a8a8;
     }
-  
-  /* Reglas para Firefox */
-  // Usamos @supports para que Chrome ignore estas reglas y use las de arriba
+
+    /* Reglas para Firefox */
+    // Usamos @supports para que Chrome ignore estas reglas y use las de arriba
     @supports not selector(::-webkit-scrollbar) {
-      scrollbar-width: thin;
-      scrollbar-color: #c1c1c1 #f1f1f1;
+        scrollbar-width: thin;
+        scrollbar-color: #c1c1c1 #f1f1f1;
     }
-   
 }
 
 .chip-row {
-    background-color:  #f0f4f9 !important;
+    background-color: #f0f4f9 !important;
     color: #424242;
     border-radius: 16px;
     padding: 4px 4px;
@@ -42,10 +41,11 @@
     display: flex;
     align-items: center;
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
 }
 
 .chip-label {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 .icon-remove {
