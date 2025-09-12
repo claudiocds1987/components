@@ -185,6 +185,14 @@ export class EmployeeFormComponent implements OnInit {
                                 this.employeeForm.patchValue(employee);
                                 this.isLoading = false;
                             },
+                            error: (error: HttpErrorResponse): void => {
+                                this._alertService.showDanger(
+                                    `Error al cargar los datos del empleado. ${error.statusText}`,
+                                );
+                                this.isLoading = false;
+                                this.employeeForm.disable();
+                                this._changeDetectorRef.markForCheck();
+                            },
                         });
                 } else {
                     // setTimeOut para simular tiempo de recarga con json-server en los selects modo Crear
@@ -198,36 +206,15 @@ export class EmployeeFormComponent implements OnInit {
     }
 
     private _getEmployeeById(id: number): Observable<Employee> {
-        return this._employeeService.getEmployee(id).pipe(
-            catchError((error: HttpErrorResponse): Observable<Employee> => {
-                this._alertService.showDanger(
-                    `Error al cargar los datos del empleado. ${error.statusText}`,
-                );
-                return of();
-            }),
-        );
+        return this._employeeService.getEmployee(id);
     }
 
     private _getPositions(): Observable<SelectItem[]> {
-        return this._positionService.getPositions().pipe(
-            catchError((error: HttpErrorResponse): Observable<SelectItem[]> => {
-                this._alertService.showDanger(
-                    `Error al cargar la lista de puestos. ${error.statusText}`,
-                );
-                return of([]);
-            }),
-        );
+        return this._positionService.getPositions();
     }
 
     private _getCountries(): Observable<SelectItem[]> {
-        return this._countryService.getCountries().pipe(
-            catchError((error: HttpErrorResponse): Observable<SelectItem[]> => {
-                this._alertService.showDanger(
-                    `Error al cargar la lista de paises. ${error.statusText}`,
-                );
-                return of([]);
-            }),
-        );
+        return this._countryService.getCountries();
     }
 
     private _createEmployee(employee: Employee): void {
