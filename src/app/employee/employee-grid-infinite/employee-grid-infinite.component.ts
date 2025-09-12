@@ -69,7 +69,10 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
         { id: 1, description: "Masculino" },
         { id: 2, description: "Femenino" },
     ];
-    //private _paginatedListGridData: PaginatedList<GridData>;
+    private _queryParams = {
+        componentPath: "employee-grid-infinite",
+        componentName: "Grilla scroll infinito",
+    };
 
     private _employeeFilterParams: EmployeeFilterParams = {};
     private _employeeServices = inject(EmployeeService);
@@ -105,9 +108,9 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
     onCreateEmployee(): void {
         // Navega al formulario de creación del empleado y la ruta del componente origen ("employee-grid-pagination")
         // como parámetro de consulta. Esto permite que el formulario de creación sepa a qué grilla debe regresar al cancelar
-        // o al finalizar la creación.
+        // o al finalizar la creación. También se le envía el nombre del componente para usarse en el breadCrumb.
         this._router.navigate(["/employee/create"], {
-            queryParams: { componentPath: "employee-grid-infinite" },
+            queryParams: this._queryParams,
         });
     }
 
@@ -405,8 +408,9 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
         // Navega al formulario de edición del empleado, pasando el ID como parámetro de la URL
         // y la ruta del componente origen ("employee-grid-pagination") como parámetro de consulta.
         // Esto permite que el formulario de edición sepa a qué grilla debe regresar al cancelar o al finalizar la edición.
+        // También se le envía el nombre del componente para usarse en el breadCrumb.
         this._router.navigate([`/employee/edit/${id}`], {
-            queryParams: { componentPath: "employee-grid-infinite" },
+            queryParams: this._queryParams,
         });
     }
 
@@ -495,7 +499,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
     private _setBreadcrumb(): void {
         this._breadcrumbService.setBreadcrumbs([
             { label: "Inicio", path: "/" },
-            { label: "Grilla Infinita", path: "/employees" },
+            { label: `${this._queryParams.componentName}`, path: "/employees" },
             // { label: employeeName, path: `/employees/${this.employeeId}` }
         ]);
     }

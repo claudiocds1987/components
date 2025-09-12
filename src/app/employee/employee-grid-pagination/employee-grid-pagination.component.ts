@@ -90,6 +90,11 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
         active: "all",
     };
 
+    private _queryParams = {
+        componentPath: "employee-grid-pagination",
+        componentName: "Grilla Full",
+    };
+
     private _employeeFilterParams: EmployeeFilterParams = {};
     private _employeeServices = inject(EmployeeService);
     private _positionServices = inject(PositionService);
@@ -135,9 +140,10 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     onCreateEmployee(): void {
         // Navega al formulario de creación del empleado y la ruta del componente de origen ("employee-grid-pagination")
         // como parámetro de consulta. Esto permite que el formulario de creación sepa a qué grilla debe regresar al cancelar
-        // o al finalizar la creación.
+        // o al finalizar la creación. También se le envía el nombre del componente para usarse en el breadCrumb.
+
         this._router.navigate(["/employee/create"], {
-            queryParams: { componentPath: "employee-grid-pagination" },
+            queryParams: this._queryParams,
         });
     }
 
@@ -195,7 +201,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
             page: event.pageIndex + 1,
             limit: event.pageSize,
         };
-        this._reloadGridData(); // Llama a la nueva función
+        this._reloadGridData();
     }
 
     onExportToExcel(): void {
@@ -573,8 +579,9 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
         // Navega al formulario de edición del empleado, pasando el ID como parámetro de la URL
         // y la ruta del componente de origen ("employee-grid-pagination") como parámetro de consulta.
         // Esto permite que el formulario de edición sepa a qué grilla debe regresar al cancelar o al finalizar la edición.
+        // También se le envía el nombre del componente para usarse en el breadCrumb.
         this._router.navigate([`/employee/edit/${id}`], {
-            queryParams: { componentPath: "employee-grid-pagination" },
+            queryParams: this._queryParams,
         });
     }
 
@@ -808,7 +815,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     private _setBreadcrumb(): void {
         this._breadcrumbService.setBreadcrumbs([
             { label: "Inicio", path: "/" },
-            { label: "Grilla Full", path: "/employees" },
+            { label: `${this._queryParams.componentName}`, path: "/employees" },
         ]);
     }
 }

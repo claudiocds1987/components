@@ -78,7 +78,8 @@ export class EmployeeFormComponent implements OnInit {
         { id: 2, description: "Femenino" },
     ];
 
-    private _fromComponentCalled: string | null = null;
+    private _fromComponentPathCalled: string | null = null;
+    private _fromComponentNameCalled: string | null = null;
     private _activeRoute = inject(ActivatedRoute);
     private _router = inject(Router);
     private _spinnerService = inject(SpinnerService);
@@ -99,7 +100,8 @@ export class EmployeeFormComponent implements OnInit {
             // employee-form es llamado de 3 grillas diferentes se necesita saber de que componente
             // fue llamado para que al terminar "guardar" o "editar" o al "Cancelar haga la redireccion al componente de donde
             // employee-form fue llamado.
-            this._fromComponentCalled = params["componentPath"];
+            this._fromComponentPathCalled = params["componentPath"];
+            this._fromComponentNameCalled = params["componentName"];
         });
 
         this.operation = this._activeRoute.snapshot.data["operation"]; // "create" o "edit"
@@ -118,7 +120,7 @@ export class EmployeeFormComponent implements OnInit {
             this._openFeedbackDialogWarningr();
             return;
         }
-        this._router.navigate([`/${this._fromComponentCalled}`]);
+        this._router.navigate([`/${this._fromComponentPathCalled}`]);
     }
 
     onSave(): void {
@@ -265,7 +267,7 @@ export class EmployeeFormComponent implements OnInit {
             if (result === true) {
                 this.employeeForm.reset();
             } else if (result === false) {
-                this._router.navigate([`/${this._fromComponentCalled}`]);
+                this._router.navigate([`/${this._fromComponentPathCalled}`]);
             }
         });
     }
@@ -280,7 +282,7 @@ export class EmployeeFormComponent implements OnInit {
         });
         dialogRef.afterClosed().subscribe((result): void => {
             if (result === false) {
-                this._router.navigate([`/${this._fromComponentCalled}`]);
+                this._router.navigate([`/${this._fromComponentPathCalled}`]);
             }
         });
     }
@@ -296,7 +298,7 @@ export class EmployeeFormComponent implements OnInit {
         });
         dialogRef.afterClosed().subscribe((result): void => {
             if (result === true) {
-                this._router.navigate([`/${this._fromComponentCalled}`]);
+                this._router.navigate([`/${this._fromComponentPathCalled}`]);
             }
         });
     }
@@ -304,7 +306,10 @@ export class EmployeeFormComponent implements OnInit {
     private _setBreadcrumb(): void {
         this._breadcrumbService.setBreadcrumbs([
             { label: "Inicio", path: "/" },
-            { label: "Grilla", path: `/${this._fromComponentCalled}` },
+            {
+                label: `${this._fromComponentNameCalled}`,
+                path: `/${this._fromComponentPathCalled}`,
+            },
             { label: `${this.title}`, path: "" },
         ]);
     }
