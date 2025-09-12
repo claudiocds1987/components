@@ -30,6 +30,7 @@ import { CountryService } from "../../shared/services/country.service";
 import { ExportService } from "../../shared/services/export.service";
 import { SpinnerService } from "../../shared/services/spinner.service";
 import { Sort } from "@angular/material/sort";
+import { Router } from "@angular/router";
 
 @Component({
     selector: "app-employee-grid-all",
@@ -69,6 +70,7 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
     private _breadcrumbService = inject(BreadcrumbService);
     private _positionServices = inject(PositionService);
     private _countryServices = inject(CountryService);
+    private _router = inject(Router);
 
     constructor() {
         this._alertService.clearAlerts();
@@ -84,8 +86,13 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
         this._breadcrumbService.clearBreadcrumbs();
     }
 
+    onRowDblClick(rowData: any): void {
+        const employee = rowData as Employee;
+        this._editEmployee(employee.id);
+    }
+
     onCreateEmployee(): void {
-        // hacer redireccion a url de employee-form
+        this._router.navigate(["/employee/create"]);
     }
 
     // 2. Modifica la función onExportToExcel() para que reciba el sort
@@ -341,9 +348,7 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
     }
 
     private _editEmployee(id: number): void {
-        console.log(`Parent Log: Editando empleado con ID: ${id}`);
-        // Aquí iría tu lógica para navegar a la página de edición o abrir un modal
-        // Por ejemplo: this._router.navigate(['/employees', id, 'edit']);
+        this._router.navigate([`/employee/edit/${id}`]);
     }
 
     private _deleteEmployee(id: number): void {

@@ -39,6 +39,7 @@ import { AlertService } from "../../shared/services/alert.service";
 import { SelectItem } from "../../shared/models/select-item.model";
 import { PositionService } from "../../shared/services/position.service";
 import { CountryService } from "../../shared/services/country.service";
+import { Router } from "@angular/router";
 
 @Component({
     selector: "app-employee-grid-infinite",
@@ -79,6 +80,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
     private _alertService = inject(AlertService);
     private _positionServices = inject(PositionService);
     private _countryServices = inject(CountryService);
+    private _router = inject(Router);
 
     constructor() {
         this._alertService.clearAlerts();
@@ -93,6 +95,15 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         // Limpio breadcrumb al salir del componente para evitar fugas de memoria.
         this._breadcrumbService.clearBreadcrumbs();
+    }
+
+    onRowDblClick(rowData: any): void {
+        const employee = rowData as Employee;
+        this._editEmployee(employee.id);
+    }
+
+    onCreateEmployee(): void {
+        this._router.navigate(["/employee/create"]);
     }
 
     // Método para manejar el evento de scroll al final
@@ -178,10 +189,6 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                     this._alertService.showDanger("Error al descargar Excel");
                 },
             });
-    }
-
-    onCreateEmployee(): void {
-        // hacer redireccion a url de employee-form
     }
 
     private _mapEmployeesForExport(employees: Employee[]): any[] {
@@ -390,9 +397,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
     }
 
     private _editEmployee(id: number): void {
-        console.log(`Parent Log: Editando empleado con ID: ${id}`);
-        // Aquí iría tu lógica para navegar a la página de edición o abrir un modal
-        // Por ejemplo: this._router.navigate(['/employees', id, 'edit']);
+        this._router.navigate([`/employee/edit/${id}`]);
     }
 
     private _deleteEmployee(id: number): void {

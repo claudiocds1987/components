@@ -90,6 +90,7 @@ export class EmployeeFormComponent implements OnInit {
     private _changeDetectorRef: ChangeDetectorRef = inject(ChangeDetectorRef);
 
     constructor() {
+        console.log("spanshot: ", this._activeRoute.snapshot);
         this.operation = this._activeRoute.snapshot.data["operation"]; // "create" o "edit"
         this.title =
             this.operation === "create"
