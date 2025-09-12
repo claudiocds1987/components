@@ -89,7 +89,7 @@
         <button
             mat-flat-button
             color="primary"
-            [disabled]="employeeForm.invalid || !employeeForm.dirty"
+            [disabled]="!isReadyToSave()"
             (click)="onSave()"
         >
             Guardar

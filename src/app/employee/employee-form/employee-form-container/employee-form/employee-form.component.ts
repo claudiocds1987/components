@@ -134,10 +134,10 @@ export class EmployeeFormComponent implements OnInit {
     }
 
     private _loadRouteData(): void {
+        // employee-form es llamado de 3 grillas diferentes se necesita saber de que componente
+        // fue llamado para que al terminar "guardar" o "editar" o al "Cancelar haga la redireccion al componente de donde
+        // employee-form fue llamado.
         this._activeRoute.queryParams.subscribe((params): void => {
-            // employee-form es llamado de 3 grillas diferentes se necesita saber de que componente
-            // fue llamado para que al terminar "guardar" o "editar" o al "Cancelar haga la redireccion al componente de donde
-            // employee-form fue llamado.
             this._fromComponentPathCalled = params["componentPath"]; // ruta del componente origen
             this._fromComponentNameCalled = params["componentName"]; // nombre del componente para el breadcrumb
         });
