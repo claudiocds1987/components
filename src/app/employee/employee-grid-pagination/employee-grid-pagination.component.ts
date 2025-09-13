@@ -30,7 +30,7 @@ import { PageEvent } from "@angular/material/paginator";
 import { Sort } from "@angular/material/sort";
 import { ExportService } from "../../shared/services/export.service";
 import { SpinnerService } from "../../shared/services/spinner.service";
-import { Chip } from "../../shared/components/chips/chips/chips.component";
+import { Chip } from "../../shared/components/chips/chips.component";
 import { MatDialogModule } from "@angular/material/dialog";
 
 import { SelectItem } from "../../shared/models/select-item.model";

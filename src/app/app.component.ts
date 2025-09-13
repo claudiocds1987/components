@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import { MatButtonModule } from "@angular/material/button";
 
-import { SpinnerComponent } from "./shared/components/spinner/spinner/spinner.component";
+import { SpinnerComponent } from "./shared/components/spinner/spinner.component";
 
 @Component({
     selector: "app-root",

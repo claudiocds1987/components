@@ -2,7 +2,7 @@ import { Component, inject } from "@angular/core";
 import { AsyncPipe, NgIf } from "@angular/common";
 
 import { Observable } from "rxjs";
-import { SpinnerService } from "../../../services/spinner.service";
+import { SpinnerService } from "../../services/spinner.service";
 
 @Component({
     selector: "app-spinner",
