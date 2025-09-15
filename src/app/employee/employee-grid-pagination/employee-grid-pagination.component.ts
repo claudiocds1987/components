@@ -173,15 +173,8 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     }
 
     onGridSortChange(sortEvent: Sort): void {
-        let sortColumnName = sortEvent.active;
+        const sortColumnName = sortEvent.active;
         const sortOrder = sortEvent.direction;
-
-        if (sortEvent.active === "country") {
-            sortColumnName = "countryId";
-        }
-        if (sortEvent.active === "position") {
-            sortColumnName = "positionId";
-        }
 
         this._employeeFilterParams = {
             ...this._employeeFilterParams,

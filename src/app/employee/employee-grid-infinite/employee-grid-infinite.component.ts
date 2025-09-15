@@ -137,20 +137,13 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
 
     onGridSortChange(sortEvent: Sort): void {
         // obteniendo nombre de la columna
-        let sortColumnName = sortEvent.active;
-        // Para que ordene por descripción en json-server
-        if (sortEvent.active === "position") {
-            sortColumnName = "positionId";
-        }
-
-        if (sortEvent.active === "country") {
-            sortColumnName = "countryId";
-        }
+        const sortColumnName = sortEvent.active;
+        const sortOrder = sortEvent.direction;
 
         this._employeeFilterParams = {
             ...this._employeeFilterParams,
             sortColumn: sortColumnName,
-            sortOrder: sortEvent.direction,
+            sortOrder: sortOrder,
             page: 1,
         };
 
