@@ -170,6 +170,19 @@ export class GridComponent
         }
     }
 
+    // funcion que devuelve "Mostrando 50 de 200" solo para paginador de grilla infinita
+    public getInfiniteScrollSummary(
+        page: number,
+        pageSize: number,
+        length: number,
+    ): string {
+        if (length === 0) {
+            return "Mostrando 0 de 0";
+        }
+        const loadedCount = page * pageSize + pageSize;
+        return `Mostrando ${Math.min(loadedCount, length)} de ${length}`;
+    }
+
     getCellValue(row: GridData, colName: string): string {
         const value = row[colName];
         if (colName === "elipsisActions" && Array.isArray(value)) {

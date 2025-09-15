@@ -114,6 +114,19 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+.infinite-paginator {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 400px;
+    letter-spacing: 0.4px;
+    background-color: #f0f4f9;
+    padding: 0 8px;
+    height: 56px;
+}
+
 // SKELETON
 
 .skeleton-table {

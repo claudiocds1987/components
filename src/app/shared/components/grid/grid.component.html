@@ -262,3 +262,14 @@
     [pageIndex]="paginatorConfig.pageIndex"
     (page)="onPaginatorPageChange($event)"
 ></mat-paginator>
+
+<div
+    *ngIf="gridConfig.hasInfiniteScroll && paginatorConfig"
+    class="infinite-paginator"
+>
+    <span *ngIf="paginatorConfig.totalCount">
+        {{
+            getInfiniteScrollSummary(0, data.length, paginatorConfig.totalCount)
+        }}
+    </span>
+</div>
