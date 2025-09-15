@@ -58,7 +58,7 @@ export type GridData = Record<
 export interface GridConfiguration {
     columns: Column[];
     // hasPaginator.isServerSide: Le dice al GridComponent si debe usar el MatPaginator para controlar la paginación localmente o si debe limitarse a mostrar los datos que recibe y notificar al componente padre cuando se solicita una nueva página.
-    hasPaginator?: PaginationConfig | false; // "false" porque puede no tener paginacion la grilla
+    paginator: PaginationConfig;
     hasInputSearch?: boolean; // Para mostrar o no el input search arriba de la grilla
     filterByColumn?: string; // indica a el input search en que columna hacer la búsqueda
     hasChips?: boolean; // Muestra o no los chips de filtros aplicados
@@ -82,7 +82,7 @@ export const createDefaultGridConfiguration = (
         pageSize: 25,
         pageSizeOptions: [5, 10, 25, 100],
         totalCount: 0,
-        showFirstLastButtons: true,
+        showFirstLastButtons: true, // borrar esta propiedad
         isServerSide: true, // por default esta en true lo maneja el backend
     };
 
@@ -91,7 +91,11 @@ export const createDefaultGridConfiguration = (
         direction: "asc",
     };
 
-    let finalPaginatorConfig: PaginationConfig | false;
+    // Combina la configuración por defecto con la configuración del usuario.
+    const finalPaginator = config.paginator
+        ? { ...defaultPaginator, ...config.paginator }
+        : defaultPaginator;
+    /*  let finalPaginatorConfig: PaginationConfig | false;
 
     if (config.hasInfiniteScroll) {
         // Cuando hay scroll infinito, se necesita una configuración mínima del paginador
@@ -116,7 +120,7 @@ export const createDefaultGridConfiguration = (
     } else {
         // Si no se especifica nada, se usa la configuración por defecto.
         finalPaginatorConfig = defaultPaginator;
-    }
+    } */
 
     let finalHasSorting: { isServerSide: boolean };
     if (config.hasSorting) {
@@ -137,7 +141,7 @@ export const createDefaultGridConfiguration = (
 
     return {
         columns: processedColumns,
-        hasPaginator: finalPaginatorConfig,
+        paginator: finalPaginator,
         hasInputSearch: config.hasInputSearch ?? true,
         filterByColumn: config.filterByColumn ?? "",
         hasExcelDownload: config.hasExcelDownload ?? false,

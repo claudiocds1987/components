@@ -133,7 +133,8 @@ export class GridComponent
     }
 
     get paginatorConfig(): PaginationConfig | null {
-        const paginator = this.gridConfig?.hasPaginator;
+        const paginator = this.gridConfig?.paginator;
+        console.log("Paginator config: ", paginator);
         return typeof paginator === "object" && paginator !== null
             ? paginator
             : null;
@@ -170,7 +171,7 @@ export class GridComponent
         }
     }
 
-    // funcion que devuelve "Mostrando 50 de 200" solo para paginador de grilla infinita
+    // funcion que devuelve ej: "Mostrando 50 de 200" solo para paginador de grilla infinita
     public getInfinitePaginatorData(
         page: number,
         pageSize: number,
@@ -271,6 +272,37 @@ export class GridComponent
             const column = this.columns.find(
                 (c): boolean => c.name === sortHeaderId,
             );
+            const value = item[sortHeaderId];
+
+            // Manejo para columnas de fecha
+            if (column?.type === "date" && value) {
+                const dateString = value as string;
+                const parts = dateString.split("/");
+                return `${parts[2]}-${parts[1]}-${parts[0]}`;
+            }
+
+            // Manejo para columnas cuyo valor es booleano
+            if (typeof value === "boolean") {
+                // si el valor es true se convierte en 1 y false en 0.
+                return value ? 1 : 0;
+            }
+
+            // Manejo por defecto para cadenas y números
+            if (typeof value === "string" || typeof value === "number") {
+                return value;
+            }
+
+            return "";
+        };
+    }
+    /*   private _setSortingAccessor(): void {
+        this.dataSource.sortingDataAccessor = (
+            item: GridData,
+            sortHeaderId: string,
+        ): string | number => {
+            const column = this.columns.find(
+                (c): boolean => c.name === sortHeaderId,
+            );
 
             if (column?.type === "date" && item[sortHeaderId]) {
                 // Convierte la fecha a un formato ordenable (YYYY-MM-DD)
@@ -287,14 +319,14 @@ export class GridComponent
                 ? value
                 : "";
         };
-    }
+    } */
 
     // Este método asegura que las referencias se establezcan solo cuando están disponibles
     private _applySortAndPaginator(): void {
         const isServerSideSort = this.gridConfig?.hasSorting?.isServerSide;
-        const paginatorConfig = this.gridConfig?.hasPaginator;
+        const paginatorConfig = this.gridConfig?.paginator;
         const isClientSidePaginator =
-            paginatorConfig === false ||
+            paginatorConfig.isServerSide === false ||
             (typeof paginatorConfig === "object" &&
                 !paginatorConfig.isServerSide);
 

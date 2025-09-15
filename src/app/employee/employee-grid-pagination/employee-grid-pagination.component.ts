@@ -166,8 +166,8 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                 this._mapToEmployeeFilterParams(filterValues);
             Object.assign(this._employeeFilterParams, filterParamsForBackend);
         }
-        if (this.gridConfig.hasPaginator) {
-            this.gridConfig.hasPaginator.pageIndex = 0;
+        if (this.gridConfig.paginator) {
+            this.gridConfig.paginator.pageIndex = 0;
         }
         this._reloadGridData();
     }
@@ -591,7 +591,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
 
     private _updateGridConfigOnSortChange(sortEvent: Sort): void {
         const basePaginationConfig =
-            this.gridConfig.hasPaginator || this._defaultPaginatorOptions;
+            this.gridConfig.paginator || this._defaultPaginatorOptions;
 
         this.gridConfig = {
             ...this.gridConfig,
@@ -599,7 +599,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                 columnName: sortEvent.active,
                 direction: sortEvent.direction,
             },
-            hasPaginator: {
+            paginator: {
                 ...basePaginationConfig,
                 pageIndex: 0,
             },
@@ -612,7 +612,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
         const { totalCount, pageIndex, pageSize } = paginatedListGridData;
         const { sortColumn = "", sortOrder = "" } = this._employeeFilterParams;
         const paginationConfig = {
-            ...(this.gridConfig.hasPaginator || this._defaultPaginatorOptions),
+            ...(this.gridConfig.paginator || this._defaultPaginatorOptions),
             totalCount,
             pageSize,
             pageIndex,
@@ -623,7 +623,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
         };
         this.gridConfig = {
             ...this.gridConfig,
-            hasPaginator: paginationConfig,
+            paginator: paginationConfig,
             OrderBy: orderByConfig,
         };
     }
@@ -700,7 +700,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                     hasHeader: false,
                 },
             ],
-            hasPaginator: {
+            paginator: {
                 pageSize: this._employeeFilterParams.limit || 25,
                 pageSizeOptions: [25, 50],
                 totalCount: 0,

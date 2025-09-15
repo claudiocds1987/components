@@ -119,7 +119,10 @@ export class EmployeeFormComponent implements OnInit {
             genderId: this.employeeForm.value.genderId,
             countryId: this.employeeForm.value.countryId,
             positionId: this.employeeForm.value.positionId,
-            active: this.employeeForm.value.active,
+            active:
+                this.operation === "create"
+                    ? true
+                    : this.employeeForm.value.active,
         };
 
         if (this.operation === "create") {
@@ -160,7 +163,7 @@ export class EmployeeFormComponent implements OnInit {
             genderId: new FormControl("", Validators.required),
             countryId: new FormControl("", Validators.required),
             positionId: new FormControl("", Validators.required),
-            active: new FormControl(true),
+            active: new FormControl(""),
         });
     }
 

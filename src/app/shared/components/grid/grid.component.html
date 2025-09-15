@@ -22,7 +22,7 @@
 
 <ng-container
     [ngTemplateOutlet]="
-        !gridConfig.hasPaginator ? searchInputTemplate : noSearchInputTemplate
+        gridConfig.hasInputSearch ? searchInputTemplate : noSearchInputTemplate
     "
 ></ng-container>
 

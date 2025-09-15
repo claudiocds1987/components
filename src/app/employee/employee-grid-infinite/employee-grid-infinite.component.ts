@@ -117,7 +117,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
     // Método para manejar el evento de scroll al final
     onInfiniteGridScroll(): void {
         const totalCount =
-            (this.gridConfig.hasPaginator as PaginationConfig)?.totalCount || 0;
+            (this.gridConfig.paginator as PaginationConfig)?.totalCount || 0;
         const currentDataCount = this.gridData.length;
 
         if (this.isLoadingGridData || currentDataCount >= totalCount) {
@@ -427,8 +427,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
 
         // Actualizamos la configuración de la paginación con los datos del servidor.
         // Usamos el operador de nulidad para asegurar que 'hasPaginator' es un objeto.
-        const currentPaginator = this.gridConfig
-            .hasPaginator as PaginationConfig;
+        const currentPaginator = this.gridConfig.paginator as PaginationConfig;
         if (currentPaginator) {
             currentPaginator.totalCount = totalCount;
             currentPaginator.pageSize = pageSize;
@@ -444,7 +443,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
         // Creamos un nuevo objeto de configuración para asegurar la reactividad.
         this.gridConfig = {
             ...this.gridConfig,
-            hasPaginator: currentPaginator, // O usa un nuevo objeto si es necesario
+            paginator: currentPaginator, // O usa un nuevo objeto si es necesario
             OrderBy: newOrderBy,
         };
     }

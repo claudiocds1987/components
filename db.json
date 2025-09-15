@@ -2253,7 +2253,7 @@
       "genderId": 2,
       "countryId": 9,
       "positionId": 4,
-      "active": null
+      "active": false
     },
     {
       "id": 206,
@@ -2308,7 +2308,7 @@
       "genderId": 2,
       "countryId": 2,
       "positionId": 1,
-      "active": null
+      "active": false
     },
     {
       "id": 211,
@@ -2352,6 +2352,17 @@
       "genderId": 1,
       "countryId": 11,
       "positionId": 1,
+      "active": true
+    },
+    {
+      "id": 215,
+      "imgUrl": "",
+      "name": "Waldemiro",
+      "surname": "Campanuelo",
+      "birthDate": "2010-10-09",
+      "genderId": 1,
+      "countryId": 1,
+      "positionId": 4,
       "active": true
     }
   ],

@@ -295,15 +295,15 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
             hasChips: false,
             hasExcelDownload: true,
             hasCreateButton: true,
-            hasPaginator: {
+            paginator: {
                 pageSizeOptions: [25, 50],
                 pageSize: 25,
                 pageIndex: 0,
                 totalCount: 0,
-                isServerSide: false,
+                isServerSide: false, // Al ser no paginada se indica false para que la propia grilla maneje el paginador
             },
             hasSorting: {
-                isServerSide: false,
+                isServerSide: false, // Al ser no paginada se indica false para que la propia grilla maneje el sort
             },
         });
         return config;
