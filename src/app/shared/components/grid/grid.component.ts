@@ -171,7 +171,7 @@ export class GridComponent
     }
 
     // funcion que devuelve "Mostrando 50 de 200" solo para paginador de grilla infinita
-    public getInfiniteScrollSummary(
+    public getInfinitePaginatorData(
         page: number,
         pageSize: number,
         length: number,
