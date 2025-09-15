@@ -443,7 +443,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
         // Creamos un nuevo objeto de configuración para asegurar la reactividad.
         this.gridConfig = {
             ...this.gridConfig,
-            paginator: currentPaginator, // O usa un nuevo objeto si es necesario
+            paginator: currentPaginator,
             OrderBy: newOrderBy,
         };
     }

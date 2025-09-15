@@ -31,8 +31,7 @@ export interface PaginationConfig {
     pageSize: number | string; // si es infinite scroll puede ser string vacio ""
     pageSizeOptions: number[];
     totalCount: number;
-    showFirstLastButtons?: boolean;
-    isServerSide?: boolean; // True if pagination is handled by the server
+    isServerSide?: boolean; // para indicar si la paginacion la maneja el backend(true) o cliente (false)
 }
 
 export interface OrderBy {
@@ -57,7 +56,7 @@ export type GridData = Record<
 
 export interface GridConfiguration {
     columns: Column[];
-    // hasPaginator.isServerSide: Le dice al GridComponent si debe usar el MatPaginator para controlar la paginación localmente o si debe limitarse a mostrar los datos que recibe y notificar al componente padre cuando se solicita una nueva página.
+    // paginator.isServerSide: Le dice al GridComponent si debe usar el MatPaginator para controlar la paginación localmente o si debe limitarse a mostrar los datos que recibe y notificar al componente padre cuando se solicita una nueva página.
     paginator: PaginationConfig;
     hasInputSearch?: boolean; // Para mostrar o no el input search arriba de la grilla
     filterByColumn?: string; // indica a el input search en que columna hacer la búsqueda
@@ -82,7 +81,6 @@ export const createDefaultGridConfiguration = (
         pageSize: 25,
         pageSizeOptions: [5, 10, 25, 100],
         totalCount: 0,
-        showFirstLastButtons: true, // borrar esta propiedad
         isServerSide: true, // por default esta en true lo maneja el backend
     };
 

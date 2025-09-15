@@ -257,7 +257,7 @@
     *ngIf="paginatorConfig && !gridConfig.hasInfiniteScroll"
     [pageSize]="paginatorConfig.pageSize"
     [pageSizeOptions]="paginatorConfig.pageSizeOptions"
-    [showFirstLastButtons]="paginatorConfig.showFirstLastButtons"
+    [showFirstLastButtons]="true"
     [length]="paginatorConfig.totalCount"
     [pageIndex]="paginatorConfig.pageIndex"
     (page)="onPaginatorPageChange($event)"
