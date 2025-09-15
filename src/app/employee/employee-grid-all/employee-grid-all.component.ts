@@ -290,7 +290,7 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
                     hasHeader: false,
                 },
             ],
-            filterByColumn: "",
+            filterByColumn: "id",
             hasInputSearch: true,
             hasChips: false,
             hasExcelDownload: true,

@@ -36,7 +36,7 @@
             <mat-label>Buscar</mat-label>
             <input
                 matInput
-                (input)="applyFilter($event)"
+                (input)="onInputSearch($event)"
                 [placeholder]="gridConfig.filterByColumn || 'Buscar todo'"
             />
         </mat-form-field>
@@ -247,7 +247,7 @@
 
     <app-feedback
         class="feedback-container"
-        *ngIf="dataSource.data.length === 0"
+        *ngIf="dataSource.data.length === 0 || !hasFilteredData"
         [imageUrl]="'assets/no-result.svg'"
     ></app-feedback>
 </div>

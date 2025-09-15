@@ -118,6 +118,7 @@ export class GridComponent
     @Output() infiniteScroll = new EventEmitter<void>();
     @Output() rowDblClick = new EventEmitter<GridData>();
 
+    hasFilteredData = true;
     dataSource = new MatTableDataSource<GridData>();
     private _ngZone = inject(NgZone);
     private _scrollListener: (() => void) | undefined;
@@ -134,7 +135,6 @@ export class GridComponent
 
     get paginatorConfig(): PaginationConfig | null {
         const paginator = this.gridConfig?.paginator;
-        console.log("Paginator config: ", paginator);
         return typeof paginator === "object" && paginator !== null
             ? paginator
             : null;
@@ -148,7 +148,7 @@ export class GridComponent
     }
 
     ngOnInit(): void {
-        this._updateFilterPredicate();
+        this._setupSearchFilter();
         this._setSortingAccessor();
     }
 
@@ -209,9 +209,14 @@ export class GridComponent
         return str;
     }
 
-    applyFilter(event: Event): void {
+    onInputSearch(event: Event): void {
+        // las reglas de como filtrar se establecieron en _setupSearchFilter()
         const filterValue = (event.target as HTMLInputElement).value;
-        this.dataSource.filter = filterValue.trim().toLowerCase();
+        const filterText = filterValue.trim().toLowerCase();
+        // Actualiza la grilla con el nuevo filtro
+        this.dataSource.filter = filterText;
+        // Actualiza la variable para saber si hay datos filtrados
+        this.hasFilteredData = this.dataSource.filteredData.length > 0;
     }
 
     onRowDblClick(row: GridData): void {
@@ -352,17 +357,22 @@ export class GridComponent
         }
     }
 
-    private _updateFilterPredicate(): void {
+    // _setupSearchFilter() establece las reglas que la tabla va a usar para filtrar cada vez que el usuario escriba en el input search.
+    private _setupSearchFilter(): void {
         this.dataSource.filterPredicate = (data, filter: string): boolean => {
             const search = filter.trim().toLowerCase();
+            // Si el input está vacío, muestra todas las filas.
             if (!search) {
                 return true;
             }
+            // Si la configuración tiene una columna para filtrar..
             if (this.gridConfig?.filterByColumn) {
+                // Aca el nombre de la columna que viene en la configuración.
                 const value = data[this.gridConfig.filterByColumn];
                 const stringValue = value?.toString() || "";
                 return stringValue.toLowerCase().includes(search);
             }
+            // Si no se especifica una columna, busca en todas las columnas.
             return this.columns.some((col: Column): boolean => {
                 const value = data[col.name];
                 const stringValue = value?.toString() || "";
