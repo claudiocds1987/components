@@ -118,7 +118,6 @@ export class GridComponent
     @Output() infiniteScroll = new EventEmitter<void>();
     @Output() rowDblClick = new EventEmitter<GridData>();
 
-    hasFilteredData = true;
     dataSource = new MatTableDataSource<GridData>();
     private _ngZone = inject(NgZone);
     private _scrollListener: (() => void) | undefined;
@@ -184,6 +183,13 @@ export class GridComponent
         return `Mostrando ${Math.min(loadedCount, length)} de ${length}`;
     }
 
+    showFeeback(): boolean {
+        return (
+            this.dataSource.data.length === 0 ||
+            this.dataSource.filteredData.length === 0
+        );
+    }
+
     getCellValue(row: GridData, colName: string): string {
         const value = row[colName];
         if (colName === "elipsisActions" && Array.isArray(value)) {
@@ -215,8 +221,6 @@ export class GridComponent
         const filterText = filterValue.trim().toLowerCase();
         // Actualiza la grilla con el nuevo filtro
         this.dataSource.filter = filterText;
-        // Actualiza la variable para saber si hay datos filtrados
-        this.hasFilteredData = this.dataSource.filteredData.length > 0;
     }
 
     onRowDblClick(row: GridData): void {
