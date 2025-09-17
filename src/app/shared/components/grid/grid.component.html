@@ -81,13 +81,13 @@
                 mat-stroked-button
                 color="primary"
                 (click)="create()"
-                style="border-radius: 50px"
+                class="button-create"
             >
                 Crear
             </button>
             <button
                 *ngIf="gridConfig.hasExcelDownload"
-                class="button-action"
+                class="button-download"
                 mat-icon-button
                 color="primary"
                 (click)="exportToExcel()"

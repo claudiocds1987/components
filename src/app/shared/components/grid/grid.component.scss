@@ -47,9 +47,17 @@
     .buttons-actions {
         display: flex;
         justify-content: flex-end; // Para alinear el contenido al final (derecha) del contenedor
+        align-items: center;
         gap: 5px;
 
-        .button-action {
+        .button-create {
+            background-color: #f0f4f9;
+            border-radius: 50px;
+            font-weight: 400;
+            width: 100px;
+        }
+
+        .button-download {
             background-color: #f0f4f9;
         }
     }
