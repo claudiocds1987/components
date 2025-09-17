@@ -16,20 +16,25 @@ export class HomeComponent {
         this.menuCards = [
             {
                 id: "1",
-                title: "Grilla paginada dinámica con filtro dinámico y chips",
-                description: "Gestión y visualización de empleados.",
+                img: "../../../assets/grid.svg",
+                title: "Grilla paginada full",
+                description:
+                    "Gestión y visualización de empleados con filtro dinámico y chips.",
                 resource: "",
                 path: "/employee-grid-pagination",
             },
             {
                 id: "2",
-                title: "Grilla infinita dinámica",
-                description: "Gestión y visualización de empleados.",
+                img: "../../../assets/grid.svg",
+                title: "Grilla infinita",
+                description:
+                    "Gestión y visualización de empleados cons scroll infinito.",
                 resource: "",
                 path: "employee-grid-infinite",
             },
             {
                 id: "3",
+                img: "../../../assets/grid.svg",
                 title: "Grilla no paginada",
                 description: "Gestión y visualización de empleados.",
                 resource: "",

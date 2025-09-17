@@ -5,6 +5,8 @@
     padding: 20px;
 
     .menu-card {
+        display: flex;
+        gap: 10px;
         width: 300px;
         height: 150px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -14,6 +16,16 @@
 
     .menu-card:hover {
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-header {
+        display: flex;
+
+        img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
     }
 
     .actions {

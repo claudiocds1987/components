@@ -4,8 +4,9 @@
         class="menu-card"
         [routerLink]="!card.textBtn ? card.path : null"
     >
-        <mat-card-header>
-            <mat-card-title>{{ card.title }}</mat-card-title>
+        <mat-card-header class="card-header">
+            <img [src]="card.img" alt="Imagen de la tarjeta" *ngIf="card.img" />
+            <h2>{{ card.title }}</h2>
         </mat-card-header>
         <mat-card-content>
             <p>{{ card.description }}</p>
