@@ -251,7 +251,6 @@ export class EmployeeFormComponent implements OnInit {
                 // agregado de setTimeout para simular un delay con json-server
                 setTimeout((): void => {
                     this._spinnerService.hide();
-                    //this._openFeedbackDialogSuccess();
                     this._showSnackbar();
                     this._router.navigate([
                         `/${this._fromComponentPathCalled}`,
@@ -266,7 +265,7 @@ export class EmployeeFormComponent implements OnInit {
     }
 
     private _openFeedbackDialogSuccess(): void {
-        const action = this.operation === "create" ? "creado" : "editado";
+        const action = "creado";
         const dialogRef = this._feedbackDialogService.openFeedbackDialog({
             type: "success",
             title: `Empleado ${action} con éxito.`,
