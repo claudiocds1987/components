@@ -234,6 +234,10 @@ export class GridComponent
     onSortChange(sortState: Sort): void {
         if (this.gridConfig?.hasSorting?.isServerSide) {
             this.sortChange.emit(sortState);
+            // Mueve el scroll al principio de la tabla al hacer el ordenamiento
+            if (this.scrollContainer && this.scrollContainer.nativeElement) {
+                this.scrollContainer.nativeElement.scrollTop = 0;
+            }
         }
     }
 
