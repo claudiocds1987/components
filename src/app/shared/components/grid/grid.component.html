@@ -118,9 +118,9 @@
                 mat-header-cell
                 *matHeaderCellDef
                 class="grid-cell"
-                [style.width]="col.width || 'auto'"
+                [style.width]="col.width"
                 [style.flex]="col.width ? 'none' : '1'"
-                [style.text-align]="col.align || 'left'"
+                [style.text-align]="col.align"
                 [matTooltip]="col.headerTooltip ? col.headerTooltip : ''"
             >
                 <ng-container *ngIf="col.hasHeader !== false">
@@ -153,8 +153,8 @@
                 mat-cell
                 *matCellDef="let row"
                 class="grid-cell"
-                [style.width]="col.width || 'auto'"
-                [style.text-align]="col.align || 'left'"
+                [style.width]="col.width"
+                [style.text-align]="col.align"
                 [ngStyle]="{
                     'text-overflow':
                         col.type === 'elipsis' ? 'clip' : 'ellipsis',

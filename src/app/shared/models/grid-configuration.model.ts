@@ -103,16 +103,23 @@ export const createDefaultGridConfiguration = (
         finalHasSorting = { isServerSide: true }; // isServerSide = true por default
     }
 
-    // Procesar las columnas para establecer isSortable por defecto
-    const processedColumns: Column[] = (config.columns || []).map(
+    // Configuracion de columnas por defecto
+    const defaultColumns: Column[] = (config.columns || []).map(
         (col: Column): Column => ({
             ...col,
             isSortable: col.isSortable ?? true,
+            width: col.width ?? "auto",
+            align: col.align ?? "left",
+            hasHeader: col.hasHeader ?? true,
+            headerTooltip: col.headerTooltip ?? undefined,
+            headerIcon: col.headerIcon ?? undefined,
+            style: col.style ?? undefined,
+            type: col.type ?? undefined,
         }),
     );
 
     return {
-        columns: processedColumns,
+        columns: defaultColumns,
         paginator: finalPaginator,
         hasInputSearch: config.hasInputSearch ?? true,
         filterByColumn: config.filterByColumn ?? "",
