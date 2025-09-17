@@ -15,14 +15,20 @@ import {
 export class SnackbarService {
     private _snackBar = inject(MatSnackBar);
 
-    show(
-        message: string,
-        image?: string, // <--- Nuevo parámetro opcional para la imagen
+    show({
+        message,
+        icon = "check", // icono de material por defecto
         duration = 3000,
-        horizontalPosition: MatSnackBarHorizontalPosition = "center",
-        verticalPosition: MatSnackBarVerticalPosition = "bottom",
-    ): void {
-        const data: SnackbarData = { message, image }; // <-- Pasa la data a tu componente
+        horizontalPosition = "center",
+        verticalPosition = "bottom",
+    }: {
+        message: string;
+        icon?: string;
+        duration?: number;
+        horizontalPosition?: MatSnackBarHorizontalPosition;
+        verticalPosition?: MatSnackBarVerticalPosition;
+    }): void {
+        const data: SnackbarData = { message, icon };
 
         this._snackBar.openFromComponent(SnackbarComponent, {
             data: data,

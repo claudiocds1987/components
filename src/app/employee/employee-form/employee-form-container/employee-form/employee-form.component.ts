@@ -316,8 +316,7 @@ export class EmployeeFormComponent implements OnInit {
     }
 
     private _showSnackbar(): void {
-        // Solo pasas el mensaje, y usa las posiciones por defecto.
-        this._snackbarService.show("¡Editado con con éxito!");
+        this._snackbarService.show({ message: "¡Editado con éxito!" });
     }
 
     private _setBreadcrumb(): void {

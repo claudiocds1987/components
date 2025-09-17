@@ -6,7 +6,7 @@ import { MAT_SNACK_BAR_DATA } from "@angular/material/snack-bar";
 // Define la estructura de los datos que el snackbar recibirá
 export interface SnackbarData {
     message: string;
-    image?: string; // Propiedad opcional para la URL de la imagen
+    icon?: string; // Propiedad opcional para la URL de la imagen
 }
 
 @Component({
