@@ -37,6 +37,7 @@ import { MatNativeDateModule } from "@angular/material/core";
 import { Employee } from "../../../../shared/models/employee.model";
 import { FeedbackDialogService } from "../../../../shared/services/feedback-dialog.service";
 import { SkeletonDirective } from "../../../../shared/directives/skeleton.directive";
+import { SnackbarService } from "../../../../shared/services/snackbar.service";
 
 @Component({
     selector: "app-employee-form",
@@ -90,6 +91,7 @@ export class EmployeeFormComponent implements OnInit {
     private _countryService = inject(CountryService);
     private _feedbackDialogService = inject(FeedbackDialogService);
     private _changeDetectorRef: ChangeDetectorRef = inject(ChangeDetectorRef);
+    private _snackbarService = inject(SnackbarService);
 
     constructor() {
         this.employeeForm = this._createForm();
@@ -249,7 +251,11 @@ export class EmployeeFormComponent implements OnInit {
                 // agregado de setTimeout para simular un delay con json-server
                 setTimeout((): void => {
                     this._spinnerService.hide();
-                    this._openFeedbackDialogSuccess();
+                    //this._openFeedbackDialogSuccess();
+                    this._showSnackbar();
+                    this._router.navigate([
+                        `/${this._fromComponentPathCalled}`,
+                    ]);
                 }, 1500);
             },
             error: (): void => {
@@ -307,6 +313,11 @@ export class EmployeeFormComponent implements OnInit {
                 this._router.navigate([`/${this._fromComponentPathCalled}`]);
             }
         });
+    }
+
+    private _showSnackbar(): void {
+        // Solo pasas el mensaje, y usa las posiciones por defecto.
+        this._snackbarService.show("¡Editado con con éxito!");
     }
 
     private _setBreadcrumb(): void {
