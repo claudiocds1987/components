@@ -683,7 +683,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                 {
                     name: "active",
                     style: "status-circle",
-                    align: "center",
+                    align: "left",
                 },
                 {
                     name: "elipsisActions",
@@ -707,7 +707,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                     | "asc"
                     | "desc",
             },
-            filterByColumn: "",
+            //filterByColumn: "",
             hasInputSearch: false,
             hasChips: true,
             hasExcelDownload: true,

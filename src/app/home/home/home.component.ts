@@ -35,6 +35,15 @@ export class HomeComponent {
                 resource: "",
                 path: "employee-grid-all",
             },
+            // Con boton Incluido en la mat-card usando prop. textBtn
+            /*  {
+                id: "4",
+                title: "gasfgasgasg",
+                description: "Gestión y visualización de empleados.",
+                resource: "",
+                path: "employee-grid-all",
+                textBtn: "ir a grilla",
+            }, */
         ];
     }
 }
