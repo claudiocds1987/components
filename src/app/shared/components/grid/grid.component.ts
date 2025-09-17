@@ -308,31 +308,6 @@ export class GridComponent
             return "";
         };
     }
-    /*   private _setSortingAccessor(): void {
-        this.dataSource.sortingDataAccessor = (
-            item: GridData,
-            sortHeaderId: string,
-        ): string | number => {
-            const column = this.columns.find(
-                (c): boolean => c.name === sortHeaderId,
-            );
-
-            if (column?.type === "date" && item[sortHeaderId]) {
-                // Convierte la fecha a un formato ordenable (YYYY-MM-DD)
-                // Usamos un formato ISO para que la comparación de cadenas funcione correctamente
-                const dateString = item[sortHeaderId] as string;
-                if (dateString) {
-                    const parts = dateString.split("/");
-                    return `${parts[2]}-${parts[1]}-${parts[0]}`;
-                }
-            }
-            // Si no es una columna de fecha, usa el valor por defecto (aca ordena puesto, pais por descripción)
-            const value = item[sortHeaderId];
-            return typeof value === "string" || typeof value === "number"
-                ? value
-                : "";
-        };
-    } */
 
     // Este método asegura que las referencias se establezcan solo cuando están disponibles
     private _applySortAndPaginator(): void {

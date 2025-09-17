@@ -93,32 +93,6 @@ export const createDefaultGridConfiguration = (
     const finalPaginator = config.paginator
         ? { ...defaultPaginator, ...config.paginator }
         : defaultPaginator;
-    /*  let finalPaginatorConfig: PaginationConfig | false;
-
-    if (config.hasInfiniteScroll) {
-        // Cuando hay scroll infinito, se necesita una configuración mínima del paginador
-        // para indicar que la paginación es del lado del servidor.
-        finalPaginatorConfig = {
-            pageIndex: 0,
-            pageSize: 25, // o la cantidad de registros que quieras cargar por lote
-            pageSizeOptions: [],
-            totalCount: 0,
-            showFirstLastButtons: false,
-            isServerSide: true,
-        };
-    } else if (config.hasPaginator === false) {
-        // Si el paginador se desactiva explícitamente, se retorna false.
-        finalPaginatorConfig = false;
-    } else if (config.hasPaginator) {
-        // Si se proporciona una configuración de paginador, se combina.
-        finalPaginatorConfig = {
-            ...defaultPaginator,
-            ...config.hasPaginator,
-        };
-    } else {
-        // Si no se especifica nada, se usa la configuración por defecto.
-        finalPaginatorConfig = defaultPaginator;
-    } */
 
     let finalHasSorting: { isServerSide: boolean };
     if (config.hasSorting) {
