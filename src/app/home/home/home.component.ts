@@ -28,7 +28,7 @@ export class HomeComponent {
                 img: "../../../assets/grid.svg",
                 title: "Grilla infinita",
                 description:
-                    "Gestión y visualización de empleados cons scroll infinito.",
+                    "Gestión y visualización de empleados con scroll infinito.",
                 resource: "",
                 path: "employee-grid-infinite",
             },
