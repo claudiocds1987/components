@@ -203,7 +203,7 @@
                     </ng-container>
 
                     <ng-container *ngSwitchDefault>
-                        <ng-container [ngSwitch]="col.style">
+                        <ng-container [ngSwitch]="col.class">
                             <ng-container *ngSwitchCase="'status-circle'">
                                 <span
                                     class="status-circle"
@@ -219,6 +219,7 @@
                             </ng-container>
                             <ng-container *ngSwitchDefault>
                                 <span
+                                    [style]="col.style"
                                     [matTooltip]="
                                         getLargeTooltipValue(row, col.name)
                                     "

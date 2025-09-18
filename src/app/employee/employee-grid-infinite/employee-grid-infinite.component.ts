@@ -460,7 +460,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                 { name: "country", isSortable: false }, // false por que ordenaria por id no alfabeticamente
                 {
                     name: "active",
-                    style: "status-circle",
+                    class: "status-circle",
                     align: "center",
                     width: "20px",
                 },

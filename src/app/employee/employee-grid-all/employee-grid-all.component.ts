@@ -278,7 +278,7 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
                 { name: "country" },
                 {
                     name: "active",
-                    style: "status-circle",
+                    class: "status-circle",
                     align: "center",
                     width: "20px",
                 },

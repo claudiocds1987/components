@@ -668,22 +668,23 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
             columns: [
                 {
                     name: "imgUrl",
-                    width: "20px",
+                    width: "50px",
                     type: "img",
                     isSortable: false,
                     hasHeader: false,
                 },
                 { name: "id" },
                 { name: "name" /*headerTooltip: "nombre completo"*/ },
-                { name: "surname" },
+                { name: "surname" /*style: "font-weight: bold;"*/ },
                 { name: "birthDate" },
                 { name: "gender", isSortable: false }, // false por que ordenaria por id no alfabeticamente
                 { name: "position", isSortable: false }, // false por que ordenaria por id no alfabeticamente
                 { name: "country", isSortable: false }, // false por que ordenaria por id no alfabeticamente
                 {
                     name: "active",
-                    style: "status-circle",
+                    class: "status-circle",
                     align: "left",
+                    width: "50px",
                 },
                 {
                     name: "elipsisActions",

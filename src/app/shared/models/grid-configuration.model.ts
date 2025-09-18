@@ -19,7 +19,8 @@ export interface Column {
     // propiedad para el icono de la cabecera de la columna (si aplica, ej. 'more_vert')
     headerIcon?: string;
     //label?: string; // Añadido para etiquetas de columna personalizadas
-    style?: string; // para añadir una clase .scss
+    style?: string; // para añadir un estilo en linea ej "font-weight: bold;"
+    class?: string; // para añadir una clase .scss"
     // si "type" es "img" grid.component se encarga de agregar un la etiqueta img en su html
     // para que muestra una imagen como en el caso de las imagenes el empleado
     // si "type" es "component" lalogica del html va estar preparada para llamar a un componente en el html.
@@ -115,6 +116,7 @@ export const createDefaultGridConfiguration = (
             headerIcon: col.headerIcon ?? undefined,
             style: col.style ?? undefined,
             type: col.type ?? undefined,
+            class: col.class ?? undefined,
         }),
     );
 
