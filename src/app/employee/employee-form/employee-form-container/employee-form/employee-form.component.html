@@ -14,11 +14,15 @@
             </div>
             <mat-form-field appearance="outline" [appSkeleton]="isLoading">
                 <mat-label>Nombre</mat-label>
-                <input matInput formControlName="name" />
+                <input matInput formControlName="name" appRequiredValidation />
             </mat-form-field>
             <mat-form-field appearance="outline" [appSkeleton]="isLoading">
                 <mat-label>Apellido</mat-label>
-                <input matInput formControlName="surname" />
+                <input
+                    matInput
+                    formControlName="surname"
+                    appRequiredValidation
+                />
             </mat-form-field>
             <app-date-input
                 [formControlName]="'birthDate'"
@@ -26,10 +30,11 @@
                 [placeholder]="'Fecha de nacimiento'"
                 [isDisabled]="false"
                 [appSkeleton]="isLoading"
+                appRequiredValidation
             ></app-date-input>
             <mat-form-field appearance="outline" [appSkeleton]="isLoading">
                 <mat-label>Género</mat-label>
-                <mat-select formControlName="genderId">
+                <mat-select formControlName="genderId" appRequiredValidation>
                     <mat-option
                         *ngFor="let gender of genders"
                         [value]="gender.id"
@@ -40,7 +45,7 @@
             </mat-form-field>
             <mat-form-field appearance="outline" [appSkeleton]="isLoading">
                 <mat-label>Pais</mat-label>
-                <mat-select formControlName="countryId">
+                <mat-select formControlName="countryId" appRequiredValidation>
                     <mat-option
                         *ngFor="let country of countries"
                         [value]="country.id"
@@ -51,7 +56,7 @@
             </mat-form-field>
             <mat-form-field appearance="outline" [appSkeleton]="isLoading">
                 <mat-label>Puesto</mat-label>
-                <mat-select formControlName="positionId">
+                <mat-select formControlName="positionId" appRequiredValidation>
                     <mat-option
                         *ngFor="let position of positions"
                         [value]="position.id"
