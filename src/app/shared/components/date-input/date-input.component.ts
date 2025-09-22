@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { Component, Input, OnInit, inject } from "@angular/core";
+import { Component, Input, OnDestroy, OnInit, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
@@ -12,10 +12,13 @@ import {
     NgControl,
     FormControl,
     ReactiveFormsModule,
+    Validators,
 } from "@angular/forms";
 import { DateTime } from "luxon";
 import { MatLuxonDateModule } from "@angular/material-luxon-adapter";
 import { SkeletonDirective } from "../../directives/skeleton.directive";
+import { Subject, takeUntil } from "rxjs";
+import { RequiredValidationDirective } from "../../directives/required-validation.directive";
 
 @Component({
     selector: "app-date-input",
@@ -29,11 +32,14 @@ import { SkeletonDirective } from "../../directives/skeleton.directive";
         MatIconModule,
         MatLuxonDateModule,
         SkeletonDirective,
+        RequiredValidationDirective,
     ],
     templateUrl: "./date-input.component.html",
     styleUrl: "./date-input.component.scss",
 })
-export class DateInputComponent implements ControlValueAccessor, OnInit {
+export class DateInputComponent
+    implements ControlValueAccessor, OnInit, OnDestroy
+{
     /******************************************************************************************************
      * Este componente DateInputComponent es un componente de formulario personalizado que te permite
      * tener un campo de fecha con matInput y matDatepicker, manejando su estado interno con un FormControl,
@@ -67,6 +73,8 @@ export class DateInputComponent implements ControlValueAccessor, OnInit {
         self: true,
     });
 
+    private _destroy$ = new Subject<void>();
+
     constructor() {
         if (this.ngControl) {
             // "this" es el encargado de manejar los valores del FormControl al que esté asociado en el formulario padre
@@ -75,6 +83,28 @@ export class DateInputComponent implements ControlValueAccessor, OnInit {
     }
 
     ngOnInit(): void {
+        if (this.ngControl) {
+            // Aca averigua si el formulario padre al formulario de fecha lo tiene como obligatorio
+            // gracias al ngControl que es quien permite conectar el componente con el formulario del padre
+            const hasRequiredValidator = this.ngControl.control?.hasValidator(
+                Validators.required,
+            );
+            if (hasRequiredValidator) {
+                this.internalControl.setValidators(Validators.required);
+                this.internalControl.updateValueAndValidity();
+            }
+
+            // Detecta los cambios de estado del control padre
+            this.ngControl.control?.statusChanges
+                .pipe(takeUntil(this._destroy$))
+                .subscribe(() => {
+                    // Marca el control interno como touched si el padre es touched
+                    if (this.ngControl?.control?.touched) {
+                        this.internalControl.markAsTouched();
+                    }
+                });
+        }
+
         this.internalControl.valueChanges.subscribe(
             (dateValue: Date | null) => {
                 let formattedValue: string | null = null;
@@ -88,6 +118,11 @@ export class DateInputComponent implements ControlValueAccessor, OnInit {
                 this.onChange(formattedValue);
             },
         );
+    }
+
+    ngOnDestroy(): void {
+        this._destroy$.next();
+        this._destroy$.complete();
     }
 
     // Al implementar la interfaz "ControlValueAccessor" Angular me obliga a implementar los metodos
