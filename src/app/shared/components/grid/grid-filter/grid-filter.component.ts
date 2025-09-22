@@ -16,6 +16,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { GridFilterConfig } from "../../../models/grid-filter-configuration.model";
 import { DateInputComponent } from "../../date-input/date-input.component";
 import { SkeletonDirective } from "../../../directives/skeleton.directive";
+import { DateRangeComponent } from "../../date-range/date-range.component";
 
 @Component({
     selector: "app-grid-filter",
@@ -30,6 +31,7 @@ import { SkeletonDirective } from "../../../directives/skeleton.directive";
         MatNativeDateModule,
         MatButtonModule,
         DateInputComponent,
+        DateRangeComponent,
         SkeletonDirective,
     ],
     templateUrl: "./grid-filter.component.html",

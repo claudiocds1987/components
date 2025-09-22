@@ -42,7 +42,14 @@
             </ng-container>
 
             <ng-container *ngIf="filter.fieldType === 'dateRange'">
-                <div [formGroupName]="filter.fieldName">
+                <app-date-range
+                    [formControlName]="filter.fieldName"
+                    [label]="filter.label"
+                    [isDisabled]="false"
+                    [appSkeleton]="isLoading"
+                ></app-date-range>
+
+                <!-- <div [formGroupName]="filter.fieldName">
                     <mat-form-field
                         appearance="outline"
                         class="width"
@@ -67,7 +74,7 @@
                         ></mat-datepicker-toggle>
                         <mat-date-range-picker #picker></mat-date-range-picker>
                     </mat-form-field>
-                </div>
+                </div> -->
             </ng-container>
         </ng-container>
     </div>

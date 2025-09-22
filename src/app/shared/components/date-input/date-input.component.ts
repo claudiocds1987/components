@@ -16,7 +16,7 @@ import {
 } from "@angular/forms";
 import { DateTime } from "luxon";
 import { MatLuxonDateModule } from "@angular/material-luxon-adapter";
-import { SkeletonDirective } from "../../directives/skeleton.directive";
+
 import { Subject, takeUntil } from "rxjs";
 import { RequiredValidationDirective } from "../../directives/required-validation.directive";
 
@@ -31,7 +31,6 @@ import { RequiredValidationDirective } from "../../directives/required-validatio
         MatDatepickerModule,
         MatIconModule,
         MatLuxonDateModule,
-        SkeletonDirective,
         RequiredValidationDirective,
     ],
     templateUrl: "./date-input.component.html",
