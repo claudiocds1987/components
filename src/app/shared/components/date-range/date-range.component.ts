@@ -36,7 +36,7 @@ import { SkeletonDirective } from "../../directives/skeleton.directive";
 export class DateRangeComponent implements OnInit, OnDestroy {
     @Input() label = "Rango de fechas";
     @Input() isDisabled = false;
-    isLoading = true;
+
     // FormGroup interno para gestionar los dos campos de fecha
     internalRangeGroup: FormGroup;
 
