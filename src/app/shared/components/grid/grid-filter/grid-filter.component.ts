@@ -49,7 +49,7 @@ export class GridFilterComponent {
     @Input() isLoading = false;
     @Output() emitFilterApplied = new EventEmitter<Record<string, unknown>>();
 
-    /*  La funcíon getNestedFormGroup() es asegurar de que si en filterForm hay un formGroup (por ej el caso de stratDate y endDate de birthDateRange) 
+    /*  La funcíon getFormGroupByName() es asegurar de que si en filterForm hay un formGroup (por ej el caso de stratDate y endDate de birthDateRange) 
         este sea devuelto y tratado explícitamente como un FormGroup. para poder pasarle el FormGroup startDate y endDate a date-range-component que por input recibe un FormGroup:   
             new FormGroup({
                 startDate: new FormControl(null),
@@ -57,16 +57,9 @@ export class GridFilterComponent {
             }),
     */
 
-    public getNestedFormGroup(fieldName: string): FormGroup {
+    public getFormGroupByName(fieldName: string): FormGroup | null {
         const control = this.filterForm.get(fieldName);
-        if (!control) {
-            // En un caso real, puedes manejar esto de forma más elegante
-            // (por ejemplo, devolviendo null y manejándolo en la plantilla),
-            // pero para evitar el error de compilación, lanzamos un error explícito.
-            throw new Error(`FormControl with name '${fieldName}' not found.`);
-        }
-        // Realizamos la aserción de tipo aquí para que la plantilla no tenga errores.
-        return control as FormGroup;
+        return control as FormGroup | null;
     }
 
     applyFilter(): void {

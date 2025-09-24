@@ -42,38 +42,19 @@
             </ng-container>
 
             <ng-container *ngIf="filter.fieldType === 'dateRange'">
-                <app-date-range
-                    [dateRangeFormGroup]="getNestedFormGroup(filter.fieldName)"
-                    [label]="filter.label"
-                    [appSkeleton]="isLoading"
-                ></app-date-range>
-
-                <!-- <div [formGroupName]="filter.fieldName">
-                    <mat-form-field
-                        appearance="outline"
-                        class="width"
+                <ng-container
+                    *ngIf="
+                        getFormGroupByName(
+                            filter.fieldName
+                        ) as dateRangeFormGroup
+                    "
+                >
+                    <app-date-range
+                        [dateRangeFormGroup]="dateRangeFormGroup"
+                        [label]="filter.label"
                         [appSkeleton]="isLoading"
-                    >
-                        <mat-label>{{ filter.label }}</mat-label>
-                        <mat-date-range-input [rangePicker]="picker">
-                            <input
-                                matStartDate
-                                [formControlName]="'startDate'"
-                                placeholder="Desde"
-                            />
-                            <input
-                                matEndDate
-                                [formControlName]="'endDate'"
-                                placeholder="Hasta"
-                            />
-                        </mat-date-range-input>
-                        <mat-datepicker-toggle
-                            matSuffix
-                            [for]="picker"
-                        ></mat-datepicker-toggle>
-                        <mat-date-range-picker #picker></mat-date-range-picker>
-                    </mat-form-field>
-                </div> -->
+                    ></app-date-range>
+                </ng-container>
             </ng-container>
         </ng-container>
     </div>
