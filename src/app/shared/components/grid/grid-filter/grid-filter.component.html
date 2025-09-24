@@ -43,9 +43,8 @@
 
             <ng-container *ngIf="filter.fieldType === 'dateRange'">
                 <app-date-range
-                    [formControlName]="filter.fieldName"
+                    [dateRangeFormGroup]="getNestedFormGroup(filter.fieldName)"
                     [label]="filter.label"
-                    [isDisabled]="false"
                     [appSkeleton]="isLoading"
                 ></app-date-range>
 
