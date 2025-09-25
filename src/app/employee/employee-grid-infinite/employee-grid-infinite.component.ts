@@ -6,6 +6,7 @@ import {
     inject,
     OnDestroy,
     OnInit,
+    signal,
 } from "@angular/core";
 
 import {
@@ -59,7 +60,7 @@ import { Router } from "@angular/router";
 export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
     gridConfig: GridConfiguration;
     gridData: GridData[] = [];
-    isLoadingGridData = true;
+    isLoadingGridData = signal(true);
 
     private _positions: SelectItem[] = [];
     private _countries: SelectItem[] = [];
@@ -120,11 +121,11 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
             (this.gridConfig.paginator as PaginationConfig)?.totalCount || 0;
         const currentDataCount = this.gridData.length;
 
-        if (this.isLoadingGridData || currentDataCount >= totalCount) {
+        if (this.isLoadingGridData() || currentDataCount >= totalCount) {
             return;
         }
 
-        this.isLoadingGridData = true;
+        this.isLoadingGridData.set(true);
 
         this._employeeFilterParams = {
             ...this._employeeFilterParams,
@@ -225,7 +226,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
     }
 
     private _getEmployees(isScrolling = false): void {
-        this.isLoadingGridData = true;
+        this.isLoadingGridData.set(true);
         if (!isScrolling) {
             // Para limpiar la grilla para carga inicial o al cambiar de página
             this.gridData = [];
@@ -242,7 +243,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                     },
                 ),
                 finalize((): void => {
-                    this.isLoadingGridData = false;
+                    this.isLoadingGridData.set(false);
                     this._cdr.markForCheck();
                 }),
             )
@@ -257,7 +258,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                     this._updateGridConfig(paginatedGridData);
                 },
                 error: (error: HttpErrorResponse): void => {
-                    this.isLoadingGridData = false;
+                    this.isLoadingGridData.set(false);
                     this._alertService.showDanger(
                         `Error al obtener empleados. ${error.statusText}`,
                     );
@@ -284,7 +285,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                     this._getEmployees();
                 },
                 error: (error: HttpErrorResponse): void => {
-                    this.isLoadingGridData = false;
+                    this.isLoadingGridData.set(false);
                     this._alertService.showDanger(
                         `Error al cargar datos. ${error.statusText}`,
                     );

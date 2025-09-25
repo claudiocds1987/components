@@ -4,7 +4,7 @@
     <app-grid
         [gridConfig]="gridConfig"
         [data]="gridData"
-        [isLoading]="isLoadingGridData"
+        [isLoading]="isLoadingGridData()"
         (exportExcel)="onExportToExcel($event)"
         (createButtonClicked)="onCreateEmployee()"
         (rowDblClick)="onRowDblClick($event)"

@@ -72,8 +72,6 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     employees: Employee[] = [];
     chips: Chip[] = [];
 
-    /*  isLoadingGridData = true;
-    isLoadingFilterGridData = true; */
     isLoadingGridData = signal(true);
     isLoadingFilterGridData = signal(true);
 
@@ -400,7 +398,6 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                 finalize((): void => {
                     this.isLoadingGridData.set(false);
                     this.isLoadingFilterGridData.set(false);
-                    //this._cdr.markForCheck();
                 }),
             )
             .subscribe({

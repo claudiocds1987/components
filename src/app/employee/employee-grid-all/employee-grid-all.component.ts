@@ -5,6 +5,7 @@ import {
     inject,
     OnDestroy,
     OnInit,
+    signal,
 } from "@angular/core";
 import { EmployeeService } from "../../shared/services/employee.service";
 import { AlertService } from "../../shared/services/alert.service";
@@ -49,7 +50,7 @@ import { Router } from "@angular/router";
 export class EmployeeGridAllComponent implements OnInit, OnDestroy {
     gridConfig: GridConfiguration;
     gridData: GridData[] = [];
-    isLoadingGridData = true;
+    isLoadingGridData = signal(true);
 
     private _employees: Employee[] = [];
     private _positions: SelectItem[] = [];
@@ -171,7 +172,7 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
         })
             .pipe(
                 finalize((): void => {
-                    this.isLoadingGridData = false;
+                    this.isLoadingGridData.set(false);
                     this._changeDetectorRef.markForCheck();
                 }),
             )
@@ -185,7 +186,7 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
                     );
                 },
                 error: (error: HttpErrorResponse): void => {
-                    this.isLoadingGridData = false;
+                    this.isLoadingGridData.set(false);
                     this._alertService.showDanger(
                         `Error al cargar datos. ${error.statusText}`,
                     );
