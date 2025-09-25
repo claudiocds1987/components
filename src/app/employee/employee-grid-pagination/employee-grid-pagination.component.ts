@@ -6,6 +6,7 @@ import {
     inject,
     OnDestroy,
     OnInit,
+    signal,
 } from "@angular/core";
 import { GridFilterConfig } from "../../shared/models/grid-filter-configuration.model";
 import { FormControl, FormGroup } from "@angular/forms";
@@ -71,8 +72,10 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     employees: Employee[] = [];
     chips: Chip[] = [];
 
-    isLoadingGridData = true;
-    isLoadingFilterGridData = true;
+    /*  isLoadingGridData = true;
+    isLoadingFilterGridData = true; */
+    isLoadingGridData = signal(true);
+    isLoadingFilterGridData = signal(true);
 
     private _positions: SelectItem[] = [];
     private _countries: SelectItem[] = [];
@@ -388,16 +391,16 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     }
 
     private _reloadGridData(): void {
-        this.isLoadingGridData = true;
-        this.isLoadingFilterGridData = true;
+        this.isLoadingGridData.set(true);
+        this.isLoadingFilterGridData.set(true);
         this._employeeServices
             .getEmployees(this._employeeFilterParams)
             .pipe(
                 map(this._mapPaginatedListToGridData.bind(this)),
                 finalize((): void => {
-                    this.isLoadingGridData = false;
-                    this.isLoadingFilterGridData = false;
-                    this._cdr.markForCheck();
+                    this.isLoadingGridData.set(false);
+                    this.isLoadingFilterGridData.set(false);
+                    //this._cdr.markForCheck();
                 }),
             )
             .subscribe({
@@ -438,8 +441,8 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     }
 
     private _loadData(): void {
-        this.isLoadingGridData = true;
-        this.isLoadingFilterGridData = true;
+        this.isLoadingGridData.set(true);
+        this.isLoadingFilterGridData.set(true);
         this._setEmployeeFilterParameters(); // Inicializa los parámetros de filtro
         forkJoin({
             positions: this._getPositions(),
@@ -450,8 +453,8 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
         })
             .pipe(
                 finalize((): void => {
-                    this.isLoadingGridData = false;
-                    this.isLoadingFilterGridData = false;
+                    this.isLoadingGridData.set(false);
+                    this.isLoadingFilterGridData.set(false);
                     this._cdr.markForCheck();
                 }),
             )

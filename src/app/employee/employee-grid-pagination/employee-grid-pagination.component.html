@@ -4,7 +4,7 @@
     <app-grid
         [gridConfig]="gridConfig"
         [data]="gridData"
-        [isLoading]="isLoadingGridData"
+        [isLoading]="isLoadingGridData()"
         [chips]="chips"
         (pageChange)="onGridPageChange($event)"
         (sortChange)="onGridSortChange($event)"
@@ -18,7 +18,7 @@
             <app-grid-filter
                 [config]="gridFilterConfig"
                 [filterForm]="gridFilterForm"
-                [isLoading]="isLoadingFilterGridData"
+                [isLoading]="isLoadingFilterGridData()"
                 (emitFilterApplied)="applyFilter($event)"
             ></app-grid-filter>
         </ng-container>
