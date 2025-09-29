@@ -139,7 +139,6 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     }
 
     onCreateEmployee(): void {
-        console.log("onCreateEmployee()");
         // Navega al formulario de creación del empleado y la ruta del componente de origen ("employee-grid-pagination")
         // como parámetro de consulta. Esto permite que el formulario de creación sepa a qué grilla debe regresar al cancelar
         // o al finalizar la creación. También se le envía el nombre del componente para usarse en el breadCrumb.
@@ -199,7 +198,6 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     }
 
     onExportToExcel(): void {
-        console.log("onExportToExcel()");
         this._spinnerService.show();
         const filterValues = this.gridFilterForm.value;
         const exportParams = this._mapToEmployeeFilterParams(filterValues);

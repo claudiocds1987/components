@@ -8,7 +8,8 @@ import { SelectItem } from "../models/select-item.model";
     providedIn: "root",
 })
 export class CountryService {
-    private apiUrl = "http://localhost:3000/countries";
+    //private apiUrl = "http://localhost:3000/countries";
+    private apiUrl = "https://json-server-data-fpl9.onrender.com/countries";
     private _httpClient = inject(HttpClient);
 
     getCountries(): Observable<SelectItem[]> {

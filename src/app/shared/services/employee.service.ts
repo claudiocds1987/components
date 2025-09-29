@@ -9,7 +9,8 @@ import { EmployeeFilterParams } from "../models/employee-filter-params.model";
     providedIn: "root",
 })
 export class EmployeeService {
-    private apiUrl = "http://localhost:3000/employees";
+    //private apiUrl = "http://localhost:3000/employees";
+    private apiUrl = "https://json-server-data-fpl9.onrender.com/employees";
 
     // eslint-disable-next-line @angular-eslint/prefer-inject
     constructor(private _http: HttpClient) {}

@@ -8,7 +8,8 @@ import { SelectItem } from "../models/select-item.model";
     providedIn: "root",
 })
 export class PositionService {
-    private apiUrl = "http://localhost:3000/positions";
+    //private apiUrl = "http://localhost:3000/positions";
+    private apiUrl = "https://json-server-data-fpl9.onrender.com/positions";
     private _httpClient = inject(HttpClient);
 
     getPositions(): Observable<SelectItem[]> {
