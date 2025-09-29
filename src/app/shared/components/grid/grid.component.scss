@@ -21,11 +21,12 @@
 .input-search-container {
     display: grid;
     grid-template-columns: 1fr auto;
-    gap: 10px; // Espacio entre las columnas de la cuadrícula
+    //gap: 10px; // Espacio entre las columnas de la cuadrícula
     flex-wrap: wrap;
     .action-buttons-container {
         display: flex;
         align-items: center;
+        gap: 10px;
         justify-content: flex-end; // Para alinear el contenido al final (derecha) del contenedor
         .buttons-actions {
             display: flex;
@@ -36,29 +37,36 @@
 
 .chips-and-buttons-container {
     display: grid;
+    align-items: start;
+    //justify-content: flex-end; // Para alinear el contenido al final (derecha) del contenedor
     // Definiendo dos columnas: la primera (para los chips) ocupa todo el espacio disponible (1fr),
     // y la segunda (para los botones) ocupa solo el espacio que necesita (auto).
     // Esto logra el efecto de "space-between" al empujar los botones a la derecha.
     grid-template-columns: 1fr auto;
-    gap: 10px; // Espacio entre las columnas de la cuadrícula
+    // gap: 10px; // Espacio entre las columnas de la cuadrícula
     padding-bottom: 10px; // Mantiene el padding inferior
     flex-wrap: wrap;
 
-    .buttons-actions {
+    .action-buttons-container {
         display: flex;
+        gap: 10px;
         justify-content: flex-end; // Para alinear el contenido al final (derecha) del contenedor
-        align-items: center;
-        gap: 5px;
+        .buttons-actions {
+            //display: flex;
+            //justify-content: flex-end; // Para alinear el contenido al final (derecha) del contenedor
+            align-items: center;
+            gap: 10px;
 
-        .button-create {
-            background-color: #f0f4f9;
-            border-radius: 50px;
-            font-weight: 400;
-            width: 100px;
-        }
+            .button-create {
+                background-color: #f0f4f9;
+                border-radius: 50px;
+                font-weight: 400;
+                width: 100px;
+            }
 
-        .button-download {
-            background-color: #f0f4f9;
+            .button-download {
+                background-color: #f0f4f9;
+            }
         }
     }
 }

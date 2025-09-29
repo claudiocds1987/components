@@ -113,6 +113,7 @@ export class GridComponent
     @Output() pageChange = new EventEmitter<PageEvent>();
     @Output() sortChange = new EventEmitter<Sort>();
     @Output() exportExcel = new EventEmitter<Sort | void>();
+    @Output() exportExcelClientSide = new EventEmitter<GridData[]>();
     @Output() chipRemoved = new EventEmitter<Chip>();
     @Output() createButtonClicked = new EventEmitter<void>();
     @Output() infiniteScroll = new EventEmitter<void>();
@@ -250,28 +251,88 @@ export class GridComponent
     }
 
     exportToExcel(): void {
+        const isServerSideSort = this.gridConfig?.hasSorting?.isServerSide;
+
+        if (isServerSideSort) {
+            // Caso Server-Side: Emite void. El padre debe obtener la data del servidor.
+            this.exportExcel.emit();
+            return;
+        }
+
+        // Caso Client-Side: Necesitamos la data filtrada y ordenada.
+        let dataReadyForExport: GridData[] = this.dataSource.filteredData;
+
+        if (this._matSort) {
+            // Usamos la función auxiliar para aplicar el ordenamiento
+            dataReadyForExport = this._getSortedData(
+                dataReadyForExport,
+                this._matSort,
+            );
+        }
+        this.exportExcelClientSide.emit(dataReadyForExport);
+    }
+
+    // CORREGIR FUNCION CON LO NUEVO DE ACTIONbUTTON EN GRD-CONFIGURATION SOLO EMITE CUANDO ES LADO CLIENTE
+    /* exportToExcelFunciona(): void {
         // 2. Verificar si el sort es del lado del cliente o del servidor
         const isServerSideSort = this.gridConfig?.hasSorting?.isServerSide;
+     
 
         if (isServerSideSort) {
             // Si el sort es del lado del servidor, simplemente emite void.
             // El componente padre ya tiene el estado del sort en sus filtros.
+            console.log("isServerSideSort emite export");
             this.exportExcel.emit();
         } else {
             // Si el sort es del lado del cliente, emite el estado actual del MatSort.
             // Esto le permite al componente padre obtener el ordenamiento actual
             // para aplicarlo a la descarga de datos.
             if (this._matSort) {
+                console.log("this._matSort: ", this._matSort);
+                console.log("this._dataSource: ", this.dataSource);
                 this.exportExcel.emit(this._matSort);
             } else {
+                console.log("cliente 100 emite export");
                 // Emite void si MatSort no está disponible
                 this.exportExcel.emit();
             }
-        }
-    }
+        } 
+    } */
 
     onChipRemoved(chip: Chip): void {
         this.chipRemoved.emit(chip);
+    }
+
+    // Función que ordena la data para exportar excel si se aplica mat-sort (solo para lado cliente)
+    private _getSortedData(data: GridData[], sort: MatSort): GridData[] {
+        if (!data || !sort.active || sort.direction === "") {
+            return data;
+        }
+
+        return [...data].sort((a: GridData, b: GridData): number => {
+            const isAsc = sort.direction === "asc";
+            const accessor = this.dataSource.sortingDataAccessor;
+            const valueA = accessor(a, sort.active);
+            const valueB = accessor(b, sort.active);
+
+            let comparison = 0; // Inicializamos la comparación a 0 (iguales)
+
+            if (typeof valueA === "string" && typeof valueB === "string") {
+                // 1. Caso de cadenas: con localeCompare Obtenemos el resultado orden alfabetico (caracteres acentuados, ñ)
+                comparison = valueA.localeCompare(valueB);
+            } else {
+                // 2. Caso numérico/otros: Solo actualizamos 'comparison' si son diferentes.
+                if (valueA < valueB) {
+                    comparison = -1;
+                } else if (valueA > valueB) {
+                    comparison = 1;
+                }
+                // Si son iguales, 'comparison' se mantiene en 0.
+            }
+
+            // 3. Aplicamos la dirección
+            return comparison * (isAsc ? 1 : -1);
+        });
     }
 
     // Funcion  callback que MatTableDataSource utiliza para obtener el valor de una celda antes de ordenarla.
@@ -291,6 +352,7 @@ export class GridComponent
             if (column?.type === "date" && value) {
                 const dateString = value as string;
                 const parts = dateString.split("/");
+                // Retorna un formato ISO (YYYY-MM-DD) para una correcta comparación de fechas
                 return `${parts[2]}-${parts[1]}-${parts[0]}`;
             }
 

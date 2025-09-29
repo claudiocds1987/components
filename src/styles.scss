@@ -8,6 +8,8 @@
 /* O para Material Design: */
 @import "@ng-select/ng-select/themes/material.theme.css";
 @import "./app/shared/styles/select"; // Tus personalizaciones
+@import "./app/shared/styles/buttons/custom-stroked-primary.scss";
+@import "./app/shared/styles/buttons/custom-excel-download.scss";
 
 html,
 body {

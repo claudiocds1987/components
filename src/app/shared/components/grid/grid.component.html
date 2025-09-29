@@ -41,26 +41,26 @@
             />
         </mat-form-field>
 
-        <div class="action-buttons-container">
-            <div class="buttons-actions">
+        <div
+            *ngIf="gridConfig.actionButtons!.length > 0"
+            class="action-buttons-container"
+        >
+            <div
+                *ngFor="let button of gridConfig.actionButtons"
+                class="buttons-actions"
+            >
                 <button
-                    *ngIf="gridConfig.hasCreateButton"
-                    mat-stroked-button
-                    color="primary"
-                    (click)="create()"
-                    style="border-radius: 50px"
+                    [class]="button.class ?? ''"
+                    [style]="button.style ?? ''"
+                    (click)="
+                        button.class === 'custom-excel-download'
+                            ? exportToExcel()
+                            : button.action && button.action()
+                    "
+                    [matTooltip]="button.tooltip ?? ''"
                 >
-                    Crear
-                </button>
-                <button
-                    *ngIf="gridConfig.hasExcelDownload"
-                    class="button-action"
-                    mat-icon-button
-                    color="primary"
-                    (click)="exportToExcel()"
-                    [matTooltip]="'Descargar Excel'"
-                >
-                    <mat-icon>file_download</mat-icon>
+                    <mat-icon *ngIf="button.icon">{{ button.icon }}</mat-icon>
+                    {{ button.label }}
                 </button>
             </div>
         </div>
@@ -75,26 +75,28 @@
             (chipRemoved)="onChipRemoved($event)"
         ></app-chips>
 
-        <div class="buttons-actions">
-            <button
-                *ngIf="gridConfig.hasCreateButton"
-                mat-stroked-button
-                color="primary"
-                (click)="create()"
-                class="button-create"
+        <div
+            *ngIf="gridConfig.actionButtons!.length > 0"
+            class="action-buttons-container"
+        >
+            <div
+                *ngFor="let button of gridConfig.actionButtons"
+                class="buttons-actions"
             >
-                Crear
-            </button>
-            <button
-                *ngIf="gridConfig.hasExcelDownload"
-                class="button-download"
-                mat-icon-button
-                color="primary"
-                (click)="exportToExcel()"
-                [matTooltip]="'Descargar Excel'"
-            >
-                <mat-icon>file_download</mat-icon>
-            </button>
+                <button
+                    [class]="button.class ?? ''"
+                    [style]="button.style"
+                    (click)="
+                        button.class === 'custom-excel-download'
+                            ? exportToExcel()
+                            : button.action && button.action()
+                    "
+                    [matTooltip]="button.tooltip ?? ''"
+                >
+                    <mat-icon *ngIf="button.icon">{{ button.icon }}</mat-icon>
+                    {{ button.label }}
+                </button>
+            </div>
         </div>
     </div>
 </ng-template>

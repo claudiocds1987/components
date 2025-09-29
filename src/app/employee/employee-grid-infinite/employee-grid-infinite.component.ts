@@ -483,8 +483,20 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
             filterByColumn: "",
             hasInputSearch: false,
             hasChips: false,
-            hasExcelDownload: true,
-            hasCreateButton: true,
+            actionButtons: [
+                {
+                    class: "custom-stroked-primary",
+                    label: "Agregar",
+                    action: (): void => this.onCreateEmployee(),
+                },
+                {
+                    class: "custom-excel-download",
+                    icon: "download",
+                    tooltip: "Descargar excel",
+                    action: (): void => this.onExportToExcel(),
+                },
+            ],
+            //hasCreateButton: true,
         });
         return config;
     }

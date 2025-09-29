@@ -104,7 +104,18 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
         });
     }
 
-    onExportToExcel(sort?: Sort | void): void {
+    onExportToExcel(gridData: GridData[]): void {
+        this._spinnerService.show();
+        const processedData = this._mapEmployeesForExport(gridData);
+        const fileName = "Empleados.xlsx";
+        setTimeout((): void => {
+            this._exportService.exportToExcel(processedData, fileName);
+            this._spinnerService.hide();
+            this._changeDetectorRef.markForCheck();
+        }, 1500);
+    }
+
+    /* onExportToExcel(sort?: Sort | void): void {
         this._spinnerService.show();
         let sortedData;
 
@@ -122,7 +133,7 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
             this._spinnerService.hide();
             this._changeDetectorRef.markForCheck();
         }, 1500);
-    }
+    } */
 
     // función para ordenar la data localmente
     private _sortGridData(data: Employee[], sort: Sort): Employee[] {
@@ -139,27 +150,22 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
         });
     }
 
-    private _mapEmployeesForExport(employees: Employee[]): any[] {
-        return employees.map((employee: Employee): any => {
-            const birthDateString = employee.birthDate as unknown as string;
-            const formattedBirthDate = birthDateString
-                ? DateTime.fromISO(birthDateString).toFormat("dd/MM/yyyy")
-                : null;
-
+    private _mapEmployeesForExport(gridData: GridData[]): any[] {
+        return gridData.map((data: any): any => {
             return {
-                id: employee.id,
-                nombre: employee.name || null,
-                apellido: employee.surname || null,
-                puesto: this._getPositionDescription(employee.positionId),
-                pais: this._getCountryDescription(employee.countryId),
-                genero: this._getGenderDescription(employee.genderId),
-                estado:
-                    typeof employee.active === "boolean"
-                        ? employee.active
+                Id: data.id,
+                Nombre: data.name || null,
+                Apellido: data.surname || null,
+                Puesto: data.position,
+                Pais: data.country,
+                Genero: data.gender,
+                Estado:
+                    typeof data.active === "boolean"
+                        ? data.active
                             ? "Activo"
                             : "Inactivo"
                         : null,
-                nacimiento: formattedBirthDate,
+                Nacimiento: data.birthDate,
             };
         });
     }
@@ -294,8 +300,19 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
             filterByColumn: "id",
             hasInputSearch: true,
             hasChips: false,
-            hasExcelDownload: true,
-            hasCreateButton: true,
+            actionButtons: [
+                {
+                    class: "custom-stroked-primary",
+                    label: "Agregar",
+                    action: (): void => this.onCreateEmployee(),
+                },
+                {
+                    class: "custom-excel-download",
+                    icon: "download",
+                    tooltip: "Descargar excel",
+                    // no hace falta enviarle la action al no ser paginada la grilal se encarga de descargar el excel
+                },
+            ],
             paginator: {
                 pageSizeOptions: [25, 50],
                 pageSize: 25,

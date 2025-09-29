@@ -9,6 +9,15 @@ export interface ElipsisAction {
     condition?: (row: GridData) => boolean;
 }
 
+export interface ActionButton {
+    label?: string;
+    icon?: string;
+    style?: string;
+    class?: string;
+    tooltip?: string;
+    action?: () => void;
+}
+
 export interface Column {
     name: string; // "(Nombre de la columna que aparece en el header) Es obligatorio porque en grid.component mat-table requiere que todas las columnas definidas tengan un identificador (matColumnDef)
     width?: string;
@@ -25,6 +34,7 @@ export interface Column {
     // para que muestra una imagen como en el caso de las imagenes el empleado
     // si "type" es "component" lalogica del html va estar preparada para llamar a un componente en el html.
     type?: "img" | "elipsis" | "component" | "date";
+    //actionButton?: ActionButton;
 }
 
 export interface PaginationConfig {
@@ -62,8 +72,7 @@ export interface GridConfiguration {
     hasInputSearch?: boolean; // Para mostrar o no el input search arriba de la grilla
     filterByColumn?: string; // indica a el input search en que columna hacer la búsqueda
     hasChips?: boolean; // Muestra o no los chips de filtros aplicados
-    hasExcelDownload?: boolean; // Muestra o no el boton para descargar el excel
-    hasCreateButton?: boolean; // Muestra o no el botón de Crear
+    actionButtons?: ActionButton[];
     OrderBy: OrderBy;
     // hasSorting.isServerSide: Le indica al GridComponent si debe reordenar la dataSource internamente (ordenamiento del cliente) o si debe dejar los datos como están y solo emitir un evento (sortChange) para que el componente padre solicite los datos reordenados al servidor.
     // si isServerSide = true La grilla simplemente muestra los datos en el orden exacto en que los recibe del servidor.
@@ -117,6 +126,8 @@ export const createDefaultGridConfiguration = (
             style: col.style ?? undefined,
             type: col.type ?? undefined,
             class: col.class ?? undefined,
+            // Incluye la configuración del botón de acción en la columna si existe
+            //actionButton: col.actionButton ?? undefined,
         }),
     );
 
@@ -125,8 +136,7 @@ export const createDefaultGridConfiguration = (
         paginator: finalPaginator,
         hasInputSearch: config.hasInputSearch ?? true,
         filterByColumn: config.filterByColumn ?? "",
-        hasExcelDownload: config.hasExcelDownload ?? false,
-        hasCreateButton: config.hasCreateButton ?? false,
+        actionButtons: config.actionButtons ?? [],
         hasChips: config.hasChips ?? false,
         OrderBy: config.OrderBy
             ? { ...defaultOrderBy, ...config.OrderBy }
