@@ -723,7 +723,6 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                     class: "custom-excel-download",
                     icon: "download",
                     tooltip: "Descargar excel",
-                    //action: (): void => this.onExportToExcel(),
                 },
             ],
         });

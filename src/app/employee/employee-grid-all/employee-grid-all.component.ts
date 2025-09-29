@@ -30,7 +30,6 @@ import { PositionService } from "../../shared/services/position.service";
 import { CountryService } from "../../shared/services/country.service";
 import { ExportService } from "../../shared/services/export.service";
 import { SpinnerService } from "../../shared/services/spinner.service";
-import { Sort } from "@angular/material/sort";
 import { Router } from "@angular/router";
 
 @Component({
@@ -113,41 +112,6 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
             this._spinnerService.hide();
             this._changeDetectorRef.markForCheck();
         }, 1500);
-    }
-
-    /* onExportToExcel(sort?: Sort | void): void {
-        this._spinnerService.show();
-        let sortedData;
-
-        if (sort) {
-            sortedData = this._sortGridData(this._employees, sort);
-        } else {
-            sortedData = this._employees;
-        }
-
-        const processedData = this._mapEmployeesForExport(sortedData);
-
-        const fileName = "Empleados.xlsx";
-        setTimeout((): void => {
-            this._exportService.exportToExcel(processedData, fileName);
-            this._spinnerService.hide();
-            this._changeDetectorRef.markForCheck();
-        }, 1500);
-    } */
-
-    // función para ordenar la data localmente
-    private _sortGridData(data: Employee[], sort: Sort): Employee[] {
-        if (!sort.active || sort.direction === "") {
-            return data;
-        }
-
-        return data.sort((a, b): number => {
-            const isAsc = sort.direction === "asc";
-            const valueA = a[sort.active] ?? "";
-            const valueB = b[sort.active] ?? "";
-
-            return (valueA < valueB ? -1 : 1) * (isAsc ? 1 : -1);
-        });
     }
 
     private _mapEmployeesForExport(gridData: GridData[]): any[] {
@@ -310,7 +274,6 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
                     class: "custom-excel-download",
                     icon: "download",
                     tooltip: "Descargar excel",
-                    // no hace falta enviarle la action al no ser paginada la grilal se encarga de descargar el excel
                 },
             ],
             paginator: {

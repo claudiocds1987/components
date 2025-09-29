@@ -258,7 +258,6 @@ export class GridComponent
             this.exportExcel.emit();
             return;
         }
-
         // Caso Client-Side: Necesitamos la data filtrada y ordenada.
         let dataReadyForExport: GridData[] = this.dataSource.filteredData;
 
@@ -271,33 +270,6 @@ export class GridComponent
         }
         this.exportExcelClientSide.emit(dataReadyForExport);
     }
-
-    // CORREGIR FUNCION CON LO NUEVO DE ACTIONbUTTON EN GRD-CONFIGURATION SOLO EMITE CUANDO ES LADO CLIENTE
-    /* exportToExcelFunciona(): void {
-        // 2. Verificar si el sort es del lado del cliente o del servidor
-        const isServerSideSort = this.gridConfig?.hasSorting?.isServerSide;
-     
-
-        if (isServerSideSort) {
-            // Si el sort es del lado del servidor, simplemente emite void.
-            // El componente padre ya tiene el estado del sort en sus filtros.
-            console.log("isServerSideSort emite export");
-            this.exportExcel.emit();
-        } else {
-            // Si el sort es del lado del cliente, emite el estado actual del MatSort.
-            // Esto le permite al componente padre obtener el ordenamiento actual
-            // para aplicarlo a la descarga de datos.
-            if (this._matSort) {
-                console.log("this._matSort: ", this._matSort);
-                console.log("this._dataSource: ", this.dataSource);
-                this.exportExcel.emit(this._matSort);
-            } else {
-                console.log("cliente 100 emite export");
-                // Emite void si MatSort no está disponible
-                this.exportExcel.emit();
-            }
-        } 
-    } */
 
     onChipRemoved(chip: Chip): void {
         this.chipRemoved.emit(chip);
