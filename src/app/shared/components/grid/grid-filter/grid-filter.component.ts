@@ -64,6 +64,11 @@ export class GridFilterComponent {
         return control as FormGroup | null;
     }
 
+    /**
+     *  la funcion hasActiveFilters() verifica si hay filtros activos en el formulario de filtro.
+     *  Un filtro se considera activo si su valor no es nulo, indefinido, una cadena vacía,
+     *  el valor neutral "all" (para selectores) o 0 (común para IDs o valores predeterminados).
+     */
     public hasActiveFilters(): boolean {
         if (!this.filterForm || !this.config) {
             return false;
@@ -72,11 +77,13 @@ export class GridFilterComponent {
         const values = this.filterForm.value;
 
         /**
-         * Función auxiliar para verificar si un valor de campo es "vacío" o "neutral".
-         * Se agregó la verificación para "all" y 0, ya que estos suelen ser valores
-         * predeterminados en los selectores y no deberían contar como filtros activos.
+         *  Función auxiliar para verificar si un valor de campo es "vacío" o "neutral".
+         *  aca se agrega la verificación para "all" y 0, ya que estos pueden ser valores
+         *  predeterminados en los selectores y no deberían contar como filtros activos.
+         *  Esta función va a determinar si el boton Limpiar filtros debe estar habilitado o no.
+         *  si hay filtros aplicados, el boton se habilita. caso contrario, se deshabilita.
          */
-        const isValueEmpty = (value: any): boolean => {
+        const isValueEmpty = (value: unknown): boolean => {
             if (value === null || value === undefined) {
                 return true;
             }
