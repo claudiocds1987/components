@@ -20,7 +20,7 @@
     </div>
 </ng-container>
 
-<ng-container
+<!-- <ng-container
     [ngTemplateOutlet]="
         gridConfig.hasInputSearch ? searchInputTemplate : noSearchInputTemplate
     "
@@ -28,75 +28,70 @@
 
 <ng-template #searchInputTemplate>
     <div class="input-search-container" *ngIf="!isLoading">
-        <mat-form-field
-            appearance="outline"
-            class="search-field"
-            *ngIf="gridConfig.hasInputSearch"
-        >
-            <mat-label>Buscar</mat-label>
-            <input
-                matInput
-                (input)="onInputSearch($event)"
-                [placeholder]="gridConfig.filterByColumn || 'Buscar todo'"
-            />
-        </mat-form-field>
-
-        <div
-            *ngIf="gridConfig.actionButtons!.length > 0"
-            class="action-buttons-container"
-        >
-            <div
-                *ngFor="let button of gridConfig.actionButtons"
-                class="buttons-actions"
-            >
-                <button
-                    [class]="button.class ?? ''"
-                    [style]="button.style"
-                    (click)="
-                        button.type === 'download'
-                            ? exportToExcel()
-                            : button.action && button.action()
-                    "
-                    [matTooltip]="button.tooltip ?? ''"
-                >
-                    <img *ngIf="button.icon" [src]="button.icon" alt="icon" />
-                    <span *ngIf="button.label">{{ button.label }}</span>
-                </button>
-            </div>
-        </div>
+        <ng-container [ngTemplateOutlet]="actionButtonsTemplate"></ng-container>
     </div>
 </ng-template>
 
 <ng-template #noSearchInputTemplate>
     <div class="chips-and-buttons-container" *ngIf="!isLoading">
-        <app-chips
-            *ngIf="gridConfig.hasChips"
-            [chips]="chips"
-            (chipRemoved)="onChipRemoved($event)"
-        ></app-chips>
-
-        <div
-            *ngIf="gridConfig.actionButtons!.length > 0"
-            class="action-buttons-container"
-        >
-            <div
-                *ngFor="let button of gridConfig.actionButtons"
-                class="buttons-actions"
+        <ng-container [ngTemplateOutlet]="actionButtonsTemplate"></ng-container>
+    </div>
+</ng-template> -->
+@if (!isLoading) {
+    @if (gridConfig.hasInputSearch) {
+        <div class="input-search-container">
+            <mat-form-field
+                appearance="outline"
+                class="search-field"
+                *ngIf="gridConfig.hasInputSearch"
             >
-                <button
-                    [class]="button.class ?? ''"
-                    [style]="button.style"
-                    (click)="
-                        button.type === 'download'
-                            ? exportToExcel()
-                            : button.action && button.action()
-                    "
-                    [matTooltip]="button.tooltip ?? ''"
-                >
-                    <img *ngIf="button.icon" [src]="button.icon" alt="icon" />
-                    <span *ngIf="button.label">{{ button.label }}</span>
-                </button>
-            </div>
+                <mat-label>Buscar</mat-label>
+                <input
+                    matInput
+                    (input)="onInputSearch($event)"
+                    [placeholder]="gridConfig.filterByColumn || 'Buscar todo'"
+                />
+            </mat-form-field>
+            <ng-container
+                [ngTemplateOutlet]="actionButtonsTemplate"
+            ></ng-container>
+        </div>
+    } @else {
+        <div class="chips-and-buttons-container">
+            <app-chips
+                *ngIf="gridConfig.hasChips"
+                [chips]="chips"
+                (chipRemoved)="onChipRemoved($event)"
+            ></app-chips>
+            <ng-container
+                [ngTemplateOutlet]="actionButtonsTemplate"
+            ></ng-container>
+        </div>
+    }
+}
+
+<ng-template #actionButtonsTemplate>
+    <div
+        *ngIf="gridConfig.actionButtons!.length > 0"
+        class="action-buttons-container"
+    >
+        <div
+            *ngFor="let button of gridConfig.actionButtons"
+            class="buttons-actions"
+        >
+            <button
+                [class]="button.class ?? ''"
+                [style]="button.style"
+                (click)="
+                    button.type === 'download'
+                        ? exportToExcel()
+                        : button.action && button.action()
+                "
+                [matTooltip]="button.tooltip ?? ''"
+            >
+                <img *ngIf="button.icon" [src]="button.icon" alt="icon" />
+                <span *ngIf="button.label">{{ button.label }}</span>
+            </button>
         </div>
     </div>
 </ng-template>
