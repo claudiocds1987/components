@@ -51,16 +51,16 @@
             >
                 <button
                     [class]="button.class ?? ''"
-                    [style]="button.style ?? ''"
+                    [style]="button.style"
                     (click)="
-                        button.class === 'custom-excel-download'
+                        button.type === 'download'
                             ? exportToExcel()
                             : button.action && button.action()
                     "
                     [matTooltip]="button.tooltip ?? ''"
                 >
-                    <mat-icon *ngIf="button.icon">{{ button.icon }}</mat-icon>
-                    {{ button.label }}
+                    <img *ngIf="button.icon" [src]="button.icon" alt="icon" />
+                    <span *ngIf="button.label">{{ button.label }}</span>
                 </button>
             </div>
         </div>
@@ -96,19 +96,6 @@
                     <img *ngIf="button.icon" [src]="button.icon" alt="icon" />
                     <span *ngIf="button.label">{{ button.label }}</span>
                 </button>
-                <!-- <button
-                    [class]="button.class ?? ''"
-                    [style]="button.style"
-                    (click)="
-                        button.class === 'custom-excel-download'
-                            ? exportToExcel()
-                            : button.action && button.action()
-                    "
-                    [matTooltip]="button.tooltip ?? ''"
-                >
-                    <mat-icon *ngIf="button.icon">{{ button.icon }}</mat-icon>
-                    {{ button.label }}
-                </button> -->
             </div>
         </div>
     </div>

@@ -266,13 +266,15 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
             hasChips: false,
             actionButtons: [
                 {
-                    class: "custom-stroked-primary",
+                    class: "primary-button",
+                    icon: "/assets/person.svg",
                     label: "Agregar",
                     action: (): void => this.onCreateEmployee(),
                 },
                 {
-                    //class: "custom-excel-download",
-                    icon: "download",
+                    class: "download-button",
+                    type: "download",
+                    icon: "/assets/download.svg",
                     tooltip: "Descargar excel",
                 },
             ],
