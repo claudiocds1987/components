@@ -49,6 +49,7 @@
 
     .action-buttons-container {
         display: flex;
+        align-items: anchor-center;
         gap: 10px;
         justify-content: flex-end; // Para alinear el contenido al final (derecha) del contenedor
         .buttons-actions {

@@ -10,7 +10,7 @@ export interface ElipsisAction {
 }
 
 export interface ActionButton {
-    label?: string;
+    text?: string;
     icon?: string;
     style?: string;
     class?: string;

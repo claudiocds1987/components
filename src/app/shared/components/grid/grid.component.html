@@ -20,23 +20,6 @@
     </div>
 </ng-container>
 
-<!-- <ng-container
-    [ngTemplateOutlet]="
-        gridConfig.hasInputSearch ? searchInputTemplate : noSearchInputTemplate
-    "
-></ng-container>
-
-<ng-template #searchInputTemplate>
-    <div class="input-search-container" *ngIf="!isLoading">
-        <ng-container [ngTemplateOutlet]="actionButtonsTemplate"></ng-container>
-    </div>
-</ng-template>
-
-<ng-template #noSearchInputTemplate>
-    <div class="chips-and-buttons-container" *ngIf="!isLoading">
-        <ng-container [ngTemplateOutlet]="actionButtonsTemplate"></ng-container>
-    </div>
-</ng-template> -->
 @if (!isLoading) {
     @if (gridConfig.hasInputSearch) {
         <div class="input-search-container">
@@ -90,7 +73,7 @@
                 [matTooltip]="button.tooltip ?? ''"
             >
                 <img *ngIf="button.icon" [src]="button.icon" alt="icon" />
-                <span *ngIf="button.label">{{ button.label }}</span>
+                <span *ngIf="button.text">{{ button.text }}</span>
             </button>
         </div>
     </div>

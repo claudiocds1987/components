@@ -268,7 +268,7 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
                 {
                     class: "primary-button",
                     icon: "/assets/person.svg",
-                    label: "Agregar",
+                    text: "Agregar",
                     action: (): void => this.onCreateEmployee(),
                 },
                 {
