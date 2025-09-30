@@ -87,6 +87,19 @@
                     [class]="button.class ?? ''"
                     [style]="button.style"
                     (click)="
+                        button.type === 'download'
+                            ? exportToExcel()
+                            : button.action && button.action()
+                    "
+                    [matTooltip]="button.tooltip ?? ''"
+                >
+                    <img *ngIf="button.icon" [src]="button.icon" alt="icon" />
+                    <span *ngIf="button.label">{{ button.label }}</span>
+                </button>
+                <!-- <button
+                    [class]="button.class ?? ''"
+                    [style]="button.style"
+                    (click)="
                         button.class === 'custom-excel-download'
                             ? exportToExcel()
                             : button.action && button.action()
@@ -95,7 +108,7 @@
                 >
                     <mat-icon *ngIf="button.icon">{{ button.icon }}</mat-icon>
                     {{ button.label }}
-                </button>
+                </button> -->
             </div>
         </div>
     </div>

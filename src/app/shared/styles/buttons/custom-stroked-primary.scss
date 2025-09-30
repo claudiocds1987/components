@@ -4,6 +4,7 @@
     align-items: center;
     justify-content: center;
     padding: 0 16px;
+    gap: 8px;
     min-width: 64px;
     height: 36px;
     line-height: 36px;
@@ -27,6 +28,11 @@
 
     /* Estado de :hover */
     transition: background-color 0.15s ease-in-out;
+
+    img {
+        width: 14px;
+        height: 14px;
+    }
 }
 
 .custom-stroked-primary:hover {

@@ -19,13 +19,18 @@
 
     /* Colores y borde de 'mat-stroked-button color="primary"' */
     background-color: #f0f4f9;
-    border-radius: 50px;
+    border-radius: 50%;
     font-weight: 400;
     color: #3f51b5;
     border: 1px solid #3f51b5;
 
     /* Estado de :hover */
     transition: background-color 0.15s ease-in-out;
+
+    img {
+        width: 20px;
+        height: 20px;
+    }
 }
 
 .custom-stroked-primary:hover {

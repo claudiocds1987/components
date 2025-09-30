@@ -713,13 +713,14 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
             actionButtons: [
                 {
                     class: "custom-stroked-primary",
-                    //icon: "download",
+                    icon: "./../../../assets/person.svg",
                     label: "Agregar",
                     action: (): void => this.onCreateEmployee(),
                 },
                 {
                     class: "custom-excel-download",
-                    icon: "download",
+                    type: "download",
+                    icon: "./../../../assets/download.svg",
                     tooltip: "Descargar excel",
                 },
             ],

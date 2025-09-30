@@ -14,6 +14,7 @@ export interface ActionButton {
     icon?: string;
     style?: string;
     class?: string;
+    type?: "download";
     tooltip?: string;
     action?: () => void;
 }

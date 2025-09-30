@@ -271,7 +271,7 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
                     action: (): void => this.onCreateEmployee(),
                 },
                 {
-                    class: "custom-excel-download",
+                    //class: "custom-excel-download",
                     icon: "download",
                     tooltip: "Descargar excel",
                 },
