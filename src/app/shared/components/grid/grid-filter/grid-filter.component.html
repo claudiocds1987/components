@@ -64,7 +64,7 @@
             mat-raised-button
             color="primary"
             (click)="applyFilter()"
-            [disabled]="isButtonDisabled()"
+            [disabled]="isReadyToApply()"
         >
             Aplicar Filtro
         </button>
@@ -72,7 +72,7 @@
             mat-button
             color="primary"
             (click)="clearFilter()"
-            [disabled]="!this.filterForm.dirty"
+            [disabled]="!hasActiveFilters()"
         >
             Limpiar Filtro
         </button>

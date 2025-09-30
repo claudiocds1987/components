@@ -4,6 +4,8 @@ import {
     Output,
     EventEmitter,
     ChangeDetectionStrategy,
+    OnChanges,
+    SimpleChanges,
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormGroup, ReactiveFormsModule } from "@angular/forms";
@@ -57,22 +59,85 @@ export class GridFilterComponent {
             }),
     */
 
-    public getFormGroupByName(fieldName: string): FormGroup | null {
+    getFormGroupByName(fieldName: string): FormGroup | null {
         const control = this.filterForm.get(fieldName);
         return control as FormGroup | null;
+    }
+
+    public hasActiveFilters(): boolean {
+        if (!this.filterForm || !this.config) {
+            return false;
+        }
+
+        const values = this.filterForm.value;
+
+        /**
+         * Función auxiliar para verificar si un valor de campo es "vacío" o "neutral".
+         * Se agregó la verificación para "all" y 0, ya que estos suelen ser valores
+         * predeterminados en los selectores y no deberían contar como filtros activos.
+         */
+        const isValueEmpty = (value: any): boolean => {
+            if (value === null || value === undefined) {
+                return true;
+            }
+            if (typeof value === "string") {
+                const trimmedLower = value.trim().toLowerCase();
+                // Verifica si es cadena vacía O el valor neutral "all"
+                if (trimmedLower === "" || trimmedLower === "all") {
+                    return true;
+                }
+            }
+            // Verifica si es el número 0 (común para IDs o valores predeterminados)
+            if (typeof value === "number" && value === 0) {
+                return true;
+            }
+            return false;
+        };
+
+        for (const filter of this.config) {
+            const fieldName = filter.fieldName;
+            const value = values[fieldName];
+
+            // 1. Manejo de campos simples (text, select, date)
+            if (filter.fieldType !== "dateRange") {
+                if (!isValueEmpty(value)) {
+                    return true;
+                }
+            } else {
+                // 2. Manejo de dateRange (FormGroup anidado)
+                const dateRangeGroup = this.getFormGroupByName(fieldName);
+                if (dateRangeGroup) {
+                    // Verificamos si al menos uno de los controles internos (startDate o endDate) tiene valor.
+                    const startValue = dateRangeGroup.get("startDate")?.value;
+                    const endValue = dateRangeGroup.get("endDate")?.value;
+
+                    if (!isValueEmpty(startValue) || !isValueEmpty(endValue)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        // Si el bucle termina, todos los campos están vacíos/nulos/neutrales.
+        return false;
     }
 
     applyFilter(): void {
         const filterFormValues = this.filterForm.value;
         this.emitFilterApplied.emit(filterFormValues);
+        this.filterForm.markAsPristine();
     }
 
     clearFilter(): void {
         this.filterForm.reset();
+
+        this.filterForm.markAsPristine();
+        this.filterForm.markAsUntouched();
+
         this.emitFilterApplied.emit(this.filterForm.value);
     }
 
-    isButtonDisabled(): boolean {
+    isReadyToApply(): boolean {
         return !this.filterForm?.valid || !this.filterForm?.dirty;
     }
 }

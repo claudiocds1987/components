@@ -261,7 +261,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
             resetStrategies[fieldName as keyof typeof resetStrategies] ||
             resetStrategies.default;
         resetAction();
-        this.gridFilterForm.markAsPristine();
+
         this.applyFilter(this.gridFilterForm.value);
     }
 
