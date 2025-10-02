@@ -1,62 +1,61 @@
 <form [formGroup]="filterForm" class="form">
     <h3 class="title">FILTRO</h3>
     <div class="form-fields">
-        <ng-container *ngFor="let filter of config">
-            <!-- Campo de texto -->
-            <mat-form-field
-                class="width"
-                appearance="outline"
-                *ngIf="filter.fieldType === 'text'"
-                [appSkeleton]="isLoading"
-            >
-                <mat-label>{{ filter.label }}</mat-label>
-                <input matInput [formControlName]="filter.fieldName" />
-            </mat-form-field>
-
-            <!-- Campo de selección -->
-            <mat-form-field
-                class="width"
-                appearance="outline"
-                *ngIf="filter.fieldType === 'select'"
-                [appSkeleton]="isLoading"
-            >
-                <mat-label>{{ filter.label }}</mat-label>
-                <mat-select [formControlName]="filter.fieldName">
-                    <mat-option
-                        *ngFor="let item of filter.selectItems"
-                        [value]="item.id"
-                    >
-                        {{ item.description }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-
-            <ng-container *ngIf="filter.fieldType === 'date'">
-                <app-date-input
-                    [formControlName]="filter.fieldName"
-                    [label]="filter.label"
-                    [placeholder]="filter.label"
-                    [isDisabled]="false"
-                    [appSkeleton]="isLoading"
-                ></app-date-input>
-            </ng-container>
-
-            <ng-container *ngIf="filter.fieldType === 'dateRange'">
-                <ng-container
-                    *ngIf="
-                        getFormGroupByName(
-                            filter.fieldName
-                        ) as dateRangeFormGroup
-                    "
-                >
-                    <app-date-range
-                        [dateRangeFormGroup]="dateRangeFormGroup"
-                        [label]="filter.label"
+        @for (filter of config; track filter.fieldName) {
+            @switch (filter.fieldType) {
+                <!-- Campo de texto -->
+                @case ("text") {
+                    <mat-form-field
+                        class="width"
+                        appearance="outline"
                         [appSkeleton]="isLoading"
-                    ></app-date-range>
-                </ng-container>
-            </ng-container>
-        </ng-container>
+                    >
+                        <mat-label>{{ filter.label }}</mat-label>
+                        <input matInput [formControlName]="filter.fieldName" />
+                    </mat-form-field>
+                }
+                <!-- Caso Select -->
+                @case ("select") {
+                    <mat-form-field
+                        class="width"
+                        appearance="outline"
+                        [appSkeleton]="isLoading"
+                    >
+                        <mat-label>{{ filter.label }}</mat-label>
+                        <mat-select [formControlName]="filter.fieldName">
+                            @for (item of filter.selectItems; track item.id) {
+                                <mat-option [value]="item.id">
+                                    {{ item.description }}
+                                </mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                }
+                <!-- Caso de fecha única se utiliza el componente date-input-->
+                @case ("date") {
+                    <app-date-input
+                        [formControlName]="filter.fieldName"
+                        [label]="filter.label"
+                        [placeholder]="filter.label"
+                        [isDisabled]="false"
+                        [appSkeleton]="isLoading"
+                    ></app-date-input>
+                }
+                <!-- Caso de rango de fechas se utiliza el component date-range -->
+                @case ("dateRange") {
+                    @if (
+                        getFormGroupByName(filter.fieldName);
+                        as dateRangeFormGroup
+                    ) {
+                        <app-date-range
+                            [dateRangeFormGroup]="dateRangeFormGroup"
+                            [label]="filter.label"
+                            [appSkeleton]="isLoading"
+                        ></app-date-range>
+                    }
+                }
+            }
+        }
     </div>
 
     <div class="filter-actions">
