@@ -3,22 +3,27 @@
     <p class="feedback-title">{{ data.title }}</p>
     <p class="feedback-message">{{ data.message }}</p>
 
-    <div class="feedback-actions" *ngIf="data.showButtons">
-        <button
-            *ngIf="data.cancelButtonText"
-            mat-stroked-button
-            color="primary"
-            (click)="onCancelClick()"
-        >
-            {{ data.cancelButtonText }}
-        </button>
-        <button
-            *ngIf="data.acceptButtonText"
-            mat-flat-button
-            color="primary"
-            (click)="onAcceptClick()"
-        >
-            {{ data.acceptButtonText || "Aceptar" }}
-        </button>
-    </div>
+    @if (data.showButtons) {
+        <div class="feedback-actions">
+            @if (data.cancelButtonText) {
+                <button
+                    mat-stroked-button
+                    color="primary"
+                    (click)="onCancelClick()"
+                >
+                    {{ data.cancelButtonText }}
+                </button>
+            }
+
+            @if (data.acceptButtonText) {
+                <button
+                    mat-flat-button
+                    color="primary"
+                    (click)="onAcceptClick()"
+                >
+                    {{ data.acceptButtonText || "Aceptar" }}
+                </button>
+            }
+        </div>
+    }
 </div>
