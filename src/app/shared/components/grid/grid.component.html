@@ -1,33 +1,37 @@
-<ng-container *ngIf="isLoading">
-    <div *ngIf="gridConfig?.hasInputSearch" class="skeleton-search-container">
-        <div class="skeleton-search-label">Buscar</div>
-        <div class="skeleton-search-input"></div>
-    </div>
+@if (isLoading) {
+    @if (gridConfig.hasInputSearch) {
+        <div class="skeleton-search-container">
+            <div class="skeleton-search-label">Buscar</div>
+            <div class="skeleton-search-input"></div>
+        </div>
+    }
 
-    <div *ngIf="isLoading" class="skeleton-table">
+    <div class="skeleton-table">
         <div class="skeleton-header-row">
-            <div class="skeleton-header-cell" *ngFor="let col of columns"></div>
+            @for (col of columns; track col.name) {
+                <div class="skeleton-header-cell"></div>
+            }
         </div>
 
-        <div
-            class="skeleton-row"
-            *ngFor="let i of [].constructor(paginatorConfig?.pageSize || 25)"
-        >
-            <div class="skeleton-cell" *ngFor="let col of columns">
-                <div class="skeleton-line"></div>
+        @for (
+            i of [].constructor(paginatorConfig?.pageSize || 25);
+            track $index
+        ) {
+            <div class="skeleton-row">
+                @for (col of columns; track col.name) {
+                    <div class="skeleton-cell">
+                        <div class="skeleton-line"></div>
+                    </div>
+                }
             </div>
-        </div>
+        }
     </div>
-</ng-container>
+}
 
 @if (!isLoading) {
     @if (gridConfig.hasInputSearch) {
         <div class="input-search-container">
-            <mat-form-field
-                appearance="outline"
-                class="search-field"
-                *ngIf="gridConfig.hasInputSearch"
-            >
+            <mat-form-field appearance="outline" class="search-field">
                 <mat-label>Buscar</mat-label>
                 <input
                     matInput
@@ -41,11 +45,12 @@
         </div>
     } @else {
         <div class="chips-and-buttons-container">
-            <app-chips
-                *ngIf="gridConfig.hasChips"
-                [chips]="chips"
-                (chipRemoved)="onChipRemoved($event)"
-            ></app-chips>
+            @if (gridConfig.hasChips) {
+                <app-chips
+                    [chips]="chips"
+                    (chipRemoved)="onChipRemoved($event)"
+                ></app-chips>
+            }
             <ng-container
                 [ngTemplateOutlet]="actionButtonsTemplate"
             ></ng-container>
@@ -54,29 +59,31 @@
 }
 
 <ng-template #actionButtonsTemplate>
-    <div
-        *ngIf="gridConfig.actionButtons!.length > 0"
-        class="action-buttons-container"
-    >
-        <div
-            *ngFor="let button of gridConfig.actionButtons"
-            class="buttons-actions"
-        >
-            <button
-                [class]="button.class ?? ''"
-                [style]="button.style"
-                (click)="
-                    button.type === 'download'
-                        ? exportToExcel()
-                        : button.action && button.action()
-                "
-                [matTooltip]="button.tooltip ?? ''"
-            >
-                <img *ngIf="button.icon" [src]="button.icon" alt="icon" />
-                <span *ngIf="button.text">{{ button.text }}</span>
-            </button>
+    @if (gridConfig.actionButtons!.length > 0) {
+        <div class="action-buttons-container">
+            @for (button of gridConfig.actionButtons; track button.text) {
+                <div class="buttons-actions">
+                    <button
+                        [class]="button.class ?? ''"
+                        [style]="button.style"
+                        (click)="
+                            button.type === 'download'
+                                ? exportToExcel()
+                                : button.action && button.action()
+                        "
+                        [matTooltip]="button.tooltip ?? ''"
+                    >
+                        @if (button.icon) {
+                            <img [src]="button.icon" alt="icon" />
+                        }
+                        @if (button.text) {
+                            <span>{{ button.text }}</span>
+                        }
+                    </button>
+                </div>
+            }
         </div>
-    </div>
+    }
 </ng-template>
 
 <div class="table-container" #scrollContainer>
@@ -88,130 +95,130 @@
         class="table"
         [class.table-hidden]="isLoading || dataSource.data.length === 0"
     >
-        <!-- Definición de columnas dinámicas -->
-        <ng-container
-            *ngFor="let col of columns; trackBy: trackColumnByName"
-            [matColumnDef]="col.name"
-        >
-            <!-- Encabezado de la columna -->
-            <th
-                mat-header-cell
-                *matHeaderCellDef
-                class="grid-cell"
-                [style.width]="col.width"
-                [style.text-align]="col.align"
-                [matTooltip]="col.headerTooltip ? col.headerTooltip : ''"
-            >
-                <ng-container *ngIf="col.hasHeader !== false">
-                    <ng-container [ngSwitch]="col.type">
-                        <ng-container *ngSwitchCase="'elipsis'">
-                            <span *ngIf="col.name">{{ col.name }}</span>
-                            <mat-icon *ngIf="col.headerIcon">{{
-                                col.headerIcon
-                            }}</mat-icon>
-                        </ng-container>
-                        <ng-container *ngSwitchDefault>
-                            <span
-                                *ngIf="col.isSortable"
-                                mat-sort-header
-                                [mat-sort-header]="col.name"
-                                [disabled]="!col.isSortable"
-                                class="sortable-header"
-                            >
-                                {{ col.name | titlecase }}
-                            </span>
-                            <span *ngIf="!col.isSortable">
-                                {{ col.name | titlecase }}
-                            </span>
-                        </ng-container>
-                    </ng-container>
-                </ng-container>
-            </th>
+        @for (col of columns; track col.name) {
+            <ng-container [matColumnDef]="col.name">
+                <th
+                    mat-header-cell
+                    *matHeaderCellDef
+                    class="grid-cell"
+                    [style.width]="col.width"
+                    [style.text-align]="col.align"
+                    [matTooltip]="col.headerTooltip ? col.headerTooltip : ''"
+                >
+                    @if (col.hasHeader !== false) {
+                        <div class="header-content">
+                            @if (col.headerIcon) {
+                                <img [src]="col.headerIcon" alt="icon" />
+                            }
 
-            <td
-                mat-cell
-                *matCellDef="let row"
-                class="grid-cell"
-                [style.width]="col.width"
-                [style.text-align]="col.align"
-                [ngStyle]="{
-                    'text-overflow':
-                        col.type === 'elipsis' ? 'clip' : 'ellipsis',
-                    overflow: 'hidden',
-                    'white-space': 'nowrap',
-                }"
-            >
-                <ng-container [ngSwitch]="col.type">
-                    <ng-container *ngSwitchCase="'img'">
-                        <img
-                            [src]="row['imgUrl']"
-                            alt="Imagen"
-                            class="table-img"
-                        />
-                    </ng-container>
+                            @if (col.isSortable) {
+                                <span
+                                    mat-sort-header
+                                    [mat-sort-header]="col.name"
+                                    [disabled]="!col.isSortable"
+                                    class="sortable-header"
+                                >
+                                    {{ col.name | titlecase }}
+                                </span>
+                            } @else {
+                                <span>
+                                    {{ col.name | titlecase }}
+                                </span>
+                            }
+                        </div>
+                    }
+                </th>
 
-                    <ng-container *ngSwitchCase="'elipsis'">
-                        <button
-                            mat-icon-button
-                            [matMenuTriggerFor]="elipsisMenu"
-                            aria-label="Más opciones"
-                            (click)="$event.stopPropagation()"
-                            (dblclick)="$event.stopPropagation()"
-                        >
-                            <mat-icon color="primary">more_vert</mat-icon>
-                        </button>
-                        <mat-menu #elipsisMenu="matMenu">
-                            <ng-container
-                                *ngFor="let action of row['elipsisActions']"
+                <td
+                    mat-cell
+                    *matCellDef="let row"
+                    class="grid-cell"
+                    [style.width]="col.width"
+                    [style.text-align]="col.align"
+                    [ngStyle]="{
+                        'text-overflow':
+                            col.type === 'elipsis' ? 'clip' : 'ellipsis',
+                        overflow: 'hidden',
+                        'white-space': 'nowrap',
+                    }"
+                >
+                    @switch (col.type) {
+                        @case ("img") {
+                            <img
+                                [src]="row['imgUrl']"
+                                alt="Imagen"
+                                class="table-img"
+                            />
+                        }
+
+                        @case ("elipsis") {
+                            <button
+                                mat-icon-button
+                                [matMenuTriggerFor]="elipsisMenu"
+                                aria-label="Más opciones"
+                                (click)="$event.stopPropagation()"
+                                (dblclick)="$event.stopPropagation()"
                             >
-                                <button
-                                    mat-menu-item
-                                    *ngIf="
+                                <mat-icon color="primary">more_vert</mat-icon>
+                            </button>
+                            <mat-menu #elipsisMenu="matMenu">
+                                @for (
+                                    action of row["elipsisActions"];
+                                    track action.label
+                                ) {
+                                    @if (
                                         action.condition
                                             ? action.condition(row)
                                             : true
-                                    "
-                                    (click)="action.action(row.id)"
-                                >
-                                    <mat-icon *ngIf="action.icon">{{
-                                        action.icon
-                                    }}</mat-icon>
-                                    <span>{{ action.label }}</span>
-                                </button>
-                            </ng-container>
-                        </mat-menu>
-                    </ng-container>
+                                    ) {
+                                        <button
+                                            mat-menu-item
+                                            (click)="action.action(row.id)"
+                                        >
+                                            @if (action.icon) {
+                                                <mat-icon>{{
+                                                    action.icon
+                                                }}</mat-icon>
+                                            }
+                                            <span>{{ action.label }}</span>
+                                        </button>
+                                    }
+                                }
+                            </mat-menu>
+                        }
 
-                    <ng-container *ngSwitchDefault>
-                        <ng-container [ngSwitch]="col.class">
-                            <ng-container *ngSwitchCase="'status-circle'">
-                                <span
-                                    class="status-circle"
-                                    [ngClass]="{
-                                        'status-circle-active': row[col.name],
-                                        'status-circle-inactive':
-                                            !row[col.name],
-                                    }"
-                                    [matTooltip]="
-                                        getTooltipValue(row, col.name)
-                                    "
-                                ></span>
-                            </ng-container>
-                            <ng-container *ngSwitchDefault>
-                                <span
-                                    [style]="col.style"
-                                    [matTooltip]="
-                                        getLargeTooltipValue(row, col.name)
-                                    "
-                                >
-                                    {{ getTruncatedValue(row, col.name) }}
-                                </span>
-                            </ng-container>
-                        </ng-container>
-                    </ng-container>
-                </ng-container>
-            </td>
-        </ng-container>
+                        @default {
+                            @switch (col.class) {
+                                @case ("status-circle") {
+                                    <span
+                                        class="status-circle"
+                                        [ngClass]="{
+                                            'status-circle-active':
+                                                row[col.name],
+                                            'status-circle-inactive':
+                                                !row[col.name],
+                                        }"
+                                        [matTooltip]="
+                                            getTooltipValue(row, col.name)
+                                        "
+                                    ></span>
+                                }
+                                @default {
+                                    <span
+                                        [style]="col.style"
+                                        [matTooltip]="
+                                            getLargeTooltipValue(row, col.name)
+                                        "
+                                    >
+                                        {{ getTruncatedValue(row, col.name) }}
+                                    </span>
+                                }
+                            }
+                        }
+                    }
+                </td>
+            </ng-container>
+        }
 
         <tr
             mat-header-row
@@ -225,31 +232,38 @@
         ></tr>
     </table>
 
-    <app-feedback
-        class="feedback-container"
-        *ngIf="showFeeback()"
-        [imageUrl]="'assets/no-result.svg'"
-    ></app-feedback>
+    @if (showFeeback()) {
+        <app-feedback
+            class="feedback-container"
+            [imageUrl]="'assets/no-result.svg'"
+        ></app-feedback>
+    }
 </div>
-<!-- si la grilla tiene scroll infinito no se va a mostrar el paginador -->
-<mat-paginator
-    class="paginator"
-    *ngIf="paginatorConfig && !gridConfig.hasInfiniteScroll"
-    [pageSize]="paginatorConfig.pageSize"
-    [pageSizeOptions]="paginatorConfig.pageSizeOptions"
-    [showFirstLastButtons]="true"
-    [length]="paginatorConfig.totalCount"
-    [pageIndex]="paginatorConfig.pageIndex"
-    (page)="onPaginatorPageChange($event)"
-></mat-paginator>
 
-<div
-    *ngIf="gridConfig.hasInfiniteScroll && paginatorConfig"
-    class="infinite-paginator"
->
-    <span *ngIf="paginatorConfig.totalCount">
-        {{
-            getInfinitePaginatorData(0, data.length, paginatorConfig.totalCount)
-        }}
-    </span>
-</div>
+@if (paginatorConfig && !gridConfig.hasInfiniteScroll) {
+    <mat-paginator
+        class="paginator"
+        [pageSize]="paginatorConfig.pageSize"
+        [pageSizeOptions]="paginatorConfig.pageSizeOptions"
+        [showFirstLastButtons]="true"
+        [length]="paginatorConfig.totalCount"
+        [pageIndex]="paginatorConfig.pageIndex"
+        (page)="onPaginatorPageChange($event)"
+    ></mat-paginator>
+}
+
+@if (gridConfig.hasInfiniteScroll && paginatorConfig) {
+    <div class="infinite-paginator">
+        @if (paginatorConfig.totalCount) {
+            <span>
+                {{
+                    getInfinitePaginatorData(
+                        0,
+                        data.length,
+                        paginatorConfig.totalCount
+                    )
+                }}
+            </span>
+        }
+    </div>
+}

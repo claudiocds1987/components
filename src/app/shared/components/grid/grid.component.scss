@@ -88,6 +88,15 @@
     min-height: 0; // Permite que se reduzca si es necesario
     background: white;
     //height: 500px;
+    .header-content {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        img {
+            width: 15px;
+            height: 15px;
+        }
+    }
     // Reglas para navegadores basados en WebKit (Chrome, Safari, Edge)
     &::-webkit-scrollbar {
         width: 3px; // ancho para scroll vertical

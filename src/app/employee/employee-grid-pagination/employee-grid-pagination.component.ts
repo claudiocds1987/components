@@ -682,6 +682,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                 { name: "country", isSortable: false }, // false por que ordenaria por id no alfabeticamente
                 {
                     name: "active",
+                    //headerIcon: "/assets/person.svg",
                     class: "status-circle",
                     align: "left",
                     width: "50px",
