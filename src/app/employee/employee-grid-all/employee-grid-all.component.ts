@@ -155,20 +155,18 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
                         this._employees,
                     );
                 },
-                error: (error: HttpErrorResponse): void => {
+                error: (): void => {
                     this.isLoadingGridData.set(false);
-                    this._alertService.showDanger(
-                        `Error al cargar datos. ${error.statusText}`,
-                    );
+                    this._alertService.showDanger("Error al cargar datos.");
                 },
             });
     }
 
     private _getEmployeeAll(): Observable<Employee[]> {
         return this._employeeService.getEmployeesAll().pipe(
-            catchError((error: HttpErrorResponse): Observable<Employee[]> => {
+            catchError((): Observable<Employee[]> => {
                 this._alertService.showDanger(
-                    `Error al cargar la lista de empleados. ${error.statusText}`,
+                    "Error al cargar la lista de empleados.",
                 );
                 return of([]);
             }),
@@ -177,9 +175,9 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
 
     private _getPositions(): Observable<SelectItem[]> {
         return this._positionServices.getPositions().pipe(
-            catchError((error: HttpErrorResponse): Observable<SelectItem[]> => {
+            catchError((): Observable<SelectItem[]> => {
                 this._alertService.showDanger(
-                    `Error al cargar la lista de puestos. ${error.statusText}`,
+                    "Error al cargar la lista de puestos.",
                 );
                 return of([]);
             }),
@@ -188,9 +186,9 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
 
     private _getCountries(): Observable<SelectItem[]> {
         return this._countryServices.getCountries().pipe(
-            catchError((error: HttpErrorResponse): Observable<SelectItem[]> => {
+            catchError((): Observable<SelectItem[]> => {
                 this._alertService.showDanger(
-                    `Error al cargar la lista de paises. ${error.statusText}`,
+                    "Error al cargar la lista de paises.",
                 );
                 return of([]);
             }),

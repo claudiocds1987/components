@@ -417,9 +417,9 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
 
     private _getPositions(): Observable<SelectItem[]> {
         return this._positionServices.getPositions().pipe(
-            catchError((error: HttpErrorResponse): Observable<SelectItem[]> => {
+            catchError((): Observable<SelectItem[]> => {
                 this._alertService.showDanger(
-                    `Error al cargar la lista de puestos. ${error.statusText}`,
+                    "Error al cargar la lista de puestos.",
                 );
                 return of([]);
             }),
@@ -428,9 +428,9 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
 
     private _getCountries(): Observable<SelectItem[]> {
         return this._countryServices.getCountries().pipe(
-            catchError((error: HttpErrorResponse): Observable<SelectItem[]> => {
+            catchError((): Observable<SelectItem[]> => {
                 this._alertService.showDanger(
-                    `Error al cargar la lista de paises. ${error.statusText}`,
+                    "Error al cargar la lista de paises.",
                 );
                 return of([]);
             }),
@@ -478,10 +478,8 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                     this.gridData = paginatedGridData.items;
                     this._updateGridConfig(paginatedGridData);
                 },
-                error: (error: HttpErrorResponse): void => {
-                    this._alertService.showDanger(
-                        `Error al cargar datos. ${error.statusText}`,
-                    );
+                error: (): void => {
+                    this._alertService.showDanger("Error al cargar datos.");
                 },
             });
     }

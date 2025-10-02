@@ -1,19 +1,28 @@
 <div class="alerts-wrapper">
-    <div *ngFor="let alert of alerts" [ngClass]="getAlertClass(alert.type)">
-        <mat-icon
-            class="alert-icon"
-            [ngClass]="'icon-' + alert.type"
-            [ngSwitch]="alert.type"
-        >
-            <ng-container *ngSwitchCase="'warning'">warning</ng-container>
-            <ng-container *ngSwitchCase="'info'">info</ng-container>
-            <ng-container *ngSwitchCase="'danger'">error</ng-container>
-        </mat-icon>
-        <div class="alert-message">
-            {{ alert.message }}
+    @for (alert of alerts; track alert.id) {
+        <div [ngClass]="getAlertClass(alert.type)">
+            <mat-icon class="alert-icon" [ngClass]="'icon-' + alert.type">
+                @switch (alert.type) {
+                    @case ("warning") {
+                        warning
+                    }
+                    @case ("info") {
+                        info
+                    }
+                    @case ("danger") {
+                        error
+                    }
+                    @default {
+                        notification_important
+                    }
+                }
+            </mat-icon>
+            <div class="alert-message">
+                {{ alert.message }}
+            </div>
+            <button class="alert-close-button" (click)="closeAlert(alert.id)">
+                <mat-icon>close</mat-icon>
+            </button>
         </div>
-        <button class="alert-close-button" (click)="closeAlert(alert.id)">
-            <mat-icon>close</mat-icon>
-        </button>
-    </div>
+    }
 </div>

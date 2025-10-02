@@ -284,20 +284,18 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                     // Llama a _getEmployees para la carga inicial de la grilla
                     this._getEmployees();
                 },
-                error: (error: HttpErrorResponse): void => {
+                error: (): void => {
                     this.isLoadingGridData.set(false);
-                    this._alertService.showDanger(
-                        `Error al cargar datos. ${error.statusText}`,
-                    );
+                    this._alertService.showDanger("Error al cargar datos.");
                 },
             });
     }
 
     private _getPositions(): Observable<SelectItem[]> {
         return this._positionServices.getPositions().pipe(
-            catchError((error: HttpErrorResponse): Observable<SelectItem[]> => {
+            catchError((): Observable<SelectItem[]> => {
                 this._alertService.showDanger(
-                    `Error al cargar la lista de puestos. ${error.statusText}`,
+                    "Error al cargar la lista de puestos.",
                 );
                 return of([]);
             }),
@@ -306,9 +304,9 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
 
     private _getCountries(): Observable<SelectItem[]> {
         return this._countryServices.getCountries().pipe(
-            catchError((error: HttpErrorResponse): Observable<SelectItem[]> => {
+            catchError((): Observable<SelectItem[]> => {
                 this._alertService.showDanger(
-                    `Error al cargar la lista de paises. ${error.statusText}`,
+                    "Error al cargar la lista de paises.",
                 );
                 return of([]);
             }),
