@@ -117,17 +117,17 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
     @Output() createButtonClicked = new EventEmitter<void>();
     @Output() infiniteScroll = new EventEmitter<void>();
     @Output() rowDblClick = new EventEmitter<GridData>();
-
+    // "computed" signals para manipular la data de los input signal
     dataSource = new MatTableDataSource<GridData>();
-
+    // Aca extrae y devuelve la lista de columnas de la configuración (reactivo).
     columns = computed<Column[]>((): Column[] => {
         return this.gridConfigSig().columns || [];
     });
-
+    // Aca convierte la lista de columnas en un array de solo los nombres (necesario para MatTable).
     columnNames = computed<string[]>((): string[] => {
         return this.columns().map((c: Column): string => c.name);
     });
-
+    // Aca extrae y valida la configuración de paginación (reactivo).
     paginatorConfig = computed<PaginationConfig | null>(
         (): PaginationConfig | null => {
             const paginator = this.gridConfigSig().paginator;
