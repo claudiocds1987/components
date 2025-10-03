@@ -117,7 +117,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
     @Output() createButtonClicked = new EventEmitter<void>();
     @Output() infiniteScroll = new EventEmitter<void>();
     @Output() rowDblClick = new EventEmitter<GridData>();
-    // "computed" signals para manipular la data de los input signal
+    // "computed signal" para transformar o hacer algun calculo en los signal
     dataSource = new MatTableDataSource<GridData>();
     // Aca extrae y devuelve la lista de columnas de la configuración (reactivo).
     columns = computed<Column[]>((): Column[] => {
