@@ -255,9 +255,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                     const newGridData = isScrolling
                         ? [...this.gridDataSig(), ...paginatedGridData.items]
                         : paginatedGridData.items;
-                    /* this.gridDataSig = isScrolling
-                        ? [...this.gridDataSig, ...paginatedGridData.items]
-                        : paginatedGridData.items; */
+
                     this.gridDataSig.set(newGridData);
                     this._updateGridConfig(paginatedGridData);
                 },
@@ -405,6 +403,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
         // y la ruta del componente origen ("employee-grid-pagination") como parámetro de consulta.
         // Esto permite que el formulario de edición sepa a qué grilla debe regresar al cancelar o al finalizar la edición.
         // También se le envía el nombre del componente para usarse en el breadCrumb.
+        // Hago esto porque en este caso todos los componentes con grilla llaman al mismo formulario de edicion
         this._router.navigate([`/employee/edit/${id}`], {
             queryParams: this._queryParams,
         });
@@ -445,11 +444,6 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                 OrderBy: newOrderBy,
             }),
         );
-        /* this.gridConfigSig = {
-            ...this.gridConfigSig,
-            paginator: currentPaginator,
-            OrderBy: newOrderBy,
-        }; */
     }
 
     private _setGridConfiguration(): GridConfiguration {

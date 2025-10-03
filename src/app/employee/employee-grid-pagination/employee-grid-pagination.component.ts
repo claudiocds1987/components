@@ -17,8 +17,8 @@ import {
     PaginationConfig,
     ElipsisAction,
 } from "../../shared/models/grid-configuration.model";
-import { GridComponent } from "../../shared/components/grid/grid.component"; // Correct path for GridComponent
-import { GridFilterComponent } from "../../shared/components/grid/grid-filter/grid-filter.component"; // Correct path for GridFilterComponent
+import { GridComponent } from "../../shared/components/grid/grid.component";
+import { GridFilterComponent } from "../../shared/components/grid/grid-filter/grid-filter.component";
 import { CommonModule } from "@angular/common";
 import { DateTime } from "luxon";
 import { EmployeeService } from "../../shared/services/employee.service";
