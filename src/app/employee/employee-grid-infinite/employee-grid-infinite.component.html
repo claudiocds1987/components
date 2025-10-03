@@ -2,9 +2,9 @@
 <app-alert></app-alert>
 <div class="employee-grid-infinite-container">
     <app-grid
-        [gridConfig]="gridConfig"
-        [data]="gridData"
-        [isLoading]="isLoadingGridData()"
+        [gridConfigSig]="gridConfigSig()"
+        [gridDataSig]="gridDataSig()"
+        [isLoadingSig]="isLoadingGridDataSig()"
         (sortChange)="onGridSortChange($event)"
         (exportExcel)="onExportToExcel()"
         (createButtonClicked)="onCreateEmployee()"

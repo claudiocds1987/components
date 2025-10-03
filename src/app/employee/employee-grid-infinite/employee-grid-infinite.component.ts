@@ -58,9 +58,9 @@ import { Router } from "@angular/router";
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
-    gridConfig: GridConfiguration;
-    gridData: GridData[] = [];
-    isLoadingGridData = signal(true);
+    gridConfigSig = signal<GridConfiguration>({} as GridConfiguration);
+    gridDataSig = signal<GridData[]>([]);
+    isLoadingGridDataSig = signal(true);
 
     private _positions: SelectItem[] = [];
     private _countries: SelectItem[] = [];
@@ -89,7 +89,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
     constructor() {
         this._alertService.clearAlerts();
         this._setBreadcrumb();
-        this.gridConfig = this._setGridConfiguration(); // seteando la grilla para grid.component
+        this.gridConfigSig.set(this._setGridConfiguration()); // seteando la grilla para grid.component
     }
 
     ngOnInit(): void {
@@ -118,14 +118,15 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
     // Método para manejar el evento de scroll al final
     onInfiniteGridScroll(): void {
         const totalCount =
-            (this.gridConfig.paginator as PaginationConfig)?.totalCount || 0;
-        const currentDataCount = this.gridData.length;
+            (this.gridConfigSig().paginator as PaginationConfig)?.totalCount ||
+            0;
+        const currentDataCount = this.gridDataSig.length;
 
-        if (this.isLoadingGridData() || currentDataCount >= totalCount) {
+        if (this.isLoadingGridDataSig() || currentDataCount >= totalCount) {
             return;
         }
 
-        this.isLoadingGridData.set(true);
+        this.isLoadingGridDataSig.set(true);
 
         this._employeeFilterParams = {
             ...this._employeeFilterParams,
@@ -152,7 +153,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
     }
 
     onGridPageChange(event: PageEvent): void {
-        if (!this.gridConfig.hasInfiniteScroll) {
+        if (!this.gridConfigSig().hasInfiniteScroll) {
             // Solo si NO es scroll infinito
             this._employeeFilterParams = {
                 ...this._employeeFilterParams,
@@ -226,10 +227,10 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
     }
 
     private _getEmployees(isScrolling = false): void {
-        this.isLoadingGridData.set(true);
+        this.isLoadingGridDataSig.set(true);
         if (!isScrolling) {
             // Para limpiar la grilla para carga inicial o al cambiar de página
-            this.gridData = [];
+            this.gridDataSig.set([]);
         }
 
         this._employeeServices
@@ -243,7 +244,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                     },
                 ),
                 finalize((): void => {
-                    this.isLoadingGridData.set(false);
+                    this.isLoadingGridDataSig.set(false);
                     this._cdr.markForCheck();
                 }),
             )
@@ -251,14 +252,17 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                 next: (paginatedGridData: PaginatedList<GridData>): void => {
                     // Si es scroll, se concatenan los datos.
                     // Si es carga inicial, se reemplazan los datos.
-                    this.gridData = isScrolling
-                        ? [...this.gridData, ...paginatedGridData.items]
+                    const newGridData = isScrolling
+                        ? [...this.gridDataSig(), ...paginatedGridData.items]
                         : paginatedGridData.items;
-
+                    /* this.gridDataSig = isScrolling
+                        ? [...this.gridDataSig, ...paginatedGridData.items]
+                        : paginatedGridData.items; */
+                    this.gridDataSig.set(newGridData);
                     this._updateGridConfig(paginatedGridData);
                 },
                 error: (error: HttpErrorResponse): void => {
-                    this.isLoadingGridData.set(false);
+                    this.isLoadingGridDataSig.set(false);
                     this._alertService.showDanger(
                         `Error al obtener empleados. ${error.statusText}`,
                     );
@@ -285,7 +289,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                     this._getEmployees();
                 },
                 error: (): void => {
-                    this.isLoadingGridData.set(false);
+                    this.isLoadingGridDataSig.set(false);
                     this._alertService.showDanger("Error al cargar datos.");
                 },
             });
@@ -419,7 +423,8 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
 
         // Actualizamos la configuración de la paginación con los datos del servidor.
         // Usamos el operador de nulidad para asegurar que 'hasPaginator' es un objeto.
-        const currentPaginator = this.gridConfig.paginator as PaginationConfig;
+        const currentPaginator = this.gridConfigSig()
+            .paginator as PaginationConfig;
         if (currentPaginator) {
             currentPaginator.totalCount = totalCount;
             currentPaginator.pageSize = pageSize;
@@ -432,12 +437,19 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
             direction: sortOrder as "asc" | "desc",
         };
 
-        // Creamos un nuevo objeto de configuración para asegurar la reactividad.
-        this.gridConfig = {
-            ...this.gridConfig,
+        // Cambiamos de referencia el objeto para asegurar la reactividad.
+        this.gridConfigSig.update(
+            (currentConfig): GridConfiguration => ({
+                ...currentConfig,
+                paginator: currentPaginator,
+                OrderBy: newOrderBy,
+            }),
+        );
+        /* this.gridConfigSig = {
+            ...this.gridConfigSig,
             paginator: currentPaginator,
             OrderBy: newOrderBy,
-        };
+        }; */
     }
 
     private _setGridConfiguration(): GridConfiguration {

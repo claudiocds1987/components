@@ -2,9 +2,6 @@ import {
     Component,
     ViewChild,
     AfterViewInit,
-    Input,
-    OnChanges,
-    SimpleChanges,
     OnInit,
     inject,
     NgZone,
@@ -13,6 +10,9 @@ import {
     EventEmitter,
     ElementRef,
     OnDestroy,
+    input,
+    computed,
+    effect,
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { MatTableModule } from "@angular/material/table";
@@ -101,15 +101,14 @@ El GridComponent es un componente genérico de tabla que puede funcionar en dos 
     de emitir eventos de cambio para que el componente padre los gestione.
 El comportamiento se define a través del objeto @Input() config.
  **************************************************************************************************/
-export class GridComponent
-    implements OnInit, AfterViewInit, OnChanges, OnDestroy
-{
+export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild("scrollContainer") scrollContainer!: ElementRef;
+    // inputs signal
+    gridConfigSig = input.required<GridConfiguration>();
+    gridDataSig = input.required<GridData[]>();
+    isLoadingSig = input.required<boolean>();
+    chipsSig = input<Chip[]>([]);
 
-    @Input() gridConfig!: GridConfiguration;
-    @Input() data: GridData[] = [];
-    @Input() isLoading = false;
-    @Input() chips: Chip[] = [];
     @Output() pageChange = new EventEmitter<PageEvent>();
     @Output() sortChange = new EventEmitter<Sort>();
     @Output() exportExcel = new EventEmitter<Sort | void>();
@@ -120,31 +119,40 @@ export class GridComponent
     @Output() rowDblClick = new EventEmitter<GridData>();
 
     dataSource = new MatTableDataSource<GridData>();
+
+    columns = computed<Column[]>((): Column[] => {
+        return this.gridConfigSig().columns || [];
+    });
+
+    columnNames = computed<string[]>((): string[] => {
+        return this.columns().map((c: Column): string => c.name);
+    });
+
+    paginatorConfig = computed<PaginationConfig | null>(
+        (): PaginationConfig | null => {
+            const paginator = this.gridConfigSig().paginator;
+            return typeof paginator === "object" && paginator !== null
+                ? paginator
+                : null;
+        },
+    );
+
     private _ngZone = inject(NgZone);
     private _scrollListener: (() => void) | undefined;
     @ViewChild(MatSort) private _matSort!: MatSort;
     @ViewChild(MatPaginator) private _matPaginator!: MatPaginator;
 
-    get columns(): Column[] {
-        return this.gridConfig?.columns || [];
-    }
-
-    get columnNames(): string[] {
-        return this.columns.map((c: Column): string => c.name);
-    }
-
-    get paginatorConfig(): PaginationConfig | null {
-        const paginator = this.gridConfig?.paginator;
-        return typeof paginator === "object" && paginator !== null
-            ? paginator
-            : null;
-    }
-
-    ngOnChanges(changes: SimpleChanges): void {
-        if (changes["data"] && this.data) {
-            this.dataSource.data = this.data;
-            this._applySortAndPaginator();
-        }
+    constructor() {
+        // Inicialización del Effect para leer cambios en signal data:
+        effect((): void => {
+            // 1. Leer el valor de la signal 'data'
+            const newData = this.gridDataSig();
+            // Si hay datos o array vacío, actualiza la MatTable
+            if (newData && newData.length >= 0) {
+                this.dataSource.data = newData;
+                this._applySortAndPaginator();
+            }
+        });
     }
 
     ngOnInit(): void {
@@ -153,7 +161,7 @@ export class GridComponent
     }
 
     ngAfterViewInit(): void {
-        if (this.gridConfig?.hasInfiniteScroll) {
+        if (this.gridConfigSig().hasInfiniteScroll) {
             this._setupScrollListener();
         }
     }
@@ -233,7 +241,8 @@ export class GridComponent
     }
 
     onSortChange(sortState: Sort): void {
-        if (this.gridConfig?.hasSorting?.isServerSide) {
+        if (this.gridConfigSig().hasSorting?.isServerSide) {
+            // Uso de gridConfig()
             this.sortChange.emit(sortState);
             // Mueve el scroll al principio de la tabla al hacer el ordenamiento
             if (this.scrollContainer && this.scrollContainer.nativeElement) {
@@ -251,18 +260,16 @@ export class GridComponent
     }
 
     exportToExcel(): void {
-        const isServerSideSort = this.gridConfig?.hasSorting?.isServerSide;
+        const isServerSideSort = this.gridConfigSig().hasSorting?.isServerSide;
 
         if (isServerSideSort) {
-            // Caso Server-Side: Emite void. El padre debe obtener la data del servidor.
             this.exportExcel.emit();
             return;
         }
-        // Caso Client-Side: Necesitamos la data filtrada y ordenada.
+
         let dataReadyForExport: GridData[] = this.dataSource.filteredData;
 
         if (this._matSort) {
-            // Usamos la función auxiliar para aplicar el ordenamiento
             dataReadyForExport = this._getSortedData(
                 dataReadyForExport,
                 this._matSort,
@@ -301,7 +308,6 @@ export class GridComponent
                 }
                 // Si son iguales, 'comparison' se mantiene en 0.
             }
-
             // 3. Aplicamos la dirección
             return comparison * (isAsc ? 1 : -1);
         });
@@ -315,26 +321,22 @@ export class GridComponent
             item: GridData,
             sortHeaderId: string,
         ): string | number => {
-            const column = this.columns.find(
+            // Se usa this.columns()
+            const column = this.columns().find(
                 (c): boolean => c.name === sortHeaderId,
             );
+            // ... Resto de la lógica
             const value = item[sortHeaderId];
-
-            // Manejo para columnas de fecha
             if (column?.type === "date" && value) {
                 const dateString = value as string;
                 const parts = dateString.split("/");
-                // Retorna un formato ISO (YYYY-MM-DD) para una correcta comparación de fechas
                 return `${parts[2]}-${parts[1]}-${parts[0]}`;
             }
 
-            // Manejo para columnas cuyo valor es booleano
             if (typeof value === "boolean") {
-                // si el valor es true se convierte en 1 y false en 0.
                 return value ? 1 : 0;
             }
 
-            // Manejo por defecto para cadenas y números
             if (typeof value === "string" || typeof value === "number") {
                 return value;
             }
@@ -345,28 +347,26 @@ export class GridComponent
 
     // Este método asegura que las referencias se establezcan solo cuando están disponibles
     private _applySortAndPaginator(): void {
-        const isServerSideSort = this.gridConfig?.hasSorting?.isServerSide;
-        const paginatorConfig = this.gridConfig?.paginator;
+        // Se usa this.gridConfig() y this.paginatorConfig()
+        const isServerSideSort = this.gridConfigSig().hasSorting?.isServerSide;
+        const paginatorConfig = this.gridConfigSig().paginator;
+
         const isClientSidePaginator =
             paginatorConfig.isServerSide === false ||
             (typeof paginatorConfig === "object" &&
                 !paginatorConfig.isServerSide);
 
-        // Si la grilla no está visible, las referencias no existen,
-        // por lo que no hacemos nada.
+        // ... Resto de la lógica
         if (!this._matSort || !this._matPaginator) {
             return;
         }
-        // Si el ordenamiento es del lado del cliente, se vincula el MatSort.
-        // En caso contrario, se deja a la directiva matSort manejar el estado visual.
+
         if (!isServerSideSort) {
             this.dataSource.sort = this._matSort;
         } else {
-            // Se desvincula la fuente de datos del sort local,
-            // pero MatSort en el HTML seguirá funcionando.
             this.dataSource.sort = null;
         }
-        // Si la paginación es del lado del cliente, se vincula el MatPaginator.
+
         if (isClientSidePaginator) {
             this.dataSource.paginator = this._matPaginator;
         } else {
@@ -382,15 +382,22 @@ export class GridComponent
             if (!search) {
                 return true;
             }
-            // Si la configuración tiene una columna para filtrar..
-            if (this.gridConfig?.filterByColumn) {
+            // 1. OBTENER LA CONFIGURACIÓN COMO UNA CONSTANTE para mayor legibilidad
+            const config = this.gridConfigSig();
+            // 2. CHEQUEO ESTRICTO DEL TIPO DE filterByColumn
+            // Se asegura de que filterByColumn existe y es una string (o el tipo esperado)
+            const filterKey = config.filterByColumn;
+
+            if (filterKey) {
                 // Aca el nombre de la columna que viene en la configuración.
-                const value = data[this.gridConfig.filterByColumn];
+                // USAR EL VALOR YA CHEQUEADO para indexar 'data'
+                const value = data[filterKey];
                 const stringValue = value?.toString() || "";
                 return stringValue.toLowerCase().includes(search);
             }
             // Si no se especifica una columna, busca en todas las columnas.
-            return this.columns.some((col: Column): boolean => {
+            // Se usa this.columns() para acceder a la computed signal.
+            return this.columns().some((col: Column): boolean => {
                 const value = data[col.name];
                 const stringValue = value?.toString() || "";
                 return stringValue.toLowerCase().includes(search);
@@ -420,7 +427,7 @@ export class GridComponent
             this._scrollListener = undefined;
         }
 
-        if (this.gridConfig?.hasInfiniteScroll && this.scrollContainer) {
+        if (this.gridConfigSig().hasInfiniteScroll && this.scrollContainer) {
             const nativeElement = this.scrollContainer.nativeElement;
             this._scrollListener = this._ngZone.runOutsideAngular(
                 (): (() => void) => {
@@ -432,7 +439,7 @@ export class GridComponent
     }
 
     private _onScroll(): void {
-        if (!this.gridConfig?.hasInfiniteScroll || this.isLoading) {
+        if (!this.gridConfigSig().hasInfiniteScroll || this.isLoadingSig()) {
             return;
         }
 
@@ -440,15 +447,11 @@ export class GridComponent
         const scrollHeight = element.scrollHeight;
         const scrollTop = element.scrollTop;
         const clientHeight = element.clientHeight;
-        // "scrollThreshold" es el valor que define que tan cerca del final de la grilla debe estar el scroll para que se emita el evento infiniteScroll y se cargue la siguiente tanda de datos.
         const scrollThreshold = 50;
-        // scrollTop: Es la distancia que se ha desplazado el scroll desde la parte superior del contenedor.
-        // clientHeight: Es la altura visible del área de contenido del contenedor.
-        // scrollHeight: Es la altura total del contenido dentro del contenedor (incluida la parte que no está visible).
-        // scrollThreshold: Es un valor de margen que define qué tan cerca del final debe estar el scroll para que se active la carga (en este caso, 50 píxeles).
+
         if (scrollTop + clientHeight >= scrollHeight - scrollThreshold) {
-            const totalCount = this.paginatorConfig?.totalCount ?? 0;
-            if (this.data.length < totalCount) {
+            const totalCount = this.paginatorConfig()?.totalCount ?? 0;
+            if (this.gridDataSig().length < totalCount) {
                 this._ngZone.run((): void => {
                     this.infiniteScroll.emit();
                 });

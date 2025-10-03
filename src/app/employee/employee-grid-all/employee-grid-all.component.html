@@ -2,9 +2,9 @@
 <app-alert></app-alert>
 <div class="employee-grid-all-container">
     <app-grid
-        [gridConfig]="gridConfig"
-        [data]="gridData"
-        [isLoading]="isLoadingGridData()"
+        [gridConfigSig]="gridConfig()"
+        [gridDataSig]="gridData()"
+        [isLoadingSig]="isLoadingGridData()"
         (exportExcelClientSide)="onExportToExcel($event)"
         (createButtonClicked)="onCreateEmployee()"
         (rowDblClick)="onRowDblClick($event)"

@@ -1,5 +1,5 @@
-@if (isLoading) {
-    @if (gridConfig.hasInputSearch) {
+@if (isLoadingSig()) {
+    @if (gridConfigSig().hasInputSearch) {
         <div class="skeleton-search-container">
             <div class="skeleton-search-label">Buscar</div>
             <div class="skeleton-search-input"></div>
@@ -8,17 +8,17 @@
 
     <div class="skeleton-table">
         <div class="skeleton-header-row">
-            @for (col of columns; track col.name) {
+            @for (col of columns(); track col.name) {
                 <div class="skeleton-header-cell"></div>
             }
         </div>
 
         @for (
-            i of [].constructor(paginatorConfig?.pageSize || 25);
+            i of [].constructor(paginatorConfig()?.pageSize || 25);
             track $index
         ) {
             <div class="skeleton-row">
-                @for (col of columns; track col.name) {
+                @for (col of columns(); track col.name) {
                     <div class="skeleton-cell">
                         <div class="skeleton-line"></div>
                     </div>
@@ -28,15 +28,17 @@
     </div>
 }
 
-@if (!isLoading) {
-    @if (gridConfig.hasInputSearch) {
+@if (!isLoadingSig()) {
+    @if (gridConfigSig().hasInputSearch) {
         <div class="input-search-container">
             <mat-form-field appearance="outline" class="search-field">
                 <mat-label>Buscar</mat-label>
                 <input
                     matInput
                     (input)="onInputSearch($event)"
-                    [placeholder]="gridConfig.filterByColumn || 'Buscar todo'"
+                    [placeholder]="
+                        gridConfigSig().filterByColumn || 'Buscar todo'
+                    "
                 />
             </mat-form-field>
             <ng-container
@@ -45,9 +47,9 @@
         </div>
     } @else {
         <div class="chips-and-buttons-container">
-            @if (gridConfig.hasChips) {
+            @if (gridConfigSig().hasChips) {
                 <app-chips
-                    [chips]="chips"
+                    [chips]="chipsSig()"
                     (chipRemoved)="onChipRemoved($event)"
                 ></app-chips>
             }
@@ -59,9 +61,9 @@
 }
 
 <ng-template #actionButtonsTemplate>
-    @if (gridConfig.actionButtons!.length > 0) {
+    @if (gridConfigSig().actionButtons!.length > 0) {
         <div class="action-buttons-container">
-            @for (button of gridConfig.actionButtons; track button.text) {
+            @for (button of gridConfigSig().actionButtons; track button.text) {
                 <div class="buttons-actions">
                     <button
                         [class]="button.class ?? ''"
@@ -93,9 +95,9 @@
         matSort
         (matSortChange)="onSortChange($event)"
         class="table"
-        [class.table-hidden]="isLoading || dataSource.data.length === 0"
+        [class.table-hidden]="isLoadingSig || dataSource.data.length === 0"
     >
-        @for (col of columns; track col.name) {
+        @for (col of columns(); track col.name) {
             <ng-container [matColumnDef]="col.name">
                 <th
                     mat-header-cell
@@ -223,11 +225,11 @@
         <tr
             mat-header-row
             class="header"
-            *matHeaderRowDef="columnNames; sticky: 'sticky'"
+            *matHeaderRowDef="columnNames(); sticky: 'sticky'"
         ></tr>
         <tr
             mat-row
-            *matRowDef="let row; columns: columnNames"
+            *matRowDef="let row; columns: columnNames()"
             (dblclick)="onRowDblClick(row)"
         ></tr>
     </table>
@@ -240,27 +242,27 @@
     }
 </div>
 
-@if (paginatorConfig && !gridConfig.hasInfiniteScroll) {
+@if (paginatorConfig() && !gridConfigSig().hasInfiniteScroll) {
     <mat-paginator
         class="paginator"
-        [pageSize]="paginatorConfig.pageSize"
-        [pageSizeOptions]="paginatorConfig.pageSizeOptions"
+        [pageSize]="paginatorConfig()!.pageSize"
+        [pageSizeOptions]="paginatorConfig()!.pageSizeOptions"
         [showFirstLastButtons]="true"
-        [length]="paginatorConfig.totalCount"
-        [pageIndex]="paginatorConfig.pageIndex"
+        [length]="paginatorConfig()!.totalCount"
+        [pageIndex]="paginatorConfig()!.pageIndex"
         (page)="onPaginatorPageChange($event)"
     ></mat-paginator>
 }
 
-@if (gridConfig.hasInfiniteScroll && paginatorConfig) {
+@if (gridConfigSig().hasInfiniteScroll && paginatorConfig()) {
     <div class="infinite-paginator">
-        @if (paginatorConfig.totalCount) {
+        @if (paginatorConfig()!.totalCount) {
             <span>
                 {{
                     getInfinitePaginatorData(
                         0,
-                        data.length,
-                        paginatorConfig.totalCount
+                        gridDataSig().length,
+                        paginatorConfig()!.totalCount
                     )
                 }}
             </span>

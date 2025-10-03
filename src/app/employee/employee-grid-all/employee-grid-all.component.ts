@@ -11,7 +11,7 @@ import { EmployeeService } from "../../shared/services/employee.service";
 import { AlertService } from "../../shared/services/alert.service";
 import { BreadcrumbService } from "../../shared/services/breadcrumb.service";
 import { Employee } from "../../shared/models/employee.model";
-import { HttpClientModule, HttpErrorResponse } from "@angular/common/http";
+import { HttpClientModule } from "@angular/common/http";
 import {
     createDefaultGridConfiguration,
     ElipsisAction,
@@ -47,8 +47,8 @@ import { Router } from "@angular/router";
     styleUrl: "./employee-grid-all.component.scss",
 })
 export class EmployeeGridAllComponent implements OnInit, OnDestroy {
-    gridConfig: GridConfiguration;
-    gridData: GridData[] = [];
+    gridConfig = signal<GridConfiguration>({} as GridConfiguration);
+    gridData = signal<GridData[]>([]);
     isLoadingGridData = signal(true);
 
     private _employees: Employee[] = [];
@@ -78,7 +78,7 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
     constructor() {
         this._alertService.clearAlerts();
         this._setBreadcrumb();
-        this.gridConfig = this._setGridConfiguration(); // seteando la grilla para grid.component
+        this.gridConfig.set(this._setGridConfiguration()); // seteando la grilla para grid.component
     }
 
     ngOnInit(): void {
@@ -143,7 +143,7 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
             .pipe(
                 finalize((): void => {
                     this.isLoadingGridData.set(false);
-                    this._changeDetectorRef.markForCheck();
+                    //this._changeDetectorRef.markForCheck();
                 }),
             )
             .subscribe({
@@ -151,8 +151,8 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
                     this._positions = results.positions;
                     this._countries = results.countries;
                     this._employees = results.employees;
-                    this.gridData = this._mapEmployeeListToGridData(
-                        this._employees,
+                    this.gridData.set(
+                        this._mapEmployeeListToGridData(this._employees),
                     );
                 },
                 error: (): void => {

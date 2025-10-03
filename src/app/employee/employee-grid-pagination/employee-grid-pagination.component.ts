@@ -65,15 +65,15 @@ interface DateRangeValue {
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
-    gridFilterConfig: GridFilterConfig[] = [];
-    gridFilterForm!: FormGroup;
-    gridConfig: GridConfiguration;
-    gridData: GridData[] = [];
-    employees: Employee[] = [];
-    chips: Chip[] = [];
+    gridFilterConfigSig = signal<GridFilterConfig[]>([]);
+    gridFilterFormSig = signal<FormGroup>(new FormGroup({}));
+    gridConfigSig = signal<GridConfiguration>({} as GridConfiguration);
+    gridDataSig = signal<GridData[]>([]);
+    chipsSig = signal<Chip[]>([]);
+    isLoadingGridDataSig = signal(true);
+    isLoadingFilterGridDataSig = signal(true);
 
-    isLoadingGridData = signal(true);
-    isLoadingFilterGridData = signal(true);
+    employees: Employee[] = [];
 
     private _positions: SelectItem[] = [];
     private _countries: SelectItem[] = [];
@@ -119,7 +119,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     constructor() {
         this._alertService.clearAlerts();
         this._setBreadcrumb();
-        this.gridConfig = this._setGridConfiguration();
+        this.gridConfigSig.set(this._setGridConfiguration());
         this._setGridFilterConfig();
         this._setGridFilterForm();
         this._createChips(this._defaultChips);
@@ -167,8 +167,8 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                 this._mapToEmployeeFilterParams(filterValues);
             Object.assign(this._employeeFilterParams, filterParamsForBackend);
         }
-        if (this.gridConfig.paginator) {
-            this.gridConfig.paginator.pageIndex = 0;
+        if (this.gridConfigSig().paginator) {
+            this.gridConfigSig().paginator.pageIndex = 0;
         }
         this._reloadGridData();
     }
@@ -199,7 +199,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
 
     onExportToExcel(): void {
         this._spinnerService.show();
-        const filterValues = this.gridFilterForm.value;
+        const filterValues = this.gridFilterFormSig().value;
         const exportParams = this._mapToEmployeeFilterParams(filterValues);
         if (this._employeeFilterParams.sortColumn) {
             exportParams.sortColumn = this._employeeFilterParams.sortColumn;
@@ -242,31 +242,31 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
         const fieldName = chip.key;
         const resetStrategies = {
             position: (): void =>
-                this.gridFilterForm.get(fieldName)?.patchValue("all"),
+                this.gridFilterFormSig().get(fieldName)?.patchValue("all"),
             country: (): void =>
-                this.gridFilterForm.get(fieldName)?.patchValue("all"),
+                this.gridFilterFormSig().get(fieldName)?.patchValue("all"),
             active: (): void =>
-                this.gridFilterForm.get(fieldName)?.patchValue("all"),
+                this.gridFilterFormSig().get(fieldName)?.patchValue("all"),
             gender: (): void =>
-                this.gridFilterForm.get(fieldName)?.patchValue("all"),
+                this.gridFilterFormSig().get(fieldName)?.patchValue("all"),
             birthDateRange: (): void =>
-                this.gridFilterForm.get(fieldName)?.patchValue({
+                this.gridFilterFormSig().get(fieldName)?.patchValue({
                     startDate: null,
                     endDate: null,
                 }),
             default: (): void =>
-                this.gridFilterForm.get(fieldName)?.patchValue(null),
+                this.gridFilterFormSig().get(fieldName)?.patchValue(null),
         };
         const resetAction =
             resetStrategies[fieldName as keyof typeof resetStrategies] ||
             resetStrategies.default;
         resetAction();
 
-        this.applyFilter(this.gridFilterForm.value);
+        this.applyFilter(this.gridFilterFormSig().value);
     }
 
     private _createChips(filterValues: Record<string, unknown>): void {
-        this.chips = this._mapToChipsDescription(filterValues);
+        this.chipsSig.set(this._mapToChipsDescription(filterValues));
     }
 
     private _mapToChipsDescription(
@@ -389,22 +389,22 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     }
 
     private _reloadGridData(): void {
-        this.isLoadingGridData.set(true);
-        this.isLoadingFilterGridData.set(true);
+        this.isLoadingGridDataSig.set(true);
+        this.isLoadingFilterGridDataSig.set(true);
         this._employeeServices
             .getEmployees(this._employeeFilterParams)
             .pipe(
                 map(this._mapPaginatedListToGridData.bind(this)),
                 finalize((): void => {
-                    this.isLoadingGridData.set(false);
-                    this.isLoadingFilterGridData.set(false);
+                    this.isLoadingGridDataSig.set(false);
+                    this.isLoadingFilterGridDataSig.set(false);
                 }),
             )
             .subscribe({
                 next: (
                     paginatedListGridData: PaginatedList<GridData>,
                 ): void => {
-                    this.gridData = paginatedListGridData.items;
+                    this.gridDataSig.set(paginatedListGridData.items);
                     this._updateGridConfig(paginatedListGridData);
                 },
                 error: (error: HttpErrorResponse): void => {
@@ -438,8 +438,8 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     }
 
     private _loadData(): void {
-        this.isLoadingGridData.set(true);
-        this.isLoadingFilterGridData.set(true);
+        this.isLoadingGridDataSig.set(true);
+        this.isLoadingFilterGridDataSig.set(true);
         this._setEmployeeFilterParameters(); // Inicializa los parámetros de filtro
         forkJoin({
             positions: this._getPositions(),
@@ -450,8 +450,8 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
         })
             .pipe(
                 finalize((): void => {
-                    this.isLoadingGridData.set(false);
-                    this.isLoadingFilterGridData.set(false);
+                    this.isLoadingGridDataSig.set(false);
+                    this.isLoadingFilterGridDataSig.set(false);
                     this._cdr.markForCheck();
                 }),
             )
@@ -475,7 +475,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                     const paginatedGridData = this._mapPaginatedListToGridData(
                         results.employees,
                     );
-                    this.gridData = paginatedGridData.items;
+                    this.gridDataSig.set(paginatedGridData.items);
                     this._updateGridConfig(paginatedGridData);
                 },
                 error: (): void => {
@@ -582,19 +582,21 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
 
     private _updateGridConfigOnSortChange(sortEvent: Sort): void {
         const basePaginationConfig =
-            this.gridConfig.paginator || this._defaultPaginatorOptions;
-
-        this.gridConfig = {
-            ...this.gridConfig,
-            OrderBy: {
-                columnName: sortEvent.active,
-                direction: sortEvent.direction,
-            },
-            paginator: {
-                ...basePaginationConfig,
-                pageIndex: 0,
-            },
-        };
+            this.gridConfigSig().paginator || this._defaultPaginatorOptions;
+        // cambio de referencia de un objeto signal
+        this.gridConfigSig.update(
+            (currentValue): GridConfiguration => ({
+                ...currentValue,
+                OrderBy: {
+                    columnName: sortEvent.active,
+                    direction: sortEvent.direction,
+                },
+                paginator: {
+                    ...basePaginationConfig,
+                    pageIndex: 0,
+                },
+            }),
+        );
     }
 
     private _updateGridConfig(
@@ -603,7 +605,8 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
         const { totalCount, pageIndex, pageSize } = paginatedListGridData;
         const { sortColumn = "", sortOrder = "" } = this._employeeFilterParams;
         const paginationConfig = {
-            ...(this.gridConfig.paginator || this._defaultPaginatorOptions),
+            ...(this.gridConfigSig().paginator ||
+                this._defaultPaginatorOptions),
             totalCount,
             pageSize,
             pageIndex,
@@ -612,11 +615,14 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
             columnName: sortColumn,
             direction: sortOrder as "asc" | "desc" | "",
         };
-        this.gridConfig = {
-            ...this.gridConfig,
-            paginator: paginationConfig,
-            OrderBy: orderByConfig,
-        };
+        // cambio de referencia de un objeto signal
+        this.gridConfigSig.update(
+            (currentValue): GridConfiguration => ({
+                ...currentValue,
+                paginator: paginationConfig,
+                OrderBy: orderByConfig,
+            }),
+        );
     }
 
     private _mapToEmployeeFilterParams(obj: unknown): EmployeeFilterParams {
@@ -728,7 +734,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     }
 
     private _setGridFilterConfig(): void {
-        this.gridFilterConfig = [
+        this.gridFilterConfigSig.set([
             {
                 fieldName: "id",
                 fieldType: "text",
@@ -783,28 +789,28 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                     },
                 ],
             },
-        ];
+        ]);
     }
 
     private _setGridFilterForm(): void {
-        this.gridFilterForm = new FormGroup({});
-        this.gridFilterConfig.forEach((filter: GridFilterConfig): void => {
+        this.gridFilterFormSig.set(new FormGroup({}));
+        this.gridFilterConfigSig().forEach((filter: GridFilterConfig): void => {
             if (filter.fieldType === "text") {
-                this.gridFilterForm.addControl(
+                this.gridFilterFormSig().addControl(
                     filter.fieldName,
                     new FormControl(""),
                 );
                 return;
             }
             if (filter.fieldType === "select") {
-                this.gridFilterForm.addControl(
+                this.gridFilterFormSig().addControl(
                     filter.fieldName,
                     new FormControl("all"),
                 );
                 return;
             }
             if (filter.fieldType === "dateRange") {
-                this.gridFilterForm.addControl(
+                this.gridFilterFormSig().addControl(
                     filter.fieldName,
                     new FormGroup({
                         startDate: new FormControl(null),

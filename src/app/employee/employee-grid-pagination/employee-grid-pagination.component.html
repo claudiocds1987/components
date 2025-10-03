@@ -2,10 +2,10 @@
 <app-alert></app-alert>
 <div class="employee-grid-container">
     <app-grid
-        [gridConfig]="gridConfig"
-        [data]="gridData"
-        [isLoading]="isLoadingGridData()"
-        [chips]="chips"
+        [gridConfigSig]="gridConfigSig()"
+        [gridDataSig]="gridDataSig()"
+        [isLoadingSig]="isLoadingGridDataSig()"
+        [chipsSig]="chipsSig()"
         (pageChange)="onGridPageChange($event)"
         (sortChange)="onGridSortChange($event)"
         (exportExcel)="onExportToExcel()"
@@ -16,9 +16,9 @@
     <div class="filter-container">
         <ng-container>
             <app-grid-filter
-                [config]="gridFilterConfig"
-                [filterForm]="gridFilterForm"
-                [isLoading]="isLoadingFilterGridData()"
+                [config]="gridFilterConfigSig()"
+                [filterForm]="gridFilterFormSig()"
+                [isLoading]="isLoadingFilterGridDataSig()"
                 (emitFilterApplied)="applyFilter($event)"
             ></app-grid-filter>
         </ng-container>
