@@ -193,10 +193,6 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     showFeeback(): boolean {
-        /*  return (
-            this.gridDataSig().length === 0 ||
-            this.dataSource.filteredData.length === 0
-        ); */
         return (
             !this.isLoadingSig() &&
             (this.gridDataSig().length === 0 ||

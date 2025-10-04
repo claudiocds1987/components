@@ -1,3 +1,14 @@
+<div class="chips-and-buttons-container">
+    @if (gridConfigSig().hasChips) {
+        <app-chips
+            [chips]="chipsSig()"
+            [isLoadingSig]="isLoadingSig()"
+            (chipRemoved)="onChipRemoved($event)"
+        ></app-chips>
+    }
+    <ng-container [ngTemplateOutlet]="actionButtonsTemplate"></ng-container>
+</div>
+
 @if (isLoadingSig()) {
     @if (gridConfigSig().hasInputSearch) {
         <div class="skeleton-search-container">
@@ -45,7 +56,8 @@
                 [ngTemplateOutlet]="actionButtonsTemplate"
             ></ng-container>
         </div>
-    } @else {
+    }
+    <!--  @else {
         <div class="chips-and-buttons-container">
             @if (gridConfigSig().hasChips) {
                 <app-chips
@@ -57,7 +69,7 @@
                 [ngTemplateOutlet]="actionButtonsTemplate"
             ></ng-container>
         </div>
-    }
+    } -->
 }
 
 <ng-template #actionButtonsTemplate>
