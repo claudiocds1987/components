@@ -2,7 +2,6 @@
     @if (gridConfigSig().hasChips) {
         <app-chips
             [chips]="chipsSig()"
-            [isLoadingSig]="isLoadingSig()"
             (chipRemoved)="onChipRemoved($event)"
         ></app-chips>
     }

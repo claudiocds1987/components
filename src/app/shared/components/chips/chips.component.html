@@ -1,34 +1,26 @@
 <div class="chips-container">
-    @if (isLoadingSig()) {
-        @for (i of skeletonChips(); track $index) {
-            <mat-chip-row class="chip-row skeleton-chip"> </mat-chip-row>
-        }
-    }
-
-    @if (!isLoadingSig() && (chips()?.length ?? 0) > 0) {
-        @for (chip of chips(); track trackByChipKey($index, chip)) {
-            <mat-chip-row
-                class="chip-row"
-                [disabled]="chip.disabled"
-                [matTooltip]="chip.label"
-            >
-                <!-- Mostrando la etiqueta del filtro -->
-                <span class="chip-label">{{
-                    chip.label.substring(0, chip.label.indexOf(":") + 1)
-                }}</span>
-                {{ truncate(chip.label) }}
-                <!-- Icono para eliminar el filtro -->
-                @if (!chip.disabled) {
-                    <mat-icon
-                        class="icon-remove"
-                        matChipRemove
-                        (click)="removeChip(chip)"
-                        [attr.aria-label]="'remove ' + chip.value"
-                    >
-                        cancel
-                    </mat-icon>
-                }
-            </mat-chip-row>
-        }
+    @for (chip of chips(); track trackByChipKey($index, chip)) {
+        <mat-chip-row
+            class="chip-row"
+            [disabled]="chip.disabled"
+            [matTooltip]="chip.label"
+        >
+            <!-- Mostrando la etiqueta del filtro -->
+            <span class="chip-label">{{
+                chip.label.substring(0, chip.label.indexOf(":") + 1)
+            }}</span
+            >{{ truncate(chip.label) }}
+            <!-- Icono para eliminar el filtro -->
+            @if (!chip.disabled) {
+                <mat-icon
+                    class="icon-remove"
+                    matChipRemove
+                    (click)="removeChip(chip)"
+                    [attr.aria-label]="'remove ' + chip.value"
+                >
+                    cancel
+                </mat-icon>
+            }
+        </mat-chip-row>
     }
 </div>

@@ -30,18 +30,8 @@ export interface Chip {
 })
 export class ChipsComponent {
     chips = input<Chip[]>();
-    isLoadingSig = input<boolean>(true);
     @Output() chipRemoved = new EventEmitter<Chip>();
     @Output() defaultChips = new EventEmitter<Chip[]>();
-
-    // Para que el skeleton mantenga la forma y el número de los chips que ya estaban visibles antes de la carga
-    // Esto se recalcula automáticamente cada vez que 'chips()' cambia.
-    skeletonChips = computed<null[]>((): null[] => {
-        // Obtenemos la longitud actual de los chips, o 3 si no hay chips
-        const length = this.chips()?.length ?? 3;
-        // Creamos y retornamos el array de tamaño fijo
-        return Array(length).fill(null);
-    });
 
     truncate(label: string): string {
         const value = label.substring(label.indexOf(":") + 1);

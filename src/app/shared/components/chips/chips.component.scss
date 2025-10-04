@@ -56,27 +56,3 @@
     margin-left: 8px;
     color: #757575;
 }
-
-// SKELETON STYLES
-
-@keyframes pulse {
-    0% {
-        opacity: 0.5;
-    }
-    50% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0.5;
-    }
-}
-
-.skeleton-chip {
-    width: 130px !important;
-    height: 32px;
-    background: linear-gradient(90deg, #eeeeee 25%, #dddddd 50%, #eeeeee 75%);
-    background-size: 200% 100%;
-    border-radius: 16px;
-    padding: 0 12px; /* Recrea el padding del chip */
-    animation: pulse 1.5s infinite ease-in-out;
-}
