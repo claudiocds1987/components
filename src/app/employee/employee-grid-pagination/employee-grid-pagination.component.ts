@@ -713,7 +713,6 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                     | "asc"
                     | "desc",
             },
-            hasInputSearch: false,
             hasChips: true,
             actionButtons: [
                 {

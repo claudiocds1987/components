@@ -485,7 +485,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                     | "desc",
             },
             filterByColumn: "",
-            hasInputSearch: false,
+
             hasChips: false,
             actionButtons: [
                 {

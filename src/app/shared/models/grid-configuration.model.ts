@@ -135,7 +135,7 @@ export const createDefaultGridConfiguration = (
     return {
         columns: defaultColumns,
         paginator: finalPaginator,
-        hasInputSearch: config.hasInputSearch ?? true,
+        hasInputSearch: config.hasInputSearch ?? false,
         filterByColumn: config.filterByColumn ?? "",
         actionButtons: config.actionButtons ?? [],
         hasChips: config.hasChips ?? false,
