@@ -5,6 +5,7 @@ import {
     Output,
     EventEmitter,
     ChangeDetectionStrategy,
+    input,
 } from "@angular/core";
 import { MatChipsModule } from "@angular/material/chips";
 import { MatIconModule } from "@angular/material/icon";
@@ -28,7 +29,7 @@ export interface Chip {
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChipsComponent {
-    @Input() chips: Chip[] = [];
+    chips = input<Chip[]>();
     @Output() chipRemoved = new EventEmitter<Chip>();
     @Output() defaultChips = new EventEmitter<Chip[]>();
 

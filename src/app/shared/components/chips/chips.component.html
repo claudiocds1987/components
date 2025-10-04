@@ -1,5 +1,5 @@
 <div class="chips-container">
-    @for (chip of chips; track trackByChipKey($index, chip)) {
+    @for (chip of chips(); track trackByChipKey($index, chip)) {
         <mat-chip-row
             class="chip-row"
             [disabled]="chip.disabled"
