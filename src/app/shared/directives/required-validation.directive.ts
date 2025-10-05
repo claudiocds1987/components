@@ -2,7 +2,6 @@ import {
     Directive,
     ElementRef,
     inject,
-    Input,
     OnDestroy,
     OnInit,
     Renderer2,
@@ -27,7 +26,8 @@ export class RequiredValidationDirective implements OnInit, OnDestroy {
         if (!this._ngControl || !this._ngControl.control) {
             return;
         }
-
+        // "closest" para comenzar la búsqueda desde ese elemento nativo y sube por la jerarquía.
+        // Devuelve la referencia al primer elemento ancestro (el más cercano) que tiene la etiqueta <mat-form-field>.
         this._matFormField = this._el.nativeElement.closest("mat-form-field");
         if (this._matFormField) {
             // ".mat-mdc-form-field-subscript-wrapper" es la clase que genera un espacio debajo del input
