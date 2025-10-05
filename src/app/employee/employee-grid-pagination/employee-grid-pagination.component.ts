@@ -390,14 +390,12 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
 
     private _reloadGridData(): void {
         this.isLoadingGridDataSig.set(true);
-        this.isLoadingFilterGridDataSig.set(true);
         this._employeeServices
             .getEmployees(this._employeeFilterParams)
             .pipe(
                 map(this._mapPaginatedListToGridData.bind(this)),
                 finalize((): void => {
                     this.isLoadingGridDataSig.set(false);
-                    this.isLoadingFilterGridDataSig.set(false);
                 }),
             )
             .subscribe({
