@@ -56,19 +56,6 @@
             ></ng-container>
         </div>
     }
-    <!--  @else {
-        <div class="chips-and-buttons-container">
-            @if (gridConfigSig().hasChips) {
-                <app-chips
-                    [chips]="chipsSig()"
-                    (chipRemoved)="onChipRemoved($event)"
-                ></app-chips>
-            }
-            <ng-container
-                [ngTemplateOutlet]="actionButtonsTemplate"
-            ></ng-container>
-        </div>
-    } -->
 }
 
 <ng-template #actionButtonsTemplate>
