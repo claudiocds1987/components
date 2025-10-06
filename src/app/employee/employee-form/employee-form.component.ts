@@ -18,27 +18,27 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatButtonModule } from "@angular/material/button";
 import { MatSelectModule } from "@angular/material/select";
-import { DateInputComponent } from "../../../../shared/components/date-input/date-input.component";
-import { SpinnerService } from "../../../../shared/services/spinner.service";
-import { BreadcrumbService } from "../../../../shared/services/breadcrumb.service";
-import { AlertService } from "../../../../shared/services/alert.service";
-import { BreadcrumbComponent } from "../../../../shared/components/breadcrumb/breadcrumb.component";
-import { AlertComponent } from "../../../../shared/components/alert/alert.component";
-import { SelectItem } from "../../../../shared/models/select-item.model";
-import { EmployeeService } from "../../../../shared/services/employee.service";
-import { PositionService } from "../../../../shared/services/position.service";
-import { CountryService } from "../../../../shared/services/country.service";
+import { DateInputComponent } from "../../shared/components/date-input/date-input.component";
+import { SpinnerService } from "../../shared/services/spinner.service";
+import { BreadcrumbService } from "../../shared/services/breadcrumb.service";
+import { AlertService } from "../../shared/services/alert.service";
+import { BreadcrumbComponent } from "../../shared/components/breadcrumb/breadcrumb.component";
+import { AlertComponent } from "../../shared/components/alert/alert.component";
+import { SelectItem } from "../../shared/models/select-item.model";
+import { EmployeeService } from "../../shared/services/employee.service";
+import { PositionService } from "../../shared/services/position.service";
+import { CountryService } from "../../shared/services/country.service";
 import { delay, forkJoin, Observable } from "rxjs";
 import { HttpErrorResponse } from "@angular/common/http";
 import { MatRadioModule } from "@angular/material/radio";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
-import { Employee } from "../../../../shared/models/employee.model";
-import { FeedbackDialogService } from "../../../../shared/services/feedback-dialog.service";
-import { SkeletonDirective } from "../../../../shared/directives/skeleton.directive";
-import { SnackbarService } from "../../../../shared/services/snackbar.service";
-import { RequiredValidationDirective } from "../../../../shared/directives/required-validation.directive";
+import { Employee } from "../../shared/models/employee.model";
+import { FeedbackDialogService } from "../../shared/services/feedback-dialog.service";
+import { SkeletonDirective } from "../../shared/directives/skeleton.directive";
+import { SnackbarService } from "../../shared/services/snackbar.service";
+import { RequiredValidationDirective } from "../../shared/directives/required-validation.directive";
 
 @Component({
     selector: "app-employee-form",
@@ -63,7 +63,7 @@ import { RequiredValidationDirective } from "../../../../shared/directives/requi
     templateUrl: "./employee-form.component.html",
     styleUrls: [
         "./employee-form.component.scss",
-        "../../../../shared/styles/skeleton.scss",
+        "../../shared/styles/skeleton.scss",
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
