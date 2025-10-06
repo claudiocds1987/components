@@ -44,3 +44,17 @@
 .header-with-image h2 {
     margin: 0;
 }
+
+// Para añadir margen inferior a todos los elementos con la clase skeleton-loading heredado de skeleton.scss
+.skeleton-loading {
+    margin-bottom: 20px !important;
+}
+
+mat-form-field.skeleton-loading {
+    margin-bottom: 20px !important;
+}
+
+.radio-group-container.skeleton-loading {
+    display: block;
+    margin-bottom: 20px !important;
+}

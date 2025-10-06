@@ -90,3 +90,13 @@ app-date-range {
     margin-bottom: 15px !important; // Mismo espaciado que otros campos
     display: block !important;
 }
+
+// Para añadir margen inferior a todos los elementos con la clase skeleton-loading heredado de skeleton.scss
+
+.skeleton-loading {
+    margin-bottom: 30px !important;
+}
+
+mat-form-field.skeleton-loading {
+    margin-bottom: 30px !important;
+}
