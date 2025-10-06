@@ -5,7 +5,9 @@
             (chipRemoved)="onChipRemoved($event)"
         ></app-chips>
     }
-    <ng-container [ngTemplateOutlet]="actionButtonsTemplate"></ng-container>
+    @if (!gridConfigSig().hasInputSearch) {
+        <ng-container [ngTemplateOutlet]="actionButtonsTemplate"></ng-container>
+    }
 </div>
 
 @if (isLoadingSig()) {
