@@ -1,7 +1,6 @@
 @import "../../../shared/styles/colors.scss";
-@import "../../../shared/styles/status-circle.scss"; // Asume que este archivo usa BEM (status-circle--active)
+@import "../../../shared/styles/status-circle.scss";
 
-// BLOQUE PRINCIPAL: Grid
 :host {
     display: flex;
     flex-direction: column;
@@ -10,86 +9,61 @@
     overflow: hidden;
 }
 
-// ELEMENTO: grid__feedback-container
-.grid__feedback-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    height: 80%;
-    box-sizing: border-box;
-}
-
-// ELEMENTO: grid__search-and-actions (Contiene el input y los botones de acción cuando está listo)
-.grid__search-and-actions {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    flex-wrap: wrap;
-}
-
-// ELEMENTO: grid__chips-and-actions (Contiene los chips y los botones de acción cuando NO hay búsqueda)
-.grid__chips-and-actions {
+.chips-and-buttons-container {
     display: grid;
     align-items: start;
     grid-template-columns: 1fr auto;
     padding-bottom: 15px;
     flex-wrap: wrap;
+
+    .action-buttons-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        justify-content: flex-end;
+
+        .buttons-actions {
+            align-items: center;
+            gap: 10px;
+        }
+    }
 }
 
-// ELEMENTO: grid__action-buttons-container (Contenedor de botones compartido, elemento de la grilla)
-.grid__action-buttons-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    justify-content: flex-end;
+.input-search-container {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    flex-wrap: wrap;
+
+    .action-buttons-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        justify-content: flex-end;
+
+        .buttons-actions {
+            display: flex;
+            align-items: center;
+        }
+    }
 }
 
-// ELEMENTO: grid__button-action (Wrapper para cada botón individual)
-.grid__button-action {
-    display: flex;
-    align-items: center;
-    gap: 10px; // Solo si quieres espaciado entre el botón y el wrapper, si no, elimina este gap.
-}
-
-// ELEMENTO: grid__search-field
-.grid__search-field {
-    margin-top: 5px;
-    width: auto;
-    max-width: 300px;
-}
-
-// ELEMENTO: grid__table-container
-.grid__table-container {
+.table-container {
     flex: 1;
     overflow: auto;
     min-height: 0;
     background: white;
 
-    // ELEMENTO: grid__header-content
-    .grid__header-content {
+    .header-content {
         display: flex;
         align-items: baseline;
         gap: 10px;
 
-        // ELEMENTO: grid__header-icon
-        .grid__header-icon {
+        img {
             width: 15px;
             height: 15px;
         }
     }
 
-    // ELEMENTO: grid__table-img
-    .grid__table-img {
-        display: flex;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        object-fit: cover;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
-
-    // Reglas del scrollbar (se mantienen)
     &::-webkit-scrollbar {
         width: 3px;
         height: 3px;
@@ -111,23 +85,42 @@
     }
 }
 
-// ELEMENTO: grid__row--header (Fila de cabecera)
-.grid__row--header {
-    .grid__cell {
-        // Elemento: grid__cell (aplicado en las celdas de cabecera)
-        background-color: #f0f4f9;
-        color: $primary-material-color;
-        font-weight: bold;
-    }
+.feedback-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 80%;
+    box-sizing: border-box;
 }
 
-// ELEMENTO: grid__paginator
-.grid__paginator {
+.header .grid-cell {
+    background-color: #f0f4f9;
+    color: $primary-material-color;
+    font-weight: bold;
+}
+
+.paginator {
     background-color: #f0f4f9;
 }
 
-// ELEMENTO: grid__paginator--infinite (Modificador del paginador)
-.grid__paginator--infinite {
+.search-field {
+    margin-top: 5px;
+    width: auto;
+    max-width: 300px;
+}
+
+.table-img {
+    display: flex;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.infinite-paginator {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
@@ -140,8 +133,7 @@
     height: 56px;
 }
 
-// BLOQUE: SKELETON (skeleton__table)
-.skeleton__table {
+.skeleton-table {
     display: flex;
     flex-direction: column;
     border: 1px solid #ccc;
@@ -150,14 +142,12 @@
     overflow: hidden;
 }
 
-// ELEMENTOS DE SKELETON
-.skeleton__row--header,
-.skeleton__row {
+.skeleton-header-row,
+.skeleton-row {
     display: flex;
 }
 
-// ELEMENTO: skeleton__cell--header (Simula un <th>)
-.skeleton__cell--header {
+.skeleton-header-cell {
     flex: 1;
     height: 48px;
     background: linear-gradient(90deg, #eeeeee 25%, #dddddd 50%, #eeeeee 75%);
@@ -165,26 +155,24 @@
     animation: shimmer 1.5s infinite linear;
     background-color: #f0f0f0;
     border-right: 1px solid #ddd;
-
-    &:last-child {
-        border-right: none;
-    }
 }
 
-// ELEMENTO: skeleton__cell (Simula un <td>)
-.skeleton__cell {
+.skeleton-header-cell:last-child {
+    border-right: none;
+}
+
+.skeleton-cell {
     flex: 1;
     padding: 12px 16px;
     border-top: 1px solid #eee;
     border-right: 1px solid #eee;
-
-    &:last-child {
-        border-right: none;
-    }
 }
 
-// ELEMENTO: skeleton__line
-.skeleton__line {
+.skeleton-cell:last-child {
+    border-right: none;
+}
+
+.skeleton-line {
     height: 16px;
     width: 100%;
     background: linear-gradient(90deg, #eeeeee 25%, #dddddd 50%, #eeeeee 75%);
@@ -193,8 +181,7 @@
     border-radius: 4px;
 }
 
-// BLOQUE: skeleton__search-container
-.skeleton__search-container {
+.skeleton-search-container {
     position: relative;
     width: 212px;
     height: 56px;
@@ -205,8 +192,7 @@
     box-sizing: border-box;
 }
 
-// ELEMENTOS DE SKELETON__SEARCH-CONTAINER
-.skeleton__search-label {
+.skeleton-search-label {
     position: absolute;
     top: -8px;
     left: 8px;
@@ -216,7 +202,7 @@
     padding: 0 4px;
 }
 
-.skeleton__search-input {
+.skeleton-search-input {
     margin-top: 16px;
     height: 20px;
     background: linear-gradient(90deg, #eeeeee 25%, #dddddd 50%, #eeeeee 75%);
@@ -225,7 +211,6 @@
     border-radius: 4px;
 }
 
-// DEFINICIÓN EFECTO DEL SHIMMER (Fuera de BEM)
 @keyframes shimmer {
     0% {
         background-position: 200% 0;
