@@ -9,7 +9,7 @@ import {
     signal,
 } from "@angular/core";
 import { GridFilterConfig } from "../../shared/models/grid-filter-configuration.model";
-import { FormControl, FormGroup } from "@angular/forms";
+import { AbstractControl, FormControl, FormGroup } from "@angular/forms";
 import {
     createDefaultGridConfiguration,
     GridConfiguration,
@@ -120,8 +120,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
         this._alertService.clearAlerts();
         this._setBreadcrumb();
         this.gridConfigSig.set(this._setGridConfiguration());
-        this._setGridFilterConfig();
-        this._setGridFilterForm();
+        this._initializeGridFilter(); // Inicializa el formulario y la configuración para grid-filter.component
         this._createChips(this._defaultChips);
     }
 
@@ -160,7 +159,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
         );
         if (isFilterClear) {
             this._createChips(this._defaultChips);
-            this._setGridFilterForm();
+            this._initializeGridFilter();
         } else {
             this._createChips(filterValues);
             const filterParamsForBackend =
@@ -468,7 +467,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                     };
                     this._positions.unshift(allItem);
                     this._countries.unshift(allItem);
-                    this._setGridFilterConfig();
+                    this._initializeGridFilter();
                     // Mapear y actualizar la grilla con los datos de empleados
                     const paginatedGridData = this._mapPaginatedListToGridData(
                         results.employees,
@@ -730,23 +729,12 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
         return config;
     }
 
-    private _setGridFilterConfig(): void {
-        this.gridFilterConfigSig.set([
-            {
-                fieldName: "id",
-                fieldType: "text",
-                label: "Id",
-            },
-            {
-                fieldName: "name",
-                fieldType: "text",
-                label: "Nombre",
-            },
-            {
-                fieldName: "surname",
-                fieldType: "text",
-                label: "Apellido",
-            },
+    private _initializeGridFilter(): void {
+        // 1. DEFINICIÓN DE LA CONFIGURACIÓN
+        const config: GridFilterConfig[] = [
+            { fieldName: "id", fieldType: "text", label: "Id" },
+            { fieldName: "name", fieldType: "text", label: "Nombre" },
+            { fieldName: "surname", fieldType: "text", label: "Apellido" },
             {
                 fieldName: "gender",
                 fieldType: "select",
@@ -776,46 +764,45 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                 label: "Estado",
                 selectItems: [
                     { description: "Todos", id: "all" },
-                    {
-                        description: "activo",
-                        id: 1,
-                    },
-                    {
-                        description: "inactivo",
-                        id: 0,
-                    },
+                    { description: "activo", id: 1 },
+                    { description: "inactivo", id: 0 },
                 ],
             },
-        ]);
-    }
+        ];
 
-    private _setGridFilterForm(): void {
-        this.gridFilterFormSig.set(new FormGroup({}));
-        this.gridFilterConfigSig().forEach((filter: GridFilterConfig): void => {
-            if (filter.fieldType === "text") {
-                this.gridFilterFormSig().addControl(
-                    filter.fieldName,
-                    new FormControl(""),
-                );
-                return;
-            }
-            if (filter.fieldType === "select") {
-                this.gridFilterFormSig().addControl(
-                    filter.fieldName,
-                    new FormControl("all"),
-                );
-                return;
-            }
-            if (filter.fieldType === "dateRange") {
-                this.gridFilterFormSig().addControl(
-                    filter.fieldName,
-                    new FormGroup({
+        // 2. ACTUALIZAR LA SEÑAL DE CONFIGURACIÓN
+        this.gridFilterConfigSig.set(config);
+
+        // 3. CREACIÓN DINÁMICA DE CONTROLES PARA EL FORMULARIO
+        const formControls: Record<
+            string,
+            FormGroup | FormControl | AbstractControl
+        > = {};
+
+        config.forEach((filter: GridFilterConfig): void => {
+            switch (filter.fieldType) {
+                case "text":
+                    // Inicializa campos de texto con cadena vacía
+                    formControls[filter.fieldName] = new FormControl("");
+                    break;
+
+                case "select":
+                    // Inicializa campos de selección con "all" (o null/'' si aplica)
+                    formControls[filter.fieldName] = new FormControl("all");
+                    break;
+
+                case "dateRange":
+                    // Inicializa grupos de rango de fechas
+                    formControls[filter.fieldName] = new FormGroup({
                         startDate: new FormControl(null),
                         endDate: new FormControl(null),
-                    }),
-                );
+                    });
+                    break;
             }
         });
+
+        // 4. ACTUALIZAR LA SEÑAL DEL FORMULARIO
+        this.gridFilterFormSig.set(new FormGroup(formControls));
     }
 
     private _setBreadcrumb(): void {
