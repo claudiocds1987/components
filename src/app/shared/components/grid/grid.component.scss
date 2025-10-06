@@ -1,14 +1,17 @@
 @import "../../../shared/styles/colors.scss";
-@import "../../../shared/styles/status-circle.scss";
+@import "../../../shared/styles/status-circle.scss"; // Asume que este archivo usa BEM (status-circle--active)
+
+// BLOQUE PRINCIPAL: Grid
 :host {
     display: flex;
-    flex-direction: column; // Apila su contenido verticalmente
-    flex: 1; // Ocupa todo el espacio disponible del padre
-    min-height: 0; // Permite que se reduzca si es necesario
-    overflow: hidden; // Evita el desbordamiento
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
 }
 
-.feedback-container {
+// ELEMENTO: grid__feedback-container
+.grid__feedback-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -18,112 +21,113 @@
     box-sizing: border-box;
 }
 
-.input-search-container {
+// ELEMENTO: grid__search-and-actions (Contiene el input y los botones de acción cuando está listo)
+.grid__search-and-actions {
     display: grid;
     grid-template-columns: 1fr auto;
     flex-wrap: wrap;
-    .action-buttons-container {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        justify-content: flex-end; // Para alinear el contenido al final (derecha) del contenedor
-        .buttons-actions {
-            display: flex;
-            align-items: center;
-        }
-    }
 }
 
-.chips-and-buttons-container {
+// ELEMENTO: grid__chips-and-actions (Contiene los chips y los botones de acción cuando NO hay búsqueda)
+.grid__chips-and-actions {
     display: grid;
     align-items: start;
-    // Definiendo dos columnas: la primera (para los chips) ocupa todo el espacio disponible (1fr),
-    // y la segunda (para los botones) ocupa solo el espacio que necesita (auto).
     grid-template-columns: 1fr auto;
     padding-bottom: 15px;
     flex-wrap: wrap;
-
-    .action-buttons-container {
-        display: flex;
-        align-items: anchor-center;
-        gap: 10px;
-        justify-content: flex-end; // Para alinear el contenido al final (derecha) del contenedor
-        .buttons-actions {
-            align-items: center;
-            gap: 10px;
-        }
-    }
 }
 
-.header .grid-cell {
-    background-color: #f0f4f9;
-    color: $primary-material-color;
-    font-weight: bold;
+// ELEMENTO: grid__action-buttons-container (Contenedor de botones compartido, elemento de la grilla)
+.grid__action-buttons-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: flex-end;
 }
 
-.paginator {
-    background-color: #f0f4f9;
+// ELEMENTO: grid__button-action (Wrapper para cada botón individual)
+.grid__button-action {
+    display: flex;
+    align-items: center;
+    gap: 10px; // Solo si quieres espaciado entre el botón y el wrapper, si no, elimina este gap.
 }
 
-.table-container {
-    flex: 1; // La tabla ocupa la mayor parte del espacio
-    overflow: auto; // para que el div sea scrollable
-    min-height: 0; // Permite que se reduzca si es necesario
+// ELEMENTO: grid__search-field
+.grid__search-field {
+    margin-top: 5px;
+    width: auto;
+    max-width: 300px;
+}
+
+// ELEMENTO: grid__table-container
+.grid__table-container {
+    flex: 1;
+    overflow: auto;
+    min-height: 0;
     background: white;
-    //height: 500px;
-    .header-content {
+
+    // ELEMENTO: grid__header-content
+    .grid__header-content {
         display: flex;
         align-items: baseline;
         gap: 10px;
-        img {
+
+        // ELEMENTO: grid__header-icon
+        .grid__header-icon {
             width: 15px;
             height: 15px;
         }
     }
-    // Reglas para navegadores basados en WebKit (Chrome, Safari, Edge)
-    &::-webkit-scrollbar {
-        width: 3px; // ancho para scroll vertical
-        height: 3px; // ancho para scroll horizontal
+
+    // ELEMENTO: grid__table-img
+    .grid__table-img {
+        display: flex;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 
+    // Reglas del scrollbar (se mantienen)
+    &::-webkit-scrollbar {
+        width: 3px;
+        height: 3px;
+    }
     &::-webkit-scrollbar-track {
         background: #f1f1f1;
         border-radius: 3px;
     }
-
     &::-webkit-scrollbar-thumb {
         background: #c1c1c1;
         border-radius: 3px;
     }
-
     &::-webkit-scrollbar-thumb:hover {
         background: #a8a8a8;
     }
-
-    // Reglas para Firefox
-    // Usamos @supports para que Chrome ignore estas reglas y use las de arriba
     @supports not selector(::-webkit-scrollbar) {
         scrollbar-width: thin;
         scrollbar-color: #c1c1c1 #f1f1f1;
     }
 }
 
-.search-field {
-    margin-top: 5px;
-    width: auto;
-    max-width: 300px;
+// ELEMENTO: grid__row--header (Fila de cabecera)
+.grid__row--header {
+    .grid__cell {
+        // Elemento: grid__cell (aplicado en las celdas de cabecera)
+        background-color: #f0f4f9;
+        color: $primary-material-color;
+        font-weight: bold;
+    }
 }
 
-.table-img {
-    display: flex;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover; // la imagen cubra el área sin distorsionarse
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+// ELEMENTO: grid__paginator
+.grid__paginator {
+    background-color: #f0f4f9;
 }
 
-.infinite-paginator {
+// ELEMENTO: grid__paginator--infinite (Modificador del paginador)
+.grid__paginator--infinite {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
@@ -136,9 +140,8 @@
     height: 56px;
 }
 
-// SKELETON
-
-.skeleton-table {
+// BLOQUE: SKELETON (skeleton__table)
+.skeleton__table {
     display: flex;
     flex-direction: column;
     border: 1px solid #ccc;
@@ -147,13 +150,14 @@
     overflow: hidden;
 }
 
-.skeleton-header-row,
-.skeleton-row {
+// ELEMENTOS DE SKELETON
+.skeleton__row--header,
+.skeleton__row {
     display: flex;
 }
 
-// Simula un th
-.skeleton-header-cell {
+// ELEMENTO: skeleton__cell--header (Simula un <th>)
+.skeleton__cell--header {
     flex: 1;
     height: 48px;
     background: linear-gradient(90deg, #eeeeee 25%, #dddddd 50%, #eeeeee 75%);
@@ -161,25 +165,26 @@
     animation: shimmer 1.5s infinite linear;
     background-color: #f0f0f0;
     border-right: 1px solid #ddd;
+
+    &:last-child {
+        border-right: none;
+    }
 }
 
-.skeleton-header-cell:last-child {
-    border-right: none;
-}
-
-// Simula una td
-.skeleton-cell {
+// ELEMENTO: skeleton__cell (Simula un <td>)
+.skeleton__cell {
     flex: 1;
     padding: 12px 16px;
     border-top: 1px solid #eee;
     border-right: 1px solid #eee;
+
+    &:last-child {
+        border-right: none;
+    }
 }
 
-.skeleton-cell:last-child {
-    border-right: none;
-}
-
-.skeleton-line {
+// ELEMENTO: skeleton__line
+.skeleton__line {
     height: 16px;
     width: 100%;
     background: linear-gradient(90deg, #eeeeee 25%, #dddddd 50%, #eeeeee 75%);
@@ -188,8 +193,8 @@
     border-radius: 4px;
 }
 
-// Skeleton del input de búsqueda
-.skeleton-search-container {
+// BLOQUE: skeleton__search-container
+.skeleton__search-container {
     position: relative;
     width: 212px;
     height: 56px;
@@ -200,7 +205,8 @@
     box-sizing: border-box;
 }
 
-.skeleton-search-label {
+// ELEMENTOS DE SKELETON__SEARCH-CONTAINER
+.skeleton__search-label {
     position: absolute;
     top: -8px;
     left: 8px;
@@ -210,7 +216,7 @@
     padding: 0 4px;
 }
 
-.skeleton-search-input {
+.skeleton__search-input {
     margin-top: 16px;
     height: 20px;
     background: linear-gradient(90deg, #eeeeee 25%, #dddddd 50%, #eeeeee 75%);
@@ -219,13 +225,12 @@
     border-radius: 4px;
 }
 
-// DEFINICIÓN EFECTO DEL SHIMMER (BARRIDO DERECHA A IZQUIERDA)
-
+// DEFINICIÓN EFECTO DEL SHIMMER (Fuera de BEM)
 @keyframes shimmer {
     0% {
-        background-position: 200% 0; // Empieza el fondo fuera por la DERECHA
+        background-position: 200% 0;
     }
     100% {
-        background-position: -200% 0; // Termina el fondo fuera por la IZQUIERDA
+        background-position: -200% 0;
     }
 }
