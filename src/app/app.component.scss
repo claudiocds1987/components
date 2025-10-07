@@ -33,8 +33,11 @@ body,
     height: 100vh; /* Asegura que tomen la altura completa de la ventana */
 }
 
-.main-content {
-    margin-top: 64px; /* Espacio para el banner fijo */
-    //height: calc(100vh - 64px); /* Altura total menos la altura del banner */
+/* .main-content {
+    margin-top: 64px; // Espacio para el banner fijo
     padding: 20px;
+} */
+
+.main-content {
+    padding: 64px 20px;
 }
