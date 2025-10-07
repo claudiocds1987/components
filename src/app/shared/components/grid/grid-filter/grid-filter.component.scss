@@ -3,6 +3,18 @@
     overflow: hidden; // Evita que se desborde el host
 }
 
+.filter-panel {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    transition: width 0.3s ease-in-out;
+}
+
+// Estado colapsado: se comprime hacia la derecha
+.filter-panel.collapsed {
+    width: 100%;
+}
+
 // El div que contiene el botón y el título
 .filter-panel.collapsed > form > div:first-child {
     display: flex;
@@ -16,11 +28,19 @@
     }
 }
 
-.collapsed-icon {
-    font-size: 20px;
-    height: 20px;
-    width: 20px;
-    line-height: 20px !important;
+.form {
+    padding: 15px;
+    background-color: #f0f4f9;
+    box-sizing: border-box; // Incluye padding y border en el ancho y alto total del elemento
+    height: 100%; // Ocupa todo el espacio disponible del contenedor padre
+    display: flex;
+    flex-direction: column;
+}
+
+.form-header {
+    display: flex;
+    align-items: baseline;
+    gap: 15px;
 }
 
 .toggle-button {
@@ -39,25 +59,22 @@
     // Eliminar o anular reglas que impiden el centrado Flexbox
     position: static;
     left: auto;
-    transform: none;
+    transform: translate(0, -50%);
 }
 
-.filter-panel {
-    position: relative;
-    height: 100%;
-    width: 100%; /* Ancho por defecto (expandido) */
-    transition: width 0.3s ease-in-out;
+.collapsed-icon {
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+    line-height: 20px !important;
 }
 
-// Estado colapsado: se comprime hacia la derecha
-.filter-panel.collapsed {
-    width: 100%;
-}
-
-.form-header {
-    display: flex;
-    align-items: baseline;
-    gap: 15px;
+.title {
+    text-align: center;
+    font-size: 1.5rem;
+    letter-spacing: 0.1875rem;
+    margin: 0 0 20px 0; // Elimina márgenes automáticos y añade espacio inferior
+    height: 40px; // Altura fija para el título
 }
 
 // El contenido (campos y botones) que se oculta
@@ -66,7 +83,6 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-
     // ESTILOS DE TRANSICIÓN PARA EL ESTADO EXPANDIDO
     opacity: 1;
     height: 100%;
@@ -85,34 +101,6 @@
     margin: 0;
     pointer-events: none;
     overflow: hidden; // para quitar sceroll interno de .form-fields
-}
-
-// Ajuste para el botón cuando está colapsado para que apunte a la izquierda
-.filter-panel.collapsed .toggle-button {
-    left: 0;
-    transform: translate(
-        0,
-        -50%
-    ); // No sobresale tanto cuando está colapsado */
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-.title {
-    text-align: center;
-    font-size: 1.5rem;
-    letter-spacing: 0.1875rem;
-    margin: 0 0 20px 0; // Elimina márgenes automáticos y añade espacio inferior
-    height: 40px; // Altura fija para el título
-}
-
-.form {
-    padding: 15px;
-    background-color: #f0f4f9;
-    box-sizing: border-box; // Incluye padding y border en el ancho y alto total del elemento
-    height: 100%; // Ocupa todo el espacio disponible del contenedor padre
-    display: flex;
-    flex-direction: column;
 }
 
 .form-fields {
@@ -151,12 +139,13 @@
     }
 }
 
+// Aplicamos margen inferior a todos los hijos directos de .form-fields
 .form-fields > * {
     margin-bottom: 15px;
 }
-
+// Para aplica un margen inferior al último hijo directo dentro del contenedor .form-fields
 .form-fields > *:last-child {
-    margin-bottom: 15px; // Mantén margen para separar de los botones
+    margin-bottom: 15px;
 }
 
 .filter-actions {
