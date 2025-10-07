@@ -1,57 +1,26 @@
-/* .employee-grid-container {
-    display: grid;
-    // Define las filas: la primera para los chips (auto) y la segunda para la grilla y el filtro
-    grid-template-rows: auto 1fr;
-    grid-template-columns: 1fr 260px; // Se define 2 columnas la 1ra toma la mayor parte y la 2da 260px para el filtro
-    gap: 10px;
-    width: 100%; // Ocupa todo el ancho disponible
-    flex: 1; // el contenido se va a estirar hasta que alcance el límite de max-height
-    min-height: 0; // Permite que el grid se reduzca si es necesario
-    align-items: stretch; // Para que el componente grid.component y grid-filter.component ambos elementos tengan la misma altura
-    max-height: 800px;
-    overflow: hidden; // Evita el desbordamiento
-    // Estilo para el componente de chips para que ocupe todas las columnas
-    app-chips {
-        grid-column: 1 / -1; // Hace que ocupe desde la primera columna hasta la última
-        margin-bottom: 10px;
-    }
-
-    .filter-container {
-        width: 100%;
-        min-height: 0; // Permite que el contenedor se reduzca si es necesario
-        display: flex;
-        flex-direction: column;
-    }
-} */
-
-/* Contenedor principal para 100vh y padding */
-.app-wrapper {
+.wrapper {
     height: calc(100vh - 100px);
-    //padding: 16px;
-    background-color: white;
-    font-family: "Inter", sans-serif;
+    background-color: #fafbfc;
 }
 
-/* Contenedor del Grid y Filtro, usando la altura fija del usuario */
+// Contenedor del Grid y Filtro
 .components-container {
     display: grid;
-    grid-template-columns: 1fr 260px; /* Grilla | Filtro */
-    gap: 16px; /* Espaciado ajustado */
+    grid-template-columns: 1fr 260px; // 1fr para componente Grilla | 260px para componente Filtro
+    gap: 16px;
     width: 100%;
-    /* Usamos el height del usuario. Ocupa todo el espacio de .app-wrapper */
-    height: 100%;
-    overflow: hidden; /* Evita el desbordamiento externo */
+    height: 100%; // Ocupa todo el alto del contenedor wrapper
+    overflow: hidden; // Evitamos el desbordamiento externo
 }
 
-/* CLAVE DE LA SOLUCIÓN: Usamos Flex Column para distribuir el espacio verticalmente en la Columna 1 */
 .employee-grid-container {
-    display: flex; /* Habilitamos Flexbox */
-    flex-direction: column; /* Apilamos los elementos verticalmente */
-    height: 100%; /* Ocupa el 100% de la altura de su celda en components-container */
-    min-height: 0; /* Permite que el elemento interno se encoja para dejar espacio a los banners */
-    margin-top: 0; /* Se recomienda remover márgenes que afecten la altura total */
+    display: flex;
+    flex-direction: column;
+    height: 100%; // Componente grid Ocupa el 100% de altura en este contenedor
+    min-height: 0; // Permite que el elemento interno se encoja para dejar espacio a los banners
+    margin-top: 0;
 
-    // Estilos de espaciado para los banners (ocupan espacio auto) */
+    // Estilos de espaciado para componentes breadcrumb y alert
     app-breadcrumb {
         margin-top: 20px;
     }
@@ -59,13 +28,13 @@
         margin-bottom: 16px;
     }
 
-    overflow: hidden; /* Evita el scroll externo de esta columna */
+    overflow: hidden; // Evita el scroll externo de esta columna
 }
 
-/* La grilla debe tomar el espacio restante dentro de employee-grid-container */
+// Estrictamente para el componente grid.component
 app-grid {
-    flex: 1; /* ¡CLAVE! Ocupa todo el espacio vertical restante */
-    min-height: 0; /* Necesario para que el scroll interno de la grilla funcione correctamente */
+    flex: 1; // Ocupa todo el espacio vertical restante
+    min-height: 0; // Necesario para que el scroll interno de la grilla funcione correctamente
 }
 
 .filter-container {
