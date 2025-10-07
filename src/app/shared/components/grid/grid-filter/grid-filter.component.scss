@@ -3,6 +3,101 @@
     overflow: hidden; // Evita que se desborde el host
 }
 
+// El div que contiene el botón y el título
+.filter-panel.collapsed > form > div:first-child {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 20px;
+    //Para ocultar el título cuando está colapsado
+    .title {
+        display: none;
+    }
+}
+
+.collapsed-icon {
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+    line-height: 20px !important;
+}
+
+.toggle-button {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    height: 32px;
+    width: 32px;
+    padding: 0;
+    line-height: 32px;
+    margin: 0;
+}
+
+.filter-panel.collapsed .toggle-button {
+    // Eliminar o anular reglas que impiden el centrado Flexbox
+    position: static;
+    left: auto;
+    transform: none;
+}
+
+.filter-panel {
+    position: relative;
+    height: 100%;
+    width: 100%; /* Ancho por defecto (expandido) */
+    transition: width 0.3s ease-in-out;
+}
+
+// Estado colapsado: se comprime hacia la derecha
+.filter-panel.collapsed {
+    width: 100%;
+}
+
+.form-header {
+    display: flex;
+    align-items: baseline;
+    gap: 15px;
+}
+
+// El contenido (campos y botones) que se oculta
+.form-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    // ESTILOS DE TRANSICIÓN PARA EL ESTADO EXPANDIDO
+    opacity: 1;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    pointer-events: auto;
+    transition:
+        opacity 0.3s ease-in-out,
+        height 0.3s ease-in-out;
+}
+
+.form-content.hidden {
+    opacity: 0; // Lo oculta visualmente
+    height: 0; // Lo colapsa verticalmente para que no ocupe espacio
+    padding: 0;
+    margin: 0;
+    pointer-events: none;
+    overflow: hidden; // para quitar sceroll interno de .form-fields
+}
+
+// Ajuste para el botón cuando está colapsado para que apunte a la izquierda
+.filter-panel.collapsed .toggle-button {
+    left: 0;
+    transform: translate(
+        0,
+        -50%
+    ); // No sobresale tanto cuando está colapsado */
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 .title {
     text-align: center;
     font-size: 1.5rem;

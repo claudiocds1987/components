@@ -4,6 +4,7 @@ import {
     Output,
     EventEmitter,
     ChangeDetectionStrategy,
+    signal,
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormGroup, ReactiveFormsModule } from "@angular/forms";
@@ -18,6 +19,8 @@ import { DateInputComponent } from "../../date-input/date-input.component";
 import { SkeletonDirective } from "../../../directives/skeleton.directive";
 import { DateRangeComponent } from "../../date-range/date-range.component";
 import { DateRangeValidationDirective } from "../../../directives/date-range-validation.directive";
+import { MatIcon } from "@angular/material/icon";
+import { MatTooltip } from "@angular/material/tooltip";
 
 @Component({
     selector: "app-grid-filter",
@@ -35,6 +38,8 @@ import { DateRangeValidationDirective } from "../../../directives/date-range-val
         DateRangeComponent,
         SkeletonDirective,
         DateRangeValidationDirective,
+        MatIcon,
+        MatTooltip,
     ],
     templateUrl: "./grid-filter.component.html",
     styleUrls: [
@@ -48,6 +53,9 @@ export class GridFilterComponent {
     @Input() filterForm!: FormGroup;
     @Input() isLoading = false;
     @Output() emitFilterApplied = new EventEmitter<Record<string, unknown>>();
+    @Output() isCollapsedChange = new EventEmitter<boolean>(); // Output para notificar el estado de colapso al padre
+
+    isCollapsed = signal<boolean>(false);
 
     /*  La funcíon getFormGroupByName() es asegurar de que si en filterForm hay un formGroup (por ej el caso de stratDate y endDate de birthDateRange) 
         este sea devuelto y tratado explícitamente como un FormGroup. para poder pasarle el FormGroup startDate y endDate a date-range-component que por input recibe un FormGroup:   
@@ -60,6 +68,15 @@ export class GridFilterComponent {
     getFormGroupByName(fieldName: string): FormGroup | null {
         const control = this.filterForm.get(fieldName);
         return control as FormGroup | null;
+    }
+
+    toggleCollapse(): void {
+        this.isCollapsed.update((val): boolean => {
+            const newValue = !val;
+            // 💡 Emitir el nuevo estado de colapso
+            this.isCollapsedChange.emit(newValue);
+            return newValue;
+        });
     }
 
     /**

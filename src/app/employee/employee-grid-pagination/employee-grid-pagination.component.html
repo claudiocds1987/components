@@ -1,5 +1,8 @@
 <div class="wrapper">
-    <div class="components-container">
+    <div
+        class="components-container"
+        [class.filter-collapsed]="isFilterCollapsedSig()"
+    >
         <div class="employee-grid-container">
             <app-breadcrumb></app-breadcrumb>
             <app-alert></app-alert>
@@ -23,6 +26,7 @@
                     [filterForm]="gridFilterFormSig()"
                     [isLoading]="isLoadingFilterGridDataSig()"
                     (emitFilterApplied)="applyFilter($event)"
+                    (isCollapsedChange)="onFilterCollapseChange($event)"
                 ></app-grid-filter>
             </ng-container>
         </div>

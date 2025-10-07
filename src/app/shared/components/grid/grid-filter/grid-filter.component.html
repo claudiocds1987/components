@@ -1,79 +1,106 @@
-<form [formGroup]="filterForm" class="form">
-    <h3 class="title">FILTRO</h3>
-    <div class="form-fields">
-        @for (filter of config; track filter.fieldName) {
-            @switch (filter.fieldType) {
-                <!-- Campo de texto -->
-                @case ("text") {
-                    <mat-form-field
-                        class="width"
-                        appearance="outline"
-                        [appSkeleton]="isLoading"
-                    >
-                        <mat-label>{{ filter.label }}</mat-label>
-                        <input matInput [formControlName]="filter.fieldName" />
-                    </mat-form-field>
-                }
-                <!-- Caso Select -->
-                @case ("select") {
-                    <mat-form-field
-                        class="width"
-                        appearance="outline"
-                        [appSkeleton]="isLoading"
-                    >
-                        <mat-label>{{ filter.label }}</mat-label>
-                        <mat-select [formControlName]="filter.fieldName">
-                            @for (item of filter.selectItems; track item.id) {
-                                <mat-option [value]="item.id">
-                                    {{ item.description }}
-                                </mat-option>
+<div class="filter-panel" [class.collapsed]="isCollapsed()">
+    <form [formGroup]="filterForm" class="form">
+        <div class="form-header">
+            <button
+                mat-icon-button
+                class="toggle-button"
+                (click)="toggleCollapse()"
+                matTooltip="{{
+                    isCollapsed() ? 'Mostrar Filtro' : 'Ocultar Filtro'
+                }}"
+                matTooltipPosition="left"
+            >
+                <mat-icon class="collapsed-icon">{{
+                    isCollapsed() ? "chevron_left" : "chevron_right"
+                }}</mat-icon>
+            </button>
+            <h3 class="title">FILTRO</h3>
+        </div>
+        <div class="form-content" [class.hidden]="isCollapsed()">
+            <div class="form-fields">
+                @for (filter of config; track filter.fieldName) {
+                    @switch (filter.fieldType) {
+                        <!-- Campo de texto -->
+                        @case ("text") {
+                            <mat-form-field
+                                class="width"
+                                appearance="outline"
+                                [appSkeleton]="isLoading"
+                            >
+                                <mat-label>{{ filter.label }}</mat-label>
+                                <input
+                                    matInput
+                                    [formControlName]="filter.fieldName"
+                                />
+                            </mat-form-field>
+                        }
+                        <!-- Caso Select -->
+                        @case ("select") {
+                            <mat-form-field
+                                class="width"
+                                appearance="outline"
+                                [appSkeleton]="isLoading"
+                            >
+                                <mat-label>{{ filter.label }}</mat-label>
+                                <mat-select
+                                    [formControlName]="filter.fieldName"
+                                >
+                                    @for (
+                                        item of filter.selectItems;
+                                        track item.id
+                                    ) {
+                                        <mat-option [value]="item.id">
+                                            {{ item.description }}
+                                        </mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+                        }
+                        <!-- Caso de fecha única se utiliza el componente date-input-->
+                        @case ("date") {
+                            <app-date-input
+                                [formControlName]="filter.fieldName"
+                                [label]="filter.label"
+                                [placeholder]="filter.label"
+                                [isDisabled]="false"
+                                [appSkeleton]="isLoading"
+                            ></app-date-input>
+                        }
+                        <!-- Caso de rango de fechas se utiliza el component date-range -->
+                        @case ("dateRange") {
+                            @if (
+                                getFormGroupByName(filter.fieldName);
+                                as dateRangeFormGroup
+                            ) {
+                                <app-date-range
+                                    [dateRangeFormGroup]="dateRangeFormGroup"
+                                    [label]="filter.label"
+                                    [appSkeleton]="isLoading"
+                                ></app-date-range>
                             }
-                        </mat-select>
-                    </mat-form-field>
-                }
-                <!-- Caso de fecha única se utiliza el componente date-input-->
-                @case ("date") {
-                    <app-date-input
-                        [formControlName]="filter.fieldName"
-                        [label]="filter.label"
-                        [placeholder]="filter.label"
-                        [isDisabled]="false"
-                        [appSkeleton]="isLoading"
-                    ></app-date-input>
-                }
-                <!-- Caso de rango de fechas se utiliza el component date-range -->
-                @case ("dateRange") {
-                    @if (
-                        getFormGroupByName(filter.fieldName);
-                        as dateRangeFormGroup
-                    ) {
-                        <app-date-range
-                            [dateRangeFormGroup]="dateRangeFormGroup"
-                            [label]="filter.label"
-                            [appSkeleton]="isLoading"
-                        ></app-date-range>
+                        }
                     }
                 }
-            }
-        }
-    </div>
+            </div>
 
-    <div class="filter-actions">
-        <button
-            mat-raised-button
-            color="primary"
-            (click)="applyFilter()"
-            [disabled]="isReadyToApply()"
-        >
-            Aplicar Filtro
-        </button>
-        <button
-            mat-button
-            color="primary"
-            (click)="clearFilter()"
-            [disabled]="!hasActiveFilters()"
-        >
-            Limpiar Filtro
-        </button>
-    </div>
-</form>
+            <div class="filter-actions">
+                <button
+                    mat-raised-button
+                    color="primary"
+                    (click)="applyFilter()"
+                    [disabled]="isReadyToApply()"
+                >
+                    Aplicar Filtro
+                </button>
+                <button
+                    mat-button
+                    color="primary"
+                    (click)="clearFilter()"
+                    [disabled]="!hasActiveFilters()"
+                >
+                    Limpiar Filtro
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

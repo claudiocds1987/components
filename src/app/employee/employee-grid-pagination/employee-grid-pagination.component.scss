@@ -13,6 +13,12 @@
     overflow: hidden; // Evitamos el desbordamiento externo
 }
 
+// Estilo cuando el filtro grid-filter.component está colapsado
+.components-container.filter-collapsed {
+    // Definimos el nuevo tamaño para la grilla (1fr) y el filtro colapsado (por ejemplo, 60px)
+    grid-template-columns: 1fr 50px;
+}
+
 .employee-grid-container {
     display: flex;
     flex-direction: column;

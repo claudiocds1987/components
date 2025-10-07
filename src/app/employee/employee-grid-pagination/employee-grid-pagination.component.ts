@@ -72,6 +72,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     chipsSig = signal<Chip[]>([]);
     isLoadingGridDataSig = signal(true);
     isLoadingFilterGridDataSig = signal(true);
+    isFilterCollapsedSig = signal<boolean>(false);
 
     employees: Employee[] = [];
 
@@ -130,6 +131,11 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this._breadcrumbService.clearBreadcrumbs();
+    }
+
+    onFilterCollapseChange(isCollapsed: boolean): void {
+        this.isFilterCollapsedSig.set(isCollapsed);
+        console.log(`Filtro colapsado: ${isCollapsed}`); // Opcional para depurar
     }
 
     onRowDblClick(rowData: any): void {
