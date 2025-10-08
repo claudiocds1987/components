@@ -135,7 +135,6 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
 
     onFilterCollapseChange(isCollapsed: boolean): void {
         this.isFilterCollapsedSig.set(isCollapsed);
-        console.log(`Filtro colapsado: ${isCollapsed}`); // Opcional para depurar
     }
 
     onRowDblClick(rowData: any): void {
