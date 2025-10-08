@@ -143,7 +143,6 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
             .pipe(
                 finalize((): void => {
                     this.isLoadingGridData.set(false);
-                    //this._changeDetectorRef.markForCheck();
                 }),
             )
             .subscribe({
@@ -265,14 +264,14 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
             actionButtons: [
                 {
                     class: "primary-button",
-                    icon: "/assets/person.svg",
+                    icon: "assets/person.svg",
                     text: "Agregar",
                     action: (): void => this.onCreateEmployee(),
                 },
                 {
                     class: "download-button",
                     type: "download",
-                    icon: "/assets/download.svg",
+                    icon: "assets/download.svg",
                     tooltip: "Descargar excel",
                 },
             ],
