@@ -1,7 +1,7 @@
 // src/app/app.config.ts
 
 import { ApplicationConfig } from "@angular/core";
-import { provideRouter } from "@angular/router";
+import { provideRouter, withHashLocation } from "@angular/router";
 
 import { routes } from "./app.routes";
 import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
@@ -23,6 +23,8 @@ export const appConfig: ApplicationConfig = {
         provideRouter(routes),
         provideAnimationsAsync(),
         provideHttpClient(),
+        // Cambiamos provideRouter(routes) por:
+        provideRouter(routes, withHashLocation()), // Para github pages
 
         // ¡CLAVE! Este debe ser 'es-AR'
         { provide: MAT_DATE_LOCALE, useValue: "es-AR" },
