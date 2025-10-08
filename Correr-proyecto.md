@@ -56,3 +56,20 @@ el comando "ng" no esta en el PATH global en mi sistema por eso hay
 que hacer: npx ng g c nombre-del-componente
 
 PARA EJECUTAR ES-LINT: npm run lint
+
+---
+
+ESTE PROYECTO ESTA EN GITHUB PAGES:
+
+ESTOS PASOS SOLO SE HACEN UNA VEZ (YA SE HICIERON)
+Nota: uso npx
+
+1. npx ng add angular-cli-ghpages (se ejecuta solo una vez, si ya fue ejecutado no hay que volverlo a hacer)
+2. npx ng deploy --base-href=/components/
+ <!-- 2) ng build --configuration production --base-href "https://github.com/claudiocds1987/components.git"
+3. ngh --dir dist/test -->
+
+PARA ACTUALIZAR CAMBIOS EN GITHUB PAGES:
+
+1. git push origin main (Subir código fuente)
+2. ng deploy --base-href=/components/ (actualiza en github pages)
