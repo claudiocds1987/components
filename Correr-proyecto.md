@@ -66,10 +66,8 @@ Nota: uso npx
 
 1. npx ng add angular-cli-ghpages (se ejecuta solo una vez, si ya fue ejecutado no hay que volverlo a hacer)
 2. npx ng deploy --base-href=/components/
- <!-- 2) ng build --configuration production --base-href "https://github.com/claudiocds1987/components.git"
-3. ngh --dir dist/test -->
 
 PARA ACTUALIZAR CAMBIOS EN GITHUB PAGES:
 
-1. git push origin main (Subir código fuente)
+1. Hacer el commit y push normalmente desde visual studio (para subir los cambios al repositorio de git hub)
 2. ng deploy --base-href=/components/ (actualiza en github pages)
