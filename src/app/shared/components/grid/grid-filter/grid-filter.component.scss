@@ -1,3 +1,5 @@
+@import "./../../../styles/colors.scss";
+
 :host {
     height: 100%; // Altura completa del contenedor padre
     overflow: hidden; // Evita que se desborde el host
@@ -30,7 +32,7 @@
 
 .form {
     padding: 15px;
-    background-color: #f0f4f9;
+    background-color: $anti-flash-white;
     box-sizing: border-box; // Incluye padding y border en el ancho y alto total del elemento
     height: 100%; // Ocupa todo el espacio disponible del contenedor padre
     display: flex;
@@ -44,8 +46,9 @@
 }
 
 .toggle-button {
-    background-color: white;
-    border: 1px solid #ddd;
+    background-color: $anti-flash-white;
+    color: $primary-material-color;
+    border: 1px solid $primary-material-color;
     border-radius: 50%;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     height: 32px;
@@ -156,7 +159,7 @@
     gap: 15px;
     padding: 20px 0;
     border-top: 1px solid #ddd; // Línea divisoria
-    background-color: #f0f4f9;
+    background-color: $anti-flash-white;
 }
 
 .width {

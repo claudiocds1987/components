@@ -1,3 +1,5 @@
+@import "./../../styles/colors.scss";
+
 .chips-container {
     display: flex;
     flex-wrap: wrap;
@@ -33,7 +35,7 @@
 }
 
 .chip-row {
-    background-color: #f0f4f9 !important;
+    background-color: $anti-flash-white !important;
     color: #424242;
     border-radius: 16px;
     padding: 4px 4px;

@@ -139,9 +139,13 @@
                     @switch (col.type) {
                         @case ("img") {
                             <img
-                                [src]="row['imgUrl']"
-                                alt="Imagen"
+                                [ngSrc]="
+                                    row['imgUrl'] || 'assets/unknown-user.png'
+                                "
+                                width="40"
+                                height="40"
                                 class="table-img"
+                                alt="img"
                             />
                         }
                         @case ("elipsis") {

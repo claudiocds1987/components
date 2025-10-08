@@ -120,7 +120,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     constructor() {
         this._alertService.clearAlerts();
         this._setBreadcrumb();
-        this.gridConfigSig.set(this._setGridConfiguration());
+        this.gridConfigSig.set(this._setGridConfiguration()); // Inicializa la configuración para grid.component
         this._initializeGridFilter(); // Inicializa el formulario y la configuración para grid-filter.component
         this._createChips(this._defaultChips);
     }
@@ -736,7 +736,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     }
 
     private _initializeGridFilter(): void {
-        // 1. DEFINICIÓN DE LA CONFIGURACIÓN
+        // 1. DEFINICIÓN DE LA CONFIGURACIÓN PARA COMPONENTE GRID-FILTER
         const config: GridFilterConfig[] = [
             { fieldName: "id", fieldType: "text", label: "Id" },
             { fieldName: "name", fieldType: "text", label: "Nombre" },
@@ -776,7 +776,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
             },
         ];
 
-        // 2. ACTUALIZAR LA SEÑAL DE CONFIGURACIÓN
+        // 2. ACTUALIZA SIGNAL DE CONFIGURACIÓN
         this.gridFilterConfigSig.set(config);
 
         // 3. CREACIÓN DINÁMICA DE CONTROLES PARA EL FORMULARIO
@@ -807,7 +807,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
             }
         });
 
-        // 4. ACTUALIZAR LA SEÑAL DEL FORMULARIO
+        // ACTUALIZA SIGNAL DEL FORMULARIO
         this.gridFilterFormSig.set(new FormGroup(formControls));
     }
 

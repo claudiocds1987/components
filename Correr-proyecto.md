@@ -66,6 +66,18 @@ Nota: uso npx
 
 1. npx ng add angular-cli-ghpages (se ejecuta solo una vez, si ya fue ejecutado no hay que volverlo a hacer)
 2. npx ng deploy --base-href=/components/
+3. ir a mi repositorio github a settings -> Pages:
+   Dejar la configuracion como esta, deberia decir asi:
+   BUILD AND DEPLOYMENT
+   Source: Deploy from a branch
+   Branch: gh-pages /(root)
+
+4. ir al archivo app.config.ts y en providers agregar esta linea:  
+   provideRouter(routes, withHashLocation()), // Para github pages
+5. Para que se vean las imagenes de assets reemplazar la ruta quitar "/":
+   Quitar "/" antes de assets: <img src="/assets/imagen.jpg" alt="Mi Imagen">
+   Dejarlo asi: <img src="assets/imagen.jpg" alt="Mi Imagen">
+   En .scss lo mismo: background-image: url("assets/background.png");
 
 PARA ACTUALIZAR CAMBIOS EN GITHUB PAGES:
 

@@ -1,17 +1,15 @@
 .alerts-wrapper {
-    //position: fixed;
-    //margin-top: 10px; /* Añade un margen superior para separarlo del breadcrumb */
     margin-bottom: 15px;
-    width: 100%; /* Ocupa el 100% del ancho disponible de su padre */
-    max-width: unset; /* Restablecer max-width si se había puesto antes */
+    width: 100%;
+    max-width: unset;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    z-index: 1050; /* Mantener un z-index alto por si hay superposiciones */
+    z-index: 1050; // Mantener un z-index alto por si hay superposiciones
 }
 
 .alert-container {
-    height: 15px; /* Altura fija de 50px */
+    height: 15px;
     padding: 1rem;
     border-radius: 4px;
     display: flex;
@@ -22,11 +20,10 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     animation: fadeInOut 0.5s ease-in-out forwards;
     .alert-icon {
-        font-size: 1.5rem; /* Tamaño del icono */
+        font-size: 1.5rem;
         height: 1.5rem;
         width: 1.5rem;
-        margin-right: 1rem; /* Espacio entre el icono y el mensaje */
-        /* ... otros estilos comunes ... */
+        margin-right: 1rem;
     }
 }
 
@@ -51,13 +48,13 @@
 
 /* Estilos para los tipos de alerta */
 .alert-warning {
-    background-color: #fff3cd; /* Amarillo */
+    background-color: #fff3cd;
     color: #856404;
     border: 1px solid #ffeeba;
 }
 
 .alert-info {
-    background-color: #7bd3f0; /* Azul claro */
+    background-color: #7bd3f0;
     color: #0c5460;
     border: 1px solid #bee5eb;
 }

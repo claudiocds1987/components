@@ -1,3 +1,5 @@
+@import "./../colors.scss";
+
 .primary-button {
     /* Propiedades de un botón Material (tamaño, tipografía, etc.) */
     display: inline-flex;
@@ -17,16 +19,12 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
     white-space: nowrap;
-
-    /* Colores y borde de 'mat-stroked-button color="primary"' */
-    background-color: #f0f4f9;
+    background-color: $anti-flash-white;
     border-radius: 50px;
     font-weight: 400;
     min-width: 100px;
-    color: #3f51b5;
-    border: 1px solid #3f51b5;
-
-    /* Estado de :hover */
+    color: $primary-material-color;
+    border: 1px solid $primary-material-color;
     transition: background-color 0.15s ease-in-out;
 
     img {
@@ -36,17 +34,10 @@
 }
 
 .primary-button:hover {
-    /* Al pasar el ratón, un ligero fondo (simulando el ripple de Material) */
-    background-color: rgba(
-        63,
-        81,
-        181,
-        0.04
-    ); /* Un 4% de opacidad del color Primary */
+    background-color: rgba(63, 81, 181, 0.04);
 }
 
 .primary-button:focus {
-    /* Al enfocarse (para accesibilidad) */
-    outline: 2px solid #3f51b5;
+    outline: 2px solid $primary-material-color;
     outline-offset: 2px;
 }
