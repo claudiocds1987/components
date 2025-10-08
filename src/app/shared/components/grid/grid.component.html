@@ -137,6 +137,7 @@
                     }"
                 >
                     @switch (col.type) {
+                        <!--   || se carga imagen 'unknown-user.png' para evitar errores de imagen cuando viene vacio -->
                         @case ("img") {
                             <img
                                 [ngSrc]="

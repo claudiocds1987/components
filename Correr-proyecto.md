@@ -59,6 +59,15 @@ PARA EJECUTAR ES-LINT: npm run lint
 
 ---
 
+LA API HECHA EN JSON-SERVER SE ENCUENTRA EN EL REPOSITORIO GITHUB json-server-data
+git remote add origin https://github.com/claudiocds1987/json-server-data.git
+git branch -M main
+git push -u origin main
+
+Y ESTE REPOSITORIO ESTA LINKEADO AL SERVIDOR RENDER DONDE LEVANTA Y LEE LOS JSON DEL REPOSITORIO json-server-data
+
+---
+
 ESTE PROYECTO ESTA EN GITHUB PAGES:
 
 ESTOS PASOS SOLO SE HACEN UNA VEZ (YA SE HICIERON)
