@@ -44,10 +44,10 @@ app-grid {
 }
 
 .filter-container {
-    width: 100%;
+    width: 95%; // no uso 100% para que se note el efecto box-shadow flotante
     min-height: 0;
     display: flex;
     flex-direction: column;
-    height: 99.7%; // no uso 100% para que se note el efecto box-shadow
+    height: 99.7%; // no uso 100% para que se note el efecto box-shadow flotante
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
