@@ -158,9 +158,13 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
         const isFilterClear = Object.values(filterValues).every(
             (value): boolean =>
                 value === null ||
+                value === "" ||
+                value === "all" ||
                 (typeof value === "object" &&
                     value !== null &&
-                    Object.values(value).every((val): boolean => val === null)),
+                    Object.values(value).every(
+                        (val): boolean => val === null || val === "",
+                    )),
         );
         if (isFilterClear) {
             this._createChips(this._defaultChips);
