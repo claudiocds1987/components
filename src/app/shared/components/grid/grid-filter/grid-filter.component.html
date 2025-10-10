@@ -1,31 +1,31 @@
-<div class="filter-panel" [class.collapsed]="isCollapsed()">
-    <form [formGroup]="filterForm" class="form">
+<div class="filter-panel" [class.collapsed]="isCollapsedSig()">
+    <form [formGroup]="filterFormSig()" class="form">
         <div class="form-header">
             <button
                 mat-icon-button
                 class="toggle-button"
                 (click)="toggleCollapse()"
                 matTooltip="{{
-                    isCollapsed() ? 'Mostrar Filtro' : 'Ocultar Filtro'
+                    isCollapsedSig() ? 'Mostrar Filtro' : 'Ocultar Filtro'
                 }}"
                 matTooltipPosition="left"
             >
                 <mat-icon class="collapsed-icon">{{
-                    isCollapsed() ? "chevron_left" : "chevron_right"
+                    isCollapsedSig() ? "chevron_left" : "chevron_right"
                 }}</mat-icon>
             </button>
             <h3 class="title">FILTRO</h3>
         </div>
-        <div class="form-content" [class.hidden]="isCollapsed()">
+        <div class="form-content" [class.hidden]="isCollapsedSig()">
             <div class="form-fields">
-                @for (filter of config; track filter.fieldName) {
+                @for (filter of configSig(); track filter.fieldName) {
                     @switch (filter.fieldType) {
                         <!-- Campo de texto -->
                         @case ("text") {
                             <mat-form-field
                                 class="width"
                                 appearance="outline"
-                                [appSkeleton]="isLoading"
+                                [appSkeleton]="isLoadingSig()"
                             >
                                 <mat-label>{{ filter.label }}</mat-label>
                                 <input
@@ -39,7 +39,7 @@
                             <mat-form-field
                                 class="width"
                                 appearance="outline"
-                                [appSkeleton]="isLoading"
+                                [appSkeleton]="isLoadingSig()"
                             >
                                 <mat-label>{{ filter.label }}</mat-label>
                                 <mat-select
@@ -63,7 +63,7 @@
                                 [label]="filter.label"
                                 [placeholder]="filter.label"
                                 [isDisabled]="false"
-                                [appSkeleton]="isLoading"
+                                [appSkeleton]="isLoadingSig()"
                             ></app-date-input>
                         }
                         <!-- Caso de rango de fechas se utiliza el component date-range -->
@@ -75,7 +75,7 @@
                                 <app-date-range
                                     [dateRangeFormGroup]="dateRangeFormGroup"
                                     [label]="filter.label"
-                                    [appSkeleton]="isLoading"
+                                    [appSkeleton]="isLoadingSig()"
                                 ></app-date-range>
                             }
                         }

@@ -1,10 +1,10 @@
 import {
     Component,
-    Input,
     Output,
     EventEmitter,
     ChangeDetectionStrategy,
     signal,
+    input,
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormGroup, ReactiveFormsModule } from "@angular/forms";
@@ -49,13 +49,13 @@ import { MatTooltip } from "@angular/material/tooltip";
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GridFilterComponent {
-    @Input() config: GridFilterConfig[] = [];
-    @Input() filterForm!: FormGroup;
-    @Input() isLoading = false;
+    configSig = input<GridFilterConfig[]>([]);
+    filterFormSig = input.required<FormGroup>(); // Usamos required() para campos obligatorios sin valor inicial
+    isLoadingSig = input<boolean>(false);
     @Output() emitFilterApplied = new EventEmitter<Record<string, unknown>>();
     @Output() isCollapsedChange = new EventEmitter<boolean>(); // Output para notificar el estado de colapso al padre
 
-    isCollapsed = signal<boolean>(false);
+    isCollapsedSig = signal<boolean>(false);
 
     /*  La funcíon getFormGroupByName() es asegurar de que si en filterForm hay un formGroup (por ej el caso de stratDate y endDate de birthDateRange) 
         este sea devuelto y tratado explícitamente como un FormGroup. para poder pasarle el FormGroup startDate y endDate a date-range-component que por input recibe un FormGroup:   
@@ -66,12 +66,12 @@ export class GridFilterComponent {
     */
 
     getFormGroupByName(fieldName: string): FormGroup | null {
-        const control = this.filterForm.get(fieldName);
+        const control = this.filterFormSig().get(fieldName);
         return control as FormGroup | null;
     }
 
     toggleCollapse(): void {
-        this.isCollapsed.update((val): boolean => {
+        this.isCollapsedSig.update((val): boolean => {
             const newValue = !val;
             // 💡 Emitir el nuevo estado de colapso
             this.isCollapsedChange.emit(newValue);
@@ -85,51 +85,39 @@ export class GridFilterComponent {
      *  el valor neutral "all" (para selectores) o 0 (común para IDs o valores predeterminados).
      */
     public hasActiveFilters(): boolean {
-        if (!this.filterForm || !this.config) {
+        // Accedemos a los valores de las signals
+        const currentFilterForm = this.filterFormSig();
+        const currentConfig = this.configSig();
+
+        if (!currentFilterForm || !currentConfig) {
             return false;
         }
-
-        const values = this.filterForm.value;
-
-        /**
-         *  Función auxiliar para verificar si un valor de campo es "vacío" o "neutral".
-         *  aca se agrega la verificación para "all" y 0, ya que estos pueden ser valores
-         *  predeterminados en los selectores y no deberían contar como filtros activos.
-         *  Esta función va a determinar si el boton Limpiar filtros debe estar habilitado o no.
-         *  si hay filtros aplicados, el boton se habilita. caso contrario, se deshabilita.
-         */
+        // Función auxiliar para verificar si un valor es "vacío" o neutral
         const isValueEmpty = (value: unknown): boolean => {
-            if (value === null || value === undefined) {
-                return true;
-            }
+            if (value === null || value === undefined) return true;
             if (typeof value === "string") {
                 const trimmedLower = value.trim().toLowerCase();
-                // Verifica si es cadena vacía O el valor neutral "all"
-                if (trimmedLower === "" || trimmedLower === "all") {
-                    return true;
-                }
+                if (trimmedLower === "" || trimmedLower === "all") return true;
             }
-            // Verifica si es el número 0 (común para IDs o valores predeterminados)
-            if (typeof value === "number" && value === 0) {
-                return true;
-            }
+            if (typeof value === "number" && value === 0) return true;
             return false;
         };
 
-        for (const filter of this.config) {
+        for (const filter of currentConfig) {
             const fieldName = filter.fieldName;
-            const value = values[fieldName];
+
+            // .get(fieldName)?.value para obtener el valor del control específico.
+            const value = currentFilterForm.get(fieldName)?.value;
 
             // 1. Manejo de campos simples (text, select, date)
             if (filter.fieldType !== "dateRange") {
+                // Pasamos el valor del campo específico
                 if (!isValueEmpty(value)) {
                     return true;
                 }
             } else {
-                // 2. Manejo de dateRange (FormGroup anidado)
                 const dateRangeGroup = this.getFormGroupByName(fieldName);
                 if (dateRangeGroup) {
-                    // Verificamos si al menos uno de los controles internos (startDate o endDate) tiene valor.
                     const startValue = dateRangeGroup.get("startDate")?.value;
                     const endValue = dateRangeGroup.get("endDate")?.value;
 
@@ -139,27 +127,27 @@ export class GridFilterComponent {
                 }
             }
         }
-
         // Si el bucle termina, todos los campos están vacíos/nulos/neutrales.
         return false;
     }
 
     applyFilter(): void {
-        const filterFormValues = this.filterForm.value;
+        const filterFormValues: Record<string, unknown> =
+            this.filterFormSig().value;
         this.emitFilterApplied.emit(filterFormValues);
-        this.filterForm.markAsPristine();
+        this.filterFormSig().markAsPristine();
     }
 
     clearFilter(): void {
-        this.filterForm.reset();
-
-        this.filterForm.markAsPristine();
-        this.filterForm.markAsUntouched();
-
-        this.emitFilterApplied.emit(this.filterForm.value);
+        this.filterFormSig().reset();
+        this.filterFormSig().markAsPristine();
+        this.filterFormSig().markAsUntouched();
+        const filterFormValues: Record<string, unknown> =
+            this.filterFormSig().value;
+        this.emitFilterApplied.emit(filterFormValues);
     }
 
     isReadyToApply(): boolean {
-        return !this.filterForm?.valid || !this.filterForm?.dirty;
+        return !this.filterFormSig()?.valid || !this.filterFormSig()?.dirty;
     }
 }

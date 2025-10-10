@@ -22,9 +22,9 @@
         <div class="filter-container">
             <ng-container>
                 <app-grid-filter
-                    [config]="gridFilterConfigSig()"
-                    [filterForm]="gridFilterFormSig()"
-                    [isLoading]="isLoadingFilterGridDataSig()"
+                    [configSig]="gridFilterConfigSig()"
+                    [filterFormSig]="gridFilterFormSig()"
+                    [isLoadingSig]="isLoadingFilterGridDataSig()"
                     (emitFilterApplied)="applyFilter($event)"
                     (isCollapsedChange)="onFilterCollapseChange($event)"
                 ></app-grid-filter>
