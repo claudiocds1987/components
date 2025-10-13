@@ -82,160 +82,192 @@
         </div>
     }
 </ng-template>
-<div class="table-container" #scrollContainer>
-    <table
-        mat-table
-        [dataSource]="dataSource"
-        matSort
-        (matSortChange)="onSortChange($event)"
-        class="table"
-        [class.table-hidden]="isLoadingSig || dataSource.data.length === 0"
-    >
-        @for (col of columns(); track col.name) {
-            <ng-container [matColumnDef]="col.name">
-                <!-- Encabezado de la tabla -->
-                <th
-                    mat-header-cell
-                    *matHeaderCellDef
-                    class="grid-cell"
-                    [style.width]="col.width"
-                    [style.text-align]="col.align"
-                    [matTooltip]="col.headerTooltip ? col.headerTooltip : ''"
-                >
-                    @if (col.hasHeader !== false) {
-                        <div class="header-content">
-                            @if (col.headerIcon) {
-                                <img [src]="col.headerIcon" alt="icon" />
-                            }
-                            @if (col.isSortable) {
-                                <span
-                                    mat-sort-header
-                                    [mat-sort-header]="col.name"
-                                    [disabled]="!col.isSortable"
-                                    class="sortable-header"
-                                >
-                                    {{ col.name | titlecase }}
-                                </span>
-                            } @else {
-                                <span>
-                                    {{ col.name | titlecase }}
-                                </span>
-                            }
-                        </div>
-                    }
-                </th>
-                <!-- row de la tabla -->
-                <td
-                    mat-cell
-                    *matCellDef="let row"
-                    class="grid-cell"
-                    [style.width]="col.width"
-                    [style.text-align]="col.align"
-                    [ngStyle]="{
-                        'text-overflow':
-                            col.type === 'elipsis' ? 'clip' : 'ellipsis',
-                        overflow: 'hidden',
-                        'white-space': 'nowrap',
-                    }"
-                >
-                    @switch (col.type) {
-                        <!--   || se carga imagen 'unknown-user.png' para evitar errores de imagen cuando viene vacio -->
-                        @case ("img") {
-                            <img
-                                [ngSrc]="
-                                    row['imgUrl'] || 'assets/unknown-user.png'
-                                "
-                                width="40"
-                                height="40"
-                                class="table-img"
-                                alt="img"
-                            />
-                        }
-                        @case ("elipsis") {
-                            <button
-                                mat-icon-button
-                                [matMenuTriggerFor]="elipsisMenu"
-                                aria-label="Más opciones"
-                                (click)="$event.stopPropagation()"
-                                (dblclick)="$event.stopPropagation()"
-                            >
-                                <mat-icon color="primary">more_vert</mat-icon>
-                            </button>
-                            <mat-menu #elipsisMenu="matMenu">
-                                @for (
-                                    action of row["elipsisActions"];
-                                    track action.label
-                                ) {
-                                    @if (
-                                        action.condition
-                                            ? action.condition(row)
-                                            : true
-                                    ) {
-                                        <button
-                                            mat-menu-item
-                                            (click)="action.action(row.id)"
-                                        >
-                                            @if (action.icon) {
-                                                <mat-icon>{{
-                                                    action.icon
-                                                }}</mat-icon>
-                                            }
-                                            <span>{{ action.label }}</span>
-                                        </button>
-                                    }
+@if (!isLoadingSig()) {
+    <div class="table-container">
+        <table
+            mat-table
+            [dataSource]="dataSource"
+            matSort
+            (matSortChange)="onSortChange($event)"
+            class="table-header"
+        >
+            @for (col of columns(); track col.name) {
+                <ng-container [matColumnDef]="col.name">
+                    <!--  Encabezado tabla -->
+                    <th
+                        mat-header-cell
+                        *matHeaderCellDef
+                        class="grid-cell"
+                        [style.width]="col.width"
+                        [style.text-align]="col.align"
+                        [matTooltip]="
+                            col.headerTooltip ? col.headerTooltip : ''
+                        "
+                    >
+                        @if (col.hasHeader !== false) {
+                            <div class="header-content">
+                                @if (col.headerIcon) {
+                                    <img [src]="col.headerIcon" alt="icon" />
                                 }
-                            </mat-menu>
-                        }
-                        @default {
-                            @switch (col.class) {
-                                @case ("status-circle") {
+                                @if (col.isSortable) {
                                     <span
-                                        class="status-circle"
-                                        [ngClass]="{
-                                            'status-circle-active':
-                                                row[col.name],
-                                            'status-circle-inactive':
-                                                !row[col.name],
-                                        }"
-                                        [matTooltip]="
-                                            getTooltipValue(row, col.name)
-                                        "
-                                    ></span>
-                                }
-                                @default {
-                                    <span
-                                        [style]="col.style"
-                                        [matTooltip]="
-                                            getLargeTooltipValue(row, col.name)
-                                        "
+                                        mat-sort-header
+                                        [mat-sort-header]="col.name"
+                                        [disabled]="!col.isSortable"
+                                        class="sortable-header"
                                     >
-                                        {{ getTruncatedValue(row, col.name) }}
+                                        {{ col.name | titlecase }}
+                                    </span>
+                                } @else {
+                                    <span>
+                                        {{ col.name | titlecase }}
                                     </span>
                                 }
-                            }
+                            </div>
                         }
-                    }
-                </td>
-            </ng-container>
-        }
-        <tr
-            mat-header-row
-            class="header"
-            *matHeaderRowDef="columnNames(); sticky: true"
-        ></tr>
-        <tr
-            mat-row
-            *matRowDef="let row; columns: columnNames()"
-            (dblclick)="onRowDblClick(row)"
-        ></tr>
-    </table>
-    @if (showFeeback()) {
-        <app-feedback
-            class="feedback-container"
-            [imageUrl]="'assets/no-result.svg'"
-        ></app-feedback>
-    }
-</div>
+                    </th>
+                </ng-container>
+            }
+            <tr
+                mat-header-row
+                class="header"
+                *matHeaderRowDef="columnNames(); sticky: true"
+            ></tr>
+        </table>
+        <div class="table-body-scroll" #scrollContainer>
+            <!--  Contenedor que hace el scroll en el cuerpo de la tabla -->
+            <table mat-table [dataSource]="dataSource" class="table-body">
+                @for (col of columns(); track col.name) {
+                    <ng-container [matColumnDef]="col.name">
+                        <!-- Columnas de la tabla -->
+                        <td
+                            mat-cell
+                            *matCellDef="let row"
+                            class="grid-cell"
+                            [style.width]="col.width"
+                            [style.text-align]="col.align"
+                            [ngStyle]="{
+                                'text-overflow':
+                                    col.type === 'elipsis'
+                                        ? 'clip'
+                                        : 'ellipsis',
+                                overflow: 'hidden',
+                                'white-space': 'nowrap',
+                            }"
+                        >
+                            @switch (col.type) {
+                                @case ("img") {
+                                    <img
+                                        [ngSrc]="
+                                            row['imgUrl'] ||
+                                            'assets/unknown-user.png'
+                                        "
+                                        width="40"
+                                        height="40"
+                                        class="table-img"
+                                        alt="img"
+                                    />
+                                }
+                                @case ("elipsis") {
+                                    <button
+                                        mat-icon-button
+                                        [matMenuTriggerFor]="elipsisMenu"
+                                        aria-label="Más opciones"
+                                        (click)="$event.stopPropagation()"
+                                        (dblclick)="$event.stopPropagation()"
+                                    >
+                                        <mat-icon color="primary"
+                                            >more_vert</mat-icon
+                                        >
+                                    </button>
+                                    <mat-menu #elipsisMenu="matMenu">
+                                        @for (
+                                            action of row["elipsisActions"];
+                                            track action.label
+                                        ) {
+                                            @if (
+                                                action.condition
+                                                    ? action.condition(row)
+                                                    : true
+                                            ) {
+                                                <button
+                                                    mat-menu-item
+                                                    (click)="
+                                                        action.action(row.id)
+                                                    "
+                                                >
+                                                    @if (action.icon) {
+                                                        <mat-icon>{{
+                                                            action.icon
+                                                        }}</mat-icon>
+                                                    }
+                                                    <span>{{
+                                                        action.label
+                                                    }}</span>
+                                                </button>
+                                            }
+                                        }
+                                    </mat-menu>
+                                }
+                                @default {
+                                    @switch (col.class) {
+                                        @case ("status-circle") {
+                                            <span
+                                                class="status-circle"
+                                                [ngClass]="{
+                                                    'status-circle-active':
+                                                        row[col.name],
+                                                    'status-circle-inactive':
+                                                        !row[col.name],
+                                                }"
+                                                [matTooltip]="
+                                                    getTooltipValue(
+                                                        row,
+                                                        col.name
+                                                    )
+                                                "
+                                            ></span>
+                                        }
+                                        @default {
+                                            <span
+                                                [style]="col.style"
+                                                [matTooltip]="
+                                                    getLargeTooltipValue(
+                                                        row,
+                                                        col.name
+                                                    )
+                                                "
+                                            >
+                                                {{
+                                                    getTruncatedValue(
+                                                        row,
+                                                        col.name
+                                                    )
+                                                }}
+                                            </span>
+                                        }
+                                    }
+                                }
+                            }
+                        </td>
+                    </ng-container>
+                }
+                <tr
+                    mat-row
+                    *matRowDef="let row; columns: columnNames()"
+                    (dblclick)="onRowDblClick(row)"
+                ></tr>
+            </table>
+            @if (showFeeback()) {
+                <app-feedback
+                    class="feedback-container"
+                    [imageUrl]="'assets/no-result.svg'"
+                ></app-feedback>
+            }
+        </div>
+    </div>
+}
+<!-- Paginator -->
 @if (paginatorConfig() && !gridConfigSig().hasInfiniteScroll) {
     <mat-paginator
         class="paginator"

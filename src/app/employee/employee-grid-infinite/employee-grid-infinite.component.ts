@@ -452,13 +452,13 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                 {
                     name: "imgUrl",
                     type: "img",
-                    width: "20px",
+                    width: "100px",
                     isSortable: false,
                     hasHeader: false,
                 },
-                { name: "id", width: "20px" },
-                { name: "name" },
-                { name: "surname" },
+                { name: "id", width: "100px" },
+                { name: "name", width: "200px" },
+                { name: "surname", width: "200px" },
                 { name: "birthDate" },
                 { name: "gender", isSortable: false }, // false por que ordenaria por id no alfabeticamente
                 { name: "position", isSortable: false }, // false por que ordenaria por id no alfabeticamente
@@ -467,10 +467,11 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
                     name: "active",
                     class: "status-circle",
                     align: "center",
-                    width: "20px",
+                    width: "75px",
                 },
                 {
                     name: "elipsisActions", // Este es el nombre de la propiedad en GridData
+                    width: "100px",
                     align: "center",
                     isSortable: false,
                     type: "elipsis", // Indica que es la columna de elipsis

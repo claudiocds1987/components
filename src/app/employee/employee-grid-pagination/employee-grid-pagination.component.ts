@@ -678,14 +678,20 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
             columns: [
                 {
                     name: "imgUrl",
-                    width: "50px",
+                    width: "100px",
                     type: "img",
                     isSortable: false,
                     hasHeader: false,
                 },
-                { name: "id" },
-                { name: "name" /*headerTooltip: "nombre completo"*/ },
-                { name: "surname" /*style: "font-weight: bold;"*/ },
+                { name: "id", width: "100px" },
+                {
+                    name: "name",
+                    width: "200px" /*headerTooltip: "nombre completo"*/,
+                },
+                {
+                    name: "surname",
+                    width: "200px" /*style: "font-weight: bold;"*/,
+                },
                 { name: "birthDate" },
                 { name: "gender", isSortable: false }, // false por que ordenaria por id no alfabeticamente
                 { name: "position", isSortable: false }, // false por que ordenaria por id no alfabeticamente
@@ -694,11 +700,12 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                     name: "active",
                     //headerIcon: "/assets/person.svg",
                     class: "status-circle",
-                    align: "left",
-                    width: "50px",
+                    align: "center",
+                    width: "75px",
                 },
                 {
                     name: "elipsisActions",
+                    width: "100px",
                     align: "center",
                     isSortable: false,
                     type: "elipsis",

@@ -103,7 +103,8 @@ El GridComponent es un componente genérico de tabla que puede funcionar en dos 
 El comportamiento se define a través del objeto @Input() config.
  **************************************************************************************************/
 export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
-    @ViewChild("scrollContainer") scrollContainer!: ElementRef;
+    @ViewChild("scrollContainer", { static: false })
+    scrollContainer!: ElementRef;
     // inputs signal
     gridConfigSig = input.required<GridConfiguration>();
     gridDataSig = input.required<GridData[]>();
@@ -143,16 +144,40 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild(MatSort) private _matSort!: MatSort;
     @ViewChild(MatPaginator) private _matPaginator!: MatPaginator;
 
+    // Bandera para saber si debe bajar el scroll tras append
+    private _shouldScrollAfterAppend = false;
+
     constructor() {
-        // Inicialización del Effect para leer cambios en signal data:
+        // Inicialización del Effect para leer cambios en signal data y loading:
         effect((): void => {
-            // 1. Leer el valor de la signal 'data'
             const newData = this.gridDataSig();
+            this.isLoadingSig(); // trigger effect on loading change
             // Si hay datos o array vacío, actualiza la MatTable
             if (newData && newData.length >= 0) {
                 this.dataSource.data = newData;
                 this._applySortAndPaginator();
             }
+            // Si la bandera está activa, baja el scroll tras el append
+            setTimeout((): void => {
+                if (
+                    this.gridConfigSig().hasInfiniteScroll &&
+                    this.scrollContainer
+                ) {
+                    const el = this.scrollContainer.nativeElement;
+                    if (el && this._shouldScrollAfterAppend) {
+                        setTimeout((): void => {
+                            const espacio = 100;
+                            const nuevoScroll = Math.max(
+                                0,
+                                el.scrollHeight - el.clientHeight - espacio,
+                            );
+                            el.scrollTop = nuevoScroll;
+                            this._shouldScrollAfterAppend = false;
+                        }, 0);
+                    }
+                    this._setupScrollListener();
+                }
+            });
         });
     }
 
@@ -454,6 +479,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
         if (scrollTop + clientHeight >= scrollHeight - scrollThreshold) {
             const totalCount = this.paginatorConfig()?.totalCount ?? 0;
             if (this.gridDataSig().length < totalCount) {
+                this._shouldScrollAfterAppend = true;
                 this._ngZone.run((): void => {
                     this.infiniteScroll.emit();
                 });
