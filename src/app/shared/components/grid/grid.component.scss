@@ -56,6 +56,16 @@
     position: relative;
 }
 
+.header-content {
+    display: flex;
+    align-items: baseline;
+    img {
+        margin-right: 5px;
+        width: 14px;
+        height: 14px;
+    }
+}
+
 .table-header,
 .table-body {
     width: 100%;

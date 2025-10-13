@@ -698,7 +698,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                 { name: "country", isSortable: false }, // false por que ordenaria por id no alfabeticamente
                 {
                     name: "active",
-                    //headerIcon: "/assets/person.svg",
+                    //headerIcon: "/assets/person.svg", si el nombre de la columna aparece cortado darle mas width
                     class: "status-circle",
                     align: "center",
                     width: "75px",
