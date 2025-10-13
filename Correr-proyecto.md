@@ -92,3 +92,5 @@ PARA ACTUALIZAR CAMBIOS EN GITHUB PAGES:
 
 1. Hacer el commit y push normalmente desde visual studio (para subir los cambios al repositorio de git hub)
 2. npx ng deploy --base-href=/components/ (actualiza en github pages)
+
+Ver proyecto en github pages: https://claudiocds1987.github.io/components/

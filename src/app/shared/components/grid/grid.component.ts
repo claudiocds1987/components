@@ -144,13 +144,16 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild(MatSort) private _matSort!: MatSort;
     @ViewChild(MatPaginator) private _matPaginator!: MatPaginator;
 
-    // Bandera para saber si debe bajar el scroll tras append
-    private _shouldScrollAfterAppend = false;
+    private _shouldScrollAfterAppend = false; // Bandera para saber si debe bajar el scroll tras append ("append" seria agregar algo al final)
+    // Variable para guardar la cantidad de filas antes del append
+    private _previousDataLength = 0;
+    private readonly ROW_HEIGHT_PIXELS = 40; // Altura de cada fila configurable (ej. 40px) Basado en el cálculo: scrollTop = scrollHeight - clientHeight - (nuevasFilas * altoFila)
 
     constructor() {
         // Inicialización del Effect para leer cambios en signal data y loading:
         effect((): void => {
             const newData = this.gridDataSig();
+            const previousLength = this._previousDataLength;
             this.isLoadingSig(); // trigger effect on loading change
             // Si hay datos o array vacío, actualiza la MatTable
             if (newData && newData.length >= 0) {
@@ -164,16 +167,35 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
                     this.scrollContainer
                 ) {
                     const el = this.scrollContainer.nativeElement;
-                    if (el && this._shouldScrollAfterAppend) {
+                    if (
+                        el &&
+                        this._shouldScrollAfterAppend &&
+                        newData.length > previousLength
+                    ) {
+                        const newRowsCount = newData.length - previousLength; // Calcula el número de filas nuevas agregadas
+                        // Calcula la altura total de las nuevas filas agregadas Se usa la altura de fila configurable
+                        const newRowsHeight =
+                            newRowsCount * this.ROW_HEIGHT_PIXELS;
+                        // "newScroll" calcula el nuevo scrollTop. La fórmula busca posicionar el scroll
+                        // en una posicion donde  el usuario pueda ver algunos de los anteriores y los nuevos registros cargados
+                        // nuevoScroll = (el.scrollHeight - el.clientHeight) - newRowsHeight
+                        // El término (el.scrollHeight - el.clientHeight) es el máximo scroll posible.
+                        // Al restarle newRowsHeight, ajustamos el scroll hacia arriba lo suficiente
+                        // para que la primera de las nuevas filas quede en la parte superior.
+                        const newScroll = Math.max(
+                            0,
+                            el.scrollHeight - el.clientHeight - newRowsHeight,
+                        );
+                        // setTimeout para asegurar que el DOM esté actualizado
                         setTimeout((): void => {
-                            const espacio = 100;
-                            const nuevoScroll = Math.max(
-                                0,
-                                el.scrollHeight - el.clientHeight - espacio,
-                            );
-                            el.scrollTop = nuevoScroll;
+                            el.scrollTop = newScroll;
                             this._shouldScrollAfterAppend = false;
+                            // Actualiza la longitud de la data para el próximo cálculo
+                            this._previousDataLength = newData.length;
                         }, 0);
+                    } else if (!this._shouldScrollAfterAppend) {
+                        // Si no hubo append, solo actualiza la longitud para futuros appends
+                        this._previousDataLength = newData.length;
                     }
                     this._setupScrollListener();
                 }
@@ -269,11 +291,10 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
 
     onSortChange(sortState: Sort): void {
         if (this.gridConfigSig().hasSorting?.isServerSide) {
-            // Uso de gridConfig()
             this.sortChange.emit(sortState);
-            // Mueve el scroll al principio de la tabla al hacer el ordenamiento
+
             if (this.scrollContainer && this.scrollContainer.nativeElement) {
-                this.scrollContainer.nativeElement.scrollTop = 0;
+                this.scrollContainer.nativeElement.scrollTop = 0; // Mueve el scroll al principio de la tabla al hacer el ordenamiento
             }
         }
     }
@@ -348,11 +369,9 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
             item: GridData,
             sortHeaderId: string,
         ): string | number => {
-            // Se usa this.columns()
             const column = this.columns().find(
                 (c): boolean => c.name === sortHeaderId,
             );
-            // ... Resto de la lógica
             const value = item[sortHeaderId];
             if (column?.type === "date" && value) {
                 const dateString = value as string;
@@ -374,7 +393,6 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Este método asegura que las referencias se establezcan solo cuando están disponibles
     private _applySortAndPaginator(): void {
-        // Se usa this.gridConfig() y this.paginatorConfig()
         const isServerSideSort = this.gridConfigSig().hasSorting?.isServerSide;
         const paginatorConfig = this.gridConfigSig().paginator;
 
@@ -383,7 +401,6 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
             (typeof paginatorConfig === "object" &&
                 !paginatorConfig.isServerSide);
 
-        // ... Resto de la lógica
         if (!this._matSort || !this._matPaginator) {
             return;
         }
@@ -409,16 +426,12 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
             if (!search) {
                 return true;
             }
-            // 1. OBTENER LA CONFIGURACIÓN COMO UNA CONSTANTE para mayor legibilidad
-            const config = this.gridConfigSig();
-            // 2. CHEQUEO ESTRICTO DEL TIPO DE filterByColumn
-            // Se asegura de que filterByColumn existe y es una string (o el tipo esperado)
-            const filterKey = config.filterByColumn;
 
-            if (filterKey) {
-                // Aca el nombre de la columna que viene en la configuración.
-                // USAR EL VALOR YA CHEQUEADO para indexar 'data'
-                const value = data[filterKey];
+            const config = this.gridConfigSig();
+            const columnName = config.filterByColumn;
+
+            if (columnName) {
+                const value = data[columnName];
                 const stringValue = value?.toString() || "";
                 return stringValue.toLowerCase().includes(search);
             }
@@ -474,11 +487,12 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
         const scrollHeight = element.scrollHeight;
         const scrollTop = element.scrollTop;
         const clientHeight = element.clientHeight;
-        const scrollThreshold = 50;
+        const scrollThreshold = 0; // Para que la carga se dispare cuando el usuario arrastra el scroll hasta el final del contenido desplazable.
 
         if (scrollTop + clientHeight >= scrollHeight - scrollThreshold) {
             const totalCount = this.paginatorConfig()?.totalCount ?? 0;
             if (this.gridDataSig().length < totalCount) {
+                this._previousDataLength = this.gridDataSig().length; // ANTES de emitir el evento, se guarda la longitud actual para el cálculo de scroll
                 this._shouldScrollAfterAppend = true;
                 this._ngZone.run((): void => {
                     this.infiniteScroll.emit();
