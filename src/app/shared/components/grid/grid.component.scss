@@ -240,3 +240,17 @@
         background-position: -200% 0;
     }
 }
+
+// MEDIA QUERY
+// NOTA: LA TABLA A PARTIR DE 1440PX Y ANCHOS MENORES DE PANTALLA LAS COLUMNAS TOMAN UN WIDTH AUTO
+// DANDO LA SENSACION DE RESPONSIVE
+
+@media (max-width: 1440px) {
+    th,
+    td {
+        //'min-content' con 'width: auto' para permitir que el ancho se adapte al contenido
+        // pero respetando el min-width de la tabla superior.
+        width: auto !important;
+        min-width: min-content;
+    }
+}
