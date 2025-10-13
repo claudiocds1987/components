@@ -286,7 +286,16 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     onPaginatorPageChange(event: PageEvent): void {
+        const paginatorConfig = this.gridConfigSig().paginator;
         this.pageChange.emit(event);
+        // cuando el paginador es lado cliente al cambiar de pagina se envia el scroll arriba de todo
+        if (!paginatorConfig.isServerSide) {
+            // Asegura que el contenedor de scroll exista.
+            if (this.scrollContainer && this.scrollContainer.nativeElement) {
+                // Restablece el scroll a la posición superior (0)
+                this.scrollContainer.nativeElement.scrollTop = 0;
+            }
+        }
     }
 
     onSortChange(sortState: Sort): void {
