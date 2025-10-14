@@ -760,7 +760,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
             {
                 fieldName: "birthDateRange",
                 fieldType: "dateRange",
-                label: "Rango de nacimiento",
+                label: "Rango nacimiento",
             },
             {
                 fieldName: "position",
