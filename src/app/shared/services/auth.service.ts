@@ -58,6 +58,13 @@ export class AuthService {
         );
     }
 
+    /*******************************************************************************************************
+     * La funció HasAcces(): se le pasa el rol que esta en la menu card y trae todos los roles del usuario.
+     * Entonces lo que hace es leer el rol de la menu card y leer todos los roles del usuario y preguntar
+     * si el rol de la menu-card lo tiene el usuario.
+     * Ambos roles tanto del menu card como el del usuario los convierte a mayuscula (uppercase) para
+     * evitar errores de comparación y coincidan si el rol puesto en la mat card o en el esta en minuscula.
+     */
     hasAccess(requiredResource: string | string[] | undefined): boolean {
         if (
             !requiredResource ||

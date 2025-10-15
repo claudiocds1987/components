@@ -15,30 +15,9 @@ import { filter, map, Observable } from "rxjs";
     styleUrl: "./menu-cards.component.scss",
 })
 export class MenuCardsComponent {
-    //@Input() cards: ItemCard[] = [];
-    /* @Input() cards: ItemCard[] = [];
-
-    // Lista de tarjetas visibles para el usuario actual
-    public visibleCards: ItemCard[] = [];
-
-    private _authService = inject(AuthService);
-
-    constructor() {} //
-
-    ngOnInit(): void {
-        this.filterCardsByPermissions();
-    }
-
-    // Método para filtrar las tarjetas
-    private filterCardsByPermissions(): void {
-        this.visibleCards = this.cards.filter((card: ItemCard): boolean =>
-            // Usamos el método hasAccess del AuthService para determinar si la tarjeta es visible
-            this._authService.hasAccess(card.requiredRoles || []),
-        );
-    } */
     @Input() cards: ItemCard[] = [];
 
-    // 🔑 Observable que contendrá la lista de tarjetas visibles
+    // Observable que contendrá la lista de tarjetas visibles
     public visibleCards$: Observable<ItemCard[]> | undefined;
     private _authService = inject(AuthService);
     constructor() {}
@@ -51,7 +30,7 @@ export class MenuCardsComponent {
                 (roles: UserRole[] | null): roles is UserRole[] =>
                     roles !== null,
             ),
-            // 1. Esperamos a que userRoles$ emita un valor (null o el array de roles)
+            // Esperamos a que userRoles$ emita un valor (null o el array de roles)
             map((_): ItemCard[] => {
                 // La función map se ejecuta CADA VEZ que hay un cambio en userRoles$
                 // El valor de los roles (el array) NO se usa DENTRO del map,

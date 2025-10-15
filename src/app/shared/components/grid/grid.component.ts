@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
     Component,
     ViewChild,
@@ -382,8 +383,18 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
 
-    // grid.component.ts
-
+    /******************************************************************************************
+     * _syncMatSortState(): Sincroniza el estado visual del MatSort (la flecha de ordenación)
+     * con la configuración de ordenamiento del lado del servidor (gridConfigSig().OrderBy).
+     *  Esta función es CRÍTICA para el ordenamiento de lado del servidor:
+     * 1.  Lee la columna y dirección activas del 'OrderBy' que viene del servidor.
+     * 2.  Establece directamente las propiedades 'active' y 'direction' del MatSort.
+     * 3.  Utiliza el método privado 'matSortInstance._stateChanges.next()' (un hack)
+     * para forzar al componente MatSortHeader a **redibujar la flecha**
+     * inmediatamente. Esto corrige el error donde la flecha desaparece o
+     * permanece en la columna incorrecta después de que la tabla se actualiza
+     * con nuevos datos (evitando así ciclos de emisión).
+     ****************************************************************************************/
     private _syncMatSortState(): void {
         const isServerSideSort = this.gridConfigSig().hasSorting?.isServerSide;
         const orderByConfig = this.gridConfigSig().OrderBy;
@@ -402,45 +413,20 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
             ) {
                 return;
             }
-
-            // =======================================================
-            // PASO 1: Establecer las propiedades de MatSort
+            // Se Establecen las propiedades de MatSort
             this._matSort.active = columnName;
             this._matSort.direction = direction;
-
-            // =======================================================
-            // PASO 2: Forzar el redibujo interno sin emitir un evento externo (sortChange)
-            // 🚨 Advertencia: 'as any' es necesario porque _stateChanges es una propiedad
-            // marcada como privada. Esta es la forma más efectiva de forzar el redibujo
-            // de MatSort sin generar un ciclo.
+            // Aca Forzamos el redibujo interno
             const matSortInstance = this._matSort as any;
 
             if (matSortInstance._stateChanges) {
                 // Esto le dice a la directiva MatSortHeader que recalcule y dibuje la flecha.
                 matSortInstance._stateChanges.next();
             } else {
-                // Fallback si _stateChanges no existe (versión muy antigua de Angular Material).
                 this._changeDetectorRef.detectChanges();
             }
         }
     }
-
-    /* private _syncMatSortState(): void {
-        const isServerSideSort = this.gridConfigSig().hasSorting?.isServerSide;
-        const orderByConfig = this.gridConfigSig().OrderBy;
-
-        // Solo sincronizamos el estado visual si es ordenamiento del lado del servidor
-        if (isServerSideSort && this._matSort && orderByConfig) {
-            const direction = (orderByConfig.direction || "") as
-                | "asc"
-                | "desc"
-                | "";
-
-            this._matSort.active = orderByConfig.columnName;
-            this._matSort.direction = direction;
-            this._changeDetectorRef.detectChanges();
-        }
-    } */
 
     // Funcion  callback que MatTableDataSource utiliza para obtener el valor de una celda antes de ordenarla.
     // Permite ordenar bien las fechas con el matSort cuando la data es lado cliente.
