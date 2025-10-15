@@ -13,6 +13,7 @@ import {
     input,
     computed,
     effect,
+    ChangeDetectorRef,
 } from "@angular/core";
 import { CommonModule, NgOptimizedImage } from "@angular/common";
 import { MatTableModule } from "@angular/material/table";
@@ -148,6 +149,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
     // Variable para guardar la cantidad de filas antes del append
     private _previousDataLength = 0;
     private readonly ROW_HEIGHT_PIXELS = 40; // Altura de cada fila configurable (ej. 40px) Basado en el cálculo: scrollTop = scrollHeight - clientHeight - (nuevasFilas * altoFila)
+    private _changeDetectorRef = inject(ChangeDetectorRef);
 
     constructor() {
         // Inicialización del Effect para leer cambios en signal data y loading:
@@ -159,6 +161,10 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
             if (newData && newData.length >= 0) {
                 this.dataSource.data = newData;
                 this._applySortAndPaginator();
+                // Retrasar la sincronización. CRÍTICO para que MatTable termine su proceso.
+                setTimeout(() => {
+                    this._syncMatSortState();
+                }, 0);
             }
             // Si la bandera está activa, baja el scroll tras el append
             setTimeout((): void => {
@@ -300,6 +306,12 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
 
     onSortChange(sortState: Sort): void {
         if (this.gridConfigSig().hasSorting?.isServerSide) {
+            console.log(
+                "Sort emitido:",
+                sortState.active,
+                "Dirección:",
+                sortState.direction,
+            );
             this.sortChange.emit(sortState);
 
             if (this.scrollContainer && this.scrollContainer.nativeElement) {
@@ -370,6 +382,66 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
 
+    // grid.component.ts
+
+    private _syncMatSortState(): void {
+        const isServerSideSort = this.gridConfigSig().hasSorting?.isServerSide;
+        const orderByConfig = this.gridConfigSig().OrderBy;
+
+        if (isServerSideSort && this._matSort && orderByConfig) {
+            const columnName = orderByConfig.columnName;
+            const direction = (orderByConfig.direction || "") as
+                | "asc"
+                | "desc"
+                | "";
+
+            // Si el estado ya es correcto, no hacemos nada (esto previene redibujos innecesarios).
+            if (
+                this._matSort.active === columnName &&
+                this._matSort.direction === direction
+            ) {
+                return;
+            }
+
+            // =======================================================
+            // PASO 1: Establecer las propiedades de MatSort
+            this._matSort.active = columnName;
+            this._matSort.direction = direction;
+
+            // =======================================================
+            // PASO 2: Forzar el redibujo interno sin emitir un evento externo (sortChange)
+            // 🚨 Advertencia: 'as any' es necesario porque _stateChanges es una propiedad
+            // marcada como privada. Esta es la forma más efectiva de forzar el redibujo
+            // de MatSort sin generar un ciclo.
+            const matSortInstance = this._matSort as any;
+
+            if (matSortInstance._stateChanges) {
+                // Esto le dice a la directiva MatSortHeader que recalcule y dibuje la flecha.
+                matSortInstance._stateChanges.next();
+            } else {
+                // Fallback si _stateChanges no existe (versión muy antigua de Angular Material).
+                this._changeDetectorRef.detectChanges();
+            }
+        }
+    }
+
+    /* private _syncMatSortState(): void {
+        const isServerSideSort = this.gridConfigSig().hasSorting?.isServerSide;
+        const orderByConfig = this.gridConfigSig().OrderBy;
+
+        // Solo sincronizamos el estado visual si es ordenamiento del lado del servidor
+        if (isServerSideSort && this._matSort && orderByConfig) {
+            const direction = (orderByConfig.direction || "") as
+                | "asc"
+                | "desc"
+                | "";
+
+            this._matSort.active = orderByConfig.columnName;
+            this._matSort.direction = direction;
+            this._changeDetectorRef.detectChanges();
+        }
+    } */
+
     // Funcion  callback que MatTableDataSource utiliza para obtener el valor de una celda antes de ordenarla.
     // Permite ordenar bien las fechas con el matSort cuando la data es lado cliente.
     // Tambien al manejarla lado cliente va a poder ordenar las columnas puesto y pais por descripcion.
@@ -382,16 +454,18 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
                 (c): boolean => c.name === sortHeaderId,
             );
             const value = item[sortHeaderId];
+            // Manejo para columnas de fecha
             if (column?.type === "date" && value) {
                 const dateString = value as string;
                 const parts = dateString.split("/");
+                // Retorna un formato ISO (YYYY-MM-DD) para una correcta comparación de fechas
                 return `${parts[2]}-${parts[1]}-${parts[0]}`;
             }
-
+            // Manejo para columnas cuyo valor es booleano
             if (typeof value === "boolean") {
                 return value ? 1 : 0;
             }
-
+            // Manejo por defecto para cadenas y números
             if (typeof value === "string" || typeof value === "number") {
                 return value;
             }
@@ -410,16 +484,21 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
             (typeof paginatorConfig === "object" &&
                 !paginatorConfig.isServerSide);
 
+        // Si la grilla no está visible, las referencias no existen,
+        // por lo que no hacemos nada.
         if (!this._matSort || !this._matPaginator) {
             return;
         }
-
+        // Si el ordenamiento es del lado del cliente, se vincula el MatSort.
+        // En caso contrario, se deja a la directiva matSort manejar el estado visual.
         if (!isServerSideSort) {
             this.dataSource.sort = this._matSort;
         } else {
+            // Se desvincula la fuente de datos del sort local,
+            // pero MatSort en el HTML seguirá funcionando.
             this.dataSource.sort = null;
         }
-
+        // Si la paginación es del lado del cliente, se vincula el MatPaginator.
         if (isClientSidePaginator) {
             this.dataSource.paginator = this._matPaginator;
         } else {
