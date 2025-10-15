@@ -59,16 +59,32 @@ PARA EJECUTAR ES-LINT: npm run lint
 
 ---
 
+BACKEND
+(Los archivos del backend estan en Este Equipo -> disco C -> angular-25 -> json-server-data)
+
 LA API HECHA EN JSON-SERVER SE ENCUENTRA EN EL REPOSITORIO GITHUB json-server-data
 git remote add origin https://github.com/claudiocds1987/json-server-data.git
 git branch -M main
 git push -u origin main
 
-Y ESTE REPOSITORIO ESTA LINKEADO AL SERVIDOR RENDER DONDE LEVANTA Y LEE LOS JSON DEL REPOSITORIO json-server-data
+opcion 2: HACER NORMALMENTE EL COMMIT Y PUSH SIN CLI.
+(AL HACER EL PUSH "RENDER" DETECTA AUTOMATICAMENTE QUE HAY UN UPDATE POR EJEMPLO UN OBJETO JSON NUEVO Y CREA EL ENDPOINT PARA QUE
+LO PUEDAS USAR EN TU PROYECTO) PARA VER EL ESTADO DEL DEPLOY ENTRAR A RENDER FIJARSE EN DONDE DICE json-server-data
+Y VAS A VER QUE EL STATUS DEL DEPLOY ESTA DANDO VUELTAS, CUANDO TERMINA CON UN TILDE INDICA "DEPLOYED"
+
+PARA VER EL NUEVO ENDPOINT CREADO POR RENDER
+
+- HACER CLIC EN https://json-server-data-fpl9.onrender.com
+  Y AHI VAN A APARECER TODOS LOS ENDPOINT QUE HABIAN MAS LOS NUEVOS
+  hacer clic en el nuevo enpoint, se va a abrir una nueva ventana mostrando el json y en la url
+  va a mostrar por ejemplo https://json-server-data-fpl9.onrender.com/profile
+  esta url es la que hay que pegar en el front para obtener los datos.
+
+Y ESTE REPOSITORIO ESTA LINKEADO AL SERVIDOR "RENDER" DONDE LEVANTA Y LEE LOS JSON DEL REPOSITORIO json-server-data
 
 ---
 
-ESTE PROYECTO ESTA EN GITHUB PAGES:
+ESTE PROYECTO FRONTEND ESTA EN GITHUB PAGES (ACA SOLO ESTA ALOJADO TODO EL PROYECTO DE ANGULAR):
 
 ESTOS PASOS SOLO SE HACEN UNA VEZ (YA SE HICIERON)
 Nota: uso npx

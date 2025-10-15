@@ -2485,5 +2485,35 @@
       "id": 24,
       "description": "Venezuela"
     }
-  ]
+  ],
+
+  "users": [
+    {
+      "id": 1,
+      "username": "adminUser",
+      "password": "hashed_password",
+      "roles": ["ADMIN", "GERENTE", "USUARIO_NORMAL"]
+    },
+    {
+      "id": 2,
+      "username": "normalUser",
+      "password": "hashed_password",
+      "roles": ["USUARIO_NORMAL"]
+    },
+    {
+      "id": 3,
+      "username": "guest",
+      "password": "hashed_password",
+      "roles": ["INVITADO"]
+    }
+  ],
+
+  "profile": 
+    {
+      "id": 1,
+      "username": "adminUser",
+      "roles": ["ADMIN", "GERENTE", "USUARIO_NORMAL"]
+      
+    }
+  
 }

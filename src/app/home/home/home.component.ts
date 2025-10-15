@@ -10,10 +10,51 @@ import { MenuCardsComponent } from "../../shared/components/menu-cards/menu-card
     styleUrl: "./home.component.scss",
 })
 export class HomeComponent {
+    /*  NOTA: el usuario es "adminUser" tiene 3 roles ["ADMIN", "GERENTE", "USUARIO_NORMAL"]. 
+        (ir a db.json -> objeto profile y fijarse que en la propiedad "roles")    
+        Cualquiera de estos roles que se ponga en la propiedad "requiredRoles" va a dar acceso a que se pueda ver el menu o si queremos tener acceso
+        tambien se puede poner vacio (requiredRoles: ""). 
+        Para hacer una prueba de negarle el acceso al usuario adminUser y que no pueda ver ese menú, poner en "requiredRoles"
+        un roll que no exista en adminUser o no sea vacio, por ejemplo requiredRoles:["CHA"].
+        Estariamos diciendole al usuario mira que para este menu el rol requerido es "CHA" si vos no lo tenes no podes acceder.
+        CORRER JSON-SERVER DE LOCAL
+    */
     menuCards: ItemCard[] = [];
 
     constructor() {
         this.menuCards = [
+            {
+                id: "1",
+                img: "assets/grid.svg",
+                title: "Grilla paginada full",
+                description:
+                    "Gestión y visualización de empleados con filtro dinámico y chips.",
+                // requiredRoles: ["ADMIN"], // va a funcionar porque adminUser tiene el rol ADMIN
+                // requiredRoles: ["CHA"], // NO VA A FUNCIONAR  porque adminUser NO tiene el rol CHA
+                requiredRoles: "", // Visible para todos (o no requiere un rol específico)
+                path: "/employee-grid-pagination",
+            },
+            {
+                id: "2",
+                img: "assets/grid.svg",
+                title: "Grilla infinita",
+                description:
+                    "Gestión y visualización de empleados con scroll infinito.",
+
+                requiredRoles: "", // Visible para todos (o no requiere un rol específico)
+                path: "employee-grid-infinite",
+            },
+            {
+                id: "3",
+                img: "assets/grid.svg",
+                title: "Grilla no paginada",
+                description: "Gestión y visualización de empleados.",
+                requiredRoles: "", // Visible para todos los roles (o no requiere un rol específico)
+                path: "employee-grid-all",
+            },
+        ];
+
+        /* this.menuCards = [
             {
                 id: "1",
                 img: "assets/grid.svg",
@@ -41,14 +82,14 @@ export class HomeComponent {
                 path: "employee-grid-all",
             },
             // Con boton Incluido en la mat-card usando prop. textBtn
-            /*  {
+            {
                 id: "4",
                 title: "gasfgasgasg",
                 description: "Gestión y visualización de empleados.",
                 resource: "",
                 path: "employee-grid-all",
                 textBtn: "ir a grilla",
-            }, */
-        ];
+            },
+        ]; */
     }
 }
