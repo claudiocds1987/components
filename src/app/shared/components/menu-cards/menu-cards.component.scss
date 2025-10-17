@@ -8,8 +8,9 @@
         display: flex;
         gap: 10px;
         width: 300px;
-        height: 150px;
+        height: 180px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background: white;
         transition: box-shadow 0.3s ease-in-out;
         cursor: pointer;
     }
@@ -20,8 +21,8 @@
 
     .card-header {
         display: flex;
-
-        img {
+        align-items: center;
+        .header-img {
             width: 40px;
             height: 40px;
             margin-right: 10px;
@@ -30,6 +31,54 @@
 
     .actions {
         display: flex;
-        margin: 16px 0 0 8px;
+        justify-content: end;
+        gap: 10px;
+    }
+}
+
+// ----------------------------------------------------
+// CLASES ESPECÍFICAS DEL SKELETON
+// ----------------------------------------------------
+
+.skeleton-base {
+    .skeleton-item {
+        background-color: #f0f0f0;
+        border-radius: 4px;
+        margin-bottom: 0;
+    }
+
+    // FORMAS DEL HEADER
+    .skeleton-card-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    .skeleton-card-title {
+        width: 70%;
+        height: 20px;
+    }
+
+    // FORMAS DEL CONTENIDO (TEXTO)
+    .skeleton-card-description {
+        height: 10px;
+        margin-bottom: 8px;
+        width: 100%;
+    }
+
+    // CLASES DE ANCHO PARA LÍNEAS DE TEXTO
+    .width-90 {
+        width: 90%;
+    }
+    .width-75 {
+        width: 75%;
+    }
+
+    // FORMAS DE ACCIONES
+    .skeleton-button-lg {
+        width: 80px;
+        height: 36px;
+        border-radius: 4px;
     }
 }

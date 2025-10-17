@@ -1,36 +1,56 @@
-import { Component, inject, Input } from "@angular/core";
+import {
+    Component,
+    inject,
+    Input,
+    OnDestroy,
+    OnInit,
+    signal,
+} from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { MatCardModule } from "@angular/material/card";
 import { MatButtonModule } from "@angular/material/button";
 import { RouterLink } from "@angular/router";
 import { ItemCard } from "../../models/item-card.model";
 import { AuthService, UserRole } from "../../services/auth.service";
-import { filter, map, Observable } from "rxjs";
+import { filter, map, Observable, Subscription, tap } from "rxjs";
+import { SkeletonDirective } from "../../directives/skeleton.directive";
 
 @Component({
     selector: "app-menu-cards",
     standalone: true,
-    imports: [CommonModule, MatCardModule, MatButtonModule, RouterLink],
+    imports: [
+        CommonModule,
+        MatCardModule,
+        MatButtonModule,
+        RouterLink,
+        SkeletonDirective,
+    ],
     templateUrl: "./menu-cards.component.html",
-    styleUrl: "./menu-cards.component.scss",
+    styleUrls: [
+        "./menu-cards.component.scss",
+        "../../../shared/styles/skeleton.scss",
+    ],
 })
-export class MenuCardsComponent {
+export class MenuCardsComponent implements OnInit, OnDestroy {
     @Input() cards: ItemCard[] = [];
-
+    isLoadingSig = signal(true);
     // Observable que contendrá la lista de tarjetas visibles
     public visibleCards$: Observable<ItemCard[]> | undefined;
+
+    private visibleCardsSubscription: Subscription | undefined;
+
     private _authService = inject(AuthService);
-    constructor() {}
 
     ngOnInit(): void {
-        // Obtengo los roles del usuario que trajo authService de la base de datos guardados en el observable userRoles$ de authService
+        // En visibleCards$ obtengo se define que menúes se van a mostrar
         this.visibleCards$ = this._authService.userRoles$.pipe(
-            // Bloquea la emisión inicial de null
             filter(
                 (roles: UserRole[] | null): roles is UserRole[] =>
                     roles !== null,
             ),
-            // Esperamos a que userRoles$ emita un valor (null o el array de roles)
+            tap((): void => {
+                this.isLoadingSig.set(false);
+            }),
             map((_): ItemCard[] => {
                 // La función map se ejecuta CADA VEZ que hay un cambio en userRoles$
                 // El valor de los roles (el array) NO se usa DENTRO del map,
@@ -42,5 +62,13 @@ export class MenuCardsComponent {
                 );
             }),
         );
+
+        // Forzar la suscripción para que el pipe (incluyendo el tap) se ejecute.
+        // El | async del template manejará la entrega de los datos a la vista.
+        this.visibleCardsSubscription = this.visibleCards$.subscribe();
+    }
+
+    ngOnDestroy(): void {
+        this.visibleCardsSubscription?.unsubscribe();
     }
 }

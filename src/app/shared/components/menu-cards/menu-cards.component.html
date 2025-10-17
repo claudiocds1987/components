@@ -1,28 +1,68 @@
 <div class="menu-cards-container">
-    @for (card of visibleCards$ | async; track card.title) {
-        <mat-card
-            class="menu-card"
-            [routerLink]="!card.textBtn ? card.path : null"
-        >
-            <mat-card-header class="card-header">
-                @if (card.img) {
-                    <img [src]="card.img" alt="Imagen de la tarjeta" />
-                }
-                <h2>{{ card.title }}</h2>
-            </mat-card-header>
-            <mat-card-content>
-                <p>{{ card.description }}</p>
-            </mat-card-content>
+    @if (isLoadingSig()) {
+        @for (i of [1, 2, 3, 4]; track i) {
+            <mat-card class="menu-card skeleton-base">
+                <mat-card-header class="card-header">
+                    <div
+                        class="skeleton-item skeleton-card-icon"
+                        [appSkeleton]="true"
+                    ></div>
+                    <div
+                        class="skeleton-item skeleton-card-title"
+                        [appSkeleton]="true"
+                    ></div>
+                </mat-card-header>
 
-            @if (card.textBtn) {
+                <mat-card-content>
+                    <div
+                        class="skeleton-item skeleton-card-description width-90"
+                        [appSkeleton]="true"
+                    ></div>
+                    <div
+                        class="skeleton-item skeleton-card-description width-75"
+                        [appSkeleton]="true"
+                    ></div>
+                </mat-card-content>
+
                 <mat-card-actions class="actions">
-                    <a [routerLink]="card.path">
-                        <button mat-stroked-button color="primary">
-                            {{ card.textBtn }}
-                        </button>
-                    </a>
+                    <div
+                        class="skeleton-item skeleton-button-lg"
+                        [appSkeleton]="true"
+                    ></div>
                 </mat-card-actions>
-            }
-        </mat-card>
+            </mat-card>
+        }
+    } @else {
+        @for (card of visibleCards$ | async; track card.title) {
+            <mat-card
+                class="menu-card"
+                [routerLink]="!card.textBtn ? card.path : null"
+                [appSkeleton]="false"
+            >
+                <mat-card-header class="card-header">
+                    @if (card.img) {
+                        <img
+                            [src]="card.img"
+                            class="header-img"
+                            alt="Imagen de la tarjeta"
+                        />
+                    }
+                    <h2>{{ card.title }}</h2>
+                </mat-card-header>
+                <mat-card-content>
+                    <p>{{ card.description }}</p>
+                </mat-card-content>
+
+                @if (card.textBtn) {
+                    <mat-card-actions class="actions">
+                        <a [routerLink]="card.path">
+                            <button mat-stroked-button color="primary">
+                                {{ card.textBtn }}
+                            </button>
+                        </a>
+                    </mat-card-actions>
+                }
+            </mat-card>
+        }
     }
 </div>
