@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
     Component,
+    computed,
     inject,
     Input,
     OnDestroy,
     OnInit,
+    Signal,
     signal,
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
@@ -33,6 +36,8 @@ import { SkeletonDirective } from "../../directives/skeleton.directive";
 })
 export class MenuCardsComponent implements OnInit, OnDestroy {
     @Input() cards: ItemCard[] = [];
+
+    skeletonIterations: number[] = [];
     isLoadingSig = signal(true);
     // Observable que contendrá la lista de tarjetas visibles
     public visibleCards$: Observable<ItemCard[]> | undefined;
@@ -42,6 +47,10 @@ export class MenuCardsComponent implements OnInit, OnDestroy {
     private _authService = inject(AuthService);
 
     ngOnInit(): void {
+        // Mostramos el skeleton con la cantidad de cards que viene del input cards
+        this.skeletonIterations = Array.from({
+            length: this.cards.length > 0 ? this.cards.length : 20,
+        });
         // En visibleCards$ obtengo se define que menúes se van a mostrar
         this.visibleCards$ = this._authService.userRoles$.pipe(
             filter(

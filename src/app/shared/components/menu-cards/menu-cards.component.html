@@ -1,6 +1,6 @@
 <div class="menu-cards-container">
     @if (isLoadingSig()) {
-        @for (i of [1, 2, 3, 4]; track i) {
+        @for (i of skeletonIterations; track $index) {
             <mat-card class="menu-card skeleton-base">
                 <mat-card-header class="card-header">
                     <div

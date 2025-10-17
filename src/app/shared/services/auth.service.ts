@@ -30,22 +30,25 @@ export class AuthService {
         this.loadUserProfile().subscribe();
     }
 
-    // loadUserProfile() Carga el perfil del usuario de json-server objeto profile
-    /*  "profile": 
-    {
-      "id": 1,
-      "username": "adminUser",
-      "roles": ["ADMIN", "GERENTE", "USUARIO_NORMAL"]
-      
-    } */
+    /*******************************************************************************************************
+     * La función loadUserProfile(): Carga el perfil del usuario de json-server objeto profile
+     *
+     *      "profile":
+     *           {
+     *               "id": 1,
+     *               "username": "adminUser",
+     *               "roles": ["ADMIN", "GERENTE", "USUARIO_NORMAL"]
+     *           }
+     *
+     ******************************************************************************************************/
     loadUserProfile(): Observable<UserProfile> {
         return this._http.get<UserProfile>(this._apiUrl).pipe(
             tap((profile: UserProfile): void => {
-                //console.log("El usuario cargado es:", profile.username);
                 const roles = profile.roles || [];
                 this.userRolesSubject.next(roles as UserRole[]);
             }),
-            catchError((error) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            catchError((_): Observable<UserProfile> => {
                 // Si falla, el valor pasa de 'null' a un array vacío '[]' (estado seguro)
                 this.userRolesSubject.next([]);
                 // Retornamos un observable vacío para que la suscripción no falle
@@ -64,7 +67,7 @@ export class AuthService {
      * si el rol de la menu-card lo tiene el usuario.
      * Ambos roles tanto del menu card como el del usuario los convierte a mayuscula (uppercase) para
      * evitar errores de comparación y coincidan si el rol puesto en la mat card o en el esta en minuscula.
-     */
+     ******************************************************************************************************/
     hasAccess(requiredResource: string | string[] | undefined): boolean {
         if (
             !requiredResource ||
