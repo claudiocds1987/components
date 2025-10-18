@@ -1,7 +1,27 @@
 <app-spinner></app-spinner>
 <div class="banner">
     <img src="assets/favicon.ico" alt="Logo de Angular" />
-    <span>Componentes dinámicos</span>
+    <h1>Componentes dinámicos</h1>
+
+    @if (userProfile$ | async; as profile) {
+        <div class="user-actions">
+            <button
+                mat-button
+                [matMenuTriggerFor]="userMenu"
+                class="user-menu-trigger"
+            >
+                <mat-icon>arrow_drop_down</mat-icon>
+                {{ profile.username }}
+            </button>
+
+            <mat-menu #userMenu="matMenu">
+                <button mat-menu-item (click)="onLogout()">
+                    <mat-icon>logout</mat-icon>
+                    <span>Cerrar Sesión</span>
+                </button>
+            </mat-menu>
+        </div>
+    }
 </div>
 <div class="main-content">
     <router-outlet />

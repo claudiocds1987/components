@@ -1,33 +1,109 @@
 import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { BehaviorSubject, catchError, Observable, of, tap } from "rxjs";
+import {
+    BehaviorSubject,
+    catchError,
+    Observable,
+    of,
+    switchMap,
+    tap,
+} from "rxjs";
 
 export type UserRole = "ADMIN" | "USUARIO_NORMAL" | "GERENTE" | "INVITADO";
 
+interface UserRecord {
+    id: number;
+    username: string;
+    password: string; // Requerido para la validación del mock
+    roles: UserRole[];
+}
+
 // Interfaz para definir la estructura de tu usuario (lo que viene del backend)
-interface UserProfile {
+export interface UserProfile {
     id: number;
     username: string;
     roles: string[]; // Los roles del usuario logueado
+}
+
+export interface UserCredentials {
+    username: string;
+    password: string;
 }
 
 @Injectable({
     providedIn: "root",
 })
 export class AuthService {
-    // Se define userRoles$ para permitir que otros componentes obtengan los roles del usuario.
-    public userRoles$: Observable<UserRole[] | null>;
+    //  Único Observable público para que los componentes se suscriban al perfil completo.
+    public userProfileData$: Observable<UserProfile | null>;
 
     //private _apiUrl = "http://localhost:3000/profile";
+    //private _usersUrl = "http://localhost:3000/users";
     private _apiUrl = "https://json-server-data-fpl9.onrender.com/profile";
-    private userRolesSubject = new BehaviorSubject<UserRole[] | null>(null);
+    private _usersUrl = "https://json-server-data-fpl9.onrender.com/users";
+    // 🎯 Único BehaviorSubject para almacenar todo el perfil del usuario.
+    private userProfileDataSubject = new BehaviorSubject<UserProfile | null>(
+        null,
+    );
     private _http = inject(HttpClient);
 
     constructor() {
         // this.userRoles$ es el canal público (Observable) para que otros componentes puedan suscribirse.
         // Este canal apunta al BehaviorSubject, Permite a otros componentes suscribirse y recibir el valor actual y futuro.
-        this.userRoles$ = this.userRolesSubject.asObservable();
+        this.userProfileDataSubject = new BehaviorSubject<UserProfile | null>(
+            null,
+        );
+        this.userProfileData$ = this.userProfileDataSubject.asObservable();
         this.loadUserProfile().subscribe();
+    }
+
+    /**
+     * Simula el login: busca al usuario por username y valida el password.
+     * @param credentials Objeto con username y password.
+     * @returns Observable que emite el UserProfile en caso de éxito.
+     */
+    public login(credentials: UserCredentials): Observable<UserProfile> {
+        return this._http
+            .get<
+                UserRecord[]
+            >(`${this._usersUrl}?username=${credentials.username}`)
+            .pipe(
+                switchMap((users: UserRecord[]): Observable<UserProfile> => {
+                    const user = users[0];
+
+                    if (user && user.password === credentials.password) {
+                        const userProfile: UserProfile = {
+                            id: user.id,
+                            username: user.username,
+                            roles: user.roles,
+                        };
+
+                        // 🎯 Guardamos el objeto UserProfile COMPLETO.
+                        this.userProfileDataSubject.next(userProfile);
+
+                        return of(userProfile);
+                    }
+
+                    // Fallo en la autenticación
+                    return new Observable<UserProfile>((observer): void => {
+                        observer.complete();
+                    });
+                }),
+                catchError((error): never => {
+                    throw error;
+                }),
+            );
+    }
+
+    /**
+     * Cierra la sesión del usuario.
+     * Limpia el estado de los roles y notifica a los suscriptores (ej. HomeComponent).
+     */
+    public logout(): void {
+        // 🎯 Limpiamos el perfil completo
+        this.userProfileDataSubject.next(null);
+
+        console.log("Sesión cerrada (Logout exitoso). Perfil limpiado.");
     }
 
     /*******************************************************************************************************
@@ -44,14 +120,15 @@ export class AuthService {
     loadUserProfile(): Observable<UserProfile> {
         return this._http.get<UserProfile>(this._apiUrl).pipe(
             tap((profile: UserProfile): void => {
-                const roles = profile.roles || [];
-                this.userRolesSubject.next(roles as UserRole[]);
+                // 🎯 Guardamos el objeto UserProfile COMPLETO.
+                this.userProfileDataSubject.next(profile);
             }),
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             catchError((_): Observable<UserProfile> => {
-                // Si falla, el valor pasa de 'null' a un array vacío '[]' (estado seguro)
-                this.userRolesSubject.next([]);
-                // Retornamos un observable vacío para que la suscripción no falle
+                // Si falla, el valor pasa a 'null' (estado seguro)
+                // 🎯 Limpiamos el perfil completo en caso de error
+                this.userProfileDataSubject.next(null);
+
                 return of({
                     id: 0,
                     username: "Error",
@@ -76,7 +153,7 @@ export class AuthService {
             return true; // Acceso permitido si no hay roles requeridos
         }
         // Aca se obtienen un array con los roles del usuario "adminUser" de la base de datos json-server. ['ADMIN', 'GERENTE', 'USUARIO_NORMAL']
-        const userRoles = this.userRolesSubject.getValue();
+        const userRoles = this.userProfileDataSubject.getValue()?.roles;
 
         // 1. Denegar si los roles del usuario NO están cargados
         if (!userRoles) {
@@ -91,7 +168,7 @@ export class AuthService {
             : [requiredResource.toUpperCase()];
 
         // 3. Aca se pasan a upperCase los roles del usuario leidos de la base de datos ["ADMIN", "GERENTE", "USUARIO_NORMAL"]
-        const userRolesUpper = userRoles.map((userRole: UserRole): string =>
+        const userRolesUpper = userRoles.map((userRole: string): string =>
             userRole.toUpperCase(),
         );
         // 4. Aca como comparamos que coincidan los roles que menu-cards.component recibe desde home.component, con los roles del usuario de la base de datos.

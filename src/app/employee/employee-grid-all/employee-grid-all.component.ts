@@ -350,7 +350,7 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
 
     private _setBreadcrumb(): void {
         this._breadcrumbService.setBreadcrumbs([
-            { label: "Inicio", path: "/" },
+            { label: "Inicio", path: "/home" },
             { label: `${this._queryParams.componentName}`, path: "/employees" },
             // { label: employeeName, path: `/employees/${this.employeeId}` }
         ]);

@@ -14,7 +14,11 @@ import { MatCardModule } from "@angular/material/card";
 import { MatButtonModule } from "@angular/material/button";
 import { RouterLink } from "@angular/router";
 import { ItemCard } from "../../models/item-card.model";
-import { AuthService, UserRole } from "../../services/auth.service";
+import {
+    AuthService,
+    UserProfile,
+    UserRole,
+} from "../../services/auth.service";
 import { filter, map, Observable, Subscription, tap } from "rxjs";
 import { SkeletonDirective } from "../../directives/skeleton.directive";
 
@@ -52,26 +56,29 @@ export class MenuCardsComponent implements OnInit, OnDestroy {
             length: this.cards.length > 0 ? this.cards.length : 20,
         });
         // En visibleCards$ obtengo se define que menúes se van a mostrar
-        this.visibleCards$ = this._authService.userRoles$.pipe(
+        // Asumo que ItemCard está definido y tienes los imports correctos (filter, tap, map)
+        this.visibleCards$ = this._authService.userProfileData$.pipe(
+            // 1. Filtramos: Solo continuamos si el perfil no es nulo (el usuario está logueado)
+            // El 'profile is UserProfile' es un predicado de tipo para satisfacer a TypeScript
             filter(
-                (roles: UserRole[] | null): roles is UserRole[] =>
-                    roles !== null,
+                (profile: UserProfile | null): profile is UserProfile =>
+                    profile !== null,
             ),
             tap((): void => {
                 this.isLoadingSig.set(false);
             }),
-            map((_): ItemCard[] => {
-                // La función map se ejecuta CADA VEZ que hay un cambio en userRoles$
-                // El valor de los roles (el array) NO se usa DENTRO del map,
+            // 2. Mapeamos: El 'profile' se recibe y se usa para disparar el filtro de tarjetas
+            map((_profile: UserProfile): ItemCard[] => {
+                // La función map se ejecuta CADA VEZ que hay un cambio en userProfileData$
+                // El valor del perfil NO se usa DENTRO del map,
                 // pero el hecho de que el map se ejecute es lo que dispara el filtro.
                 return this.cards.filter((card: ItemCard): boolean =>
-                    // Para cada tarjeta, preguntamos al `AuthService` si el usuario actual tiene el permiso necesario. Sólo si la respuesta es true,
-                    // la tarjeta permanece en la lista."
+                    // Para cada tarjeta, preguntamos al `AuthService` si el usuario actual tiene el permiso necesario.
+                    // hasAccess usa this.userProfileDataSubject.getValue() para obtener los roles.
                     this._authService.hasAccess(card.requiredRoles),
                 );
             }),
         );
-
         // Forzar la suscripción para que el pipe (incluyendo el tap) se ejecute.
         // El | async del template manejará la entrega de los datos a la vista.
         this.visibleCardsSubscription = this.visibleCards$.subscribe();

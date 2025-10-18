@@ -1,5 +1,3 @@
-import { AsyncPipe, NgForOf, NgIf } from "@angular/common";
-
 import { Subscription } from "rxjs";
 import { RouterLink } from "@angular/router";
 import { Component, OnInit, OnDestroy, inject } from "@angular/core";
@@ -7,12 +5,11 @@ import {
     BreadcrumbService,
     Breadcrumb,
 } from "../../services/breadcrumb.service";
-import { MatIcon } from "@angular/material/icon";
 
 @Component({
     selector: "app-breadcrumb",
     standalone: true,
-    imports: [NgForOf, AsyncPipe, NgIf, RouterLink, MatIcon],
+    imports: [RouterLink],
     templateUrl: "./breadcrumb.component.html",
     styleUrl: "./breadcrumb.component.scss",
 })

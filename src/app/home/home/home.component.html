@@ -1,1 +1,1 @@
-<app-menu-cards [cards]="menuCards"></app-menu-cards>
+<app-menu-cards [cards]="(visibleMenuCards$ | async) || []"></app-menu-cards>

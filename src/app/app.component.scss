@@ -3,26 +3,59 @@
     top: 0;
     left: 0;
     width: 100vw;
-    //background: linear-gradient(90deg, #7b2ff2 0%, #f357a8 100%);
     background: #262446;
     color: #fff;
-    text-align: center;
     font-size: 1.3rem;
     font-weight: 600;
-    padding: 1rem 0;
     z-index: 1000;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     letter-spacing: 1px;
-    height: 64px; /* Define altura específica del banner */
-    box-sizing: border-box; /* Incluye padding en la altura total */
+    height: 64px;
+    box-sizing: border-box;
     display: flex;
-    justify-content: center; /* Centra horizontalmente los elementos hijos */
-    align-items: center; /* Centra verticalmente los elementos hijos */
+    //justify-content: space-between;
+    align-items: center;
+    padding: 0 1.5rem;
+    // Estilos para los elementos hijos dentro del .banner
+    h1 {
+        margin: 0;
+    }
     img {
-        position: absolute;
-        left: 1rem;
         width: 40px;
         height: 40px;
+        margin-right: 20px;
+    }
+
+    // Título "Componentes dinámicos" (Al Centro)
+    span:nth-child(2) {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    // Contenedor de Acciones de Usuario (A la Derecha)
+    .user-actions {
+        /* CLAVE: Empuja el elemento a la derecha */
+        margin-left: auto;
+
+        display: flex;
+        align-items: center;
+    }
+
+    /* 4. Estilo del Botón/Trigger del Menú */
+    .user-menu-trigger {
+        /* Ajusta el estilo para que se vea como parte del banner */
+        background: none;
+        color: #fff; /* Texto blanco */
+        border: none;
+        font-size: 1rem;
+        font-weight: 500;
+        padding: 0 10px;
+        height: 64px; /* Ocupa toda la altura del banner */
+    }
+
+    .user-menu-trigger:hover {
+        /* Resaltar al pasar el ratón */
+        background-color: rgba(255, 255, 255, 0.1);
     }
 }
 
@@ -30,13 +63,8 @@ body,
 .app-root {
     margin: 0;
     padding: 0;
-    height: 100vh; /* Asegura que tomen la altura completa de la ventana */
+    height: 100vh; // Para que tome la altura completa de la ventana
 }
-
-/* .main-content {
-    margin-top: 64px; // Espacio para el banner fijo
-    padding: 20px;
-} */
 
 .main-content {
     padding: 64px 20px;
