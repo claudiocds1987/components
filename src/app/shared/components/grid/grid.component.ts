@@ -163,7 +163,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.dataSource.data = newData;
                 this._applySortAndPaginator();
                 // Retrasar la sincronización. CRÍTICO para que MatTable termine su proceso.
-                setTimeout(() => {
+                setTimeout((): void => {
                     this._syncMatSortState();
                 }, 0);
             }
@@ -307,12 +307,6 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
 
     onSortChange(sortState: Sort): void {
         if (this.gridConfigSig().hasSorting?.isServerSide) {
-            console.log(
-                "Sort emitido:",
-                sortState.active,
-                "Dirección:",
-                sortState.direction,
-            );
             this.sortChange.emit(sortState);
 
             if (this.scrollContainer && this.scrollContainer.nativeElement) {
