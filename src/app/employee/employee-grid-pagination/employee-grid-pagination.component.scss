@@ -3,47 +3,46 @@
     background-color: #fafbfc;
 }
 
-// Contenedor del Grid y Filtro
-.components-container {
+// Elemento: Contenedor de contenido (Grid + Filtro)
+.wrapper__content-area {
     display: grid;
     grid-template-columns: 1fr 260px; // 1fr para componente Grilla | 260px para componente Filtro
     gap: 16px;
     width: 100%;
     height: 100%; // Ocupa todo el alto del contenedor wrapper
-    overflow: hidden; // Evitamos el desbordamiento externo
-}
-
-// Estilo cuando el filtro grid-filter.component está colapsado
-.components-container.filter-collapsed {
-    // Definimos el nuevo tamaño para la grilla (1fr) y el filtro colapsado (por ejemplo, 60px)
-    grid-template-columns: 1fr 50px;
-}
-
-.employee-grid-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%; // Componente grid Ocupa el 100% de altura en este contenedor
-    min-height: 0; // Permite que el elemento interno se encoja para dejar espacio a los banners
-    margin-top: 0;
-
-    // Estilos de espaciado para componentes breadcrumb y alert
-    app-breadcrumb {
-        margin-top: 20px;
-    }
-    app-alert {
-        margin-bottom: 16px;
-    }
-
     overflow: hidden; // Evita el scroll externo de esta columna
 }
 
-// Estrictamente para el componente grid.component
-app-grid {
-    flex: 1; // Ocupa todo el espacio vertical restante
-    min-height: 0; // Necesario para que el scroll interno de la grilla funcione correctamente
+// --filter-collapsed Modificador: Estado colapsado
+.wrapper__content-area--filter-collapsed {
+    grid-template-columns: 1fr 50px; // Al colapsar el filtro, 1fr para componente Grilla | 50px para componente Filtro
 }
 
-.filter-container {
+// Elemento: Área de la Grilla (Contiene breadcrumb, alert, grid)
+.wrapper__grid-area {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden; // Evita desbordamiento
+}
+
+// Elementos de espaciado (aplicados a los componentes)
+.wrapper__breadcrumb-spacing {
+    margin-top: 20px;
+}
+.wrapper__alert-spacing {
+    margin-bottom: 16px;
+}
+
+// Estilo para que el grid ocupe el espacio restante
+.wrapper__grid-component {
+    flex: 1;
+    min-height: 0;
+}
+
+// Elemento: Contenedor del Filtro
+.wrapper__filter-container {
     width: 95%; // no uso 100% para que se note el efecto box-shadow flotante
     min-height: 0;
     display: flex;

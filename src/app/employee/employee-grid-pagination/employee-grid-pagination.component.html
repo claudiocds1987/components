@@ -1,12 +1,16 @@
 <div class="wrapper">
     <div
-        class="components-container"
-        [class.filter-collapsed]="isFilterCollapsedSig()"
+        class="wrapper__content-area"
+        [class.wrapper__content-area--filter-collapsed]="isFilterCollapsedSig()"
     >
-        <div class="employee-grid-container">
-            <app-breadcrumb></app-breadcrumb>
-            <app-alert></app-alert>
+        <div class="wrapper__grid-area">
+            <app-breadcrumb
+                class="wrapper__breadcrumb-spacing"
+            ></app-breadcrumb>
+            <app-alert class="wrapper__alert-spacing"></app-alert>
+
             <app-grid
+                class="wrapper__grid-component"
                 [gridConfigSig]="gridConfigSig()"
                 [gridDataSig]="gridDataSig()"
                 [isLoadingSig]="isLoadingGridDataSig()"
@@ -19,7 +23,8 @@
                 (rowDblClick)="onRowDblClick($event)"
             ></app-grid>
         </div>
-        <div class="filter-container">
+
+        <div class="wrapper__filter-container">
             <ng-container>
                 <app-grid-filter
                     [configSig]="gridFilterConfigSig()"
