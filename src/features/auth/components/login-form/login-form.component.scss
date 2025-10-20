@@ -5,13 +5,14 @@
 .form-wrapper {
     display: flex;
     flex-direction: column;
-    margin: 20px auto;
+    margin: 100px auto;
     max-width: 400px;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    height: 500px;
+    height: 300px;
+    letter-spacing: 2px;
 
     .login-form-container {
         mat-form-field {

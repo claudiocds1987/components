@@ -102,6 +102,7 @@ export class AlertService implements OnDestroy {
         this.destroy$.complete(); // Completa el Subject
     }
 
+    // Elimina un alert en particular
     removeAlert(id: string): void {
         this.alertsList = this.alertsList.filter(
             (alert: Alert): boolean => alert.id !== id,

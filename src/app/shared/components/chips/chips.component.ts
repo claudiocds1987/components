@@ -5,7 +5,6 @@ import {
     EventEmitter,
     ChangeDetectionStrategy,
     input,
-    computed,
 } from "@angular/core";
 import { MatChipsModule } from "@angular/material/chips";
 import { MatIconModule } from "@angular/material/icon";
