@@ -60,6 +60,14 @@ export class HomeComponent implements OnInit {
             requiredRoles: "", // Visible para todos los roles (o no requiere un rol específico)
             path: "/employee-grid-all",
         },
+        {
+            id: "4",
+            img: "assets/grid.svg",
+            title: "Form Array",
+            description: "Form Array dinámico.",
+            requiredRoles: "", // Visible para todos los roles (o no requiere un rol específico)
+            path: "/employee-form-array",
+        },
     ];
 
     ngOnInit(): void {

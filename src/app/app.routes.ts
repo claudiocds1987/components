@@ -54,6 +54,14 @@ export const routes: Routes = [
             ),
         data: { operation: "edit" },
     },
+    {
+        path: "employee-form-array",
+        loadComponent: (): Promise<any> =>
+            import(
+                "./employee/employee-form-array/employee-form-array.component"
+            ).then((c): any => c.EmployeeFormArrayComponent),
+        data: { operation: "edit" },
+    },
 
     // 3. Configuración para que el login sea la ruta por defecto:
     { path: "", redirectTo: "login", pathMatch: "full" },

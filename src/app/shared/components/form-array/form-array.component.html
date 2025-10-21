@@ -1,1 +1,123 @@
-<p>form-array works!</p>
+<div class="form-array-container">
+    <form [formGroup]="mainForm">
+        <!-- Contenedor del FormArray -->
+        <div formArrayName="rows">
+            @for (group of rows.controls; track trackByFn($index, group)) {
+                <div [formGroupName]="$index">
+                    <div class="grid">
+                        <!-- Iteramos sobre la configuración para renderizar los campos -->
+                        @for (field of sortedFields(); track field.fieldName) {
+                            <div class="inputs-container">
+                                <label
+                                    [for]="field.fieldName + $index"
+                                    class="block text-sm font-medium text-gray-700 mb-1"
+                                >
+                                    {{ field.label }}
+                                </label>
+
+                                <!-- Renderizado de campo de texto -->
+                                @if (field.fieldType === "text") {
+                                    <mat-form-field
+                                        class="width"
+                                        appearance="outline"
+                                    >
+                                        <mat-label>{{ field.label }}</mat-label>
+                                        <input
+                                            matInput
+                                            [formControlName]="field.fieldName"
+                                        />
+                                    </mat-form-field>
+                                }
+                                <!-- Renderizado de campo de fecha -->
+                                @if (field.fieldType === "date") {
+                                    <app-date-input
+                                        [formControlName]="field.fieldName"
+                                        [label]="field.label"
+                                        [placeholder]="field.label"
+                                        [isDisabled]="false"
+                                    >
+                                    </app-date-input>
+                                }
+
+                                <!-- Renderizado de campo select con opciones dinámicas -->
+                                @if (field.fieldType === "select") {
+                                    <mat-form-field
+                                        [id]="field.fieldName + $index"
+                                        class="width"
+                                        appearance="outline"
+                                    >
+                                        <mat-label>{{ field.label }}</mat-label>
+                                        <mat-select
+                                            [formControlName]="field.fieldName"
+                                        >
+                                            @for (
+                                                item of getOptionsForField(
+                                                    field.fieldName,
+                                                    group
+                                                );
+                                                track item.id
+                                            ) {
+                                                <mat-option [value]="item.id">
+                                                    {{ item.description }}
+                                                </mat-option>
+                                            }
+                                        </mat-select>
+                                    </mat-form-field>
+                                }
+
+                                <!-- Mostrar errores de validación -->
+                                @if (
+                                    group.get(field.fieldName)?.invalid &&
+                                    group.get(field.fieldName)?.touched
+                                ) {
+                                    <div class="error-message">
+                                        @if (
+                                            group.get(field.fieldName)
+                                                ?.errors?.["required"]
+                                        ) {
+                                            Este campo es obligatorio.
+                                        }
+                                        @if (
+                                            group.get(field.fieldName)
+                                                ?.errors?.["minlength"]
+                                        ) {
+                                            Mínimo
+                                            {{
+                                                group.get(field.fieldName)
+                                                    ?.errors?.["minlength"]
+                                                    ?.requiredLength
+                                            }}
+                                            caracteres.
+                                        }
+                                        <!-- Aquí puedes añadir más mensajes para otras validaciones -->
+                                    </div>
+                                }
+                            </div>
+                        }
+                        <!-- Botón para eliminar Y AGREGAR row-->
+                        <div class="actions-container">
+                            <button
+                                type="button"
+                                (click)="removeRow($index)"
+                                [disabled]="rows.length === 1"
+                                class=""
+                            >
+                                Eliminar Elemento
+                            </button>
+                            <button type="button" (click)="addRow()" class="">
+                                Añadir Nuevo Elemento
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Controles globales del FormArray -->
+        <!-- <div class="">
+            <button type="button" (click)="addRow()" class="">
+                Añadir Nuevo Elemento
+            </button>
+        </div> -->
+    </form>
+</div>
