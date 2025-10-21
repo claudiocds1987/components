@@ -54,7 +54,6 @@ export class AuthService {
             null,
         );
         this.userProfileData$ = this.userProfileDataSubject.asObservable();
-        this.loadUserProfile().subscribe();
     }
 
     /**
