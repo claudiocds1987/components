@@ -12,6 +12,7 @@ import {
     SimpleChanges,
     Output,
     EventEmitter,
+    input,
 } from "@angular/core";
 import { SelectItem } from "../../models/select-item.model";
 import {
@@ -66,20 +67,20 @@ import { MatIcon } from "@angular/material/icon";
         RequiredValidationDirective,
     ],
     templateUrl: "./form-array.component.html",
-    styleUrl: "./form-array.component.scss",
+    styleUrls: ["./form-array.component.scss", "./../../styles/skeleton.scss"],
 })
 export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
-    // Configuración de los campos que viene del componente padre
-    @Input() formArrayConfig: FormArrayConfig[] = [];
-    // INPUT data: es la data que recibe por ejemplo del backend para llenar el FormArray (ej: Empleados)
-    @Input() data: unknown[] | null = null;
+    @Input() formArrayConfig: FormArrayConfig[] = []; // Configuración de los campos que viene del componente padre
+    @Input() data: unknown[] | null = null; // INPUT data: es la data que recibe por ejemplo del backend para llenar el FormArray (ej: Empleados)
+    @Input() maxRows!: number | null;
+    isLoadingSig = input<boolean>(true);
 
     @Output() emitFormArrayValue: EventEmitter<any[] | null> = new EventEmitter<
         any[] | null
     >();
 
     // Formulario principal que contendrá el FormArray
-    mainForm: FormGroup;
+    mainForm!: FormGroup;
 
     // Signal que contiene las opciones disponibles después de aplicar la lógica de unicidad
     // (Solo contiene las opciones que NADIE ha seleccionado)
@@ -112,10 +113,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     private _fb = inject(FormBuilder);
 
     constructor() {
-        // Inicializa el FormGroup principal que contendrá el FormArray
-        this.mainForm = this._fb.group({
-            rows: this._fb.array([]),
-        });
+        this._createFormArray();
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -154,6 +152,10 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     isReadyToAdd(): boolean {
+        // Si el input maxRows (si se establecio un max de rows desde el padre) es >= a la cantidad de rows del formArray el boton "+" queda inactivo
+        if (this.maxRows !== null && this.rows.length >= this.maxRows) {
+            return false;
+        }
         return this.mainForm.valid;
     }
 
@@ -239,6 +241,10 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
      * Añade una nueva fila (FormGroup) al FormArray.
      */
     addRow(): void {
+        // Si el input maxRows (si se establecio un max de rows desde el padre) es >= a la cantidad de rows del formArray no se pueden seguir agregando
+        if (this.maxRows !== null && this.rows.length >= this.maxRows) {
+            return;
+        }
         this.rows.push(this.createRowGroup()); // Se llama sin valores, creando una fila vacía
         this.rows.markAsDirty();
     }
@@ -262,6 +268,12 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
                 (v): boolean => v.type === ValidationKey.required,
             ) ?? false
         );
+    }
+
+    private _createFormArray(): void {
+        this.mainForm = this._fb.group({
+            rows: this._fb.array([]),
+        });
     }
 
     /**

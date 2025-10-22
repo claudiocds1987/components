@@ -1,5 +1,6 @@
 <app-form-array
     [formArrayConfig]="formArrayConfig"
     [data]="employeeData"
+    [isLoadingSig]="isLoadingSig()"
     (emitFormArrayValue)="getFormArrayValue($event)"
 ></app-form-array>

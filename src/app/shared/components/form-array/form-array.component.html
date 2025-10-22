@@ -1,4 +1,4 @@
-<div class="form-array-container">
+<div class="main-container">
     <form [formGroup]="mainForm">
         <!-- Contenedor del FormArray -->
         <div formArrayName="rows">
@@ -9,7 +9,10 @@
                         @for (field of sortedFields(); track field.fieldName) {
                             <div class="inputs-container">
                                 @if (field.label) {
-                                    <label [for]="field.fieldName + $index">
+                                    <label
+                                        [for]="field.fieldName + $index"
+                                        [appSkeleton]="isLoadingSig()"
+                                    >
                                         {{ field.label }}
                                     </label>
                                 }
@@ -19,6 +22,7 @@
                                     <mat-form-field
                                         class="width"
                                         appearance="outline"
+                                        [appSkeleton]="isLoadingSig()"
                                     >
                                         <mat-label>{{ field.label }}</mat-label>
                                         <input
@@ -37,6 +41,7 @@
                                         [label]="field.label ?? ''"
                                         [placeholder]="field.label ?? ''"
                                         [isDisabled]="false"
+                                        [appSkeleton]="isLoadingSig()"
                                         appRequiredValidation
                                     >
                                     </app-date-input>
@@ -48,6 +53,7 @@
                                         [id]="field.fieldName + $index"
                                         class="width"
                                         appearance="outline"
+                                        [appSkeleton]="isLoadingSig()"
                                     >
                                         <mat-label>{{
                                             field.fieldName
@@ -79,14 +85,18 @@
                                 (click)="removeRow($index)"
                                 [disabled]="rows.length === 1"
                             >
-                                <mat-icon>remove_circle</mat-icon>
+                                <mat-icon [appSkeleton]="isLoadingSig()"
+                                    >remove_circle</mat-icon
+                                >
                             </button>
                             <button
                                 mat-icon-button
                                 (click)="addRow()"
                                 [disabled]="!isReadyToAdd()"
                             >
-                                <mat-icon>add_circle</mat-icon>
+                                <mat-icon [appSkeleton]="isLoadingSig()"
+                                    >add_circle</mat-icon
+                                >
                             </button>
                         </div>
                     </div>

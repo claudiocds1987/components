@@ -92,7 +92,6 @@ export class EmployeeFormArrayComponent implements OnInit {
                 label: "País",
                 placeHolder: "Selecciona un país",
                 validations: [{ type: ValidationKey.required }],
-
                 isRepeated: false,
             },
             {
