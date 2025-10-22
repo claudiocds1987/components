@@ -10,6 +10,8 @@ import {
     effect,
     OnChanges,
     SimpleChanges,
+    Output,
+    EventEmitter,
 } from "@angular/core";
 import { SelectItem } from "../../models/select-item.model";
 import {
@@ -22,8 +24,11 @@ import {
     ReactiveFormsModule,
     Validators,
 } from "@angular/forms";
-import { Subscription } from "rxjs";
-import { FormArrayData, ValidationKey } from "../../models/formArrayData.model";
+import { debounceTime, Subscription } from "rxjs";
+import {
+    FormArrayConfig,
+    ValidationKey,
+} from "../../models/formArrayData.model";
 import { CommonModule } from "@angular/common";
 import { MatButtonModule } from "@angular/material/button";
 import { MatNativeDateModule } from "@angular/material/core";
@@ -65,7 +70,13 @@ import { MatIcon } from "@angular/material/icon";
 })
 export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     // Configuración de los campos que viene del componente padre
-    @Input() data: FormArrayData[] = [];
+    @Input() formArrayConfig: FormArrayConfig[] = [];
+    // INPUT data: es la data que recibe por ejemplo del backend para llenar el FormArray (ej: Empleados)
+    @Input() data: unknown[] | null = null;
+
+    @Output() emitFormArrayValue: EventEmitter<any[] | null> = new EventEmitter<
+        any[] | null
+    >();
 
     // Formulario principal que contendrá el FormArray
     mainForm: FormGroup;
@@ -80,8 +91,8 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     // Signal computada para tener los campos ordenados para el template
-    sortedFields = computed((): FormArrayData[] => {
-        return this.data
+    sortedFields = computed((): FormArrayConfig[] => {
+        return this.formArrayConfig
             .slice()
             .sort((a, b): number => a.columnPosition - b.columnPosition);
     });
@@ -108,25 +119,29 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        // La corrección clave: Inicializar la estructura del formulario solo cuando
-        // 'data' ha llegado y ya no es un array vacío.
-        if (changes["data"] && this.data.length > 0) {
-            console.log("ngOnChanges: Data recibida y no vacía.");
-            if (!this.isInitialized) {
-                this._initFormStructure();
-                this.isInitialized = true;
-            } else {
-                // Si la data cambia después de la inicialización, solo actualizamos los mapas
-                // y recalculamos opciones, pero no volvemos a añadir filas.
+        const configReceived =
+            changes["formArrayConfig"] && this.formArrayConfig.length > 0;
+        const dataReceived = changes["data"]; // Comprobar si initialData ha llegado/cambiado
+
+        // Inicializar la estructura la primera vez que la data de configuración llega
+        if (configReceived && !this.isInitialized) {
+            this._initFormStructure();
+            this.isInitialized = true;
+        } else if (this.isInitialized) {
+            // Lógica de actualización si la configuración o los datos iniciales cambian
+            if (configReceived) {
                 this.initializeSelectMaps();
-                this.calculateAvailableOptions();
             }
+            // Si los datos iniciales cambian después de la inicialización, repoblamos el FormArray.
+            if (dataReceived) {
+                this._populateFormArray(this.data || []);
+            }
+            // Recalculamos las opciones en cualquier caso de actualización para reflejar los cambios.
+            this.calculateAvailableOptions();
         }
     }
 
     ngOnInit(): void {
-        // Solo configuramos la suscripción aquí. El FormArray estará vacío al principio,
-        // pero la suscripción a valueChanges se activará correctamente cuando se añada la primera fila.
         this.setupValueChangeSubscription();
     }
 
@@ -151,8 +166,8 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     ): SelectItem[] {
         const control = group.get(fieldName) as FormControl;
         const currentValue = control.value;
-        const fieldConfig = this.data.find(
-            (f: FormArrayData): boolean => f.fieldName === fieldName,
+        const fieldConfig = this.formArrayConfig.find(
+            (f: FormArrayConfig): boolean => f.fieldName === fieldName,
         );
         const available = this.availableOptionsMap().get(fieldName) || [];
 
@@ -199,18 +214,23 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
             globallySelected.filter((val): boolean => val === itemId).length > 1
         );
     }
+
     /**
      * Crea un nuevo FormGroup (una "fila") basándose en la configuración de datos.
+     * Recibe opcionalmente un objeto con los valores iniciales para precargar los controles.
      */
-    createRowGroup(): FormGroup {
+    createRowGroup(initialValues: Record<string, any> = {}): FormGroup {
         const groupControls: Record<string, FormControl> = {};
 
-        // Importante: Si 'this.data' está vacío, se creará un FormGroup vacío, pero
-        // gracias a la corrección en ngOnChanges, esto ahora se llama con data.length > 0.
-        for (const field of this.data) {
+        for (const field of this.formArrayConfig) {
             const validators = this.getValidators(field);
-            // Creamos el FormControl para el campo actual con null o "" como valor inicial
-            groupControls[field.fieldName] = this._fb.control(null, validators);
+            // Usar el valor inicial proporcionado, o null por defecto ⭐️
+            const initialValue = initialValues[field.fieldName] ?? null;
+
+            groupControls[field.fieldName] = this._fb.control(
+                initialValue,
+                validators,
+            );
         }
         return this._fb.group(groupControls);
     }
@@ -219,8 +239,8 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
      * Añade una nueva fila (FormGroup) al FormArray.
      */
     addRow(): void {
-        this.rows.push(this.createRowGroup());
-        this.rows.markAsDirty(); // Para forzar la re-validación/re-cálculo si es necesario.
+        this.rows.push(this.createRowGroup()); // Se llama sin valores, creando una fila vacía
+        this.rows.markAsDirty();
     }
 
     /**
@@ -228,20 +248,15 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
      */
     removeRow(index: number): void {
         if (this.rows.length > 1) {
-            this.rows.removeAt(index); // Esta línea es la que elimina el elemento correcto
-            // Gracias a trackByFn, el DOM se actualizará correctamente.
+            this.rows.removeAt(index);
             this.rows.markAsDirty();
-        } else {
-            console.warn(
-                "Debe haber al menos un elemento en el formulario (FormArray).",
-            );
         }
     }
 
     /**
      * Verifica si un campo tiene la validación 'required'.
      */
-    isRequired(field: FormArrayData): boolean {
+    isRequired(field: FormArrayConfig): boolean {
         return (
             field.validations?.some(
                 (v): boolean => v.type === ValidationKey.required,
@@ -250,29 +265,49 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     /**
-     * Inicializa los mapas de opciones, añade la primera fila y calcula las opciones.
+     * Inicializa los mapas de opciones, añade la primera fila o llena con datos iniciales, y calcula las opciones.
      * Se llama desde ngOnChanges cuando la data de los campos está disponible.
      */
     private _initFormStructure(): void {
         // 1. Inicializa los mapas de opciones (depende de this.data)
         this.initializeSelectMaps();
 
-        // 2. Si no hay filas, añade la primera
-        if (this.rows.length === 0) {
+        // 2. Si hay datos iniciales, usarlos para poblar el FormArray
+        if (this.data && this.data.length > 0) {
+            this._populateFormArray(this.data);
+        } else if (this.rows.length === 0) {
+            // 3. Si no hay datos iniciales y no hay filas, añade la primera fila vacía
             this.addRow();
         }
 
-        // 3. Calcular las opciones iniciales
+        // 4. Calcular las opciones iniciales
         this.calculateAvailableOptions();
     }
 
     /**
-     * Inicializa el mapa con todas las opciones originales de los campos de tipo 'select'.
+     * NUEVO MÉTODO: Llena el FormArray con los datos iniciales recibidos.
      */
+    private _populateFormArray(rowsData: any[]): void {
+        // Limpiamos el FormArray por si ya tenía filas
+        while (this.rows.length !== 0) {
+            this.rows.removeAt(0);
+        }
+
+        // Creamos un FormGroup por cada objeto de datos y lo añadimos
+        rowsData.forEach((rowData): void => {
+            // 'rowData' es un objeto como { country: 'AR', gender: 'F', position: 'DEV', email: 'test@a.com' }
+            this.rows.push(this.createRowGroup(rowData));
+        });
+
+        // Lo marcamos como no modificado (limpio), ya que la data viene de una fuente inicial.
+        this.mainForm.markAsPristine();
+    }
+
+    // --- EL RESTO DE MÉTODOS PRIVADOS SE MANTIENE IGUAL ---
+
     private initializeSelectMaps(): void {
-        this.data.forEach((field: FormArrayData): void => {
+        this.formArrayConfig.forEach((field: FormArrayConfig): void => {
             if (field.fieldType === "select" && field.selectItems) {
-                // Clonar la lista para asegurar inmutabilidad
                 this.originalSelectItemsMap.set(field.fieldName, [
                     ...field.selectItems,
                 ]);
@@ -280,81 +315,77 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         });
     }
 
-    /**
-     * Configura la suscripción para recalcular las opciones disponibles
-     * cada vez que cambia el valor del FormArray.
-     */
     private setupValueChangeSubscription(): void {
-        // Limpiar la suscripción existente para evitar duplicados si se llama más de una vez
         this.valueChangesSubscription.unsubscribe();
         this.valueChangesSubscription = new Subscription();
-
-        // Suscripción al FormArray para detectar cambios en cualquier fila.
+        // 1. Suscripción para gestionar opciones disponibles (response inmediata a cambios de valor)
         this.valueChangesSubscription.add(
             this.rows.valueChanges.subscribe((): void => {
                 this.calculateAvailableOptions();
             }),
         );
+        // 2. Suscripción para emitir el valor del FormArray al componente padre SOLO cuando es VÁLIDO
+        this.valueChangesSubscription.add(
+            this.rows.statusChanges
+                .pipe(
+                    // Espera 300ms para estabilizar el estado (útil para validaciones asíncronas)
+                    debounceTime(300),
+                )
+                .subscribe((status: string): void => {
+                    if (status === "VALID") {
+                        // Emite el valor completo del FormArray si es válido
+                        this.emitFormArrayValue.emit(this.rows.value);
+                    } else {
+                        // Emite null si es inválido (o si cambia de válido a inválido)
+                        this.emitFormArrayValue.emit(null);
+                    }
+                }),
+        );
     }
 
-    /**
-     * Recalcula las opciones disponibles para todos los campos 'select'
-     * que no permiten repetición (isRepeated: false).
-     */
     private calculateAvailableOptions(): void {
         const newAvailableOptionsMap = new Map<string, SelectItem[]>();
-        const newSelectedValues: Record<string, (string | number)[]> = {}; // Usamos este para la nueva Signal
+        const newSelectedValues: Record<string, (string | number)[]> = {};
 
-        // 1. Recolectar todos los valores seleccionados para campos únicos
-        this.data.forEach((field: FormArrayData): void => {
+        this.formArrayConfig.forEach((field: FormArrayConfig): void => {
             if (field.fieldType === "select" && !field.isRepeated) {
                 const selected: (string | number)[] = [];
                 this.rows.controls.forEach((group: AbstractControl): void => {
                     const control = group.get(field.fieldName);
-                    // Usar '== null' para capturar null y undefined si el control no existe o no tiene valor
                     if (control?.value != null) {
                         selected.push(control.value);
                     }
                 });
-                newSelectedValues[field.fieldName] = selected; // Guardamos TODOS, incluyendo duplicados
+                newSelectedValues[field.fieldName] = selected;
             }
         });
 
-        // Actualizar la nueva Signal con todos los valores seleccionados (paso clave)
         this.selectedValuesByField.set(newSelectedValues);
 
-        // 2. Filtrar las opciones originales
-        this.data.forEach((field: FormArrayData): void => {
+        this.formArrayConfig.forEach((field: FormArrayConfig): void => {
             const originalItems = this.originalSelectItemsMap.get(
                 field.fieldName,
             );
             if (field.fieldType === "select" && originalItems) {
                 if (!field.isRepeated) {
-                    // Usamos un Set para obtener solo los IDs seleccionados una o más veces (ej: 'USA')
                     const selected = newSelectedValues[field.fieldName] || [];
                     const usedUniqueIds = new Set(selected);
 
-                    // Filtra: mantiene solo las opciones que NO han sido seleccionadas por NADIE
                     const filteredItems = originalItems.filter(
                         (item: SelectItem): boolean =>
                             !usedUniqueIds.has(item.id),
                     );
                     newAvailableOptionsMap.set(field.fieldName, filteredItems);
                 } else {
-                    // Si es repetible, mantiene todas las opciones
                     newAvailableOptionsMap.set(field.fieldName, originalItems);
                 }
             }
         });
 
-        // Actualizar el signal con el nuevo mapa de opciones DISPONIBLES
         this.availableOptionsMap.set(newAvailableOptionsMap);
     }
 
-    /**
-     * Obtiene la lista de validadores para un campo dado.
-     */
-    private getValidators(field: FormArrayData): any[] {
+    private getValidators(field: FormArrayConfig): any[] {
         const fieldValidators: any[] = [];
         if (field.validations) {
             for (const validation of field.validations) {

@@ -5,7 +5,7 @@ import { PositionService } from "../../shared/services/position.service";
 import { CountryService } from "../../shared/services/country.service";
 import { AlertService } from "../../shared/services/alert.service";
 import {
-    FormArrayData,
+    FormArrayConfig,
     ValidationKey,
 } from "../../shared/models/formArrayData.model";
 import { FormArrayComponent } from "../../shared/components/form-array/form-array.component";
@@ -19,7 +19,12 @@ import { FormArrayComponent } from "../../shared/components/form-array/form-arra
 })
 export class EmployeeFormArrayComponent implements OnInit {
     isLoadingSig = signal(true);
-    formArrayData: FormArrayData[] = [];
+    formArrayConfig: FormArrayConfig[] = [];
+
+    employeeData: unknown[] = [
+        { country: 1, gender: 1, position: 1, email: "juan.perez@empresa.com" },
+        { country: 2, gender: 2, position: 2, email: "ana.lopez@empresa.com" },
+    ];
 
     private _positionServices = inject(PositionService);
     private _countryServices = inject(CountryService);
@@ -39,6 +44,10 @@ export class EmployeeFormArrayComponent implements OnInit {
 
     ngOnInit(): void {
         this._loadData();
+    }
+
+    getFormArrayValue(value: any): void {
+        console.log("datos del form Array padre: ", value);
     }
 
     private _loadData(): void {
@@ -74,7 +83,7 @@ export class EmployeeFormArrayComponent implements OnInit {
         positions: SelectItem[],
         countries: SelectItem[],
     ): void {
-        this.formArrayData = [
+        this.formArrayConfig = [
             {
                 columnPosition: 1,
                 fieldName: "country",
@@ -83,6 +92,7 @@ export class EmployeeFormArrayComponent implements OnInit {
                 label: "País",
                 placeHolder: "Selecciona un país",
                 validations: [{ type: ValidationKey.required }],
+
                 isRepeated: false,
             },
             {
@@ -118,7 +128,6 @@ export class EmployeeFormArrayComponent implements OnInit {
                 isRepeated: true,
             },
         ];
-        console.log("form padre: ", this.formArrayData);
     }
 
     private _getPositions(): Observable<SelectItem[]> {

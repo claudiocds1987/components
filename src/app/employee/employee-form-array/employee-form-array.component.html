@@ -1,1 +1,5 @@
-<app-form-array [data]="formArrayData"></app-form-array>
+<app-form-array
+    [formArrayConfig]="formArrayConfig"
+    [data]="employeeData"
+    (emitFormArrayValue)="getFormArrayValue($event)"
+></app-form-array>
