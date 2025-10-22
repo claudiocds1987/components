@@ -93,7 +93,7 @@ export class EmployeeFormArrayComponent implements OnInit {
                 label: "Género",
                 placeHolder: "Selecciona el género",
                 validations: [{ type: ValidationKey.required }],
-                isRepeated: true,
+                isRepeated: false,
             },
             {
                 columnPosition: 4,
@@ -103,7 +103,7 @@ export class EmployeeFormArrayComponent implements OnInit {
                 label: "Puesto",
                 placeHolder: "",
                 validations: [{ type: ValidationKey.required }],
-                isRepeated: true,
+                isRepeated: false,
             },
             {
                 columnPosition: 3,

@@ -25,6 +25,7 @@
                                         <input
                                             matInput
                                             [formControlName]="field.fieldName"
+                                            appRequiredValidation
                                         />
                                     </mat-form-field>
                                 }
@@ -35,6 +36,7 @@
                                         [label]="field.label"
                                         [placeholder]="field.label"
                                         [isDisabled]="false"
+                                        appRequiredValidation
                                     >
                                     </app-date-input>
                                 }
@@ -49,6 +51,7 @@
                                         <mat-label>{{ field.label }}</mat-label>
                                         <mat-select
                                             [formControlName]="field.fieldName"
+                                            appRequiredValidation
                                         >
                                             @for (
                                                 item of getOptionsForField(
@@ -64,60 +67,28 @@
                                         </mat-select>
                                     </mat-form-field>
                                 }
-
-                                <!-- Mostrar errores de validación -->
-                                @if (
-                                    group.get(field.fieldName)?.invalid &&
-                                    group.get(field.fieldName)?.touched
-                                ) {
-                                    <div class="error-message">
-                                        @if (
-                                            group.get(field.fieldName)
-                                                ?.errors?.["required"]
-                                        ) {
-                                            Este campo es obligatorio.
-                                        }
-                                        @if (
-                                            group.get(field.fieldName)
-                                                ?.errors?.["minlength"]
-                                        ) {
-                                            Mínimo
-                                            {{
-                                                group.get(field.fieldName)
-                                                    ?.errors?.["minlength"]
-                                                    ?.requiredLength
-                                            }}
-                                            caracteres.
-                                        }
-                                        <!-- Aquí puedes añadir más mensajes para otras validaciones -->
-                                    </div>
-                                }
                             </div>
                         }
                         <!-- Botón para eliminar Y AGREGAR row-->
                         <div class="actions-container">
                             <button
-                                type="button"
+                                mat-icon-button
                                 (click)="removeRow($index)"
                                 [disabled]="rows.length === 1"
-                                class=""
                             >
-                                Eliminar Elemento
+                                <mat-icon>remove_circle</mat-icon>
                             </button>
-                            <button type="button" (click)="addRow()" class="">
-                                Añadir Nuevo Elemento
+                            <button
+                                mat-icon-button
+                                (click)="addRow()"
+                                [disabled]="!isReadyToAdd()"
+                            >
+                                <mat-icon>add_circle</mat-icon>
                             </button>
                         </div>
                     </div>
                 </div>
             }
         </div>
-
-        <!-- Controles globales del FormArray -->
-        <!-- <div class="">
-            <button type="button" (click)="addRow()" class="">
-                Añadir Nuevo Elemento
-            </button>
-        </div> -->
     </form>
 </div>

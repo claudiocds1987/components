@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
     Component,
     Input,
@@ -36,6 +37,7 @@ import { SkeletonDirective } from "../../directives/skeleton.directive";
 import { AlertComponent } from "../alert/alert.component";
 import { BreadcrumbComponent } from "../breadcrumb/breadcrumb.component";
 import { DateInputComponent } from "../date-input/date-input.component";
+import { MatIcon } from "@angular/material/icon";
 
 @Component({
     selector: "app-form-array",
@@ -51,6 +53,7 @@ import { DateInputComponent } from "../date-input/date-input.component";
         MatDatepickerModule,
         MatNativeDateModule,
         MatSelectModule,
+        MatIcon,
         BreadcrumbComponent,
         AlertComponent,
         MatRadioModule,
@@ -77,10 +80,10 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     // Signal computada para tener los campos ordenados para el template
-    sortedFields = computed(() => {
+    sortedFields = computed((): FormArrayData[] => {
         return this.data
             .slice()
-            .sort((a, b) => a.columnPosition - b.columnPosition);
+            .sort((a, b): number => a.columnPosition - b.columnPosition);
     });
 
     // NUEVA SIGNAL: Contiene TODOS los valores seleccionados (incluyendo duplicados) por campo único.
@@ -131,11 +134,12 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         this.valueChangesSubscription.unsubscribe();
     }
 
-    /* trackByFn(index: number, item: AbstractControl): number {
-        return index;
-    } */
     trackByFn(index: number, item: AbstractControl): string {
         return item.value;
+    }
+
+    isReadyToAdd(): boolean {
+        return this.mainForm.valid;
     }
 
     /**
@@ -147,28 +151,32 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     ): SelectItem[] {
         const control = group.get(fieldName) as FormControl;
         const currentValue = control.value;
-        const fieldConfig = this.data.find((f) => f.fieldName === fieldName);
+        const fieldConfig = this.data.find(
+            (f: FormArrayData): boolean => f.fieldName === fieldName,
+        );
         const available = this.availableOptionsMap().get(fieldName) || [];
 
-        if (fieldConfig?.isRepeated || !currentValue) {
+        if (fieldConfig?.isRepeated || currentValue === null) {
             return available;
         }
 
         const globallySelected = this.selectedValuesByField()[fieldName] || [];
         const occurrenceCount = globallySelected.filter(
-            (val) => val === currentValue,
+            (val): boolean => val === currentValue,
         ).length;
         const original = this.originalSelectItemsMap.get(fieldName) || [];
-        const currentItem = original.find((item) => item.id === currentValue);
+        const currentItem = original.find(
+            (item: SelectItem): boolean => item.id === currentValue,
+        );
 
         // Si el valor actual NO es un duplicado (solo aparece 1 vez), lo re-introducimos para que pueda seleccionarlo.
         if (occurrenceCount <= 1) {
             const isCurrentValueInAvailable = available.some(
-                (item) => item.id === currentValue,
+                (item: SelectItem): boolean => item.id === currentValue,
             );
 
             if (!isCurrentValueInAvailable && currentItem) {
-                return [...available, currentItem].sort((a, b) => {
+                return [...available, currentItem].sort((a, b): number => {
                     const aLabel = a.description.toString().toLowerCase();
                     const bLabel = b.description.toString().toLowerCase();
                     return aLabel.localeCompare(bLabel);
@@ -187,7 +195,9 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
      */
     isDuplicate(fieldName: string, itemId: string | number): boolean {
         const globallySelected = this.selectedValuesByField()[fieldName] || [];
-        return globallySelected.filter((val) => val === itemId).length > 1;
+        return (
+            globallySelected.filter((val): boolean => val === itemId).length > 1
+        );
     }
     /**
      * Crea un nuevo FormGroup (una "fila") basándose en la configuración de datos.
@@ -233,8 +243,9 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
      */
     isRequired(field: FormArrayData): boolean {
         return (
-            field.validations?.some((v) => v.type === ValidationKey.required) ??
-            false
+            field.validations?.some(
+                (v): boolean => v.type === ValidationKey.required,
+            ) ?? false
         );
     }
 
@@ -259,7 +270,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
      * Inicializa el mapa con todas las opciones originales de los campos de tipo 'select'.
      */
     private initializeSelectMaps(): void {
-        this.data.forEach((field) => {
+        this.data.forEach((field: FormArrayData): void => {
             if (field.fieldType === "select" && field.selectItems) {
                 // Clonar la lista para asegurar inmutabilidad
                 this.originalSelectItemsMap.set(field.fieldName, [
@@ -280,7 +291,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
 
         // Suscripción al FormArray para detectar cambios en cualquier fila.
         this.valueChangesSubscription.add(
-            this.rows.valueChanges.subscribe(() => {
+            this.rows.valueChanges.subscribe((): void => {
                 this.calculateAvailableOptions();
             }),
         );
@@ -295,10 +306,10 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         const newSelectedValues: Record<string, (string | number)[]> = {}; // Usamos este para la nueva Signal
 
         // 1. Recolectar todos los valores seleccionados para campos únicos
-        this.data.forEach((field) => {
+        this.data.forEach((field: FormArrayData): void => {
             if (field.fieldType === "select" && !field.isRepeated) {
                 const selected: (string | number)[] = [];
-                this.rows.controls.forEach((group) => {
+                this.rows.controls.forEach((group: AbstractControl): void => {
                     const control = group.get(field.fieldName);
                     // Usar '== null' para capturar null y undefined si el control no existe o no tiene valor
                     if (control?.value != null) {
@@ -313,7 +324,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         this.selectedValuesByField.set(newSelectedValues);
 
         // 2. Filtrar las opciones originales
-        this.data.forEach((field) => {
+        this.data.forEach((field: FormArrayData): void => {
             const originalItems = this.originalSelectItemsMap.get(
                 field.fieldName,
             );
@@ -325,7 +336,8 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
 
                     // Filtra: mantiene solo las opciones que NO han sido seleccionadas por NADIE
                     const filteredItems = originalItems.filter(
-                        (item) => !usedUniqueIds.has(item.id),
+                        (item: SelectItem): boolean =>
+                            !usedUniqueIds.has(item.id),
                     );
                     newAvailableOptionsMap.set(field.fieldName, filteredItems);
                 } else {
