@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { Component, Input, OnDestroy, OnInit, inject } from "@angular/core";
+import {
+    Component,
+    Input,
+    OnDestroy,
+    OnInit,
+    inject,
+    input,
+} from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
@@ -19,6 +26,7 @@ import { MatLuxonDateModule } from "@angular/material-luxon-adapter";
 
 import { Subject, takeUntil } from "rxjs";
 import { RequiredValidationDirective } from "../../directives/required-validation.directive";
+import { ReadOnlyDirective } from "../../directives/read-only.directive";
 
 @Component({
     selector: "app-date-input",
@@ -32,6 +40,7 @@ import { RequiredValidationDirective } from "../../directives/required-validatio
         MatIconModule,
         MatLuxonDateModule,
         RequiredValidationDirective,
+        ReadOnlyDirective,
     ],
     templateUrl: "./date-input.component.html",
     styleUrl: "./date-input.component.scss",
@@ -54,6 +63,8 @@ export class DateInputComponent
     @Input() label = "Fecha";
     @Input() placeholder = "";
     @Input() isDisabled = false;
+    //@Input() isReadOnly = false;
+    isReadOnly = input<boolean>(false);
 
     /*-----------------------------------------------------------------------------------------------------
      *  "internalControl" es el cerebro del componente. Es un FormControl de Angular que maneja el valor

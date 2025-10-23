@@ -7,7 +7,6 @@ import {
     OnDestroy,
     computed,
     inject,
-    effect,
     OnChanges,
     SimpleChanges,
     Output,
@@ -44,6 +43,7 @@ import { AlertComponent } from "../alert/alert.component";
 import { BreadcrumbComponent } from "../breadcrumb/breadcrumb.component";
 import { DateInputComponent } from "../date-input/date-input.component";
 import { MatIcon } from "@angular/material/icon";
+import { ReadOnlyDirective } from "../../directives/read-only.directive";
 
 @Component({
     selector: "app-form-array",
@@ -65,6 +65,7 @@ import { MatIcon } from "@angular/material/icon";
         MatRadioModule,
         SkeletonDirective,
         RequiredValidationDirective,
+        ReadOnlyDirective,
     ],
     templateUrl: "./form-array.component.html",
     styleUrls: ["./form-array.component.scss", "./../../styles/skeleton.scss"],
@@ -132,7 +133,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
             }
             // Si los datos iniciales cambian después de la inicialización, repoblamos el FormArray.
             if (dataReceived) {
-                this._populateFormArray(this.data || []);
+                this._resetAndLoadRows(this.data || []);
             }
             // Recalculamos las opciones en cualquier caso de actualización para reflejar los cambios.
             this.calculateAvailableOptions();
@@ -286,7 +287,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
 
         // 2. Si hay datos iniciales, usarlos para poblar el FormArray
         if (this.data && this.data.length > 0) {
-            this._populateFormArray(this.data);
+            this._resetAndLoadRows(this.data);
         } else if (this.rows.length === 0) {
             // 3. Si no hay datos iniciales y no hay filas, añade la primera fila vacía
             this.addRow();
@@ -299,23 +300,19 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     /**
      * NUEVO MÉTODO: Llena el FormArray con los datos iniciales recibidos.
      */
-    private _populateFormArray(rowsData: any[]): void {
-        // Limpiamos el FormArray por si ya tenía filas
-        while (this.rows.length !== 0) {
-            this.rows.removeAt(0);
-        }
+    private _resetAndLoadRows(rowsData: any[]): void {
+        // 1. Limpiamos el FormArray usando el método nativo (más eficiente y limpio que un while)
+        this.rows.clear();
 
-        // Creamos un FormGroup por cada objeto de datos y lo añadimos
+        // 2. Creamos un FormGroup por cada objeto de datos y lo añadimos
         rowsData.forEach((rowData): void => {
-            // 'rowData' es un objeto como { country: 'AR', gender: 'F', position: 'DEV', email: 'test@a.com' }
+            // Pasamos los datos a createRowGroup para inicializar los valores
             this.rows.push(this.createRowGroup(rowData));
         });
 
-        // Lo marcamos como no modificado (limpio), ya que la data viene de una fuente inicial.
+        // 3. Lo marcamos como no modificado (limpio), ya que la data viene de una fuente inicial.
         this.mainForm.markAsPristine();
     }
-
-    // --- EL RESTO DE MÉTODOS PRIVADOS SE MANTIENE IGUAL ---
 
     private initializeSelectMaps(): void {
         this.formArrayConfig.forEach((field: FormArrayConfig): void => {

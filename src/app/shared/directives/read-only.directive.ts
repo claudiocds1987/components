@@ -28,6 +28,8 @@ export class ReadOnlyDirective implements OnInit {
 
     // Bandera para asegurar que los estilos solo se inyecten una vez
     private static stylesInjected = false;
+
+    // El input de la directiva, que recibe el valor booleano
     @Input() appReadOnly: boolean | undefined = false;
 
     private _el = inject(ElementRef);
@@ -35,13 +37,22 @@ export class ReadOnlyDirective implements OnInit {
     private _matFormField: HTMLElement | null = null;
 
     ngOnInit(): void {
+        // En este punto, this._el.nativeElement es el <input matInput>
         this._matFormField = this._el.nativeElement.closest("mat-form-field");
 
         if (this.appReadOnly && this._matFormField) {
-            // 1. Inyectar los estilos una sola vez en el <head>
+            // ⭐️ 1. Establecer el atributo [readonly] en el input host.
+            // Esto es necesario para que el CSS inyectado por la directiva aplique los estilos de no interacción.
+            this.renderer.setAttribute(
+                this._el.nativeElement,
+                "readonly",
+                "true",
+            );
+
+            // 2. Inyectar los estilos una sola vez en el <head>
             this.injectStyles();
 
-            // 2. Se agrega al mat-form-field la clase read-only-disabled-style para simular un color disabled
+            // 3. Se agrega al mat-form-field la clase read-only-disabled-style
             this.renderer.addClass(
                 this._matFormField,
                 "read-only-disabled-style",
@@ -57,35 +68,35 @@ export class ReadOnlyDirective implements OnInit {
         const disabledBgColor = "rgba(0, 0, 0, 0.04)";
 
         const css = `
-      /* ESTILOS DE FONDO */
-      /* 1. Aplica el color de fondo gris de Material (disabled) al contenedor interno (MDC) */
-      .read-only-disabled-style .mat-mdc-text-field-wrapper {
-        background-color: ${disabledBgColor} !important;
-      }
-      
-      /* 2. Opcional: Elimina el contorno de la apariencia "outline" */
-      .read-only-disabled-style.mat-mdc-form-field-appearance-outline .mat-mdc-notched-outline {
-         border: none !important;
-      }
+            /* ESTILOS DE FONDO */
+            /* 1. Aplica el color de fondo gris de Material (disabled) al contenedor interno (MDC) */
+            .read-only-disabled-style .mat-mdc-text-field-wrapper {
+                background-color: ${disabledBgColor} !important;
+            }
+            
+            /* 2. Opcional: Elimina el contorno de la apariencia "outline" */
+            .read-only-disabled-style.mat-mdc-form-field-appearance-outline .mat-mdc-notched-outline {
+                border: none !important;
+            }
 
-      /* 3. Evita que el usuario seleccione el texto y elimina el cursor/caret */
-      .read-only-disabled-style input.mat-mdc-input[readonly] {
-          /* Evita que el cursor de texto (caret) aparezca */
-          caret-color: transparent !important; 
-          
-          /* Evita que el usuario seleccione el texto */
-          user-select: none !important;
-          -webkit-user-select: none !important;
-          
-          /* Garantiza que no se muestre ningún color de fondo superpuesto */
-          background-color: transparent !important;
-      }
+            /* 3. Evita que el usuario seleccione el texto y elimina el cursor/caret */
+            .read-only-disabled-style input.mat-mdc-input[readonly] {
+                /* Evita que el cursor de texto (caret) aparezca */
+                caret-color: transparent !important; 
+                
+                /* Evita que el usuario seleccione el texto */
+                user-select: none !important;
+                -webkit-user-select: none !important;
+                
+                /* Garantiza que no se muestre ningún color de fondo superpuesto */
+                background-color: transparent !important;
+            }
 
-      /* 4. Evita TODA interacción (clics, enfoque, etc.) en el input */
-      .read-only-disabled-style .mat-mdc-text-field-wrapper {
-          pointer-events: none;
-      }
-    `;
+            /* 4. Evita TODA interacción (clics, enfoque, etc.) en el mat-form-field wrapper */
+            .read-only-disabled-style .mat-mdc-text-field-wrapper {
+                pointer-events: none;
+            }
+        `;
 
         // Crea e inyecta el elemento <style>
         const style = this.renderer.createElement("style");

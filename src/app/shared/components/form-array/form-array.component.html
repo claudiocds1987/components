@@ -23,13 +23,13 @@
                                         class="width"
                                         appearance="outline"
                                         [appSkeleton]="isLoadingSig()"
+                                        [appReadOnly]="field.isReadOnly"
                                     >
                                         <mat-label>{{ field.label }}</mat-label>
                                         <input
                                             matInput
                                             [formControlName]="field.fieldName"
                                             [placeholder]="field.fieldName"
-                                            [readonly]="field.isReadOnly"
                                             appRequiredValidation
                                         />
                                     </mat-form-field>
@@ -42,6 +42,7 @@
                                         [placeholder]="field.label ?? ''"
                                         [isDisabled]="false"
                                         [appSkeleton]="isLoadingSig()"
+                                        [isReadOnly]="field.isReadOnly ?? false"
                                         appRequiredValidation
                                     >
                                     </app-date-input>
@@ -54,6 +55,7 @@
                                         class="width"
                                         appearance="outline"
                                         [appSkeleton]="isLoadingSig()"
+                                        [appReadOnly]="field.isReadOnly"
                                     >
                                         <mat-label>{{
                                             field.fieldName

@@ -92,6 +92,7 @@ export class EmployeeFormArrayComponent implements OnInit {
                 label: "País",
                 placeHolder: "Selecciona un país",
                 validations: [{ type: ValidationKey.required }],
+                isReadOnly: true,
                 isRepeated: false,
             },
             {
@@ -124,8 +125,18 @@ export class EmployeeFormArrayComponent implements OnInit {
                     { type: ValidationKey.required },
                     { type: ValidationKey.email },
                 ],
+                isReadOnly: true,
                 isRepeated: true,
             },
+            /*  {
+                columnPosition: 4,
+                fieldName: "fecha",
+                fieldType: "date",
+                label: "date",
+                placeHolder: "",
+                isReadOnly: true,
+                isRepeated: false,
+            }, */
         ];
     }
 
