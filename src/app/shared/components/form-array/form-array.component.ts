@@ -136,7 +136,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
                 this._resetAndLoadRows(this.data || []);
             }
             // Recalculamos las opciones en cualquier caso de actualización para reflejar los cambios.
-            this.calculateAvailableOptions();
+            this._calculateSelectAvailableOptions();
         }
     }
 
@@ -226,8 +226,8 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         const groupControls: Record<string, FormControl> = {};
 
         for (const field of this.formArrayConfig) {
-            const validators = this.getValidators(field);
-            // Usar el valor inicial proporcionado, o null por defecto ⭐️
+            const validators = this._getValidators(field);
+            // Usar el valor inicial proporcionado, o null por defecto
             const initialValue = initialValues[field.fieldName] ?? null;
 
             groupControls[field.fieldName] = this._fb.control(
@@ -294,7 +294,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         }
 
         // 4. Calcular las opciones iniciales
-        this.calculateAvailableOptions();
+        this._calculateSelectAvailableOptions();
     }
 
     /**
@@ -330,7 +330,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         // 1. Suscripción para gestionar opciones disponibles (response inmediata a cambios de valor)
         this.valueChangesSubscription.add(
             this.rows.valueChanges.subscribe((): void => {
-                this.calculateAvailableOptions();
+                this._calculateSelectAvailableOptions();
             }),
         );
         // 2. Suscripción para emitir el valor del FormArray al componente padre SOLO cuando es VÁLIDO
@@ -352,7 +352,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         );
     }
 
-    private calculateAvailableOptions(): void {
+    private _calculateSelectAvailableOptions(): void {
         const newAvailableOptionsMap = new Map<string, SelectItem[]>();
         const newSelectedValues: Record<string, (string | number)[]> = {};
 
@@ -394,7 +394,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         this.availableOptionsMap.set(newAvailableOptionsMap);
     }
 
-    private getValidators(field: FormArrayConfig): any[] {
+    private _getValidators(field: FormArrayConfig): any[] {
         const fieldValidators: any[] = [];
         if (field.validations) {
             for (const validation of field.validations) {

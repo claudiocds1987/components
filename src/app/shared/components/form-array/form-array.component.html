@@ -1,109 +1,105 @@
-<div class="main-container">
-    <form [formGroup]="mainForm">
-        <!-- Contenedor del FormArray -->
-        <div formArrayName="rows">
-            @for (group of rows.controls; track trackByFn($index, group)) {
-                <div [formGroupName]="$index">
-                    <div class="grid">
-                        <!-- Iteramos sobre la configuración para renderizar los campos -->
-                        @for (field of sortedFields(); track field.fieldName) {
-                            <div class="inputs-container">
-                                @if (field.label) {
-                                    <label
-                                        [for]="field.fieldName + $index"
-                                        [appSkeleton]="isLoadingSig()"
-                                    >
-                                        {{ field.label }}
-                                    </label>
-                                }
+<form [formGroup]="mainForm">
+    <!-- Contenedor del FormArray -->
+    <div formArrayName="rows">
+        @for (group of rows.controls; track trackByFn($index, group)) {
+            <div [formGroupName]="$index">
+                <div class="grid">
+                    <!-- Iteramos sobre la configuración para renderizar los campos -->
+                    @for (field of sortedFields(); track field.fieldName) {
+                        <div class="inputs-container">
+                            @if (field.label) {
+                                <label
+                                    [for]="field.fieldName + $index"
+                                    [appSkeleton]="isLoadingSig()"
+                                >
+                                    {{ field.label }}
+                                </label>
+                            }
 
-                                <!-- Renderizado de campo de texto -->
-                                @if (field.fieldType === "text") {
-                                    <mat-form-field
-                                        class="width"
-                                        appearance="outline"
-                                        [appSkeleton]="isLoadingSig()"
-                                        [appReadOnly]="field.isReadOnly"
-                                    >
-                                        <mat-label>{{ field.label }}</mat-label>
-                                        <input
-                                            matInput
-                                            [formControlName]="field.fieldName"
-                                            [placeholder]="field.fieldName"
-                                            appRequiredValidation
-                                        />
-                                    </mat-form-field>
-                                }
-                                <!-- Renderizado de campo de fecha -->
-                                @if (field.fieldType === "date") {
-                                    <app-date-input
+                            <!-- Renderizado de campo de texto -->
+                            @if (field.fieldType === "text") {
+                                <mat-form-field
+                                    class="width"
+                                    appearance="outline"
+                                    [appSkeleton]="isLoadingSig()"
+                                    [appReadOnly]="field.isReadOnly"
+                                >
+                                    <mat-label>{{ field.label }}</mat-label>
+                                    <input
+                                        matInput
                                         [formControlName]="field.fieldName"
-                                        [label]="field.label ?? ''"
-                                        [placeholder]="field.label ?? ''"
-                                        [isDisabled]="false"
-                                        [appSkeleton]="isLoadingSig()"
-                                        [isReadOnly]="field.isReadOnly ?? false"
+                                        [placeholder]="field.fieldName"
+                                        appRequiredValidation
+                                    />
+                                </mat-form-field>
+                            }
+                            <!-- Renderizado de campo de fecha -->
+                            @if (field.fieldType === "date") {
+                                <app-date-input
+                                    [formControlName]="field.fieldName"
+                                    [label]="field.label ?? ''"
+                                    [placeholder]="field.label ?? ''"
+                                    [isDisabled]="false"
+                                    [appSkeleton]="isLoadingSig()"
+                                    [isReadOnly]="field.isReadOnly ?? false"
+                                    appRequiredValidation
+                                >
+                                </app-date-input>
+                            }
+
+                            <!-- Renderizado de campo select con opciones dinámicas -->
+                            @if (field.fieldType === "select") {
+                                <mat-form-field
+                                    [id]="field.fieldName + $index"
+                                    class="width"
+                                    appearance="outline"
+                                    [appSkeleton]="isLoadingSig()"
+                                    [appReadOnly]="field.isReadOnly"
+                                >
+                                    <mat-label>{{ field.fieldName }}</mat-label>
+                                    <mat-select
+                                        [formControlName]="field.fieldName"
                                         appRequiredValidation
                                     >
-                                    </app-date-input>
-                                }
-
-                                <!-- Renderizado de campo select con opciones dinámicas -->
-                                @if (field.fieldType === "select") {
-                                    <mat-form-field
-                                        [id]="field.fieldName + $index"
-                                        class="width"
-                                        appearance="outline"
-                                        [appSkeleton]="isLoadingSig()"
-                                        [appReadOnly]="field.isReadOnly"
-                                    >
-                                        <mat-label>{{
-                                            field.fieldName
-                                        }}</mat-label>
-                                        <mat-select
-                                            [formControlName]="field.fieldName"
-                                            appRequiredValidation
-                                        >
-                                            @for (
-                                                item of getOptionsForField(
-                                                    field.fieldName,
-                                                    group
-                                                );
-                                                track item.id
-                                            ) {
-                                                <mat-option [value]="item.id">
-                                                    {{ item.description }}
-                                                </mat-option>
-                                            }
-                                        </mat-select>
-                                    </mat-form-field>
-                                }
-                            </div>
-                        }
-                        <!-- Botón para eliminar Y AGREGAR row-->
-                        <div class="actions-container">
-                            <button
-                                mat-icon-button
-                                (click)="removeRow($index)"
-                                [disabled]="rows.length === 1"
-                            >
-                                <mat-icon [appSkeleton]="isLoadingSig()"
-                                    >remove_circle</mat-icon
-                                >
-                            </button>
-                            <button
-                                mat-icon-button
-                                (click)="addRow()"
-                                [disabled]="!isReadyToAdd()"
-                            >
-                                <mat-icon [appSkeleton]="isLoadingSig()"
-                                    >add_circle</mat-icon
-                                >
-                            </button>
+                                        @for (
+                                            item of getOptionsForField(
+                                                field.fieldName,
+                                                group
+                                            );
+                                            track item.id
+                                        ) {
+                                            <mat-option [value]="item.id">
+                                                {{ item.description }}
+                                            </mat-option>
+                                        }
+                                    </mat-select>
+                                </mat-form-field>
+                            }
                         </div>
+                    }
+                    <!-- Botón para eliminar Y AGREGAR row-->
+                    <div class="actions-container">
+                        <button
+                            mat-icon-button
+                            (click)="removeRow($index)"
+                            [disabled]="rows.length === 1"
+                        >
+                            <mat-icon [appSkeleton]="isLoadingSig()"
+                                >remove_circle</mat-icon
+                            >
+                        </button>
+                        <button
+                            mat-icon-button
+                            (click)="addRow()"
+                            [disabled]="!isReadyToAdd()"
+                        >
+                            <mat-icon [appSkeleton]="isLoadingSig()"
+                                >add_circle</mat-icon
+                            >
+                        </button>
                     </div>
                 </div>
-            }
-        </div>
-    </form>
-</div>
+            </div>
+        }
+    </div>
+</form>

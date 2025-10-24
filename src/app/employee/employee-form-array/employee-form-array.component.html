@@ -1,6 +1,27 @@
-<app-form-array
-    [formArrayConfig]="formArrayConfig"
-    [data]="employeeData"
-    [isLoadingSig]="isLoadingSig()"
-    (emitFormArrayValue)="getFormArrayValue($event)"
-></app-form-array>
+<div class="main-container">
+    <div class="example1">
+        <h4>
+            Configuración: Todos los campos se pueden repetir, todos son
+            obligatorios. Máximo de filas 5
+        </h4>
+        <app-form-array
+            [formArrayConfig]="formArrayConfig1"
+            [data]="employeeData"
+            [isLoadingSig]="isLoadingSig()"
+            [maxRows]="5"
+            (emitFormArrayValue)="getFormArray1Value($event)"
+        ></app-form-array>
+    </div>
+    <div class="example2">
+        <h4>
+            Configuración: Ningun campo se puede repetir a excepción de la
+            fecha, todos son obligatorios. Máximo de filas 3.
+        </h4>
+        <app-form-array
+            [formArrayConfig]="formArrayConfig2"
+            [isLoadingSig]="isLoadingSig()"
+            [maxRows]="3"
+            (emitFormArrayValue)="getFormArray2Value($event)"
+        ></app-form-array>
+    </div>
+</div>

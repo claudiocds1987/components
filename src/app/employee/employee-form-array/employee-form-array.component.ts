@@ -19,7 +19,8 @@ import { FormArrayComponent } from "../../shared/components/form-array/form-arra
 })
 export class EmployeeFormArrayComponent implements OnInit {
     isLoadingSig = signal(true);
-    formArrayConfig: FormArrayConfig[] = [];
+    formArrayConfig1: FormArrayConfig[] = [];
+    formArrayConfig2: FormArrayConfig[] = [];
 
     employeeData: unknown[] = [
         { country: 1, gender: 1, position: 1, email: "juan.perez@empresa.com" },
@@ -46,8 +47,11 @@ export class EmployeeFormArrayComponent implements OnInit {
         this._loadData();
     }
 
-    getFormArrayValue(value: any): void {
-        console.log("datos del form Array padre: ", value);
+    getFormArray1Value(value: any): void {
+        console.log("datos del form 1 Array", value);
+    }
+    getFormArray2Value(value: any): void {
+        console.log("datos del form 2 Array", value);
     }
 
     private _loadData(): void {
@@ -69,7 +73,8 @@ export class EmployeeFormArrayComponent implements OnInit {
                 }): void => {
                     this._positions = results.positions;
                     this._countries = results.countries;
-                    this._setFormArrayData(this._positions, this._countries);
+                    this._setFormArray1();
+                    this._setFormArray2();
                     this.isLoadingSig.set(false);
                 },
                 error: (): void => {
@@ -79,20 +84,63 @@ export class EmployeeFormArrayComponent implements OnInit {
             });
     }
 
-    private _setFormArrayData(
-        positions: SelectItem[],
-        countries: SelectItem[],
-    ): void {
-        this.formArrayConfig = [
+    private _setFormArray1(): void {
+        this.formArrayConfig1 = [
             {
                 columnPosition: 1,
                 fieldName: "country",
                 fieldType: "select",
-                selectItems: countries,
+                selectItems: this._countries,
                 label: "País",
                 placeHolder: "Selecciona un país",
                 validations: [{ type: ValidationKey.required }],
-                isReadOnly: true,
+                isRepeated: true,
+            },
+            {
+                columnPosition: 2,
+                fieldName: "gender",
+                fieldType: "select",
+                selectItems: this._genders,
+                label: "Género",
+                placeHolder: "Selecciona el género",
+                validations: [{ type: ValidationKey.required }],
+                isRepeated: true,
+            },
+            {
+                columnPosition: 4,
+                fieldName: "position",
+                fieldType: "select",
+                selectItems: this._positions,
+                label: "Puesto",
+                placeHolder: "",
+                validations: [{ type: ValidationKey.required }],
+                isRepeated: true,
+            },
+            {
+                columnPosition: 3,
+                fieldName: "email",
+                fieldType: "text",
+                label: "Email",
+                placeHolder: "Ej: usuario@dominio.com",
+                validations: [
+                    { type: ValidationKey.required },
+                    { type: ValidationKey.email },
+                ],
+                isRepeated: true,
+            },
+        ];
+    }
+
+    private _setFormArray2(): void {
+        this.formArrayConfig2 = [
+            {
+                columnPosition: 1,
+                fieldName: "country",
+                fieldType: "select",
+                selectItems: this._countries,
+                label: "País",
+                placeHolder: "Selecciona un país",
+                validations: [{ type: ValidationKey.required }],
                 isRepeated: false,
             },
             {
@@ -106,36 +154,23 @@ export class EmployeeFormArrayComponent implements OnInit {
                 isRepeated: false,
             },
             {
-                columnPosition: 4,
+                columnPosition: 3,
                 fieldName: "position",
                 fieldType: "select",
-                selectItems: positions,
+                selectItems: this._positions,
                 label: "Puesto",
                 placeHolder: "",
                 validations: [{ type: ValidationKey.required }],
                 isRepeated: false,
             },
-            {
-                columnPosition: 3,
-                fieldName: "email",
-                fieldType: "text",
-                label: "Email",
-                placeHolder: "Ej: usuario@dominio.com",
-                validations: [
-                    { type: ValidationKey.required },
-                    { type: ValidationKey.email },
-                ],
-                isReadOnly: true,
-                isRepeated: true,
-            },
-            /*  {
+            /* {
                 columnPosition: 4,
-                fieldName: "fecha",
+                fieldName: "date",
                 fieldType: "date",
-                label: "date",
+                label: "Fecha",
                 placeHolder: "",
-                isReadOnly: true,
-                isRepeated: false,
+                validations: [{ type: ValidationKey.required }],
+                isRepeated: true,
             }, */
         ];
     }
