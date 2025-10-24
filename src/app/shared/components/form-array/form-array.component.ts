@@ -44,6 +44,8 @@ import { BreadcrumbComponent } from "../breadcrumb/breadcrumb.component";
 import { DateInputComponent } from "../date-input/date-input.component";
 import { MatIcon } from "@angular/material/icon";
 import { ReadOnlyDirective } from "../../directives/read-only.directive";
+import { uniqueDateValidator } from "../../utils/unique-date-validator";
+import { DuplicatedDateValidation } from "../../directives/duplicated-date-validation.directive";
 
 @Component({
     selector: "app-form-array",
@@ -66,6 +68,7 @@ import { ReadOnlyDirective } from "../../directives/read-only.directive";
         SkeletonDirective,
         RequiredValidationDirective,
         ReadOnlyDirective,
+        DuplicatedDateValidation,
     ],
     templateUrl: "./form-array.component.html",
     styleUrls: ["./form-array.component.scss", "./../../styles/skeleton.scss"],
@@ -137,6 +140,23 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
             }
             // Recalculamos las opciones en cualquier caso de actualización para reflejar los cambios.
             this._calculateSelectAvailableOptions();
+        }
+
+        // Lógica de actualización si la configuración o los datos iniciales cambian
+        if (this.isInitialized) {
+            if (configReceived) {
+                this.initializeSelectMaps();
+                // **AÑADIR ESTO:** Actualizar validador del FormArray si cambia la config
+                const dateValidator = uniqueDateValidator(this.formArrayConfig);
+                this.rows.setValidators(dateValidator);
+            }
+            // ... (resto de tu lógica existente)
+
+            // Recalculamos las opciones en cualquier caso de actualización para reflejar los cambios.
+            this._calculateSelectAvailableOptions();
+
+            // **AÑADIR ESTO:** Re-validar las filas después de cualquier cambio
+            this.rows.updateValueAndValidity();
         }
     }
 
@@ -271,17 +291,48 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         );
     }
 
+    private _initFormStructure(): void {
+        // 1. Inicializa los mapas de opciones
+        this.initializeSelectMaps();
+
+        // 2. AÑADIDO: Aplicar el validador de fechas al FormArray
+        const dateValidator = uniqueDateValidator(this.formArrayConfig);
+        this.rows.setValidators(dateValidator);
+        this.rows.updateValueAndValidity(); // Ejecutar el validador inmediatamente
+
+        // 3. Si hay datos iniciales, usarlos para poblar el FormArray
+        if (this.data && this.data.length > 0) {
+            this._resetAndLoadRows(this.data);
+        } else if (this.rows.length === 0) {
+            // <--- **Punto crítico**
+            // 4. Si no hay datos iniciales y no hay filas, añade la primera fila vacía
+            this.addRow();
+        }
+
+        // 5. Calcular las opciones iniciales
+        this._calculateSelectAvailableOptions();
+    }
+
     private _createFormArray(): void {
+        // Inicializamos el mainForm
+        this.mainForm = this._fb.group({
+            // Aplicamos el validador al FormArray 'rows'
+            rows: this._fb.array([], {
+                validators: [uniqueDateValidator(this.formArrayConfig)],
+            }),
+        });
+    }
+    /* private _createFormArray(): void {
         this.mainForm = this._fb.group({
             rows: this._fb.array([]),
         });
-    }
+    } */
 
     /**
      * Inicializa los mapas de opciones, añade la primera fila o llena con datos iniciales, y calcula las opciones.
      * Se llama desde ngOnChanges cuando la data de los campos está disponible.
      */
-    private _initFormStructure(): void {
+    /*  private _initFormStructure(): void {
         // 1. Inicializa los mapas de opciones (depende de this.data)
         this.initializeSelectMaps();
 
@@ -295,7 +346,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
 
         // 4. Calcular las opciones iniciales
         this._calculateSelectAvailableOptions();
-    }
+    } */
 
     /**
      * NUEVO MÉTODO: Llena el FormArray con los datos iniciales recibidos.

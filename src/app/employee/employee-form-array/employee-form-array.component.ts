@@ -163,14 +163,26 @@ export class EmployeeFormArrayComponent implements OnInit {
                 validations: [{ type: ValidationKey.required }],
                 isRepeated: false,
             },
-            /* {
+            {
                 columnPosition: 4,
                 fieldName: "date",
                 fieldType: "date",
                 label: "Fecha",
                 placeHolder: "",
                 validations: [{ type: ValidationKey.required }],
-                isRepeated: true,
+                isRepeated: false,
+            },
+            /* {
+                columnPosition: 5,
+                fieldName: "email",
+                fieldType: "text",
+                label: "Email",
+                placeHolder: "Ej: usuario@dominio.com",
+                validations: [
+                    { type: ValidationKey.required },
+                    { type: ValidationKey.email },
+                ],
+                isRepeated: false,
             }, */
         ];
     }
