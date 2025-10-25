@@ -19,6 +19,7 @@
                             <!-- Renderizado de campo de texto-->
                             @if (field.fieldType === "text") {
                                 <mat-form-field
+                                    [id]="field.fieldName + $index"
                                     class="width"
                                     appearance="outline"
                                     [appSkeleton]="isLoadingSig()"
@@ -38,6 +39,7 @@
                             <!-- Renderizado de campo de email-->
                             @if (field.fieldType === "email") {
                                 <mat-form-field
+                                    [id]="field.fieldName + $index"
                                     class="width"
                                     appearance="outline"
                                     [appSkeleton]="isLoadingSig()"
@@ -58,6 +60,7 @@
                             <!-- Renderizado de campo de number-->
                             @if (field.fieldType === "number") {
                                 <mat-form-field
+                                    [id]="field.fieldName + $index"
                                     class="width"
                                     appearance="outline"
                                     [appSkeleton]="isLoadingSig()"
@@ -78,6 +81,8 @@
                             <!-- Renderizado de campo de fecha -->
                             @if (field.fieldType === "date") {
                                 <app-date-input
+                                    [id]="field.fieldName + $index"
+                                    class="width"
                                     [formControlName]="field.fieldName"
                                     [label]="field.label ?? ''"
                                     [placeholder]="field.label ?? ''"

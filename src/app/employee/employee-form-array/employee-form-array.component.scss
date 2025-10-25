@@ -1,3 +1,15 @@
 .main-container {
     padding-top: 50px;
+    padding: 0 15px; /* Agrega padding a los lados para pantallas pequeñas */
+}
+
+.example1 {
+    width: 100%;
+    max-width: 1200px; // Limita de ancho
+    margin: 0 auto; // Centra el componente en la pantalla
+}
+.example2 {
+    width: 100%;
+    max-width: 1600px; // Limita el ancho máximo en pantallas grandes
+    margin: 0 auto; // Centra el componente en la pantalla
 }
