@@ -175,7 +175,7 @@ export class EmployeeFormArrayComponent implements OnInit {
             {
                 columnPosition: 5,
                 fieldName: "email",
-                fieldType: "text",
+                fieldType: "email",
                 label: "Email",
                 placeHolder: "Ej: usuario@dominio.com",
                 validations: [

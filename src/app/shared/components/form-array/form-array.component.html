@@ -16,11 +16,8 @@
                                 </label>
                             }
 
-                            <!-- Renderizado de campo de texto o email-->
-                            @if (
-                                field.fieldType === "text" ||
-                                field.fieldType === "email"
-                            ) {
+                            <!-- Renderizado de campo de texto-->
+                            @if (field.fieldType === "text") {
                                 <mat-form-field
                                     class="width"
                                     appearance="outline"
@@ -30,11 +27,46 @@
                                     <mat-label>{{ field.label }}</mat-label>
                                     <input
                                         matInput
-                                        [type]="
-                                            field.fieldType === 'email'
-                                                ? 'email'
-                                                : 'text'
-                                        "
+                                        [type]="field.fieldType"
+                                        [formControlName]="field.fieldName"
+                                        [placeholder]="field.fieldName"
+                                        appRequiredValidation
+                                    />
+                                </mat-form-field>
+                            }
+
+                            <!-- Renderizado de campo de email-->
+                            @if (field.fieldType === "email") {
+                                <mat-form-field
+                                    class="width"
+                                    appearance="outline"
+                                    [appSkeleton]="isLoadingSig()"
+                                    [appReadOnly]="field.isReadOnly"
+                                >
+                                    <mat-label>{{ field.label }}</mat-label>
+                                    <input
+                                        matInput
+                                        [type]="field.fieldType"
+                                        [formControlName]="field.fieldName"
+                                        [placeholder]="field.fieldName"
+                                        appRequiredValidation
+                                        appDuplicatedEmailValidation
+                                    />
+                                </mat-form-field>
+                            }
+
+                            <!-- Renderizado de campo de number-->
+                            @if (field.fieldType === "number") {
+                                <mat-form-field
+                                    class="width"
+                                    appearance="outline"
+                                    [appSkeleton]="isLoadingSig()"
+                                    [appReadOnly]="field.isReadOnly"
+                                >
+                                    <mat-label>{{ field.label }}</mat-label>
+                                    <input
+                                        matInput
+                                        [type]="field.fieldType"
                                         [formControlName]="field.fieldName"
                                         [placeholder]="field.fieldName"
                                         appRequiredValidation
