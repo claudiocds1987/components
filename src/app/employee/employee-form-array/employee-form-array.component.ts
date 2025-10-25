@@ -119,7 +119,7 @@ export class EmployeeFormArrayComponent implements OnInit {
             {
                 columnPosition: 3,
                 fieldName: "email",
-                fieldType: "text",
+                fieldType: "email",
                 label: "Email",
                 placeHolder: "Ej: usuario@dominio.com",
                 validations: [
@@ -172,7 +172,7 @@ export class EmployeeFormArrayComponent implements OnInit {
                 validations: [{ type: ValidationKey.required }],
                 isRepeated: false,
             },
-            /* {
+            {
                 columnPosition: 5,
                 fieldName: "email",
                 fieldType: "text",
@@ -183,7 +183,7 @@ export class EmployeeFormArrayComponent implements OnInit {
                     { type: ValidationKey.email },
                 ],
                 isRepeated: false,
-            }, */
+            },
         ];
     }
 

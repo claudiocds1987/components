@@ -16,8 +16,11 @@
                                 </label>
                             }
 
-                            <!-- Renderizado de campo de texto -->
-                            @if (field.fieldType === "text") {
+                            <!-- Renderizado de campo de texto o email-->
+                            @if (
+                                field.fieldType === "text" ||
+                                field.fieldType === "email"
+                            ) {
                                 <mat-form-field
                                     class="width"
                                     appearance="outline"
@@ -27,12 +30,19 @@
                                     <mat-label>{{ field.label }}</mat-label>
                                     <input
                                         matInput
+                                        [type]="
+                                            field.fieldType === 'email'
+                                                ? 'email'
+                                                : 'text'
+                                        "
                                         [formControlName]="field.fieldName"
                                         [placeholder]="field.fieldName"
                                         appRequiredValidation
+                                        appDuplicatedEmailValidation
                                     />
                                 </mat-form-field>
                             }
+
                             <!-- Renderizado de campo de fecha -->
                             @if (field.fieldType === "date") {
                                 <app-date-input

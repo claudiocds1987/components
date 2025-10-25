@@ -10,20 +10,21 @@ import { NgControl } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
 
 @Directive({
-    selector: "[appDuplicatedDateValidation]",
+    selector: "[appDuplicatedEmailValidation]",
     standalone: true,
 })
-export class DuplicatedDateValidation implements OnInit, OnDestroy {
+export class DuplicatedEmailValidationDirective implements OnInit, OnDestroy {
     private _el = inject(ElementRef);
     private _ngControl = inject(NgControl, { optional: true });
     private _renderer = inject(Renderer2);
     private _destroy$ = new Subject<void>();
     private _messageElement: HTMLElement | null = null;
     private _matFormField: HTMLElement | null = null;
-    private _subscriptWrapperClass: HTMLElement | null = null;
 
+    // Propiedades reintroducidas para encontrar el contenedor de errores
+    private _subscriptWrapperClass: HTMLElement | null = null;
+    private _isFirstErrorShown = false; // Usado para optimizar la manipulación del DOM
     private _isDomSetupDone = false;
-    private _isFirstErrorShown = false;
 
     ngOnInit(): void {
         if (!this._ngControl || !this._ngControl.control) {
@@ -33,17 +34,20 @@ export class DuplicatedDateValidation implements OnInit, OnDestroy {
         const control = this._ngControl.control;
         const ngControl = this._ngControl;
 
+        // Suscribirse a los cambios de estado para validar en tiempo real
         control.statusChanges
             ?.pipe(takeUntil(this._destroy$))
             .subscribe((): void => {
                 this.handleValidation();
             });
 
+        // Escuchar el evento blur para marcar como tocado y validar
         this._renderer.listen(this._el.nativeElement, "blur", (): void => {
             ngControl?.control?.markAsTouched();
             this.handleValidation();
         });
 
+        // Validación inicial
         this.handleValidation();
     }
 
@@ -53,35 +57,25 @@ export class DuplicatedDateValidation implements OnInit, OnDestroy {
         this.removeStylesAndMessages();
     }
 
+    /**
+     * Busca los elementos del DOM necesarios (mat-form-field y el contenedor de errores).
+     */
+
     private setupDomElements(): void {
         if (this._isDomSetupDone) {
             return;
         }
-        // app-date-input es el componente date-input.component
+
+        // Busca el mat-form-field más cercano al input
         this._matFormField = this._el.nativeElement.closest(
-            "mat-form-field, app-date-input",
+            "mat-form-field",
         ) as HTMLElement | null;
 
         if (!this._matFormField) {
             return;
         }
 
-        let targetMatFormField: HTMLElement | null = this._matFormField;
-
-        if (this._matFormField.tagName === "APP-DATE-INPUT") {
-            const internalMatFormField =
-                this._matFormField.querySelector("mat-form-field");
-
-            targetMatFormField = internalMatFormField as HTMLElement | null;
-
-            if (targetMatFormField) {
-                this._matFormField = targetMatFormField;
-            } else {
-                this._matFormField = null;
-                return;
-            }
-        }
-
+        // Busca el elemento que contiene los mensajes de error de Material (subscript wrapper)
         this._subscriptWrapperClass =
             this._matFormField.querySelector(
                 ".mat-mdc-form-field-subscript-wrapper",
@@ -92,35 +86,33 @@ export class DuplicatedDateValidation implements OnInit, OnDestroy {
 
     private handleValidation(): void {
         const control = this._ngControl?.control;
-        if (!control) {
-            return;
-        }
+        if (!control) return;
 
-        if (!this._isDomSetupDone) {
-            this.setupDomElements();
-        }
+        // 1. Asegurar la configuración del DOM si no se ha hecho
+        if (!this._isDomSetupDone) this.setupDomElements();
 
-        if (!this._matFormField) {
-            return;
-        }
+        if (!this._matFormField) return;
 
-        //let errorType: ErrorType | null = null;
         let errorMessage: string | null = null;
         const isControlInvalid =
             control.invalid && (control.touched || control.dirty);
 
         if (isControlInvalid) {
-            // 1. PRIORIDAD: duplicatedDate
-            if (control.hasError("duplicatedDate")) {
-                errorMessage = "Fecha duplicada";
+            if (
+                control.hasError("duplicatedEmail") ||
+                control.hasError("isDuplicated")
+            ) {
+                errorMessage = "Este email ya está repetido";
+            }
+            // 2. Siguiente Prioridad: Formato de Email
+            else if (control.hasError("email")) {
+                errorMessage = "Formato de email inválido";
             }
         }
 
         if (errorMessage) {
             this.addErrorStyles();
             this.showErrorMessage(errorMessage);
-        } else if (isControlInvalid) {
-            this.removeStylesAndMessages();
         } else {
             this.removeStylesAndMessages();
         }
@@ -128,6 +120,7 @@ export class DuplicatedDateValidation implements OnInit, OnDestroy {
 
     private addErrorStyles(): void {
         if (this._matFormField) {
+            // Esta clase es necesaria para el estilo de error del input
             this._renderer.addClass(
                 this._matFormField,
                 "mat-form-field-invalid",

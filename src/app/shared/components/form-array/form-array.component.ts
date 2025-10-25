@@ -44,8 +44,9 @@ import { BreadcrumbComponent } from "../breadcrumb/breadcrumb.component";
 import { DateInputComponent } from "../date-input/date-input.component";
 import { MatIcon } from "@angular/material/icon";
 import { ReadOnlyDirective } from "../../directives/read-only.directive";
-import { uniqueDateValidator } from "../../utils/unique-date-validator";
+import { uniqueFieldValidator } from "../../utils/unique-field-validator";
 import { DuplicatedDateValidation } from "../../directives/duplicated-date-validation.directive";
+import { DuplicatedEmailValidationDirective } from "../../directives/duplicated-email-validation.directive";
 
 @Component({
     selector: "app-form-array",
@@ -69,6 +70,7 @@ import { DuplicatedDateValidation } from "../../directives/duplicated-date-valid
         RequiredValidationDirective,
         ReadOnlyDirective,
         DuplicatedDateValidation,
+        DuplicatedEmailValidationDirective,
     ],
     templateUrl: "./form-array.component.html",
     styleUrls: ["./form-array.component.scss", "./../../styles/skeleton.scss"],
@@ -147,7 +149,9 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
             if (configReceived) {
                 this.initializeSelectMaps();
                 // **AÑADIR ESTO:** Actualizar validador del FormArray si cambia la config
-                const dateValidator = uniqueDateValidator(this.formArrayConfig);
+                const dateValidator = uniqueFieldValidator(
+                    this.formArrayConfig,
+                );
                 this.rows.setValidators(dateValidator);
             }
             // ... (resto de tu lógica existente)
@@ -296,7 +300,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         this.initializeSelectMaps();
 
         // 2. AÑADIDO: Aplicar el validador de fechas al FormArray
-        const dateValidator = uniqueDateValidator(this.formArrayConfig);
+        const dateValidator = uniqueFieldValidator(this.formArrayConfig);
         this.rows.setValidators(dateValidator);
         this.rows.updateValueAndValidity(); // Ejecutar el validador inmediatamente
 
@@ -318,35 +322,10 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         this.mainForm = this._fb.group({
             // Aplicamos el validador al FormArray 'rows'
             rows: this._fb.array([], {
-                validators: [uniqueDateValidator(this.formArrayConfig)],
+                validators: [uniqueFieldValidator(this.formArrayConfig)],
             }),
         });
     }
-    /* private _createFormArray(): void {
-        this.mainForm = this._fb.group({
-            rows: this._fb.array([]),
-        });
-    } */
-
-    /**
-     * Inicializa los mapas de opciones, añade la primera fila o llena con datos iniciales, y calcula las opciones.
-     * Se llama desde ngOnChanges cuando la data de los campos está disponible.
-     */
-    /*  private _initFormStructure(): void {
-        // 1. Inicializa los mapas de opciones (depende de this.data)
-        this.initializeSelectMaps();
-
-        // 2. Si hay datos iniciales, usarlos para poblar el FormArray
-        if (this.data && this.data.length > 0) {
-            this._resetAndLoadRows(this.data);
-        } else if (this.rows.length === 0) {
-            // 3. Si no hay datos iniciales y no hay filas, añade la primera fila vacía
-            this.addRow();
-        }
-
-        // 4. Calcular las opciones iniciales
-        this._calculateSelectAvailableOptions();
-    } */
 
     /**
      * NUEVO MÉTODO: Llena el FormArray con los datos iniciales recibidos.
