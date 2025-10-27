@@ -87,7 +87,6 @@ export class EmployeeFormArrayComponent implements OnInit {
     private _setFormArray1(): void {
         this.formArrayConfig1 = [
             {
-                columnPosition: 1,
                 fieldName: "country",
                 fieldType: "select",
                 selectItems: this._countries,
@@ -97,7 +96,6 @@ export class EmployeeFormArrayComponent implements OnInit {
                 isRepeated: true,
             },
             {
-                columnPosition: 2,
                 fieldName: "gender",
                 fieldType: "select",
                 selectItems: this._genders,
@@ -107,7 +105,6 @@ export class EmployeeFormArrayComponent implements OnInit {
                 isRepeated: true,
             },
             {
-                columnPosition: 4,
                 fieldName: "position",
                 fieldType: "select",
                 selectItems: this._positions,
@@ -117,7 +114,6 @@ export class EmployeeFormArrayComponent implements OnInit {
                 isRepeated: true,
             },
             {
-                columnPosition: 3,
                 fieldName: "email",
                 fieldType: "email",
                 label: "Email",
@@ -134,7 +130,6 @@ export class EmployeeFormArrayComponent implements OnInit {
     private _setFormArray2(): void {
         this.formArrayConfig2 = [
             {
-                columnPosition: 1,
                 fieldName: "country",
                 fieldType: "select",
                 selectItems: this._countries,
@@ -144,7 +139,6 @@ export class EmployeeFormArrayComponent implements OnInit {
                 isRepeated: false,
             },
             {
-                columnPosition: 2,
                 fieldName: "gender",
                 fieldType: "select",
                 selectItems: this._genders,
@@ -154,7 +148,6 @@ export class EmployeeFormArrayComponent implements OnInit {
                 isRepeated: false,
             },
             {
-                columnPosition: 3,
                 fieldName: "position",
                 fieldType: "select",
                 selectItems: this._positions,
@@ -164,7 +157,6 @@ export class EmployeeFormArrayComponent implements OnInit {
                 isRepeated: false,
             },
             {
-                columnPosition: 4,
                 fieldName: "date",
                 fieldType: "date",
                 label: "Fecha",
@@ -173,7 +165,6 @@ export class EmployeeFormArrayComponent implements OnInit {
                 isRepeated: false,
             },
             {
-                columnPosition: 5,
                 fieldName: "email",
                 fieldType: "email",
                 label: "Email",

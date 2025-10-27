@@ -5,7 +5,6 @@ import {
     signal,
     OnInit,
     OnDestroy,
-    computed,
     inject,
     OnChanges,
     SimpleChanges,
@@ -97,23 +96,16 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         return this.mainForm.get("rows") as FormArray;
     }
 
-    // Signal computada para tener los campos ordenados para el template
-    sortedFields = computed((): FormArrayConfig[] => {
-        return this.formArrayConfig
-            .slice()
-            .sort((a, b): number => a.columnPosition - b.columnPosition);
-    });
-
     // NUEVA SIGNAL: Contiene TODOS los valores seleccionados (incluyendo duplicados) por campo único.
     // Clave: fieldName (string), Valor: lista de IDs seleccionados (string[] | number[])
-    private selectedValuesByField = signal<Record<string, (string | number)[]>>(
-        {},
-    );
-    private valueChangesSubscription: Subscription = new Subscription();
+    private _selectedValuesByField = signal<
+        Record<string, (string | number)[]>
+    >({});
+    private _valueChangesSubscription: Subscription = new Subscription();
     private isInitialized = false; // Bandera para controlar la inicialización
 
     // Mapa para almacenar los items originales de los 'select' (necesario para el filtrado)
-    private originalSelectItemsMap = new Map<string, SelectItem[]>();
+    private _originalSelectItemsMap = new Map<string, SelectItem[]>();
 
     // Inyección de FormBuilder usando inject()
     private _fb = inject(FormBuilder);
@@ -154,12 +146,11 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
                 );
                 this.rows.setValidators(dateValidator);
             }
-            // ... (resto de tu lógica existente)
 
-            // Recalculamos las opciones en cualquier caso de actualización para reflejar los cambios.
+            // Recalcula las opciones en cualquier caso de actualización para reflejar los cambios.
             this._calculateSelectAvailableOptions();
 
-            // **AÑADIR ESTO:** Re-validar las filas después de cualquier cambio
+            // Re-validar las filas después de cualquier cambio
             this.rows.updateValueAndValidity();
         }
     }
@@ -169,7 +160,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.valueChangesSubscription.unsubscribe();
+        this._valueChangesSubscription.unsubscribe();
     }
 
     trackByFn(index: number, item: AbstractControl): string {
@@ -184,9 +175,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         return this.mainForm.valid;
     }
 
-    /**
-     * Lógica para mostrar opciones disponibles y re-introducir el valor actual (si no es duplicado)
-     */
+    // Lógica para mostrar opciones disponibles y re-introducir el valor actual (si no es duplicado)
     getOptionsForField(
         fieldName: string,
         group: AbstractControl,
@@ -202,11 +191,11 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
             return available;
         }
 
-        const globallySelected = this.selectedValuesByField()[fieldName] || [];
+        const globallySelected = this._selectedValuesByField()[fieldName] || [];
         const occurrenceCount = globallySelected.filter(
             (val): boolean => val === currentValue,
         ).length;
-        const original = this.originalSelectItemsMap.get(fieldName) || [];
+        const original = this._originalSelectItemsMap.get(fieldName) || [];
         const currentItem = original.find(
             (item: SelectItem): boolean => item.id === currentValue,
         );
@@ -232,20 +221,16 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         return available;
     }
 
-    /**
-     * Utilizado en el template para la clase `(Duplicado)`
-     */
+    // Utilizado en el template para la clase `(Duplicado)`
     isDuplicate(fieldName: string, itemId: string | number): boolean {
-        const globallySelected = this.selectedValuesByField()[fieldName] || [];
+        const globallySelected = this._selectedValuesByField()[fieldName] || [];
         return (
             globallySelected.filter((val): boolean => val === itemId).length > 1
         );
     }
 
-    /**
-     * Crea un nuevo FormGroup (una "fila") basándose en la configuración de datos.
-     * Recibe opcionalmente un objeto con los valores iniciales para precargar los controles.
-     */
+    // Crea un nuevo FormGroup (una "fila") basándose en la configuración de datos.
+    // Recibe opcionalmente un objeto con los valores iniciales para precargar los controles.
     createRowGroup(initialValues: Record<string, any> = {}): FormGroup {
         const groupControls: Record<string, FormControl> = {};
 
@@ -262,9 +247,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         return this._fb.group(groupControls);
     }
 
-    /**
-     * Añade una nueva fila (FormGroup) al FormArray.
-     */
+    // Añade una nueva fila (FormGroup) al FormArray.
     addRow(): void {
         // Si el input maxRows (si se establecio un max de rows desde el padre) es >= a la cantidad de rows del formArray no se pueden seguir agregando
         if (this.maxRows !== null && this.rows.length >= this.maxRows) {
@@ -274,9 +257,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         this.rows.markAsDirty();
     }
 
-    /**
-     * Elimina una fila (FormGroup) del FormArray por su índice.
-     */
+    // Elimina una fila (FormGroup) del FormArray por su índice.
     removeRow(index: number): void {
         if (this.rows.length > 1) {
             this.rows.removeAt(index);
@@ -284,9 +265,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         }
     }
 
-    /**
-     * Verifica si un campo tiene la validación 'required'.
-     */
+    // Verifica si un campo tiene la validación 'required'.
     isRequired(field: FormArrayConfig): boolean {
         return (
             field.validations?.some(
@@ -308,7 +287,6 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         if (this.data && this.data.length > 0) {
             this._resetAndLoadRows(this.data);
         } else if (this.rows.length === 0) {
-            // <--- **Punto crítico**
             // 4. Si no hay datos iniciales y no hay filas, añade la primera fila vacía
             this.addRow();
         }
@@ -327,9 +305,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         });
     }
 
-    /**
-     * NUEVO MÉTODO: Llena el FormArray con los datos iniciales recibidos.
-     */
+    // Llena el FormArray con los datos iniciales recibidos.
     private _resetAndLoadRows(rowsData: any[]): void {
         // 1. Limpiamos el FormArray usando el método nativo (más eficiente y limpio que un while)
         this.rows.clear();
@@ -347,7 +323,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     private initializeSelectMaps(): void {
         this.formArrayConfig.forEach((field: FormArrayConfig): void => {
             if (field.fieldType === "select" && field.selectItems) {
-                this.originalSelectItemsMap.set(field.fieldName, [
+                this._originalSelectItemsMap.set(field.fieldName, [
                     ...field.selectItems,
                 ]);
             }
@@ -355,16 +331,16 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     private setupValueChangeSubscription(): void {
-        this.valueChangesSubscription.unsubscribe();
-        this.valueChangesSubscription = new Subscription();
+        this._valueChangesSubscription.unsubscribe();
+        this._valueChangesSubscription = new Subscription();
         // 1. Suscripción para gestionar opciones disponibles (response inmediata a cambios de valor)
-        this.valueChangesSubscription.add(
+        this._valueChangesSubscription.add(
             this.rows.valueChanges.subscribe((): void => {
                 this._calculateSelectAvailableOptions();
             }),
         );
         // 2. Suscripción para emitir el valor del FormArray al componente padre SOLO cuando es VÁLIDO
-        this.valueChangesSubscription.add(
+        this._valueChangesSubscription.add(
             this.rows.statusChanges
                 .pipe(
                     // Espera 300ms para estabilizar el estado (útil para validaciones asíncronas)
@@ -399,10 +375,10 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
             }
         });
 
-        this.selectedValuesByField.set(newSelectedValues);
+        this._selectedValuesByField.set(newSelectedValues);
 
         this.formArrayConfig.forEach((field: FormArrayConfig): void => {
-            const originalItems = this.originalSelectItemsMap.get(
+            const originalItems = this._originalSelectItemsMap.get(
                 field.fieldName,
             );
             if (field.fieldType === "select" && originalItems) {

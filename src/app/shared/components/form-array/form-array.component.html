@@ -5,7 +5,7 @@
             <div [formGroupName]="$index">
                 <div class="grid">
                     <!-- Iteramos sobre la configuración para renderizar los campos -->
-                    @for (field of sortedFields(); track field.fieldName) {
+                    @for (field of formArrayConfig; track field.fieldName) {
                         <div class="inputs-container">
                             @if (field.label) {
                                 <label

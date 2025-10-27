@@ -1,7 +1,7 @@
 import { SelectItem } from "./select-item.model";
 
 export interface FormArrayConfig {
-    columnPosition: number; // Posición visual del campo en la grilla (para ordenar)
+    //columnPosition: number; // Posición visual del campo en la grilla (para ordenar)
     fieldName: string;
     fieldType: "text" | "select" | "date" | "number" | "email";
     label?: string;
