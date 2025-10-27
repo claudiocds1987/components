@@ -1,5 +1,5 @@
 <div class="main-container">
-    <div class="example1">
+    <!-- <div class="example1">
         <h4>
             Configuración: Todos los campos se pueden repetir, todos son
             obligatorios. Máximo de filas 5
@@ -11,7 +11,7 @@
             [maxRows]="5"
             (emitFormArrayValue)="getFormArray1Value($event)"
         ></app-form-array>
-    </div>
+    </div> -->
     <div class="example2">
         <h4>
             Configuración: Ningun campo se puede repetir, todos son
@@ -22,6 +22,14 @@
             [isLoadingSig]="isLoadingSig()"
             [maxRows]="3"
             (emitFormArrayValue)="getFormArray2Value($event)"
+        ></app-form-array>
+    </div>
+    <div class="example3">
+        <h4>Configuración3</h4>
+        <app-form-array
+            [formArrayConfig]="formArrayConfig3"
+            [isLoadingSig]="isLoadingSig()"
+            (emitFormArrayValue)="getFormArray3Value($event)"
         ></app-form-array>
     </div>
 </div>

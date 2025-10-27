@@ -133,7 +133,7 @@ export class RequiredValidationDirective implements OnInit, OnDestroy {
                 this._messageElement = null;
             }
 
-            if (this._subscriptWrapperClass) {
+            /*  if (this._subscriptWrapperClass) {
                 this._renderer.removeStyle(
                     this._subscriptWrapperClass,
                     "display",
@@ -142,7 +142,7 @@ export class RequiredValidationDirective implements OnInit, OnDestroy {
                     this._subscriptWrapperClass,
                     "padding-top",
                 );
-            }
+            } */
         }
     }
 }

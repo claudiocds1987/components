@@ -21,6 +21,7 @@ import {
     FormGroup,
     FormsModule,
     ReactiveFormsModule,
+    ValidatorFn,
     Validators,
 } from "@angular/forms";
 import { debounceTime, Subscription } from "rxjs";
@@ -46,6 +47,8 @@ import { ReadOnlyDirective } from "../../directives/read-only.directive";
 import { uniqueFieldValidator } from "../../utils/unique-field-validator";
 import { DuplicatedDateValidation } from "../../directives/duplicated-date-validation.directive";
 import { DuplicatedEmailValidationDirective } from "../../directives/duplicated-email-validation.directive";
+import { dateRangeValidator } from "../../utils/custom-date-validators";
+import { CustomValidationMessageDirective } from "../../directives/custom-validation-message.directive";
 
 @Component({
     selector: "app-form-array",
@@ -70,6 +73,7 @@ import { DuplicatedEmailValidationDirective } from "../../directives/duplicated-
         ReadOnlyDirective,
         DuplicatedDateValidation,
         DuplicatedEmailValidationDirective,
+        CustomValidationMessageDirective,
     ],
     templateUrl: "./form-array.component.html",
     styleUrls: ["./form-array.component.scss", "./../../styles/skeleton.scss"],
@@ -114,7 +118,44 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         this._createFormArray();
     }
 
+    // form-array.component.ts
+
     ngOnChanges(changes: SimpleChanges): void {
+        const configReceived =
+            changes["formArrayConfig"] && this.formArrayConfig.length > 0;
+        const dataReceived = changes["data"]; // Comprobar si initialData ha llegado/cambiado
+
+        // 1. Inicializar la estructura la primera vez que la configuración llega
+        if (configReceived && !this.isInitialized) {
+            this._initFormStructure();
+            this.isInitialized = true;
+        } else if (this.isInitialized) {
+            // 2. Lógica de actualización si la configuración o los datos iniciales cambian
+
+            if (configReceived) {
+                this.initializeSelectMaps();
+
+                // ✅ ACTUALIZAR: Volver a aplicar el validador de unicidad al FormArray si la configuración cambia.
+                const uniquenessValidator = uniqueFieldValidator(
+                    this.formArrayConfig,
+                );
+                this.rows.setValidators(uniquenessValidator);
+            }
+
+            // Si los datos iniciales cambian después de la inicialización, repoblamos el FormArray.
+            if (dataReceived) {
+                this._resetAndLoadRows(this.data || []);
+            }
+
+            // Recalcula las opciones del select en cualquier caso de actualización.
+            this._calculateSelectAvailableOptions();
+
+            // Re-validar las filas después de cualquier cambio (ejecuta tanto el validador de unicidad del FormArray
+            // como el validador de rango del FormGroup de cada fila).
+            this.rows.updateValueAndValidity();
+        }
+    }
+    /* ngOnChanges(changes: SimpleChanges): void {
         const configReceived =
             changes["formArrayConfig"] && this.formArrayConfig.length > 0;
         const dataReceived = changes["data"]; // Comprobar si initialData ha llegado/cambiado
@@ -153,7 +194,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
             // Re-validar las filas después de cualquier cambio
             this.rows.updateValueAndValidity();
         }
-    }
+    } */
 
     ngOnInit(): void {
         this.setupValueChangeSubscription();
@@ -231,7 +272,54 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
 
     // Crea un nuevo FormGroup (una "fila") basándose en la configuración de datos.
     // Recibe opcionalmente un objeto con los valores iniciales para precargar los controles.
+    // form-array.component.ts (dentro del método createRowGroup)
+
     createRowGroup(initialValues: Record<string, any> = {}): FormGroup {
+        const groupControls: Record<string, FormControl> = {};
+        const rowValidators: ValidatorFn[] = [];
+
+        // 1. Crear controles y buscar la configuración de rango
+        let rangeTargetName: string | null = null;
+        let rangeSourceName: string | null = null; // Necesitamos el nombre del campo actual
+
+        for (const field of this.formArrayConfig) {
+            const validators = this._getValidators(field);
+            const initialValue = initialValues[field.fieldName] ?? null;
+
+            groupControls[field.fieldName] = this._fb.control(
+                initialValue,
+                validators,
+            );
+
+            // 💡 Verificar si este campo tiene la validación de rango
+            const rangeValidation = field.validations?.find(
+                (v) =>
+                    v.type === ValidationKey.validateRange &&
+                    typeof v.value === "string",
+            );
+
+            if (rangeValidation) {
+                rangeSourceName = field.fieldName;
+                rangeTargetName = rangeValidation.value as string;
+            }
+        }
+
+        // 2. ✅ Aplicar el Validador de Rango si se encontró la configuración
+        if (rangeSourceName && rangeTargetName) {
+            // Asumiendo que dateFrom/dateTo es date1/date2, respectivamente:
+            rowValidators.push(
+                dateRangeValidator(rangeSourceName, rangeTargetName),
+            );
+        }
+
+        // 3. Crear el FormGroup y aplicar los validadores de la fila
+        const group = this._fb.group(groupControls, {
+            validators: rowValidators,
+        });
+
+        return group;
+    }
+    /* createRowGroup(initialValues: Record<string, any> = {}): FormGroup {
         const groupControls: Record<string, FormControl> = {};
 
         for (const field of this.formArrayConfig) {
@@ -245,7 +333,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
             );
         }
         return this._fb.group(groupControls);
-    }
+    } */
 
     // Añade una nueva fila (FormGroup) al FormArray.
     addRow(): void {
@@ -274,6 +362,28 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         );
     }
 
+    // form-array.component.ts
+
+    /*  private _initFormStructure(): void {
+        // 1. Inicializa los mapas de opciones
+        this.initializeSelectMaps();
+
+        // 2. ✅ Aplicar el validador de unicidad (cross-row) al FormArray
+        const uniquenessValidator = uniqueFieldValidator(this.formArrayConfig);
+        this.rows.setValidators(uniquenessValidator);
+        this.rows.updateValueAndValidity(); // Ejecutar el validador inmediatamente
+
+        // 3. Si hay datos iniciales, usarlos para poblar el FormArray
+        if (this.data && this.data.length > 0) {
+            this._resetAndLoadRows(this.data);
+        } else if (this.rows.length === 0) {
+            // 4. Si no hay datos iniciales y no hay filas, añade la primera fila vacía
+            this.addRow();
+        }
+
+        // 5. Calcular las opciones iniciales
+        this._calculateSelectAvailableOptions();
+    } */
     private _initFormStructure(): void {
         // 1. Inicializa los mapas de opciones
         this.initializeSelectMaps();
@@ -297,6 +407,12 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
 
     private _createFormArray(): void {
         // Inicializamos el mainForm
+        /* this.mainForm = this._fb.group({
+            // Aplicamos el validador al FormArray 'rows'
+            rows: this._fb.array([], {
+                validators: [],
+            }),
+        }); */
         this.mainForm = this._fb.group({
             // Aplicamos el validador al FormArray 'rows'
             rows: this._fb.array([], {
@@ -404,27 +520,37 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         const fieldValidators: any[] = [];
         if (field.validations) {
             for (const validation of field.validations) {
+                // 💡 1. IGNORAR: El validador de rango cruzado se aplica a nivel de FormGroup (en createRowGroup), no de FormControl.
+                if (validation.type === ValidationKey.validateRange) {
+                    continue;
+                }
+
+                // Declaramos 'value' para un acceso más limpio
+                const value = validation.value;
+
                 switch (validation.type) {
                     case ValidationKey.required:
                         fieldValidators.push(Validators.required);
                         break;
+
                     case ValidationKey.minLength:
-                        if (validation.value) {
-                            fieldValidators.push(
-                                Validators.minLength(validation.value),
-                            );
+                        // Verificamos que 'value' sea un número
+                        if (value && typeof value === "number") {
+                            fieldValidators.push(Validators.minLength(value));
                         }
                         break;
+
                     case ValidationKey.maxLength:
-                        if (validation.value) {
-                            fieldValidators.push(
-                                Validators.maxLength(validation.value),
-                            );
+                        // Verificamos que 'value' sea un número
+                        if (value && typeof value === "number") {
+                            fieldValidators.push(Validators.maxLength(value));
                         }
                         break;
+
                     case ValidationKey.email:
                         fieldValidators.push(Validators.email);
                         break;
+
                     default:
                         console.warn(
                             `Validation type ${validation.type} not recognized.`,

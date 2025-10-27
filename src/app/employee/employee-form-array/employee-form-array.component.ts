@@ -21,6 +21,7 @@ export class EmployeeFormArrayComponent implements OnInit {
     isLoadingSig = signal(true);
     formArrayConfig1: FormArrayConfig[] = [];
     formArrayConfig2: FormArrayConfig[] = [];
+    formArrayConfig3: FormArrayConfig[] = [];
 
     employeeData: unknown[] = [
         { country: 1, gender: 1, position: 1, email: "juan.perez@empresa.com" },
@@ -53,6 +54,9 @@ export class EmployeeFormArrayComponent implements OnInit {
     getFormArray2Value(value: any): void {
         console.log("datos del form 2 Array", value);
     }
+    getFormArray3Value(value: any): void {
+        console.log("datos del form 3 Array", value);
+    }
 
     private _loadData(): void {
         this.isLoadingSig.set(true);
@@ -75,6 +79,7 @@ export class EmployeeFormArrayComponent implements OnInit {
                     this._countries = results.countries;
                     this._setFormArray1();
                     this._setFormArray2();
+                    this._setFormArray3();
                     this.isLoadingSig.set(false);
                 },
                 error: (): void => {
@@ -174,6 +179,39 @@ export class EmployeeFormArrayComponent implements OnInit {
                     { type: ValidationKey.email },
                 ],
                 isRepeated: false,
+            },
+        ];
+    }
+
+    private _setFormArray3(): void {
+        this.formArrayConfig3 = [
+            {
+                fieldName: "date1",
+                fieldType: "date",
+                label: "Fecha Desde",
+                placeHolder: "",
+                validations: [{ type: ValidationKey.required }],
+                isRepeated: true,
+            },
+            {
+                fieldName: "date2",
+                fieldType: "date",
+                label: "Fecha Hasta",
+                placeHolder: "",
+                validations: [
+                    { type: ValidationKey.required },
+
+                    { type: ValidationKey.validateRange, value: "date1" },
+                ],
+                isRepeated: true,
+            },
+            {
+                fieldName: "date3",
+                fieldType: "date",
+                label: "Fecha",
+                placeHolder: "",
+                validations: [{ type: ValidationKey.required }],
+                isRepeated: true,
             },
         ];
     }

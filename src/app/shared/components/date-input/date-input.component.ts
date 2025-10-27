@@ -27,6 +27,7 @@ import { MatLuxonDateModule } from "@angular/material-luxon-adapter";
 import { Subject, takeUntil } from "rxjs";
 import { RequiredValidationDirective } from "../../directives/required-validation.directive";
 import { ReadOnlyDirective } from "../../directives/read-only.directive";
+import { CustomValidationMessageDirective } from "../../directives/custom-validation-message.directive";
 
 @Component({
     selector: "app-date-input",
@@ -41,6 +42,7 @@ import { ReadOnlyDirective } from "../../directives/read-only.directive";
         MatLuxonDateModule,
         RequiredValidationDirective,
         ReadOnlyDirective,
+        CustomValidationMessageDirective,
     ],
     templateUrl: "./date-input.component.html",
     styleUrl: "./date-input.component.scss",
@@ -99,6 +101,7 @@ export class DateInputComponent
             const hasRequiredValidator = this.ngControl.control?.hasValidator(
                 Validators.required,
             );
+
             if (hasRequiredValidator) {
                 this.internalControl.setValidators(Validators.required);
                 this.internalControl.updateValueAndValidity();
