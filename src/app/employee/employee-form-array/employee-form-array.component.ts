@@ -7,7 +7,7 @@ import { AlertService } from "../../shared/services/alert.service";
 import {
     FormArrayConfig,
     ValidationKey,
-} from "../../shared/models/formArrayData.model";
+} from "../../shared/models/form-array-config.model";
 import { FormArrayComponent } from "../../shared/components/form-array/form-array.component";
 
 @Component({

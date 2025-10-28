@@ -28,7 +28,7 @@ import { debounceTime, Subscription } from "rxjs";
 import {
     FormArrayConfig,
     ValidationKey,
-} from "../../models/formArrayData.model";
+} from "../../models/form-array-config.model";
 import { CommonModule } from "@angular/common";
 import { MatButtonModule } from "@angular/material/button";
 import { MatNativeDateModule } from "@angular/material/core";
