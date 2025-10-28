@@ -133,15 +133,18 @@
                                 >remove_circle</mat-icon
                             >
                         </button>
-                        <button
-                            mat-icon-button
-                            (click)="addRow()"
-                            [disabled]="!isReadyToAdd()"
-                        >
-                            <mat-icon [appSkeleton]="isLoadingSig()"
-                                >add_circle</mat-icon
+                        <!-- Mostrar el botón de agregar solo en la última fila -->
+                        @if ($index === rows.controls.length - 1) {
+                            <button
+                                mat-icon-button
+                                (click)="addRow()"
+                                [disabled]="!isReadyToAdd()"
                             >
-                        </button>
+                                <mat-icon [appSkeleton]="isLoadingSig()"
+                                    >add_circle</mat-icon
+                                >
+                            </button>
+                        }
                     </div>
                 </div>
             </div>
