@@ -2,9 +2,11 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import {
     Component,
+    EventEmitter,
     Input,
     OnDestroy,
     OnInit,
+    Output,
     inject,
     input,
 } from "@angular/core";
@@ -65,6 +67,8 @@ export class DateInputComponent
     @Input() label = "Fecha";
     @Input() placeholder = "";
     @Input() isDisabled = false;
+    @Output()
+    readonly _onBlur = new EventEmitter<void>();
     //@Input() isReadOnly = false;
     isReadOnly = input<boolean>(false);
 
@@ -262,6 +266,9 @@ export class DateInputComponent
 
     onInputBlur(): void {
         this.onTouched();
+        // this._onBlur.emit(); para que cuando se haga clic estando el campo vacio al hacer clic por fuera la directiva
+        // custom-validation-message.directive pueda mostrar el mensaje
+        this._onBlur.emit();
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

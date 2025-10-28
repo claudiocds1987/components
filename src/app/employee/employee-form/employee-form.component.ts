@@ -39,6 +39,8 @@ import { FeedbackDialogService } from "../../shared/services/feedback-dialog.ser
 import { SkeletonDirective } from "../../shared/directives/skeleton.directive";
 import { SnackbarService } from "../../shared/services/snackbar.service";
 import { RequiredValidationDirective } from "../../shared/directives/required-validation.directive";
+import { CustomValidationMessageDirective } from "../../shared/directives/custom-validation-message.directive";
+import { ReadOnlyDirective } from "../../shared/directives/read-only.directive";
 
 @Component({
     selector: "app-employee-form",
@@ -59,6 +61,8 @@ import { RequiredValidationDirective } from "../../shared/directives/required-va
         MatRadioModule,
         SkeletonDirective,
         RequiredValidationDirective,
+        CustomValidationMessageDirective,
+        ReadOnlyDirective,
     ],
     templateUrl: "./employee-form.component.html",
     styleUrls: [

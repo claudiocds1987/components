@@ -44,6 +44,8 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
             this.handleValidation();
         });
 
+        // Aseguramos la preparación del DOM
+        this.setupDomElements();
         this.handleValidation();
     }
 
@@ -53,79 +55,58 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
         this.removeStylesAndMessages();
     }
 
-    // CustomValidationMessageDirective.ts
+    // --- Lógica de DOM y Búsqueda ---
 
     private setupDomElements(): void {
         if (this._isDomSetupDone) {
             return;
         }
 
-        // 1. Empezamos con el elemento que tiene la directiva (e.g., <app-date-input> o <input>)
         const container = this._el.nativeElement;
 
-        // 2. Si el elemento actual es el CVA (app-date-input), buscamos el mat-form-field INTERNO.
+        // 1. Lógica para encontrar el mat-form-field (soporta CVA como app-date-input)
         if (container.tagName === "APP-DATE-INPUT") {
-            // Busca el primer mat-form-field dentro del CVA. Este será nuestro target.
             this._matFormField = container.querySelector(
                 "mat-form-field",
             ) as HTMLElement | null;
         } else {
-            // Si no es un CVA, buscamos el mat-form-field que lo contiene (closest).
             this._matFormField = container.closest(
                 "mat-form-field",
             ) as HTMLElement | null;
         }
 
         if (!this._matFormField) {
-            // Si no encontramos el mat-form-field, no podemos continuar.
             return;
         }
 
-        // 3. Busca el wrapper de estilos donde queremos ocultar el contenido de Material.
+        // 2. Busca el wrapper de Material
         this._subscriptWrapperClass =
             this._matFormField.querySelector(
                 ".mat-mdc-form-field-subscript-wrapper",
             ) || null;
+
+        // Eliminación agresiva del espacio inicial si el wrapper existe
+        if (this._subscriptWrapperClass) {
+            this._renderer.setStyle(
+                this._subscriptWrapperClass,
+                "display",
+                "none",
+            );
+            this._renderer.setStyle(
+                this._subscriptWrapperClass,
+                "min-height",
+                "0",
+            );
+            this._renderer.removeClass(
+                this._subscriptWrapperClass,
+                "mat-mdc-form-field-subscript-wrapper-active",
+            );
+        }
 
         this._isDomSetupDone = !!this._matFormField;
     }
 
-    /* private setupDomElements(): void {
-        if (this._isDomSetupDone) {
-            return;
-        }
-        // app-date-input es el componente date-input.component
-        this._matFormField = this._el.nativeElement.closest(
-            "mat-form-field, app-date-input",
-        ) as HTMLElement | null;
-
-        if (!this._matFormField) {
-            return;
-        }
-
-        let targetMatFormField: HTMLElement | null = this._matFormField;
-
-        if (this._matFormField.tagName === "APP-DATE-INPUT") {
-            const internalMatFormField =
-                this._matFormField.querySelector("mat-form-field");
-
-            targetMatFormField = internalMatFormField as HTMLElement | null;
-
-            if (targetMatFormField) {
-                this._matFormField = targetMatFormField;
-            } else {
-                this._matFormField = null;
-                return;
-            }
-        }
-
-        this._subscriptWrapperClass =
-            this._matFormField.querySelector(
-                ".mat-mdc-form-field-subscript-wrapper",
-            ) || null;
-
-        this._isDomSetupDone = !!this._matFormField;
-    } */
+    // --- Lógica de Validación y Estilos ---
 
     private handleValidation(): void {
         const control = this._ngControl?.control;
@@ -146,63 +127,18 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
             control.invalid && (control.touched || control.dirty);
 
         if (isControlInvalid) {
-            if (control.hasError("email")) {
-                errorMessage = "Formato de email inválido";
-            }
-            if (control.hasError("dateRange")) {
-                errorMessage = "Debe ser mayor o igual a la fecha desde";
-            }
-            if (control.hasError("duplicatedEmail")) {
-                errorMessage = "Email repetido";
-            }
-            if (control.hasError("duplicatedDate")) {
-                errorMessage = "Fecha repetida";
-            }
-            // añadir aquí otros validadores de menor prioridad
-        }
-
-        if (errorMessage) {
-            this.addErrorStyles();
-            this.showErrorMessage(errorMessage);
-        } else {
-            // Limpiamos si no hay errores (válido) o si no ha sido tocado/modificado
-            this.removeStylesAndMessages();
-        }
-    }
-
-    /* private handleValidation(): void {
-        const control = this._ngControl?.control;
-        if (!control) {
-            return;
-        }
-
-        if (!this._isDomSetupDone) {
-            this.setupDomElements();
-        }
-
-        if (!this._matFormField) {
-            return;
-        }
-
-        //let errorType: ErrorType | null = null;
-        let errorMessage: string | null = null;
-        const isControlInvalid =
-            control.invalid && (control.touched || control.dirty);
-
-        if (isControlInvalid) {
+            // 🛑 CONSOLIDACIÓN: Agregar la validación 'required' con alta prioridad
             if (control.hasError("required")) {
                 errorMessage = "Campo obligatorio";
             }
-            if (control.hasError("dateRange")) {
-                errorMessage = "Debe ser mayor o igual a la fecha desde";
-            }
-            if (control.hasError("duplicatedEmail")) {
-                errorMessage = "Email repetido";
-            }
-            if (control.hasError("email")) {
+            // El resto de validadores
+            else if (control.hasError("email")) {
                 errorMessage = "Formato de email inválido";
-            }
-            if (control.hasError("duplicatedDate")) {
+            } else if (control.hasError("dateRange")) {
+                errorMessage = "Debe ser mayor o igual a la fecha desde";
+            } else if (control.hasError("duplicatedEmail")) {
+                errorMessage = "Email repetido";
+            } else if (control.hasError("duplicatedDate")) {
                 errorMessage = "Fecha repetida";
             }
         }
@@ -210,12 +146,10 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
         if (errorMessage) {
             this.addErrorStyles();
             this.showErrorMessage(errorMessage);
-        } else if (isControlInvalid) {
-            this.removeStylesAndMessages();
         } else {
             this.removeStylesAndMessages();
         }
-    } */
+    }
 
     private addErrorStyles(): void {
         if (this._matFormField) {
@@ -231,12 +165,35 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
             return;
         }
 
-        // 1. Asegurar que las referencias DOM existan
         if (!this._isDomSetupDone) {
             this.setupDomElements();
         }
 
-        // 2. Crear/Actualizar el mensaje sincrónicamente
+        // 1. Ocultar agresivamente el wrapper de Material (Anulación de Espacio)
+        this._renderer.setStyle(this._matFormField, "margin-bottom", "0");
+        if (this._subscriptWrapperClass) {
+            this._renderer.setStyle(
+                this._subscriptWrapperClass,
+                "display",
+                "none",
+            );
+            this._renderer.setStyle(
+                this._subscriptWrapperClass,
+                "min-height",
+                "0",
+            );
+            this._renderer.setStyle(
+                this._subscriptWrapperClass,
+                "padding-top",
+                "0",
+            );
+            this._renderer.removeClass(
+                this._subscriptWrapperClass,
+                "mat-mdc-form-field-subscript-wrapper-active",
+            );
+        }
+
+        // 2. Crear/Actualizar el mensaje
         if (this._messageElement) {
             this._renderer.setProperty(
                 this._messageElement,
@@ -254,47 +211,7 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
         }
 
         this._renderer.appendChild(this._matFormField, this._messageElement);
-
-        // 3. Aplicar estilos de ocultación asincrónicamente (setTimeout(0) para darle tiempo al renderizadeo del DOM)
-        // solo la primera vez para evitar el espaciado inicial de la clase material  ".mat-mdc-form-field-subscript-wrapper"
-        if (!this._isFirstErrorShown) {
-            setTimeout((): void => {
-                this._renderer.setStyle(
-                    this._matFormField!,
-                    "margin-bottom",
-                    "0",
-                );
-
-                if (this._subscriptWrapperClass) {
-                    this._renderer.setStyle(
-                        this._subscriptWrapperClass,
-                        "display",
-                        "none",
-                    );
-                    this._renderer.setStyle(
-                        this._subscriptWrapperClass,
-                        "padding-top",
-                        "0",
-                    );
-                }
-                this._isFirstErrorShown = true;
-            }, 0);
-        } else {
-            this._renderer.setStyle(this._matFormField, "margin-bottom", "0");
-
-            if (this._subscriptWrapperClass) {
-                this._renderer.setStyle(
-                    this._subscriptWrapperClass,
-                    "display",
-                    "none",
-                );
-                this._renderer.setStyle(
-                    this._subscriptWrapperClass,
-                    "padding-top",
-                    "0",
-                );
-            }
-        }
+        this._isFirstErrorShown = true;
     }
 
     private removeStylesAndMessages(): void {
@@ -304,6 +221,9 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
                 "mat-form-field-invalid",
             );
 
+            // 1. Restaurar estilos del mat-form-field
+            this._renderer.removeStyle(this._matFormField, "margin-bottom");
+
             if (this._messageElement) {
                 this._renderer.removeChild(
                     this._matFormField,
@@ -311,16 +231,27 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
                 );
                 this._messageElement = null;
             }
-            /* if (this._subscriptWrapperClass) {
+
+            // 2. Restaurar el subscript wrapper a su estado original
+            if (this._subscriptWrapperClass) {
                 this._renderer.removeStyle(
                     this._subscriptWrapperClass,
                     "display",
                 );
                 this._renderer.removeStyle(
                     this._subscriptWrapperClass,
+                    "min-height",
+                );
+                this._renderer.removeStyle(
+                    this._subscriptWrapperClass,
                     "padding-top",
                 );
-            } */
+                // Se puede restaurar la clase activa si se desea mostrar hint/contador
+                this._renderer.addClass(
+                    this._subscriptWrapperClass,
+                    "mat-mdc-form-field-subscript-wrapper-active",
+                );
+            }
         }
 
         this._isFirstErrorShown = false;

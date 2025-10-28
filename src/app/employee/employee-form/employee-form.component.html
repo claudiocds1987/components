@@ -16,27 +16,36 @@
             </div>
             <mat-form-field appearance="outline" [appSkeleton]="isLoading">
                 <mat-label>Nombre</mat-label>
-                <input matInput formControlName="name" appRequiredValidation />
+                <input
+                    matInput
+                    formControlName="name"
+                    appCustomValidationMessage
+                />
             </mat-form-field>
             <mat-form-field appearance="outline" [appSkeleton]="isLoading">
                 <mat-label>Apellido</mat-label>
                 <input
                     matInput
                     formControlName="surname"
-                    appRequiredValidation
+                    appCustomValidationMessage
                 />
             </mat-form-field>
-            <!--   no hace falta poner la directiva appRequiredValidation en date-input.component la maneja internamente -->
+            <!--   no hace falta poner la directiva appCustomValidationMessage en date-input.component la maneja internamente -->
             <app-date-input
                 [formControlName]="'birthDate'"
                 [label]="'Fecha de nacimiento'"
                 [placeholder]="'Fecha de nacimiento'"
                 [isDisabled]="false"
                 [appSkeleton]="isLoading"
+                appRequiredValidation
+                appCustomValidationMessage
             ></app-date-input>
             <mat-form-field appearance="outline" [appSkeleton]="isLoading">
                 <mat-label>Género</mat-label>
-                <mat-select formControlName="genderId" appRequiredValidation>
+                <mat-select
+                    formControlName="genderId"
+                    appCustomValidationMessage
+                >
                     <mat-option
                         *ngFor="let gender of genders"
                         [value]="gender.id"
@@ -47,7 +56,10 @@
             </mat-form-field>
             <mat-form-field appearance="outline" [appSkeleton]="isLoading">
                 <mat-label>Pais</mat-label>
-                <mat-select formControlName="countryId" appRequiredValidation>
+                <mat-select
+                    formControlName="countryId"
+                    appCustomValidationMessage
+                >
                     <mat-option
                         *ngFor="let country of countries"
                         [value]="country.id"
@@ -58,7 +70,10 @@
             </mat-form-field>
             <mat-form-field appearance="outline" [appSkeleton]="isLoading">
                 <mat-label>Puesto</mat-label>
-                <mat-select formControlName="positionId" appRequiredValidation>
+                <mat-select
+                    formControlName="positionId"
+                    appCustomValidationMessage
+                >
                     <mat-option
                         *ngFor="let position of positions"
                         [value]="position.id"
