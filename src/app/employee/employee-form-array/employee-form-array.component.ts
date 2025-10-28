@@ -23,9 +23,24 @@ export class EmployeeFormArrayComponent implements OnInit {
     formArrayConfig2: FormArrayConfig[] = [];
     formArrayConfig3: FormArrayConfig[] = [];
 
-    employeeData: unknown[] = [
+    employeeData1: unknown[] = [
         { country: 1, gender: 1, position: 1, email: "juan.perez@empresa.com" },
         { country: 2, gender: 2, position: 2, email: "ana.lopez@empresa.com" },
+    ];
+
+    employeeData2: unknown[] = [
+        {
+            startDate: "2023-01-15T00:00:00.000Z",
+            endDate: "2023-12-31T00:00:00.000Z",
+            country: 1,
+            email: "juan.perez@empresa.com",
+        },
+        {
+            startDate: "2024-03-01T00:00:00.000Z",
+            endDate: "2024-05-30T00:00:00.000Z",
+            country: 1,
+            email: "ana.lopez@empresa.com",
+        },
     ];
 
     private _positionServices = inject(PositionService);
@@ -144,15 +159,6 @@ export class EmployeeFormArrayComponent implements OnInit {
                 isRepeated: false,
             },
             {
-                fieldName: "gender",
-                fieldType: "select",
-                selectItems: this._genders,
-                label: "Género",
-                placeHolder: "Selecciona el género",
-                validations: [{ type: ValidationKey.required }],
-                isRepeated: false,
-            },
-            {
                 fieldName: "position",
                 fieldType: "select",
                 selectItems: this._positions,
@@ -186,7 +192,7 @@ export class EmployeeFormArrayComponent implements OnInit {
     private _setFormArray3(): void {
         this.formArrayConfig3 = [
             {
-                fieldName: "date1",
+                fieldName: "startDate",
                 fieldType: "date",
                 label: "Fecha Desde",
                 placeHolder: "",
@@ -194,24 +200,24 @@ export class EmployeeFormArrayComponent implements OnInit {
                 isRepeated: true,
             },
             {
-                fieldName: "date2",
+                fieldName: "endDate",
                 fieldType: "date",
                 label: "Fecha Hasta",
                 placeHolder: "",
                 validations: [
                     { type: ValidationKey.required },
 
-                    { type: ValidationKey.validateRange, value: "date1" },
+                    { type: ValidationKey.validateRange, value: "startDate" },
                 ],
                 isRepeated: true,
             },
             {
-                fieldName: "date3",
-                fieldType: "date",
-                label: "Fecha",
-                placeHolder: "",
-                validations: [{ type: ValidationKey.required }],
-                isRepeated: true,
+                fieldName: "email",
+                fieldType: "email",
+                label: "Email",
+                placeHolder: "Ej: usuario@dominio.com",
+                isRepeated: false,
+                isReadOnly: true,
             },
         ];
     }

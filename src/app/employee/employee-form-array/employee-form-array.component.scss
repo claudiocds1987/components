@@ -10,6 +10,12 @@
 }
 .example2 {
     width: 100%;
-    max-width: 1600px; // Limita el ancho máximo en pantallas grandes
+    max-width: 1200px; // Limita el ancho máximo en pantallas grandes
+    margin: 0 auto; // Centra el componente en la pantalla
+}
+
+.example3 {
+    width: 100%;
+    max-width: 1200px; // Limita el ancho máximo en pantallas grandes
     margin: 0 auto; // Centra el componente en la pantalla
 }

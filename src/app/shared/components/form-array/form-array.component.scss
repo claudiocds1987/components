@@ -4,8 +4,9 @@
     gap: 15px;
     margin-bottom: 20px;
     padding: 20px;
-    border: 1px solid #eee;
+    border: 1px solid white;
     border-radius: 4px;
+    width: 100%;
 }
 
 .inputs-container {
@@ -45,6 +46,22 @@
 // Media Query para Escritorio (min-width: 1024px) - 3 Columnas + Acciones
 @media (min-width: 1024px) {
     .grid {
+        grid-template-columns: repeat(3, 1fr) 120px;
+        gap: 20px;
+        align-items: start;
+    }
+    /* ... */
+    .actions-container {
+        /* Posiciona en la última columna usando líneas negativas: de la penúltima a la última línea. */
+        grid-column: -2 / -1;
+        grid-row: 1 / 2;
+        align-self: start;
+        justify-content: flex-end;
+        flex-direction: row;
+    }
+}
+/* @media (min-width: 1024px) {
+    .grid {
         // Simplificamos volviendo a 1fr, confiando en que el Componente Padre limita el ancho total a 1200px
         grid-template-columns: repeat(3, 1fr) 120px;
         gap: 20px;
@@ -57,23 +74,23 @@
     }
 
     .actions-container {
-        // Posiciona el contenedor de acciones explícitamente en la ÚLTIMA columna. */
+        // Posiciona el contenedor de acciones explícitamente en la ÚLTIMA columna.
         grid-column: 4 / 5;
-        // Posiciona el contenedor de acciones explícitamente en la PRIMERA fila. */
+        // Posiciona el contenedor de acciones explícitamente en la PRIMERA fila.
         grid-row: 1 / 2;
         align-self: start; // Lo alinea verticalmente al inicio (arriba).
         justify-content: flex-end; // Alinea los botones dentro del contenedor a la derecha.
         flex-direction: row;
     }
-}
+} */
 
 // Media Query para Monitores Grandes (min-width: 1440px) - 5 Columnas + Acciones
 @media (min-width: 1440px) {
     .grid {
-        // CLAVE: 5 columnas flexibles (1fr) para los inputs  y 1 columna fija de 120px para las acciones. Total: 6 columnas.
-        grid-template-columns: repeat(5, 1fr) 120px;
+        // CLAVE: 4 columnas flexibles (1fr) para los inputs  y 1 columna fija de 120px para las acciones. Total: 6 columnas.
+        background: white;
+        grid-template-columns: repeat(4, 1fr) 120px;
         gap: 20px;
-        align-items: start;
     }
 
     .inputs-container {
@@ -82,7 +99,7 @@
     }
 
     .actions-container {
-        grid-column: 6 / 7; // Posiciona el contenedor de acciones en la ÚLTIMA (sexta) columna.
+        grid-column: 5 / 6; // Posiciona el contenedor de acciones en la ÚLTIMA (sexta) columna.
         grid-row: 1 / 2; // Mantiene la posición en la PRIMERA fila.
         // Alineación: derecha y arriba
         align-self: start;
