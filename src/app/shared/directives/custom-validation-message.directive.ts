@@ -85,7 +85,7 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
                 ".mat-mdc-form-field-subscript-wrapper",
             ) || null;
 
-        // Eliminación agresiva del espacio inicial si el wrapper existe
+        // Eliminación de la clase ".mat-mdc-form-field-subscript-wrapper" de material que genera el espacio inicial
         if (this._subscriptWrapperClass) {
             this._renderer.setStyle(
                 this._subscriptWrapperClass,
@@ -133,11 +133,14 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
             // El resto de validadores
             else if (control.hasError("email")) {
                 errorMessage = "Formato de email inválido";
-            } else if (control.hasError("dateRange")) {
+            }
+            if (control.hasError("dateRange")) {
                 errorMessage = "Debe ser mayor o igual a la fecha desde";
-            } else if (control.hasError("duplicatedEmail")) {
+            }
+            if (control.hasError("duplicatedEmail")) {
                 errorMessage = "Email repetido";
-            } else if (control.hasError("duplicatedDate")) {
+            }
+            if (control.hasError("duplicatedDate")) {
                 errorMessage = "Fecha repetida";
             }
         }
