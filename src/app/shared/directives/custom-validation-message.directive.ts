@@ -36,28 +36,28 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
         control.statusChanges
             ?.pipe(takeUntil(this._destroy$))
             .subscribe((): void => {
-                this.handleValidation();
+                this._handleValidation();
             });
 
         this._renderer.listen(this._el.nativeElement, "blur", (): void => {
             ngControl?.control?.markAsTouched();
-            this.handleValidation();
+            this._handleValidation();
         });
 
         // Aseguramos la preparación del DOM
-        this.setupDomElements();
-        this.handleValidation();
+        this._setupDomElements();
+        this._handleValidation();
     }
 
     ngOnDestroy(): void {
         this._destroy$.next();
         this._destroy$.complete();
-        this.removeStylesAndMessages();
+        this._removeStylesAndMessages();
     }
 
     // --- Lógica de DOM y Búsqueda ---
 
-    private setupDomElements(): void {
+    private _setupDomElements(): void {
         if (this._isDomSetupDone) {
             return;
         }
@@ -108,14 +108,14 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
 
     // --- Lógica de Validación y Estilos ---
 
-    private handleValidation(): void {
+    private _handleValidation(): void {
         const control = this._ngControl?.control;
         if (!control) {
             return;
         }
 
         if (!this._isDomSetupDone) {
-            this.setupDomElements();
+            this._setupDomElements();
         }
 
         if (!this._matFormField) {
@@ -127,7 +127,6 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
             control.invalid && (control.touched || control.dirty);
 
         if (isControlInvalid) {
-            // 🛑 CONSOLIDACIÓN: Agregar la validación 'required' con alta prioridad
             if (control.hasError("required")) {
                 errorMessage = "Campo obligatorio";
             }
@@ -144,14 +143,14 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
         }
 
         if (errorMessage) {
-            this.addErrorStyles();
-            this.showErrorMessage(errorMessage);
+            this._addErrorStyles();
+            this._showErrorMessage(errorMessage);
         } else {
-            this.removeStylesAndMessages();
+            this._removeStylesAndMessages();
         }
     }
 
-    private addErrorStyles(): void {
+    private _addErrorStyles(): void {
         if (this._matFormField) {
             this._renderer.addClass(
                 this._matFormField,
@@ -160,13 +159,13 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
         }
     }
 
-    private showErrorMessage(message: string): void {
+    private _showErrorMessage(message: string): void {
         if (!this._matFormField) {
             return;
         }
 
         if (!this._isDomSetupDone) {
-            this.setupDomElements();
+            this._setupDomElements();
         }
 
         // 1. Ocultar agresivamente el wrapper de Material (Anulación de Espacio)
@@ -214,7 +213,7 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
         this._isFirstErrorShown = true;
     }
 
-    private removeStylesAndMessages(): void {
+    private _removeStylesAndMessages(): void {
         if (this._matFormField) {
             this._renderer.removeClass(
                 this._matFormField,
