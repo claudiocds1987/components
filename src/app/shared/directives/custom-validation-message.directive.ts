@@ -53,7 +53,44 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
         this.removeStylesAndMessages();
     }
 
+    // CustomValidationMessageDirective.ts
+
     private setupDomElements(): void {
+        if (this._isDomSetupDone) {
+            return;
+        }
+
+        // 1. Empezamos con el elemento que tiene la directiva (e.g., <app-date-input> o <input>)
+        const container = this._el.nativeElement;
+
+        // 2. Si el elemento actual es el CVA (app-date-input), buscamos el mat-form-field INTERNO.
+        if (container.tagName === "APP-DATE-INPUT") {
+            // Busca el primer mat-form-field dentro del CVA. Este será nuestro target.
+            this._matFormField = container.querySelector(
+                "mat-form-field",
+            ) as HTMLElement | null;
+        } else {
+            // Si no es un CVA, buscamos el mat-form-field que lo contiene (closest).
+            this._matFormField = container.closest(
+                "mat-form-field",
+            ) as HTMLElement | null;
+        }
+
+        if (!this._matFormField) {
+            // Si no encontramos el mat-form-field, no podemos continuar.
+            return;
+        }
+
+        // 3. Busca el wrapper de estilos donde queremos ocultar el contenido de Material.
+        this._subscriptWrapperClass =
+            this._matFormField.querySelector(
+                ".mat-mdc-form-field-subscript-wrapper",
+            ) || null;
+
+        this._isDomSetupDone = !!this._matFormField;
+    }
+
+    /* private setupDomElements(): void {
         if (this._isDomSetupDone) {
             return;
         }
@@ -88,9 +125,52 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
             ) || null;
 
         this._isDomSetupDone = !!this._matFormField;
-    }
+    } */
 
     private handleValidation(): void {
+        const control = this._ngControl?.control;
+        if (!control) {
+            return;
+        }
+
+        if (!this._isDomSetupDone) {
+            this.setupDomElements();
+        }
+
+        if (!this._matFormField) {
+            return;
+        }
+
+        let errorMessage: string | null = null;
+        const isControlInvalid =
+            control.invalid && (control.touched || control.dirty);
+
+        if (isControlInvalid) {
+            if (control.hasError("email")) {
+                errorMessage = "Formato de email inválido";
+            }
+            if (control.hasError("dateRange")) {
+                errorMessage = "Debe ser mayor o igual a la fecha desde";
+            }
+            if (control.hasError("duplicatedEmail")) {
+                errorMessage = "Email repetido";
+            }
+            if (control.hasError("duplicatedDate")) {
+                errorMessage = "Fecha repetida";
+            }
+            // añadir aquí otros validadores de menor prioridad
+        }
+
+        if (errorMessage) {
+            this.addErrorStyles();
+            this.showErrorMessage(errorMessage);
+        } else {
+            // Limpiamos si no hay errores (válido) o si no ha sido tocado/modificado
+            this.removeStylesAndMessages();
+        }
+    }
+
+    /* private handleValidation(): void {
         const control = this._ngControl?.control;
         if (!control) {
             return;
@@ -110,9 +190,20 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
             control.invalid && (control.touched || control.dirty);
 
         if (isControlInvalid) {
-            // 1. PRIORIDAD: duplicatedDate
+            if (control.hasError("required")) {
+                errorMessage = "Campo obligatorio";
+            }
             if (control.hasError("dateRange")) {
                 errorMessage = "Debe ser mayor o igual a la fecha desde";
+            }
+            if (control.hasError("duplicatedEmail")) {
+                errorMessage = "Email repetido";
+            }
+            if (control.hasError("email")) {
+                errorMessage = "Formato de email inválido";
+            }
+            if (control.hasError("duplicatedDate")) {
+                errorMessage = "Fecha repetida";
             }
         }
 
@@ -124,7 +215,7 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
         } else {
             this.removeStylesAndMessages();
         }
-    }
+    } */
 
     private addErrorStyles(): void {
         if (this._matFormField) {
@@ -220,6 +311,16 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
                 );
                 this._messageElement = null;
             }
+            /* if (this._subscriptWrapperClass) {
+                this._renderer.removeStyle(
+                    this._subscriptWrapperClass,
+                    "display",
+                );
+                this._renderer.removeStyle(
+                    this._subscriptWrapperClass,
+                    "padding-top",
+                );
+            } */
         }
 
         this._isFirstErrorShown = false;

@@ -45,8 +45,7 @@ import { DateInputComponent } from "../date-input/date-input.component";
 import { MatIcon } from "@angular/material/icon";
 import { ReadOnlyDirective } from "../../directives/read-only.directive";
 import { uniqueFieldValidator } from "../../utils/unique-field-validator";
-import { DuplicatedDateValidation } from "../../directives/duplicated-date-validation.directive";
-import { DuplicatedEmailValidationDirective } from "../../directives/duplicated-email-validation.directive";
+
 import { dateRangeValidator } from "../../utils/custom-date-validators";
 import { CustomValidationMessageDirective } from "../../directives/custom-validation-message.directive";
 
@@ -71,8 +70,6 @@ import { CustomValidationMessageDirective } from "../../directives/custom-valida
         SkeletonDirective,
         RequiredValidationDirective,
         ReadOnlyDirective,
-        DuplicatedDateValidation,
-        DuplicatedEmailValidationDirective,
         CustomValidationMessageDirective,
     ],
     templateUrl: "./form-array.component.html",
@@ -155,46 +152,6 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
             this.rows.updateValueAndValidity();
         }
     }
-    /* ngOnChanges(changes: SimpleChanges): void {
-        const configReceived =
-            changes["formArrayConfig"] && this.formArrayConfig.length > 0;
-        const dataReceived = changes["data"]; // Comprobar si initialData ha llegado/cambiado
-
-        // Inicializar la estructura la primera vez que la data de configuración llega
-        if (configReceived && !this.isInitialized) {
-            this._initFormStructure();
-            this.isInitialized = true;
-        } else if (this.isInitialized) {
-            // Lógica de actualización si la configuración o los datos iniciales cambian
-            if (configReceived) {
-                this.initializeSelectMaps();
-            }
-            // Si los datos iniciales cambian después de la inicialización, repoblamos el FormArray.
-            if (dataReceived) {
-                this._resetAndLoadRows(this.data || []);
-            }
-            // Recalculamos las opciones en cualquier caso de actualización para reflejar los cambios.
-            this._calculateSelectAvailableOptions();
-        }
-
-        // Lógica de actualización si la configuración o los datos iniciales cambian
-        if (this.isInitialized) {
-            if (configReceived) {
-                this.initializeSelectMaps();
-                // **AÑADIR ESTO:** Actualizar validador del FormArray si cambia la config
-                const dateValidator = uniqueFieldValidator(
-                    this.formArrayConfig,
-                );
-                this.rows.setValidators(dateValidator);
-            }
-
-            // Recalcula las opciones en cualquier caso de actualización para reflejar los cambios.
-            this._calculateSelectAvailableOptions();
-
-            // Re-validar las filas después de cualquier cambio
-            this.rows.updateValueAndValidity();
-        }
-    } */
 
     ngOnInit(): void {
         this.setupValueChangeSubscription();
@@ -319,21 +276,6 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
 
         return group;
     }
-    /* createRowGroup(initialValues: Record<string, any> = {}): FormGroup {
-        const groupControls: Record<string, FormControl> = {};
-
-        for (const field of this.formArrayConfig) {
-            const validators = this._getValidators(field);
-            // Usar el valor inicial proporcionado, o null por defecto
-            const initialValue = initialValues[field.fieldName] ?? null;
-
-            groupControls[field.fieldName] = this._fb.control(
-                initialValue,
-                validators,
-            );
-        }
-        return this._fb.group(groupControls);
-    } */
 
     // Añade una nueva fila (FormGroup) al FormArray.
     addRow(): void {
@@ -362,28 +304,6 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         );
     }
 
-    // form-array.component.ts
-
-    /*  private _initFormStructure(): void {
-        // 1. Inicializa los mapas de opciones
-        this.initializeSelectMaps();
-
-        // 2. ✅ Aplicar el validador de unicidad (cross-row) al FormArray
-        const uniquenessValidator = uniqueFieldValidator(this.formArrayConfig);
-        this.rows.setValidators(uniquenessValidator);
-        this.rows.updateValueAndValidity(); // Ejecutar el validador inmediatamente
-
-        // 3. Si hay datos iniciales, usarlos para poblar el FormArray
-        if (this.data && this.data.length > 0) {
-            this._resetAndLoadRows(this.data);
-        } else if (this.rows.length === 0) {
-            // 4. Si no hay datos iniciales y no hay filas, añade la primera fila vacía
-            this.addRow();
-        }
-
-        // 5. Calcular las opciones iniciales
-        this._calculateSelectAvailableOptions();
-    } */
     private _initFormStructure(): void {
         // 1. Inicializa los mapas de opciones
         this.initializeSelectMaps();
@@ -406,13 +326,6 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     private _createFormArray(): void {
-        // Inicializamos el mainForm
-        /* this.mainForm = this._fb.group({
-            // Aplicamos el validador al FormArray 'rows'
-            rows: this._fb.array([], {
-                validators: [],
-            }),
-        }); */
         this.mainForm = this._fb.group({
             // Aplicamos el validador al FormArray 'rows'
             rows: this._fb.array([], {

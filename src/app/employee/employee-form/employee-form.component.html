@@ -26,13 +26,13 @@
                     appRequiredValidation
                 />
             </mat-form-field>
+            <!--   no hace falta poner la directiva appRequiredValidation en date-input.component la maneja internamente -->
             <app-date-input
                 [formControlName]="'birthDate'"
                 [label]="'Fecha de nacimiento'"
                 [placeholder]="'Fecha de nacimiento'"
                 [isDisabled]="false"
                 [appSkeleton]="isLoading"
-                appRequiredValidation
             ></app-date-input>
             <mat-form-field appearance="outline" [appSkeleton]="isLoading">
                 <mat-label>Género</mat-label>

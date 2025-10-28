@@ -20,6 +20,5 @@ export enum ValidationKey {
     minLength = "minLength",
     maxLength = "maxLength",
     email = "email",
-    lessThan = "lessThan", // para validacion de fecha cam,biar noimbre a lessThanDate
-    validateRange = "validateRange",
+    validateRange = "validateRange", // para rango de fechas inputs indivuduales fecha1 y fecha 2
 }

@@ -18,7 +18,6 @@ import { GridFilterConfig } from "../../../models/grid-filter-configuration.mode
 import { DateInputComponent } from "../../date-input/date-input.component";
 import { SkeletonDirective } from "../../../directives/skeleton.directive";
 import { DateRangeComponent } from "../../date-range/date-range.component";
-import { DateRangeValidationDirective } from "../../../directives/date-range-validation.directive";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltip } from "@angular/material/tooltip";
 
@@ -37,7 +36,6 @@ import { MatTooltip } from "@angular/material/tooltip";
         DateInputComponent,
         DateRangeComponent,
         SkeletonDirective,
-        DateRangeValidationDirective,
         MatIcon,
         MatTooltip,
     ],
