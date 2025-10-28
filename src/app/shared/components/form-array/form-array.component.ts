@@ -250,7 +250,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
 
             // 💡 Verificar si este campo tiene la validación de rango
             const rangeValidation = field.validations?.find(
-                (v) =>
+                (v): any =>
                     v.type === ValidationKey.validateRange &&
                     typeof v.value === "string",
             );
@@ -283,7 +283,18 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         if (this.maxRows !== null && this.rows.length >= this.maxRows) {
             return;
         }
-        this.rows.push(this.createRowGroup()); // Se llama sin valores, creando una fila vacía
+        // Como se agrega una fila nueva si algun campo en la configuracion del array tiene isReadOnly "true" se pasa a false para que pueda escribir en el campo
+        this.formArrayConfig.map(
+            (formArrayconfig: FormArrayConfig): FormArrayConfig => {
+                // Si la configuración tiene 'readOnly' en true
+                if (formArrayconfig.isReadOnly) {
+                    // Establecer 'isReadOnly' a false, para que en la nueva fila en el campo se pueda escribir
+                    formArrayconfig.isReadOnly = false;
+                }
+                return formArrayconfig;
+            },
+        );
+        this.rows.push(this.createRowGroup());
         this.rows.markAsDirty();
     }
 
