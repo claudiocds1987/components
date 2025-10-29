@@ -1,21 +1,34 @@
 .main-container {
     padding-top: 50px;
-    padding: 0 15px; /* Agrega padding a los lados para pantallas pequeñas */
+    padding: 20px 0; /* Agrega padding a los lados para pantallas pequeñas */
 }
 
 .example1 {
     width: 100%;
     max-width: 1200px; // Limita de ancho
-    margin: 0 auto; // Centra el componente en la pantalla
+    //margin: 0 auto 20px; // Centra el componente en la pantalla
+    margin: 0 auto 50px auto;
 }
 .example2 {
     width: 100%;
     max-width: 1200px; // Limita el ancho máximo en pantallas grandes
-    margin: 0 auto; // Centra el componente en la pantalla
+    //margin: 0 auto; // Centra el componente en la pantalla
+    margin: 0 auto 50px auto;
 }
 
 .example3 {
     width: 100%;
     max-width: 1200px; // Limita el ancho máximo en pantallas grandes
-    margin: 0 auto; // Centra el componente en la pantalla
+    //margin: 0 auto; // Centra el componente en la pantalla
+    margin: 0 auto 50px auto;
+}
+
+h5 {
+    padding: 20px;
+    letter-spacing: 0.1em;
+    background-color: #f0f4f9;
+    font-weight: 400;
+    color: #3f51b5;
+    border: 1px solid #e4e7f6;
+    width: 100%;
 }

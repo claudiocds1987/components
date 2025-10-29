@@ -1,9 +1,10 @@
 <div class="main-container">
+    <app-breadcrumb></app-breadcrumb>
     <div class="example1">
-        <h4>
+        <h5>
             Configuración: Todos los campos se pueden repetir, todos son
             obligatorios. Máximo de filas 5
-        </h4>
+        </h5>
         <app-form-array
             [formArrayConfig]="formArrayConfig1"
             [data]="employeeData1"
@@ -13,10 +14,10 @@
         ></app-form-array>
     </div>
     <div class="example2">
-        <h4>
+        <h5>
             Configuración: Ningun campo se puede repetir, todos son
             obligatorios. Máximo de filas 3.
-        </h4>
+        </h5>
         <app-form-array
             [formArrayConfig]="formArrayConfig2"
             [isLoadingSig]="isLoadingSig()"
@@ -25,9 +26,9 @@
         ></app-form-array>
     </div>
     <div class="example3">
-        <h4>
+        <h5>
             Configuración: Validación de rango de fechas y campos solo lectura
-        </h4>
+        </h5>
         <app-form-array
             [formArrayConfig]="formArrayConfig3"
             [data]="employeeData2"

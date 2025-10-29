@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from "@angular/core";
+import { Component, inject, OnDestroy, OnInit, signal } from "@angular/core";
 import { SelectItem } from "../../shared/models/select-item.model";
 import { catchError, finalize, forkJoin, Observable, of } from "rxjs";
 import { PositionService } from "../../shared/services/position.service";
@@ -9,15 +9,17 @@ import {
     ValidationKey,
 } from "../../shared/models/form-array-config.model";
 import { FormArrayComponent } from "../../shared/components/form-array/form-array.component";
+import { BreadcrumbService } from "../../shared/services/breadcrumb.service";
+import { BreadcrumbComponent } from "../../shared/components/breadcrumb/breadcrumb.component";
 
 @Component({
     selector: "app-employee-form-array",
     standalone: true,
-    imports: [FormArrayComponent],
+    imports: [FormArrayComponent, BreadcrumbComponent],
     templateUrl: "./employee-form-array.component.html",
     styleUrl: "./employee-form-array.component.scss",
 })
-export class EmployeeFormArrayComponent implements OnInit {
+export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
     isLoadingSig = signal(true);
     formArrayConfig1: FormArrayConfig[] = [];
     formArrayConfig2: FormArrayConfig[] = [];
@@ -46,6 +48,7 @@ export class EmployeeFormArrayComponent implements OnInit {
     private _positionServices = inject(PositionService);
     private _countryServices = inject(CountryService);
     private _alertService = inject(AlertService);
+    private _breadcrumbService = inject(BreadcrumbService);
 
     private _positions: SelectItem[] = [];
     private _countries: SelectItem[] = [];
@@ -60,7 +63,12 @@ export class EmployeeFormArrayComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this._setBreadcrumb();
         this._loadData();
+    }
+
+    ngOnDestroy(): void {
+        this._breadcrumbService.clearBreadcrumbs();
     }
 
     getFormArray1Value(value: any): void {
@@ -242,5 +250,12 @@ export class EmployeeFormArrayComponent implements OnInit {
                 return of([]);
             }),
         );
+    }
+
+    private _setBreadcrumb(): void {
+        this._breadcrumbService.setBreadcrumbs([
+            { label: "Inicio", path: "/home" },
+            { label: "Form-array", path: "" },
+        ]);
     }
 }
