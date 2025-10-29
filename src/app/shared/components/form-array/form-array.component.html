@@ -78,18 +78,20 @@
 
                             <!-- Renderizado de campo de fecha -->
                             @if (field.fieldType === "date") {
-                                <app-date-input
-                                    [id]="field.fieldName + $index"
-                                    class="width"
-                                    [formControlName]="field.fieldName"
-                                    [label]="field.label ?? ''"
-                                    [placeholder]="field.label ?? ''"
-                                    [isDisabled]="false"
-                                    [appSkeleton]="isLoadingSig()"
-                                    [isReadOnly]="field.isReadOnly ?? false"
-                                    appCustomValidationMessage
-                                >
-                                </app-date-input>
+                                <div class="component-container">
+                                    <app-date-input
+                                        [id]="field.fieldName + $index"
+                                        class="width"
+                                        [formControlName]="field.fieldName"
+                                        [label]="field.label ?? ''"
+                                        [placeholder]="field.label ?? ''"
+                                        [isDisabled]="false"
+                                        [appSkeleton]="isLoadingSig()"
+                                        [isReadOnly]="field.isReadOnly ?? false"
+                                        appCustomValidationMessage
+                                    >
+                                    </app-date-input>
+                                </div>
                             }
 
                             <!-- Renderizado de campo select con opciones dinámicas -->

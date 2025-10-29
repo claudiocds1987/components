@@ -260,11 +260,15 @@ export class DateInputComponent
                   )
                 : null,
         );
-        this.onTouched();
+        //this.onTouched();
     }
 
     onInputBlur(): void {
         this.onTouched();
+        // 2. Ejecuta la validación en el control interno.
+        // Aunque ya esté tocado, forzar una actualización asegura que la validación
+        // se propague a los controles asociados y dispare el observable en la directiva.
+        this.internalControl.updateValueAndValidity();
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
