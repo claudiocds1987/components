@@ -64,7 +64,7 @@ export class HomeComponent implements OnInit {
             id: "4",
             img: "assets/grid.svg",
             title: "Form Array",
-            description: "Form Array dinámico.",
+            description: "Form Array dinámico con diferentes configuraciones.",
             requiredRoles: "", // Visible para todos los roles (o no requiere un rol específico)
             path: "/employee-form-array",
         },

@@ -92,7 +92,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     // (Solo contiene las opciones que NADIE ha seleccionado)
     availableOptionsMap = signal<Map<string, SelectItem[]>>(new Map());
 
-    // Acceso fácil al FormArray 'rows'
+    // getter para Acceso fácil al FormArray 'rows' en el html
     get rows(): FormArray {
         return this.mainForm.get("rows") as FormArray;
     }
