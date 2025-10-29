@@ -1,3 +1,5 @@
+// En custom.date-validators.ts
+
 import {
     AbstractControl,
     FormGroup,
@@ -38,8 +40,7 @@ export function dateRangeValidator(
         const dateFromControl = group.get(dateFromControlName);
         const dateToControl = group.get(dateToControlName);
 
-        // 💡 Limpieza de errores de rango si los campos están vacíos (o para cualquier caso de salida)
-        // Esto previene que el error 'dateRange' persista si el usuario borra la fecha.
+        // Si faltan valores, limpiamos ambos y salimos.
         if (!dateFromControl?.value || !dateToControl?.value) {
             clearRangeError(dateFromControl);
             clearRangeError(dateToControl);
@@ -54,25 +55,31 @@ export function dateRangeValidator(
         dateTo.setHours(0, 0, 0, 0);
 
         // ----------------------------------------------------
-        // Lógica: Fecha Desde > Fecha Hasta
+        // Lógica de Validación: Fecha Desde > Fecha Hasta (Caso de Error)
         // ----------------------------------------------------
-        if (dateFrom.getTime() < dateTo.getTime()) {
-            // 1. Aplicamos el error en Fecha Desde.
-            // setErrors con un objeto existente fusiona el error de rango con los actuales.
-            dateFromControl.setErrors({
-                ...dateFromControl.errors,
+        if (dateFrom.getTime() > dateTo.getTime()) {
+            // 1. Aplicamos el error 'dateRange' SÓLO en el control 'Fecha Hasta'.
+            dateToControl.setErrors({
+                ...dateToControl.errors,
                 dateRange: {
                     message:
-                        "La Fecha Hasta no puede ser posterior a la Fecha Desde.",
-                    actual: dateFromControl.value,
-                    target: dateToControl.value,
+                        "La fecha final no puede ser anterior a la fecha inicial.", // Mensaje más claro
+                    actual: dateToControl.value,
+                    target: dateFromControl.value,
                 },
             });
 
-            // 2. Limpiamos explícitamente el error de rango del campo 'Hasta'
-            clearRangeError(dateToControl);
+            //  AJUSTE CRUCIAL: Forzar que el campo con el error esté touched.
+            // Esto dispara la validación en la directiva del campo 'Fecha Hasta'.
+            if (!dateToControl.touched) {
+                dateToControl.markAsTouched();
+            }
 
-            return null;
+            // 2. Limpiamos explícitamente el error de rango del campo 'Desde'.
+            clearRangeError(dateFromControl);
+
+            // Devolvemos un error a nivel de grupo (opcional)
+            return { dateRangeInvalid: true };
         } else {
             // VÁLIDO: Fecha Desde <= Fecha Hasta
 

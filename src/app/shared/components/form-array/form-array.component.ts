@@ -229,15 +229,13 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
 
     // Crea un nuevo FormGroup (una "fila") basándose en la configuración de datos.
     // Recibe opcionalmente un objeto con los valores iniciales para precargar los controles.
-    // form-array.component.ts (dentro del método createRowGroup)
-
     createRowGroup(initialValues: Record<string, any> = {}): FormGroup {
         const groupControls: Record<string, FormControl> = {};
         const rowValidators: ValidatorFn[] = [];
 
         // 1. Crear controles y buscar la configuración de rango
-        let rangeTargetName: string | null = null;
-        let rangeSourceName: string | null = null; // Necesitamos el nombre del campo actual
+        let rangeDateFromName: string | null = null; // El campo que establece el inicio (ej: startDate)
+        let rangeDateToName: string | null = null; // El campo que establece el fin y donde DEBE ir el error (ej: endDate)
 
         for (const field of this.formArrayConfig) {
             const validators = this._getValidators(field);
@@ -256,16 +254,21 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
             );
 
             if (rangeValidation) {
-                rangeSourceName = field.fieldName;
-                rangeTargetName = rangeValidation.value as string;
+                // La configuración dice que 'endDate' (field.fieldName) valida su rango
+                // con respecto a 'startDate' (rangeValidation.value).
+
+                // 🔑 CORRECCIÓN: Asignación de nombres de campos.
+                // dateTo es el campo actual (endDate), dateFrom es el campo de referencia (startDate).
+                rangeDateToName = field.fieldName;
+                rangeDateFromName = rangeValidation.value as string;
             }
         }
 
         // 2. ✅ Aplicar el Validador de Rango si se encontró la configuración
-        if (rangeSourceName && rangeTargetName) {
-            // Asumiendo que dateFrom/dateTo es date1/date2, respectivamente:
+        if (rangeDateFromName && rangeDateToName) {
+            // Pasamos Fecha Desde y luego Fecha Hasta (donde se aplicará el error)
             rowValidators.push(
-                dateRangeValidator(rangeSourceName, rangeTargetName),
+                dateRangeValidator(rangeDateFromName, rangeDateToName),
             );
         }
 

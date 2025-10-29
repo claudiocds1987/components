@@ -217,9 +217,15 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
             } else if (control.hasError("email")) {
                 errorMessage = "Formato de email inválido";
             }
+
+            // REVISIÓN: Capturamos el mensaje del validador "custom-date-validators.ts"
             if (control.hasError("dateRange")) {
-                errorMessage = "Debe ser mayor o igual a la fecha desde";
+                // Aca se pone el mensaje creado desde el validador el validador "custom-date-validators.ts"
+                const rangeError = control.getError("dateRange");
+                errorMessage =
+                    rangeError?.message || "Error en el rango de fechas";
             }
+
             if (control.hasError("duplicatedEmail")) {
                 errorMessage = "Email repetido";
             }
