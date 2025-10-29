@@ -32,14 +32,14 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
 
     employeeData2: unknown[] = [
         {
-            startDate: "2023-01-15T00:00:00.000Z",
-            endDate: "2023-12-31T00:00:00.000Z",
+            startDate: "2023-01-15",
+            endDate: "2023-12-31",
             country: 1,
             email: "juan.perez@empresa.com",
         },
         {
-            startDate: "2024-03-01T00:00:00.000Z",
-            endDate: "2024-05-30T00:00:00.000Z",
+            startDate: "2024-03-01",
+            endDate: "2024-05-30",
             country: 1,
             email: "ana.lopez@empresa.com",
         },
