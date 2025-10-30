@@ -91,3 +91,50 @@ export function dateRangeValidator(
         }
     };
 }
+
+export function greaterThan(
+    controlName: string,
+    comparingControlName: string,
+): ValidatorFn {
+    // La función interna debe aceptar AbstractControl para ser compatible con ValidatorFn
+    return (control: AbstractControl): ValidationErrors | null => {
+        // Aseguramos que el control es un FormGroup
+        if (!(control instanceof FormGroup)) {
+            return null;
+        }
+        const formGroup = control as FormGroup;
+
+        const mainControl = formGroup.get(controlName);
+        const comparingControl = formGroup.get(comparingControlName);
+
+        if (
+            !mainControl ||
+            !comparingControl ||
+            !mainControl.value ||
+            !comparingControl.value
+        ) {
+            return null;
+        }
+
+        const dateA = new Date(mainControl.value);
+        const dateB = new Date(comparingControl.value);
+
+        // Si la fecha principal (fechaDesde) es mayor que la fecha de comparación (fechaHasta)
+        if (dateA > dateB) {
+            mainControl.setErrors({ greaterThan: true });
+            return { greaterThan: true }; // Error a nivel de FormGroup
+        } else {
+            // Importante: Eliminar el error si ya no existe.
+            if (mainControl.errors && mainControl.errors["greaterThan"]) {
+                delete mainControl.errors["greaterThan"];
+                mainControl.setErrors(
+                    Object.keys(mainControl.errors).length === 0
+                        ? null
+                        : mainControl.errors,
+                );
+            }
+        }
+
+        return null;
+    };
+}
