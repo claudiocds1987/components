@@ -356,6 +356,49 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
 
     // Llena el FormArray con los datos iniciales recibidos.
     private _resetAndLoadRows(rowsData: any[]): void {
+        // 1. Limpiamos el FormArray
+        this.rows.clear();
+        console.log("rowsData en resetAndLoadRows", rowsData);
+
+        // 2. Mapeamos y Creamos un FormGroup por cada objeto de datos
+        rowsData.forEach((rowData): void => {
+            // APLICA LA SOLUCIÓN GENÉRICA AQUÍ
+            // Si rowData es: { dateRange: { startDate: "...", endDate: "..." }, country: 1 }
+            // normalizedData será: { startDate: "...", endDate: "...", country: 1 }
+            const normalizedData = this._flattenObject(rowData);
+
+            // Pasamos los datos NORMALIZADOS a createRowGroup para inicializar los valores
+            this.rows.push(this.createRowGroup(normalizedData));
+        });
+
+        // 3. Lo marcamos como no modificado (limpio), ya que la data viene de una fuente inicial.
+        this.mainForm.markAsPristine();
+    }
+    private _flattenObject(obj: Record<string, any>): Record<string, any> {
+        const flattened: Record<string, any> = {};
+
+        for (const key in obj) {
+            if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                const value = obj[key];
+
+                // Si el valor es un objeto, NO es null, y NO es un array,
+                // asumimos que son campos que deben ser aplanados (desanidados).
+                if (
+                    typeof value === "object" &&
+                    value !== null &&
+                    !Array.isArray(value)
+                ) {
+                    // Mezclamos las propiedades del objeto anidado en el objeto aplanado.
+                    Object.assign(flattened, value);
+                } else {
+                    // Si no es un objeto, lo copiamos directamente.
+                    flattened[key] = value;
+                }
+            }
+        }
+        return flattened;
+    }
+    /* private _resetAndLoadRows(rowsData: any[]): void {
         // 1. Limpiamos el FormArray usando el método nativo (más eficiente y limpio que un while)
         this.rows.clear();
 
@@ -367,7 +410,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
 
         // 3. Lo marcamos como no modificado (limpio), ya que la data viene de una fuente inicial.
         this.mainForm.markAsPristine();
-    }
+    } */
 
     private initializeSelectMaps(): void {
         this.formArrayConfig.forEach((field: FormArrayConfig): void => {
