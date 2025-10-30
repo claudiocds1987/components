@@ -759,7 +759,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
             },
             {
                 fieldName: "birthDateRange",
-                fieldType: "dateRange",
+                fieldType: "dateRangeComponent",
                 label: "Rango nacimiento",
             },
             {
@@ -807,7 +807,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                     formControls[filter.fieldName] = new FormControl("all");
                     break;
 
-                case "dateRange":
+                case "dateRangeComponent":
                     // Inicializa grupos de rango de fechas
                     formControls[filter.fieldName] = new FormGroup({
                         startDate: new FormControl(null),

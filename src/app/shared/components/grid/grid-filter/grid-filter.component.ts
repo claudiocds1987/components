@@ -108,7 +108,7 @@ export class GridFilterComponent {
             const value = currentFilterForm.get(fieldName)?.value;
 
             // 1. Manejo de campos simples (text, select, date)
-            if (filter.fieldType !== "dateRange") {
+            if (filter.fieldType !== "dateRangeComponent") {
                 // Pasamos el valor del campo específico
                 if (!isValueEmpty(value)) {
                     return true;
