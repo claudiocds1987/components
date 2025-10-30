@@ -44,7 +44,7 @@ import { BreadcrumbComponent } from "../breadcrumb/breadcrumb.component";
 import { DateInputComponent } from "../date-input/date-input.component";
 import { MatIcon } from "@angular/material/icon";
 import { ReadOnlyDirective } from "../../directives/read-only.directive";
-import { uniqueFieldValidator } from "../../utils/unique-field-validator";
+import { checkDuplicatedInEntireFormArray } from "../../utils/form-array-validators";
 
 import { dateRangeValidator } from "../../utils/custom-date-validators";
 import { CustomValidationMessageDirective } from "../../directives/custom-validation-message.directive";
@@ -133,7 +133,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
                 this.initializeSelectMaps();
 
                 // ✅ ACTUALIZAR: Volver a aplicar el validador de unicidad al FormArray si la configuración cambia.
-                const uniquenessValidator = uniqueFieldValidator(
+                const uniquenessValidator = checkDuplicatedInEntireFormArray(
                     this.formArrayConfig,
                 );
                 this.rows.setValidators(uniquenessValidator);
@@ -322,8 +322,12 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         // 1. Inicializa los mapas de opciones
         this.initializeSelectMaps();
 
-        // 2. AÑADIDO: Aplicar el validador de fechas al FormArray
-        const dateValidator = uniqueFieldValidator(this.formArrayConfig);
+        // 2. La diferencia de "checkDuplicatedInEntireFormArray()" es que valida en todas las filas del formArray
+        // de esta forma se asegura que no haya duplicados en ningun campo marcado como isRepeated: false
+        // en todo el FormArray completo.
+        const dateValidator = checkDuplicatedInEntireFormArray(
+            this.formArrayConfig,
+        );
         this.rows.setValidators(dateValidator);
         this.rows.updateValueAndValidity(); // Ejecutar el validador inmediatamente
 
@@ -343,7 +347,9 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         this.mainForm = this._fb.group({
             // Aplicamos el validador al FormArray 'rows'
             rows: this._fb.array([], {
-                validators: [uniqueFieldValidator(this.formArrayConfig)],
+                validators: [
+                    checkDuplicatedInEntireFormArray(this.formArrayConfig),
+                ],
             }),
         });
     }

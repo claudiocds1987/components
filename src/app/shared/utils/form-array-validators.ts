@@ -78,7 +78,9 @@ function checkAndApplyDuplicates(
  */
 // ESTE VALIDADOR A DIFERENCIA DE OTROS VALIDADORES ES QUE VALIDA A TODAS LAS ROWS DEL FORM ARRAY
 // ES DECIR AL FORM ARRAY COMPLETO. LAS OTRAS VALIDACIONES VALIDAN SOLO POR ROW/FILA
-export function uniqueFieldValidator(config: FormArrayConfig[]): ValidatorFn {
+export function checkDuplicatedInEntireFormArray(
+    config: FormArrayConfig[],
+): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
         const rows = control as FormArray;
         let hasGlobalError = false;
