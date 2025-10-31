@@ -92,7 +92,7 @@ export function dateRangeValidator(
     };
 }
 
-export function greaterThan(
+export function dateLessThan(
     controlName: string,
     comparingControlName: string,
 ): ValidatorFn {
@@ -116,17 +116,17 @@ export function greaterThan(
             return null;
         }
 
-        const dateA = new Date(mainControl.value);
-        const dateB = new Date(comparingControl.value);
+        const dateB = new Date(mainControl.value);
+        const dateA = new Date(comparingControl.value);
 
         // Si la fecha principal (fechaDesde) es mayor que la fecha de comparación (fechaHasta)
-        if (dateA > dateB) {
-            mainControl.setErrors({ greaterThan: true });
-            return { greaterThan: true }; // Error a nivel de FormGroup
+        if (dateB < dateA) {
+            mainControl.setErrors({ dateLessThan: true });
+            return { dateLessThan: true }; // Error a nivel de FormGroup
         } else {
             // Importante: Eliminar el error si ya no existe.
-            if (mainControl.errors && mainControl.errors["greaterThan"]) {
-                delete mainControl.errors["greaterThan"];
+            if (mainControl.errors && mainControl.errors["dateLessThan"]) {
+                delete mainControl.errors["dateLessThan"];
                 mainControl.setErrors(
                     Object.keys(mainControl.errors).length === 0
                         ? null

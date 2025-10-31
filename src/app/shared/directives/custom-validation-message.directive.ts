@@ -232,8 +232,8 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
             if (control.hasError("duplicatedDate")) {
                 errorMessage = "Fecha repetida";
             }
-            if (control.hasError("greaterThan")) {
-                errorMessage = "Fecha desde no puede ser mayor a fecha hasta";
+            if (control.hasError("dateLessThan")) {
+                errorMessage = "Fecha hasta no puede ser menor a fecha desde";
             }
         }
 
