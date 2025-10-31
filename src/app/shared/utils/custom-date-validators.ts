@@ -116,10 +116,10 @@ export function dateLessThan(
             return null;
         }
 
-        const dateB = new Date(mainControl.value);
-        const dateA = new Date(comparingControl.value);
+        const dateB = new Date(mainControl.value); // aca endDate
+        const dateA = new Date(comparingControl.value); // aca stratDate
 
-        // Si la fecha principal (fechaDesde) es mayor que la fecha de comparación (fechaHasta)
+        // Si la fecha endDate es menor a startDate, establecemos el error
         if (dateB < dateA) {
             mainControl.setErrors({ dateLessThan: true });
             return { dateLessThan: true }; // Error a nivel de FormGroup
