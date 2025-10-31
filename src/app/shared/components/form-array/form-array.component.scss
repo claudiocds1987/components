@@ -1,4 +1,10 @@
-// ESTILOS BASE (Móvil) */
+// ESTILOS BASE (Móvil)
+form {
+    display: flex;
+    flex-direction: column; // Apila el contenido (rows y feedback) verticalmente */
+    width: 100%;
+    min-height: 50px; // CLAVE: Se Define una altura mínima para que el feedback tenga donde centrarse.
+}
 
 .row-container {
     // Contiene el Recuadro de Inputs y el Contenedor de Acciones (lado a lado)
@@ -45,9 +51,21 @@
     padding-top: 5px;
 }
 
-// MEDIA QUERIES */
+.feedback-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1; // Ocupa todo el espacio restante en el <form>
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    gap: 20px;
+}
 
-// Media Query para Tabletas (min-width: 600px) - 2 Columnas */
+// MEDIA QUERIES
+
+// Media Query para Tabletas (min-width: 600px) - 2 Columnas
 @media (min-width: 600px) {
     .fields-wrapper {
         width: 100%;

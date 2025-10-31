@@ -126,11 +126,7 @@
                 </div>
 
                 <div class="actions-container">
-                    <button
-                        mat-icon-button
-                        (click)="removeRow($index)"
-                        [disabled]="rows.length === 1"
-                    >
+                    <button mat-icon-button (click)="removeRow($index)">
                         <mat-icon [appSkeleton]="isLoadingSig()"
                             >remove_circle</mat-icon
                         >
@@ -150,4 +146,22 @@
             </div>
         }
     </div>
+    <!-- feedback component -->
+    @if (rows.controls.length === 0 && !isLoadingSig()) {
+        <div class="feedback-container">
+            <app-feedback
+                [message]="
+                    'No hay datos. Haga clic en agregar para añadir una nueva fila.'
+                "
+            ></app-feedback>
+            <button
+                mat-raised-button
+                color="primary"
+                (click)="addRow()"
+                class="add-row-button"
+            >
+                Agregar
+            </button>
+        </div>
+    }
 </form>

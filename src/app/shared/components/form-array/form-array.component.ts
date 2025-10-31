@@ -48,6 +48,7 @@ import { checkDuplicatedInEntireFormArray } from "../../utils/form-array-validat
 
 import { dateRangeValidator } from "../../utils/custom-date-validators";
 import { CustomValidationMessageDirective } from "../../directives/custom-validation-message.directive";
+import { FeedbackComponent } from "../feedback/feedback.component";
 
 @Component({
     selector: "app-form-array",
@@ -71,6 +72,7 @@ import { CustomValidationMessageDirective } from "../../directives/custom-valida
         RequiredValidationDirective,
         ReadOnlyDirective,
         CustomValidationMessageDirective,
+        FeedbackComponent,
     ],
     templateUrl: "./form-array.component.html",
     styleUrls: ["./form-array.component.scss", "./../../styles/skeleton.scss"],
@@ -114,8 +116,6 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     constructor() {
         this._createFormArray();
     }
-
-    // form-array.component.ts
 
     ngOnChanges(changes: SimpleChanges): void {
         const configReceived =
@@ -257,14 +257,14 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
                 // La configuración dice que 'endDate' (field.fieldName) valida su rango
                 // con respecto a 'startDate' (rangeValidation.value).
 
-                // 🔑 CORRECCIÓN: Asignación de nombres de campos.
+                // Asignación de nombres de campos.
                 // dateTo es el campo actual (endDate), dateFrom es el campo de referencia (startDate).
                 rangeDateToName = field.fieldName;
                 rangeDateFromName = rangeValidation.value as string;
             }
         }
 
-        // 2. ✅ Aplicar el Validador de Rango si se encontró la configuración
+        // 2. Aplicar el Validador de Rango si se encontró la configuración
         if (rangeDateFromName && rangeDateToName) {
             // Pasamos Fecha Desde y luego Fecha Hasta (donde se aplicará el error)
             rowValidators.push(
@@ -303,10 +303,8 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
 
     // Elimina una fila (FormGroup) del FormArray por su índice.
     removeRow(index: number): void {
-        if (this.rows.length > 1) {
-            this.rows.removeAt(index);
-            this.rows.markAsDirty();
-        }
+        this.rows.removeAt(index);
+        this.rows.markAsDirty();
     }
 
     // Verifica si un campo tiene la validación 'required'.
@@ -358,7 +356,6 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     private _resetAndLoadRows(rowsData: any[]): void {
         // 1. Limpiamos el FormArray
         this.rows.clear();
-        console.log("rowsData en resetAndLoadRows", rowsData);
 
         // 2. Mapeamos y Creamos un FormGroup por cada objeto de datos
         rowsData.forEach((rowData): void => {

@@ -1,4 +1,6 @@
 <div>
-    <img [src]="imageUrl" alt="No hay resultados" class="feedback-image" />
+    @if (imageUrl) {
+        <img [src]="imageUrl" alt="No hay resultados" class="feedback-image" />
+    }
     <p class="feedback-message">{{ message }}</p>
 </div>
