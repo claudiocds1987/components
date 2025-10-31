@@ -374,43 +374,38 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         // 3. Lo marcamos como no modificado (limpio), ya que la data viene de una fuente inicial.
         this.mainForm.markAsPristine();
     }
+
+    // _flattenObject() Aplana un objeto anidado para extraer todas las propiedades
+    // de los sub-objetos y colocarlas en un solo objeto.
+    // El componente padre va a recibir este objeto plano y es quien tiene que armar/mapear el objeto que necesita el backend para guardar.
     private _flattenObject(obj: Record<string, any>): Record<string, any> {
         const flattened: Record<string, any> = {};
 
-        for (const key in obj) {
-            if (Object.prototype.hasOwnProperty.call(obj, key)) {
-                const value = obj[key];
+        function flatten(current: Record<string, any>): void {
+            for (const key in current) {
+                if (Object.prototype.hasOwnProperty.call(current, key)) {
+                    const value = current[key];
 
-                // Si el valor es un objeto, NO es null, y NO es un array,
-                // asumimos que son campos que deben ser aplanados (desanidados).
-                if (
-                    typeof value === "object" &&
-                    value !== null &&
-                    !Array.isArray(value)
-                ) {
-                    // Mezclamos las propiedades del objeto anidado en el objeto aplanado.
-                    Object.assign(flattened, value);
-                } else {
-                    // Si no es un objeto, lo copiamos directamente.
-                    flattened[key] = value;
+                    // Si el valor es un objeto, NO es null, y NO es un array,
+                    // llamamos a la función recursivamente para aplanar el sub-objeto.
+                    if (
+                        typeof value === "object" &&
+                        value !== null &&
+                        !Array.isArray(value)
+                    ) {
+                        // Llamada recursiva
+                        flatten(value);
+                    } else {
+                        // Si es un valor primitivo (o un array), lo asignamos directamente.
+                        flattened[key] = value;
+                    }
                 }
             }
         }
+
+        flatten(obj); // Inicia el proceso de aplanamiento
         return flattened;
     }
-    /* private _resetAndLoadRows(rowsData: any[]): void {
-        // 1. Limpiamos el FormArray usando el método nativo (más eficiente y limpio que un while)
-        this.rows.clear();
-
-        // 2. Creamos un FormGroup por cada objeto de datos y lo añadimos
-        rowsData.forEach((rowData): void => {
-            // Pasamos los datos a createRowGroup para inicializar los valores
-            this.rows.push(this.createRowGroup(rowData));
-        });
-
-        // 3. Lo marcamos como no modificado (limpio), ya que la data viene de una fuente inicial.
-        this.mainForm.markAsPristine();
-    } */
 
     private initializeSelectMaps(): void {
         this.formArrayConfig.forEach((field: FormArrayConfig): void => {

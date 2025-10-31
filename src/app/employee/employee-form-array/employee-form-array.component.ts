@@ -24,6 +24,7 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
     formArrayConfig1: FormArrayConfig[] = [];
     formArrayConfig2: FormArrayConfig[] = [];
     formArrayConfig3: FormArrayConfig[] = [];
+    formArrayConfig4: FormArrayConfig[] = [];
 
     employeeData1: unknown[] = [
         { country: 1, gender: 1, position: 1, email: "juan.perez@empresa.com" },
@@ -44,6 +45,43 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
             email: "ana.lopez@empresa.com",
         },
     ];
+    // NO BORRAR JSON CON OBJETOS ANIDADOS FUNCIONA BIEN
+    /* objetosAnidados: unknown[] = [
+        {
+            contract: {
+                info: {
+                    description: "Contrato anual",
+                    company: "Empresa S.A.",
+                },
+                startDate: "2023-01-15",
+                endDate: "2023-12-31",
+            },
+            employe: {
+                name: "Jose",
+                lastname: "Martinez",
+                country: 1,
+                email: "jose@gmail.com",
+            },
+            position: 1,
+        },
+        {
+            contract: {
+                info: {
+                    description: "Contrato anual",
+                    company: "Empresa S.A.",
+                },
+                startDate: "2023-01-15",
+                endDate: "2023-12-31",
+            },
+            employe: {
+                name: "Maca",
+                lastname: "Gonzales",
+                country: 2,
+                email: "maca@gmail.com",
+            },
+            position: 2,
+        },
+    ]; */
 
     private _positionServices = inject(PositionService);
     private _countryServices = inject(CountryService);
@@ -103,6 +141,7 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
                     this._setFormArray1();
                     this._setFormArray2();
                     this._setFormArray3();
+                    //this._setFormObjetosAnidados();
                     this.isLoadingSig.set(false);
                 },
                 error: (): void => {
@@ -111,6 +150,91 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
                 },
             });
     }
+
+    /* private _setFormObjetosAnidados(): void {
+        this.formArrayConfig4 = [
+            {
+                fieldName: "description",
+                fieldType: "text",
+                label: "Tipo de contrato",
+                placeHolder: "",
+                isReadOnly: true,
+                isRepeated: true,
+            },
+            {
+                fieldName: "company",
+                fieldType: "text",
+                label: "Empresa",
+                placeHolder: "",
+                isReadOnly: true,
+                isRepeated: true,
+            },
+            {
+                fieldName: "startDate",
+                fieldType: "date",
+                label: "Inicio de contrato",
+                placeHolder: "",
+                validations: [{ type: ValidationKey.required }],
+                isRepeated: true,
+            },
+            {
+                fieldName: "endDate",
+                fieldType: "date",
+                label: "Fin de contrato",
+                placeHolder: "",
+                validations: [
+                    { type: ValidationKey.required },
+                    { type: ValidationKey.validateRange, value: "startDate" },
+                ],
+                isRepeated: true,
+            },
+            {
+                fieldName: "name",
+                fieldType: "text",
+                label: "Nombre",
+                placeHolder: "",
+                validations: [{ type: ValidationKey.required }],
+                isRepeated: true,
+            },
+            {
+                fieldName: "lastname",
+                fieldType: "text",
+                label: "apellido",
+                placeHolder: "",
+                validations: [{ type: ValidationKey.required }],
+                isRepeated: true,
+            },
+            {
+                fieldName: "country",
+                fieldType: "select",
+                label: "Pais",
+                placeHolder: "",
+                selectItems: this._countries,
+                validations: [{ type: ValidationKey.required }],
+                isRepeated: true,
+            },
+            {
+                fieldName: "email",
+                fieldType: "email",
+                label: "Email",
+                placeHolder: "Ej: usuario@dominio.com",
+                validations: [
+                    { type: ValidationKey.required },
+                    { type: ValidationKey.email },
+                ],
+                isRepeated: true,
+            },
+            {
+                fieldName: "position",
+                fieldType: "select",
+                selectItems: this._positions,
+                label: "Puesto",
+                placeHolder: "",
+                validations: [{ type: ValidationKey.required }],
+                isRepeated: true,
+            },
+        ];
+    } */
 
     private _setFormArray1(): void {
         this.formArrayConfig1 = [
