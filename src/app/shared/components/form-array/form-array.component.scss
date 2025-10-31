@@ -1,13 +1,31 @@
-.grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 15px;
+// ESTILOS BASE (Móvil) */
+
+.row-container {
+    // Contiene el Recuadro de Inputs y el Contenedor de Acciones (lado a lado)
+    display: flex;
+    align-items: flex-start; // Alinea los elementos a la parte superior
+    gap: 10px;
     margin-bottom: 20px;
+    width: 100%;
+    // En móvil, forzamos la columna para que los botones queden debajo del recuadro
+    flex-direction: column;
+}
+
+.fields-wrapper {
+    flex-grow: 1;
+    width: 100%;
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    width: 100%;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.grid {
+    // Contenedor Grid para los inputs (1 columna por defecto)
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    width: 100%;
 }
 
 .inputs-container {
@@ -24,83 +42,74 @@
     display: flex;
     justify-content: flex-start;
     gap: 10px;
+    padding-top: 5px;
 }
 
-// Media Query para Tabletas (min-width: 600px) - 2 Columnas
+// MEDIA QUERIES */
+
+// Media Query para Tabletas (min-width: 600px) - 2 Columnas */
 @media (min-width: 600px) {
+    .fields-wrapper {
+        width: 100%;
+    }
     .grid {
-        // Dos columnas de campos y una columna 'auto' para las acciones.
-        grid-template-columns: repeat(2, 1fr) auto;
+        // 2 columnas para inputs
+        grid-template-columns: repeat(2, 1fr);
         gap: 20px 15px;
-        align-items: end;
     }
 
     .actions-container {
-        // Para posicionar en la última columna
-        grid-column: -1 / -1;
-        // Lo alinea verticalmente al centro.
-        align-self: center;
         flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding-top: 0;
     }
 }
 
-// Media Query para Escritorio (min-width: 1024px) - 3 Columnas + Acciones
+// Media Query para Escritorio (min-width: 1024px) - 3 Columnas
 @media (min-width: 1024px) {
+    .fields-wrapper {
+        width: 100%;
+    }
+    .row-container {
+        // Vuelve a ser fila para que los botones queden a la derecha del recuadro
+        flex-direction: row;
+        width: 100%;
+    }
+
     .grid {
-        grid-template-columns: repeat(3, 1fr) 120px;
+        // 3 columnas para inputs
+        grid-template-columns: repeat(3, 1fr);
         gap: 20px;
         align-items: start;
     }
 
     .actions-container {
-        // Posiciona en la última columna usando líneas negativas: de la penúltima a la última línea.
-        grid-column: -2 / -1;
-        grid-row: 1 / 2;
-        align-self: start;
-        justify-content: flex-end;
+        // En escritorio, los botones vuelven a ser una fila horizontal
         flex-direction: row;
+        align-self: flex-start;
+        justify-content: flex-end;
+        min-width: 100px; // Ancho mínimo para que los botones quepan
     }
 }
 
-// Media Query para Monitores Grandes (min-width: 1440px)
+// Media Query para Monitores Grandes (min-width: 1440px) - 4 Columnas
 @media (min-width: 1440px) {
+    .fields-wrapper {
+        width: 100%;
+    }
     .grid {
-        /* CLAVE: Definimos 5 columnas fijas y explícitas: 4 para inputs, 1 para acciones. */
-        grid-template-columns: repeat(4, 1fr) 120px;
+        // 4 columnas para inputs
+        grid-template-columns: repeat(4, 1fr);
         gap: 20px;
         align-items: start;
-        /* No necesitamos grid-auto-flow: dense; si forzamos la posición y el salto. */
     }
 
-    .inputs-container {
-        /* Los inputs fluyen, ocupando 1 de las 4 columnas de inputs. */
-        grid-column: span 1;
-    }
-
-    /* 🛑 SOLUCIÓN: Forzar al 5to elemento (que es el 5to input) a la SEGUNDA fila.
-       Esto asegura que la Columna 5 de la Fila 1 queda exclusivamente para las acciones. */
-    .inputs-container:nth-child(5) {
-        grid-column: 1 / 2; /* Comienza en la Columna 1 */
-        grid-row: 2 / 3; /* Inicia en la Fila 2 */
-    }
-
-    /* Opcional: Para evitar que el input 9 (si existe) se desplace aún más
-       Puedes repetir el patrón cada 4 inputs: */
+    // Deshabilitamos las reglas nth-child anteriores que ya no son necesarias
+    // porque el actions-container está fuera del grid.
+    .inputs-container:nth-child(5),
     .inputs-container:nth-child(9) {
-        grid-column: 1 / 2; /* Comienza en la Columna 1 */
-        grid-row: 3 / 4; /* Inicia en la Fila 3 */
-    }
-    /* (y así sucesivamente si tu lista de campos es muy larga) */
-
-    .actions-container {
-        /* CLAVE: Posiciona el contenedor de acciones explícitamente en la ÚLTIMA columna (la 5ta). */
-        grid-column: 5 / 6;
-        /* CLAVE: Lo mantiene fijo en la PRIMERA fila. */
-        grid-row: 1 / 2;
-
-        /* Estilos de alineación */
-        align-self: start;
-        justify-content: flex-end;
-        flex-direction: row;
+        grid-column: unset;
+        grid-row: unset;
     }
 }
