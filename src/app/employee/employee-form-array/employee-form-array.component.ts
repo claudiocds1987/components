@@ -139,18 +139,19 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
         console.log("datos del form Array con evento de cambio a padre", value);
     }
 
-    // La funcion handleFieldChange() obtiene el campo que ha cambiado, su nuevo valor y el índice de la fila.
+    // La funcion handleFieldChange() se tiene que hacer manualmente cuando un campo en la configuracion tiene la propiedad
+    // emitChangeToParent: true. Esta funcion obtiene el campo que ha cambiado, su nuevo valor y el índice de la fila.
     // siempre y cuando en la configuración se haya establecido la propiedad emitChangeToParent: true
     // esta funcion es ideal para cargar opciones dependientes en selects anidados. Ejemplo: país -> provincia
     // un selector de país que al cambiar su valor recarga las opciones del selector de provincia.
     handleFieldChange(event: {
         fieldName: string;
         value: any;
-        index: number;
+        indexRow: number;
     }): void {
         if (event.fieldName === "country") {
             const countryId = event.value;
-            const rowIndex = event.index;
+            const rowIndex = event.indexRow;
 
             this._provinceService
                 .getProvincesByCountry(countryId)
@@ -195,7 +196,7 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
             // Asignar las nuevas opciones
             fieldConfigToUpdate.selectItems = newOptions;
 
-            // 2. Acceder y resetear el control en la fila del formulario
+            // 2. Acceder y resetear el control en la fila del formulario que esta en form-array.component.ts
             if (this.ViewChildFormArrayComponent) {
                 // Usamos tu nombre de ViewChild
                 const rows = this.ViewChildFormArrayComponent.rows;
@@ -219,31 +220,25 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
         forkJoin({
             positions: this._getPositions(),
             countries: this._getCountries(),
-        })
-            .pipe(
-                finalize((): void => {
-                    this.isLoadingSig.set(false);
-                }),
-            )
-            .subscribe({
-                next: (results: {
-                    positions: SelectItem[];
-                    countries: SelectItem[];
-                }): void => {
-                    this._positions = results.positions;
-                    this._countries = results.countries;
-                    this._setFormArray1();
-                    this._setFormArray2();
-                    this._setFormArray3();
-                    this._setFormArrayWithChangeEvent();
-                    //this._setFormObjetosAnidados();
-                    this.isLoadingSig.set(false);
-                },
-                error: (): void => {
-                    this.isLoadingSig.set(false);
-                    this._alertService.showDanger("Error al cargar datos.");
-                },
-            });
+        }).subscribe({
+            next: (results: {
+                positions: SelectItem[];
+                countries: SelectItem[];
+            }): void => {
+                this._positions = results.positions;
+                this._countries = results.countries;
+                this._setFormArray1();
+                this._setFormArray2();
+                this._setFormArray3();
+                this._setFormArrayWithChangeEvent();
+                //this._setFormObjetosAnidados();
+                this.isLoadingSig.set(false);
+            },
+            error: (): void => {
+                this.isLoadingSig.set(false);
+                this._alertService.showDanger("Error al cargar datos.");
+            },
+        });
     }
 
     /* private _setFormObjetosAnidados(): void {

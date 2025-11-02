@@ -91,7 +91,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     @Output() fieldChange = new EventEmitter<{
         fieldName: string;
         value: any;
-        index: number; // cambiar por row
+        indexRow: number;
     }>();
 
     // Formulario principal que contendrá el FormArray
@@ -239,7 +239,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
 
     createRowGroup(
         initialValues: Record<string, any> = {},
-        index?: number, // ACEPTA 'index'
+        indexRow?: number,
     ): FormGroup {
         const groupControls: Record<string, FormControl> = {};
         const rowValidators: ValidatorFn[] = [];
@@ -282,7 +282,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
 
         // 🚀 LÓGICA DE EMISIÓN DE EVENTOS (FIXED): Suscripción a cambios de control.
         // Solo si se proporciona el índice. Hemos quitado la dependencia de 'this.isInitialized'.
-        if (index !== undefined) {
+        if (indexRow !== undefined) {
             this.formArrayConfig.forEach((field): void => {
                 if (field.emitChangeToParent) {
                     const control = group.get(field.fieldName);
@@ -298,7 +298,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
                                     this.fieldChange.emit({
                                         fieldName: field.fieldName,
                                         value: value,
-                                        index: index,
+                                        indexRow: indexRow,
                                     });
                                 }),
                         );
