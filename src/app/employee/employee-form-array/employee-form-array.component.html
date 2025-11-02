@@ -6,6 +6,7 @@
             obligatorios. Máximo de filas 5
         </h5>
         <app-form-array
+            #formArray
             [formArrayConfig]="formArrayConfig1"
             [data]="employeeData1"
             [isLoadingSig]="isLoadingSig()"
@@ -19,6 +20,7 @@
             obligatorios. Máximo de filas 3.
         </h5>
         <app-form-array
+            #formArray
             [formArrayConfig]="formArrayConfig2"
             [isLoadingSig]="isLoadingSig()"
             [maxRows]="3"
@@ -30,10 +32,22 @@
             Configuración: Validación de rango de fechas y campos solo lectura
         </h5>
         <app-form-array
+            #formArray
             [formArrayConfig]="formArrayConfig3"
             [data]="employeeData2"
             [isLoadingSig]="isLoadingSig()"
             (emitFormArrayValue)="getFormArray3Value($event)"
+        ></app-form-array>
+    </div>
+    <div class="example5">
+        <h5>Configuración: Campos con evento de cambio a componente padre</h5>
+        <app-form-array
+            #formArray
+            [formArrayConfig]="formArrayWithChangeEvent"
+            [isLoadingSig]="isLoadingSig()"
+            (emitFormArrayValue)="getFormArrayWithChangeEventValue($event)"
+            (fieldChange)="handleFieldChange($event)"
+            [maxRows]="1"
         ></app-form-array>
     </div>
 </div>

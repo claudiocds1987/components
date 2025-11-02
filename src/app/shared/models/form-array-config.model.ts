@@ -12,6 +12,7 @@ export interface FormArrayConfig {
     // isRepeated: false => El valor seleccionado en esta fila desaparece de los select de otras filas (Unicidad).
     // isRepeated: true => El valor seleccionado puede ser repetido en otras filas.
     isRepeated: boolean;
+    emitChangeToParent?: boolean; // Indica si este campo debe disparar un evento de salida (Output) al cambiar su valor.
 }
 
 /** Enum para definir los tipos de validaciones soportadas. */

@@ -87,6 +87,13 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         any[] | null
     >();
 
+    // El evento emitirá: el nombre del campo, su nuevo valor y el índice de la fila.
+    @Output() fieldChange = new EventEmitter<{
+        fieldName: string;
+        value: any;
+        index: number; // cambiar por row
+    }>();
+
     // Formulario principal que contendrá el FormArray
     mainForm!: FormGroup;
 
@@ -229,14 +236,17 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
 
     // Crea un nuevo FormGroup (una "fila") basándose en la configuración de datos.
     // Recibe opcionalmente un objeto con los valores iniciales para precargar los controles.
-    createRowGroup(initialValues: Record<string, any> = {}): FormGroup {
+
+    createRowGroup(
+        initialValues: Record<string, any> = {},
+        index?: number, // ACEPTA 'index'
+    ): FormGroup {
         const groupControls: Record<string, FormControl> = {};
         const rowValidators: ValidatorFn[] = [];
+        let rangeDateFromName: string | null = null;
+        let rangeDateToName: string | null = null;
 
-        // 1. Crear controles y buscar la configuración de rango
-        let rangeDateFromName: string | null = null; // El campo que establece el inicio (ej: startDate)
-        let rangeDateToName: string | null = null; // El campo que establece el fin y donde DEBE ir el error (ej: endDate)
-
+        // 1. Crear controles y buscar la configuración de rango (Lógica existente)
         for (const field of this.formArrayConfig) {
             const validators = this._getValidators(field);
             const initialValue = initialValues[field.fieldName] ?? null;
@@ -246,7 +256,6 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
                 validators,
             );
 
-            // 💡 Verificar si este campo tiene la validación de rango
             const rangeValidation = field.validations?.find(
                 (v): any =>
                     v.type === ValidationKey.validateRange &&
@@ -254,32 +263,52 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
             );
 
             if (rangeValidation) {
-                // La configuración dice que 'endDate' (field.fieldName) valida su rango
-                // con respecto a 'startDate' (rangeValidation.value).
-
-                // Asignación de nombres de campos.
-                // dateTo es el campo actual (endDate), dateFrom es el campo de referencia (startDate).
                 rangeDateToName = field.fieldName;
                 rangeDateFromName = rangeValidation.value as string;
             }
         }
 
-        // 2. Aplicar el Validador de Rango si se encontró la configuración
+        // 2. Aplicar el Validador de Rango (Lógica existente)
         if (rangeDateFromName && rangeDateToName) {
-            // Pasamos Fecha Desde y luego Fecha Hasta (donde se aplicará el error)
             rowValidators.push(
                 dateRangeValidator(rangeDateFromName, rangeDateToName),
             );
         }
 
-        // 3. Crear el FormGroup y aplicar los validadores de la fila
+        // 3. Crear el FormGroup y aplicar los validadores de la fila (Lógica existente)
         const group = this._fb.group(groupControls, {
             validators: rowValidators,
         });
 
+        // 🚀 LÓGICA DE EMISIÓN DE EVENTOS (FIXED): Suscripción a cambios de control.
+        // Solo si se proporciona el índice. Hemos quitado la dependencia de 'this.isInitialized'.
+        if (index !== undefined) {
+            this.formArrayConfig.forEach((field): void => {
+                if (field.emitChangeToParent) {
+                    const control = group.get(field.fieldName);
+                    if (control) {
+                        this._valueChangesSubscription.add(
+                            control.valueChanges
+                                .pipe(
+                                    // Nota: 100ms es bajo. Puedes aumentarlo a 300ms si hay latencia.
+                                    debounceTime(100),
+                                )
+                                .subscribe((value: any): void => {
+                                    // console.log("Emisión en FormArrayComponent:", {fieldName: field.fieldName, value, index}); // Descomentar para debug
+                                    this.fieldChange.emit({
+                                        fieldName: field.fieldName,
+                                        value: value,
+                                        index: index,
+                                    });
+                                }),
+                        );
+                    }
+                }
+            });
+        }
+
         return group;
     }
-
     // Añade una nueva fila (FormGroup) al FormArray.
     addRow(): void {
         // Si el input maxRows (si se establecio un max de rows desde el padre) es >= a la cantidad de rows del formArray no se pueden seguir agregando
@@ -297,9 +326,33 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
                 return formArrayconfig;
             },
         );
-        this.rows.push(this.createRowGroup());
+
+        const newRowIndex = this.rows.length; // Obtener el índice antes de pushear
+
+        // Pasar el índice de la nueva fila
+        this.rows.push(this.createRowGroup({}, newRowIndex));
         this.rows.markAsDirty();
     }
+
+    /*  addRow(): void {
+        // Si el input maxRows (si se establecio un max de rows desde el padre) es >= a la cantidad de rows del formArray no se pueden seguir agregando
+        if (this.maxRows !== null && this.rows.length >= this.maxRows) {
+            return;
+        }
+        // Como se agrega una fila nueva si algun campo en la configuracion del array tiene isReadOnly "true" se pasa a false para que pueda escribir en el campo
+        this.formArrayConfig.map(
+            (formArrayconfig: FormArrayConfig): FormArrayConfig => {
+                // Si la configuración tiene 'readOnly' en true
+                if (formArrayconfig.isReadOnly) {
+                    // Establecer 'isReadOnly' a false, para que en la nueva fila en el campo se pueda escribir
+                    formArrayconfig.isReadOnly = false;
+                }
+                return formArrayconfig;
+            },
+        );
+        this.rows.push(this.createRowGroup());
+        this.rows.markAsDirty();
+    } */
 
     // Elimina una fila (FormGroup) del FormArray por su índice.
     removeRow(index: number): void {
@@ -357,6 +410,28 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         // 1. Limpiamos el FormArray
         this.rows.clear();
 
+        // 🆕 Limpiamos las suscripciones de los controles individuales antes de recrearlos.
+        // Mantenemos la suscripción del FormArray/statusChanges, que se gestiona en setupValueChangeSubscription.
+        this._valueChangesSubscription.unsubscribe();
+        this._valueChangesSubscription = new Subscription();
+        this.setupValueChangeSubscription(); // 👈 Re-suscribir el FormArray y statusChanges
+
+        // 2. Mapeamos y Creamos un FormGroup por cada objeto de datos
+        rowsData.forEach((rowData, index): void => {
+            // 👈 Usar 'index' aquí
+            const normalizedData = this._flattenObject(rowData);
+
+            // Pasamos los datos NORMALIZADOS y el 'index' para inicializar y suscribir
+            this.rows.push(this.createRowGroup(normalizedData, index));
+        });
+
+        // 3. Lo marcamos como no modificado (limpio), ya que la data viene de una fuente inicial.
+        this.mainForm.markAsPristine();
+    }
+    /* private _resetAndLoadRows(rowsData: any[]): void {
+        // 1. Limpiamos el FormArray
+        this.rows.clear();
+
         // 2. Mapeamos y Creamos un FormGroup por cada objeto de datos
         rowsData.forEach((rowData): void => {
             // APLICA LA SOLUCIÓN GENÉRICA AQUÍ
@@ -370,7 +445,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
 
         // 3. Lo marcamos como no modificado (limpio), ya que la data viene de una fuente inicial.
         this.mainForm.markAsPristine();
-    }
+    } */
 
     // _flattenObject() Aplana un objeto anidado para extraer todas las propiedades
     // de los sub-objetos y colocarlas en un solo objeto.

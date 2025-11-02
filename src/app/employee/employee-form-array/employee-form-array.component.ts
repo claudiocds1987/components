@@ -1,4 +1,11 @@
-import { Component, inject, OnDestroy, OnInit, signal } from "@angular/core";
+import {
+    Component,
+    inject,
+    OnDestroy,
+    OnInit,
+    signal,
+    ViewChild,
+} from "@angular/core";
 import { SelectItem } from "../../shared/models/select-item.model";
 import { catchError, finalize, forkJoin, Observable, of } from "rxjs";
 import { PositionService } from "../../shared/services/position.service";
@@ -11,6 +18,9 @@ import {
 import { FormArrayComponent } from "../../shared/components/form-array/form-array.component";
 import { BreadcrumbService } from "../../shared/services/breadcrumb.service";
 import { BreadcrumbComponent } from "../../shared/components/breadcrumb/breadcrumb.component";
+import { ProvincesService } from "../../shared/services/provinces.service";
+import { Province } from "../../shared/models/province.model";
+import { FormGroup } from "@angular/forms";
 
 @Component({
     selector: "app-employee-form-array",
@@ -20,11 +30,15 @@ import { BreadcrumbComponent } from "../../shared/components/breadcrumb/breadcru
     styleUrl: "./employee-form-array.component.scss",
 })
 export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
+    // Obtener una referencia a la instancia del componente hijo
+    @ViewChild(FormArrayComponent)
+    ViewChildFormArrayComponent!: FormArrayComponent;
     isLoadingSig = signal(true);
     formArrayConfig1: FormArrayConfig[] = [];
     formArrayConfig2: FormArrayConfig[] = [];
     formArrayConfig3: FormArrayConfig[] = [];
     formArrayConfig4: FormArrayConfig[] = [];
+    formArrayWithChangeEvent: FormArrayConfig[] = [];
 
     employeeData1: unknown[] = [
         { country: 1, gender: 1, position: 1, email: "juan.perez@empresa.com" },
@@ -96,6 +110,8 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
         { id: 2, description: "Femenino" },
     ];
 
+    private _provinceService = inject(ProvincesService);
+
     constructor() {
         this._alertService.clearAlerts();
     }
@@ -117,6 +133,84 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
     }
     getFormArray3Value(value: any): void {
         console.log("datos del form 3 Array", value);
+    }
+
+    getFormArrayWithChangeEventValue(value: any): void {
+        console.log("datos del form Array con evento de cambio a padre", value);
+    }
+
+    // La funcion handleFieldChange() obtiene el campo que ha cambiado, su nuevo valor y el índice de la fila.
+    // siempre y cuando en la configuración se haya establecido la propiedad emitChangeToParent: true
+    // esta funcion es ideal para cargar opciones dependientes en selects anidados. Ejemplo: país -> provincia
+    // un selector de país que al cambiar su valor recarga las opciones del selector de provincia.
+    handleFieldChange(event: {
+        fieldName: string;
+        value: any;
+        index: number;
+    }): void {
+        if (event.fieldName === "country") {
+            const countryId = event.value;
+            const rowIndex = event.index;
+
+            this._provinceService
+                .getProvincesByCountry(countryId)
+                .subscribe((provinces: Province[]): void => {
+                    // 1. Mapear la respuesta del servicio (Province[]) a SelectItem[]
+                    const newProvinceOptions: SelectItem[] = provinces.map(
+                        (province: Province): SelectItem => ({
+                            id: province.id,
+                            description: province.description,
+                        }),
+                    );
+
+                    // 2. Aplicar la actualización de la configuración con la función genérica
+                    // Pasamos el índice, el nombre del campo objetivo ('province') y las nuevas opciones.
+                    this.updateSelectOptionsAndReset(
+                        rowIndex,
+                        "province", // Campo a actualizar mismo nombre que s epuso en la configuracion
+                        newProvinceOptions,
+                    );
+                });
+        }
+    }
+
+    /**
+     * Función genérica para actualizar las opciones de un SelectField
+     * y resetear su valor en una fila específica.
+     * @param rowIndex El índice de la fila del FormArray.
+     * @param targetFieldName El nombre del campo cuyas opciones se van a actualizar (ej: 'province').
+     * @param newOptions La nueva lista de opciones (SelectItem[]).
+     */
+    updateSelectOptionsAndReset(
+        rowIndex: number,
+        targetFieldName: string, // 👈 Nombre del campo a actualizar
+        newOptions: SelectItem[],
+    ): void {
+        // 1. Localizar y mutar el campo de configuración
+        const fieldConfigToUpdate = this.formArrayWithChangeEvent.find(
+            (f): boolean => f.fieldName === targetFieldName,
+        );
+
+        if (fieldConfigToUpdate) {
+            // Asignar las nuevas opciones
+            fieldConfigToUpdate.selectItems = newOptions;
+
+            // 2. Acceder y resetear el control en la fila del formulario
+            if (this.ViewChildFormArrayComponent) {
+                // Usamos tu nombre de ViewChild
+                const rows = this.ViewChildFormArrayComponent.rows;
+
+                if (rows.length > rowIndex) {
+                    const rowGroup = rows.at(rowIndex) as FormGroup;
+
+                    // Resetear el valor del campo objetivo a null/vacío
+                    rowGroup.get(targetFieldName)?.setValue(null);
+                }
+            }
+        }
+
+        // 3. Forzar la detección de cambios: Crear una nueva referencia del Input.
+        this.formArrayWithChangeEvent = [...this.formArrayWithChangeEvent];
     }
 
     private _loadData(): void {
@@ -141,6 +235,7 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
                     this._setFormArray1();
                     this._setFormArray2();
                     this._setFormArray3();
+                    this._setFormArrayWithChangeEvent();
                     //this._setFormObjetosAnidados();
                     this.isLoadingSig.set(false);
                 },
@@ -350,6 +445,33 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
                 placeHolder: "Ej: usuario@dominio.com",
                 isRepeated: false,
                 isReadOnly: true,
+            },
+        ];
+    }
+
+    private _setFormArrayWithChangeEvent(): void {
+        // Configuración de ejemplo en el componente padre
+        this.formArrayWithChangeEvent = [
+            {
+                fieldName: "country",
+                fieldType: "select",
+                label: "País",
+                placeHolder: "Pais",
+                selectItems: [
+                    { id: 1, description: "Argentina" },
+                    { id: 2, description: "Bolivia" },
+                ],
+                isRepeated: false,
+                emitChangeToParent: true, // ¡CLAVE! Habilitar la emisión de evento.
+            },
+            {
+                fieldName: "province",
+                fieldType: "select",
+                label: "Provincia",
+                placeHolder: "Provincia",
+                selectItems: [],
+                isRepeated: false,
+                emitChangeToParent: false,
             },
         ];
     }
