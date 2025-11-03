@@ -39,8 +39,11 @@
             (emitFormArrayValue)="getFormArray3Value($event)"
         ></app-form-array>
     </div>
-    <div class="example5">
-        <h5>Configuración: Campos con evento de cambio a componente padre</h5>
+    <div class="example4">
+        <h5>
+            Configuración: Campos con evento de cambio, el componente padre
+            carga las provincias según el pais elegido.
+        </h5>
         <app-form-array
             #formArray
             [formArrayConfig]="formArrayWithChangeEvent"

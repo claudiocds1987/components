@@ -1,167 +1,212 @@
-<form [formGroup]="mainForm">
-    <div formArrayName="rows">
-        @for (group of rows.controls; track trackByFn($index, group)) {
-            <div [formGroupName]="$index" class="row-container">
-                <div class="fields-wrapper">
-                    <div class="grid">
-                        @for (field of formArrayConfig; track field.fieldName) {
-                            <div class="inputs-container">
-                                @if (field.label) {
-                                    <label
-                                        [for]="field.fieldName + $index"
-                                        [appSkeleton]="isLoadingSig()"
-                                    >
-                                        {{ field.label }}
-                                    </label>
-                                }
+@if (isLoadingSig()) {
+    <div class="skeleton-layout">
+        <div class="row-container">
+            <div class="fields-wrapper">
+                <div class="grid">
+                    <div
+                        class="inputs-container"
+                        *ngFor="let i of [1, 2, 3, 4]"
+                    >
+                        <span [appSkeleton]="isLoadingSig()"></span>
+                        <mat-form-field
+                            appearance="outline"
+                            [appSkeleton]="isLoadingSig()"
+                        >
+                            <input matInput />
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="actions-container">
+            <button mat-icon-button>
+                <mat-icon [appSkeleton]="isLoadingSig()"
+                    >remove_circle</mat-icon
+                >
+            </button>
 
-                                @if (field.fieldType === "text") {
-                                    <mat-form-field
-                                        [id]="field.fieldName + $index"
-                                        class="width"
-                                        appearance="outline"
-                                        [appSkeleton]="isLoadingSig()"
-                                        [appReadOnly]="field.isReadOnly"
-                                    >
-                                        <mat-label>{{ field.label }}</mat-label>
-                                        <input
-                                            matInput
-                                            [type]="field.fieldType"
-                                            [formControlName]="field.fieldName"
-                                            [placeholder]="field.fieldName"
-                                            appCustomValidationMessage
-                                        />
-                                    </mat-form-field>
-                                }
+            <button mat-icon-button>
+                <mat-icon [appSkeleton]="isLoadingSig()">add_circle</mat-icon>
+            </button>
+        </div>
+    </div>
+} @else {
+    <form [formGroup]="mainForm">
+        <div formArrayName="rows">
+            @for (group of rows.controls; track trackByFn($index, group)) {
+                <div [formGroupName]="$index" class="row-container">
+                    <div class="fields-wrapper">
+                        <div class="grid">
+                            @for (
+                                field of formArrayConfig;
+                                track field.fieldName
+                            ) {
+                                <div class="inputs-container">
+                                    @if (field.label) {
+                                        <label [for]="field.fieldName + $index">
+                                            {{ field.label }}
+                                        </label>
+                                    }
 
-                                @if (field.fieldType === "email") {
-                                    <mat-form-field
-                                        [id]="field.fieldName + $index"
-                                        class="width"
-                                        appearance="outline"
-                                        [appSkeleton]="isLoadingSig()"
-                                        [appReadOnly]="field.isReadOnly"
-                                    >
-                                        <mat-label>{{ field.label }}</mat-label>
-                                        <input
-                                            matInput
-                                            [type]="field.fieldType"
-                                            [formControlName]="field.fieldName"
-                                            [placeholder]="field.fieldName"
-                                            appCustomValidationMessage
-                                        />
-                                    </mat-form-field>
-                                }
-
-                                @if (field.fieldType === "number") {
-                                    <mat-form-field
-                                        [id]="field.fieldName + $index"
-                                        class="width"
-                                        appearance="outline"
-                                        [appSkeleton]="isLoadingSig()"
-                                        [appReadOnly]="field.isReadOnly"
-                                    >
-                                        <mat-label>{{ field.label }}</mat-label>
-                                        <input
-                                            matInput
-                                            [type]="field.fieldType"
-                                            [formControlName]="field.fieldName"
-                                            [placeholder]="field.fieldName"
-                                            appCustomValidationMessage
-                                        />
-                                    </mat-form-field>
-                                }
-
-                                @if (field.fieldType === "date") {
-                                    <div class="component-container">
-                                        <app-date-input
+                                    @if (field.fieldType === "text") {
+                                        <mat-form-field
                                             [id]="field.fieldName + $index"
                                             class="width"
-                                            [formControlName]="field.fieldName"
-                                            [label]="field.label ?? ''"
-                                            [placeholder]="field.label ?? ''"
-                                            [isDisabled]="false"
-                                            [appSkeleton]="isLoadingSig()"
-                                            [isReadOnly]="
-                                                field.isReadOnly ?? false
-                                            "
-                                            appCustomValidationMessage
+                                            appearance="outline"
+                                            [appReadOnly]="field.isReadOnly"
                                         >
-                                        </app-date-input>
-                                    </div>
-                                }
+                                            <mat-label>{{
+                                                field.label
+                                            }}</mat-label>
+                                            <input
+                                                matInput
+                                                [type]="field.fieldType"
+                                                [formControlName]="
+                                                    field.fieldName
+                                                "
+                                                [placeholder]="field.fieldName"
+                                                appCustomValidationMessage
+                                            />
+                                        </mat-form-field>
+                                    }
 
-                                @if (field.fieldType === "select") {
-                                    <mat-form-field
-                                        [id]="field.fieldName + $index"
-                                        class="width"
-                                        appearance="outline"
-                                        [appSkeleton]="isLoadingSig()"
-                                        [appReadOnly]="field.isReadOnly"
-                                    >
-                                        <mat-label>{{
-                                            field.fieldName
-                                        }}</mat-label>
-                                        <mat-select
-                                            [formControlName]="field.fieldName"
-                                            appCustomValidationMessage
+                                    @if (field.fieldType === "email") {
+                                        <mat-form-field
+                                            [id]="field.fieldName + $index"
+                                            class="width"
+                                            appearance="outline"
+                                            [appReadOnly]="field.isReadOnly"
                                         >
-                                            @for (
-                                                item of getOptionsForField(
-                                                    field.fieldName,
-                                                    group
-                                                );
-                                                track item.id
-                                            ) {
-                                                <mat-option [value]="item.id">
-                                                    {{ item.description }}
-                                                </mat-option>
-                                            }
-                                        </mat-select>
-                                    </mat-form-field>
-                                }
-                            </div>
+                                            <mat-label>{{
+                                                field.label
+                                            }}</mat-label>
+                                            <input
+                                                matInput
+                                                [type]="field.fieldType"
+                                                [formControlName]="
+                                                    field.fieldName
+                                                "
+                                                [placeholder]="field.fieldName"
+                                                appCustomValidationMessage
+                                            />
+                                        </mat-form-field>
+                                    }
+
+                                    @if (field.fieldType === "number") {
+                                        <mat-form-field
+                                            [id]="field.fieldName + $index"
+                                            class="width"
+                                            appearance="outline"
+                                            [appReadOnly]="field.isReadOnly"
+                                        >
+                                            <mat-label>{{
+                                                field.label
+                                            }}</mat-label>
+                                            <input
+                                                matInput
+                                                [type]="field.fieldType"
+                                                [formControlName]="
+                                                    field.fieldName
+                                                "
+                                                [placeholder]="field.fieldName"
+                                                appCustomValidationMessage
+                                            />
+                                        </mat-form-field>
+                                    }
+
+                                    @if (field.fieldType === "date") {
+                                        <div class="component-container">
+                                            <app-date-input
+                                                [id]="field.fieldName + $index"
+                                                class="width"
+                                                [formControlName]="
+                                                    field.fieldName
+                                                "
+                                                [label]="field.label ?? ''"
+                                                [placeholder]="
+                                                    field.label ?? ''
+                                                "
+                                                [isDisabled]="false"
+                                                [isReadOnly]="
+                                                    field.isReadOnly ?? false
+                                                "
+                                                appCustomValidationMessage
+                                            >
+                                            </app-date-input>
+                                        </div>
+                                    }
+
+                                    @if (field.fieldType === "select") {
+                                        <mat-form-field
+                                            [id]="field.fieldName + $index"
+                                            class="width"
+                                            appearance="outline"
+                                            [appReadOnly]="field.isReadOnly"
+                                        >
+                                            <mat-label>{{
+                                                field.fieldName
+                                            }}</mat-label>
+                                            <mat-select
+                                                [formControlName]="
+                                                    field.fieldName
+                                                "
+                                                appCustomValidationMessage
+                                            >
+                                                @for (
+                                                    item of getOptionsForField(
+                                                        field.fieldName,
+                                                        group
+                                                    );
+                                                    track item.id
+                                                ) {
+                                                    <mat-option
+                                                        [value]="item.id"
+                                                    >
+                                                        {{ item.description }}
+                                                    </mat-option>
+                                                }
+                                            </mat-select>
+                                        </mat-form-field>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="actions-container">
+                        <button mat-icon-button (click)="removeRow($index)">
+                            <mat-icon>remove_circle</mat-icon>
+                        </button>
+                        @if ($index === rows.controls.length - 1) {
+                            <button
+                                mat-icon-button
+                                (click)="addRow()"
+                                [disabled]="!isReadyToAdd()"
+                            >
+                                <mat-icon>add_circle</mat-icon>
+                            </button>
                         }
                     </div>
                 </div>
-
-                <div class="actions-container">
-                    <button mat-icon-button (click)="removeRow($index)">
-                        <mat-icon [appSkeleton]="isLoadingSig()"
-                            >remove_circle</mat-icon
-                        >
-                    </button>
-                    @if ($index === rows.controls.length - 1) {
-                        <button
-                            mat-icon-button
-                            (click)="addRow()"
-                            [disabled]="!isReadyToAdd()"
-                        >
-                            <mat-icon [appSkeleton]="isLoadingSig()"
-                                >add_circle</mat-icon
-                            >
-                        </button>
-                    }
-                </div>
+            }
+        </div>
+        <!-- feedback component -->
+        @if (rows.controls.length === 0 && !isLoadingSig()) {
+            <div class="feedback-container">
+                <app-feedback
+                    [message]="
+                        'No hay datos. Haga clic en agregar para añadir una nueva fila.'
+                    "
+                ></app-feedback>
+                <button
+                    mat-raised-button
+                    color="primary"
+                    (click)="addRow()"
+                    class="add-row-button"
+                >
+                    Agregar
+                </button>
             </div>
         }
-    </div>
-    <!-- feedback component -->
-    @if (rows.controls.length === 0 && !isLoadingSig()) {
-        <div class="feedback-container">
-            <app-feedback
-                [message]="
-                    'No hay datos. Haga clic en agregar para añadir una nueva fila.'
-                "
-            ></app-feedback>
-            <button
-                mat-raised-button
-                color="primary"
-                (click)="addRow()"
-                class="add-row-button"
-            >
-                Agregar
-            </button>
-        </div>
-    }
-</form>
+    </form>
+}
