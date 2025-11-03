@@ -42,7 +42,7 @@
     <div class="example4">
         <h5>
             Configuración: Campos con evento de cambio, el componente padre
-            carga las provincias según el pais elegido.
+            carga las provincias según el pais elegido. Máximo de filas 2.
         </h5>
         <app-form-array
             #formArray
@@ -50,7 +50,7 @@
             [isLoadingSig]="isLoadingSig()"
             (emitFormArrayValue)="getFormArrayWithChangeEventValue($event)"
             (fieldChange)="handleFieldChange($event)"
-            [maxRows]="1"
+            [maxRows]="2"
         ></app-form-array>
     </div>
 </div>

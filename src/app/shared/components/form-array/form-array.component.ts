@@ -139,7 +139,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
             if (configReceived) {
                 this.initializeSelectMaps();
 
-                // ✅ ACTUALIZAR: Volver a aplicar el validador de unicidad al FormArray si la configuración cambia.
+                // Volver a aplicar el validador de unicidad al FormArray si la configuración cambia.
                 const uniquenessValidator = checkDuplicatedInEntireFormArray(
                     this.formArrayConfig,
                 );
@@ -224,14 +224,6 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         }
 
         return available;
-    }
-
-    // Utilizado en el template para la clase `(Duplicado)`
-    isDuplicate(fieldName: string, itemId: string | number): boolean {
-        const globallySelected = this._selectedValuesByField()[fieldName] || [];
-        return (
-            globallySelected.filter((val): boolean => val === itemId).length > 1
-        );
     }
 
     // Crea un nuevo FormGroup (una "fila") basándose en la configuración de datos.
@@ -364,12 +356,19 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     private _createFormArray(): void {
+        const validators = [];
+        // Preguntamos si el campo tiene isRepeated en false para aplicar el validador de unicidad
+        const isRepeated = this.formArrayConfig.find(
+            (config: FormArrayConfig): boolean => config.isRepeated === false,
+        );
+        // 1. Si el campo tiene isRepeated en false aplicamos el validador de unicidad
+        if (isRepeated) {
+            validators.push(checkDuplicatedInEntireFormArray([isRepeated]));
+        }
+
         this.mainForm = this._fb.group({
-            // Aplicamos el validador al FormArray 'rows'
             rows: this._fb.array([], {
-                validators: [
-                    checkDuplicatedInEntireFormArray(this.formArrayConfig),
-                ],
+                validators: validators,
             }),
         });
     }
@@ -378,18 +377,14 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     private _resetAndLoadRows(rowsData: any[]): void {
         // 1. Limpiamos el FormArray
         this.rows.clear();
-
-        // 🆕 Limpiamos las suscripciones de los controles individuales antes de recrearlos.
+        // Limpiamos las suscripciones de los controles individuales antes de recrearlos.
         // Mantenemos la suscripción del FormArray/statusChanges, que se gestiona en setupValueChangeSubscription.
         this._valueChangesSubscription.unsubscribe();
         this._valueChangesSubscription = new Subscription();
-        this.setupValueChangeSubscription(); // 👈 Re-suscribir el FormArray y statusChanges
-
+        this.setupValueChangeSubscription(); // Re-suscribir el FormArray y statusChanges
         // 2. Mapeamos y Creamos un FormGroup por cada objeto de datos
         rowsData.forEach((rowData, index): void => {
-            // 👈 Usar 'index' aquí
             const normalizedData = this._flattenObject(rowData);
-
             // Pasamos los datos NORMALIZADOS y el 'index' para inicializar y suscribir
             this.rows.push(this.createRowGroup(normalizedData, index));
         });
@@ -458,9 +453,11 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
                 )
                 .subscribe((status: string): void => {
                     if (status === "VALID") {
+                        console.log("emitFormArrayValue - válido");
                         // Emite el valor completo del FormArray si es válido
                         this.emitFormArrayValue.emit(this.rows.value);
                     } else {
+                        console.log("emitFormArrayValue - inválido");
                         // Emite null si es inválido (o si cambia de válido a inválido)
                         this.emitFormArrayValue.emit(null);
                     }
@@ -514,7 +511,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         const fieldValidators: any[] = [];
         if (field.validations) {
             for (const validation of field.validations) {
-                // 💡 1. IGNORAR: El validador de rango cruzado se aplica a nivel de FormGroup (en createRowGroup), no de FormControl.
+                //  1. IGNORAR: El validador de rango cruzado se aplica a nivel de FormGroup (en createRowGroup), no de FormControl.
                 if (validation.type === ValidationKey.validateRange) {
                     continue;
                 }

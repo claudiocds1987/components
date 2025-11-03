@@ -198,12 +198,11 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
 
             // 2. Acceder y resetear el control en la fila del formulario que esta en form-array.component.ts
             if (this.ViewChildFormArrayComponent) {
-                // Usamos tu nombre de ViewChild
+                // Usamos nombre de ViewChild
                 const rows = this.ViewChildFormArrayComponent.rows;
 
                 if (rows.length > rowIndex) {
                     const rowGroup = rows.at(rowIndex) as FormGroup;
-
                     // Resetear el valor del campo objetivo a null/vacío
                     rowGroup.get(targetFieldName)?.setValue(null);
                 }
@@ -466,7 +465,6 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
                 placeHolder: "Provincia",
                 selectItems: [],
                 isRepeated: false,
-                emitChangeToParent: false,
             },
         ];
     }
