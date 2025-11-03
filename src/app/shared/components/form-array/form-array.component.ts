@@ -11,6 +11,7 @@ import {
     Output,
     EventEmitter,
     input,
+    ChangeDetectionStrategy,
 } from "@angular/core";
 import { SelectItem } from "../../models/select-item.model";
 import {
@@ -76,6 +77,7 @@ import { FeedbackComponent } from "../feedback/feedback.component";
     ],
     templateUrl: "./form-array.component.html",
     styleUrls: ["./form-array.component.scss", "./../../styles/skeleton.scss"],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     @Input() formArrayConfig: FormArrayConfig[] = []; // Configuración de los campos que viene del componente padre

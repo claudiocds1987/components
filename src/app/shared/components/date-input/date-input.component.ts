@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import {
+    ChangeDetectionStrategy,
     Component,
     EventEmitter,
     Input,
@@ -48,6 +49,7 @@ import { CustomValidationMessageDirective } from "../../directives/custom-valida
     ],
     templateUrl: "./date-input.component.html",
     styleUrl: "./date-input.component.scss",
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DateInputComponent
     implements ControlValueAccessor, OnInit, OnDestroy

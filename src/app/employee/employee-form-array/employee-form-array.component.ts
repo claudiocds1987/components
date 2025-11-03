@@ -1,4 +1,5 @@
 import {
+    ChangeDetectionStrategy,
     Component,
     inject,
     OnDestroy,
@@ -28,6 +29,7 @@ import { FormGroup } from "@angular/forms";
     imports: [FormArrayComponent, BreadcrumbComponent],
     templateUrl: "./employee-form-array.component.html",
     styleUrl: "./employee-form-array.component.scss",
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
     // Obtener una referencia a la instancia del componente hijo
@@ -211,6 +213,10 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
 
         // 3. Forzar la detección de cambios: Crear una nueva referencia del Input.
         this.formArrayWithChangeEvent = [...this.formArrayWithChangeEvent];
+        console.log(
+            "Configuración actualizada:",
+            this.formArrayWithChangeEvent,
+        );
     }
 
     private _loadData(): void {
@@ -455,7 +461,7 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
                     { id: 1, description: "Argentina" },
                     { id: 2, description: "Bolivia" },
                 ],
-                isRepeated: false,
+                isRepeated: true,
                 emitChangeToParent: true, // ¡CLAVE! Habilitar la emisión de evento.
             },
             {
@@ -464,7 +470,7 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
                 label: "Provincia",
                 placeHolder: "Provincia",
                 selectItems: [],
-                isRepeated: false,
+                isRepeated: true,
             },
         ];
     }
