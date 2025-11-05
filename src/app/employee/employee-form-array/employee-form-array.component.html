@@ -6,7 +6,7 @@
             obligatorios. Máximo de filas 5
         </h5>
         <app-form-array
-            #formArray
+            [id]="'form1'"
             [formArrayConfig]="formArrayConfig1"
             [data]="employeeData1"
             [isLoadingSig]="isLoadingSig()"
@@ -20,7 +20,7 @@
             obligatorios. Máximo de filas 3.
         </h5>
         <app-form-array
-            #formArray
+            [id]="'form2'"
             [formArrayConfig]="formArrayConfig2"
             [isLoadingSig]="isLoadingSig()"
             [maxRows]="3"
@@ -32,7 +32,7 @@
             Configuración: Validación de rango de fechas y campos solo lectura
         </h5>
         <app-form-array
-            #formArray
+            [id]="'form3'"
             [formArrayConfig]="formArrayConfig3"
             [data]="employeeData2"
             [isLoadingSig]="isLoadingSig()"
@@ -45,8 +45,9 @@
             carga las provincias según el pais elegido. Máximo de filas 2.
         </h5>
         <app-form-array
-            #formArray
+            [id]="'formWithChange'"
             [formArrayConfig]="formArrayWithChangeEvent"
+            [data]="employeeData3"
             [isLoadingSig]="isLoadingSig()"
             (emitFormArrayValue)="getFormArrayWithChangeEventValue($event)"
             (fieldChange)="handleFieldChange($event)"

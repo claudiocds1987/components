@@ -1,46 +1,51 @@
 import {
-    ChangeDetectionStrategy,
     Component,
-    inject,
-    OnDestroy,
+    ChangeDetectionStrategy,
     OnInit,
+    OnDestroy,
+    ViewChildren,
+    QueryList,
     signal,
-    ViewChild,
+    inject,
 } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormGroup } from "@angular/forms";
+import { forkJoin, Observable, of, catchError } from "rxjs";
+
+import { FormArrayComponent } from "../../shared/components/form-array/form-array.component";
+import { BreadcrumbComponent } from "../../shared/components/breadcrumb/breadcrumb.component";
 import { SelectItem } from "../../shared/models/select-item.model";
-import { catchError, finalize, forkJoin, Observable, of } from "rxjs";
-import { PositionService } from "../../shared/services/position.service";
-import { CountryService } from "../../shared/services/country.service";
-import { AlertService } from "../../shared/services/alert.service";
 import {
     FormArrayConfig,
     ValidationKey,
 } from "../../shared/models/form-array-config.model";
-import { FormArrayComponent } from "../../shared/components/form-array/form-array.component";
-import { BreadcrumbService } from "../../shared/services/breadcrumb.service";
-import { BreadcrumbComponent } from "../../shared/components/breadcrumb/breadcrumb.component";
-import { ProvincesService } from "../../shared/services/provinces.service";
 import { Province } from "../../shared/models/province.model";
-import { FormGroup } from "@angular/forms";
+import { PositionService } from "../../shared/services/position.service";
+import { CountryService } from "../../shared/services/country.service";
+import { ProvincesService } from "../../shared/services/provinces.service";
+import { AlertService } from "../../shared/services/alert.service";
+import { BreadcrumbService } from "../../shared/services/breadcrumb.service";
 
 @Component({
     selector: "app-employee-form-array",
     standalone: true,
-    imports: [FormArrayComponent, BreadcrumbComponent],
+    imports: [FormArrayComponent, BreadcrumbComponent, CommonModule],
     templateUrl: "./employee-form-array.component.html",
-    styleUrl: "./employee-form-array.component.scss",
+    styleUrls: ["./employee-form-array.component.scss"],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
-    // Obtener una referencia a la instancia del componente hijo
-    @ViewChild(FormArrayComponent)
-    ViewChildFormArrayComponent!: FormArrayComponent;
+    // Obtener referencias a todas las instancias del componente hijo y elegir la correcta
+    @ViewChildren(FormArrayComponent)
+    formArrayChildren!: QueryList<FormArrayComponent>;
     isLoadingSig = signal(true);
     formArrayConfig1: FormArrayConfig[] = [];
     formArrayConfig2: FormArrayConfig[] = [];
     formArrayConfig3: FormArrayConfig[] = [];
     formArrayConfig4: FormArrayConfig[] = [];
     formArrayWithChangeEvent: FormArrayConfig[] = [];
+    // Id assigned to the instance that emits change events and should receive province updates
+    formArrayWithChangeId = "formWithChange";
 
     employeeData1: unknown[] = [
         { country: 1, gender: 1, position: 1, email: "juan.perez@empresa.com" },
@@ -61,6 +66,8 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
             email: "ana.lopez@empresa.com",
         },
     ];
+
+    employeeData3: unknown[] = [];
     // NO BORRAR JSON CON OBJETOS ANIDADOS FUNCIONA BIEN
     /* objetosAnidados: unknown[] = [
         {
@@ -127,18 +134,18 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
         this._breadcrumbService.clearBreadcrumbs();
     }
 
-    getFormArray1Value(value: any): void {
-        console.log("datos del form 1 Array", value);
+    getFormArray1Value(_value: unknown): void {
+        console.log("Valor FormArray 1:", _value);
     }
-    getFormArray2Value(value: any): void {
-        console.log("datos del form 2 Array", value);
+    getFormArray2Value(_value: unknown): void {
+        console.log("Valor FormArray 2:", _value);
     }
-    getFormArray3Value(value: any): void {
-        console.log("datos del form 3 Array", value);
+    getFormArray3Value(_value: unknown): void {
+        console.log("Valor FormArray 3:", _value);
     }
 
-    getFormArrayWithChangeEventValue(value: any): void {
-        console.log("datos del form Array con evento de cambio a padre", value);
+    getFormArrayWithChangeEventValue(_value: unknown): void {
+        console.log("Valor FormArray con evento de cambio:", _value);
     }
 
     // La funcion handleFieldChange() se tiene que hacer manualmente cuando un campo en la configuracion tiene la propiedad
@@ -148,11 +155,11 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
     // un selector de país que al cambiar su valor recarga las opciones del selector de provincia.
     handleFieldChange(event: {
         fieldName: string;
-        value: any;
+        value: unknown;
         indexRow: number;
     }): void {
         if (event.fieldName === "country") {
-            const countryId = event.value;
+            const countryId = event.value as number;
             const rowIndex = event.indexRow;
 
             this._provinceService
@@ -175,6 +182,8 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
                     );
                 });
         }
+        // Si tuviese que preguntar por más campos que emitan eventos de cambio, se pueden agregar más condiciones aquí.
+        // Ejemplo: if (event.fieldName === 'otroCampo') { ...  ... }
     }
 
     /**
@@ -186,37 +195,61 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
      */
     updateSelectOptionsAndReset(
         rowIndex: number,
-        targetFieldName: string, // 👈 Nombre del campo a actualizar
+        targetFieldName: string, //  Nombre del campo a actualizar
         newOptions: SelectItem[],
     ): void {
-        // 1. Localizar y mutar el campo de configuración
-        const fieldConfigToUpdate = this.formArrayWithChangeEvent.find(
-            (f): boolean => f.fieldName === targetFieldName,
-        );
+        // Use ViewChildren to find the specific child bound to `formArrayWithChangeEvent`.
+        const childInstance = this.formArrayChildren
+            ? this.formArrayChildren.find(
+                  (c: FormArrayComponent): boolean =>
+                      c.id === this.formArrayWithChangeId,
+              )
+            : undefined;
 
-        if (fieldConfigToUpdate) {
-            // Asignar las nuevas opciones
-            fieldConfigToUpdate.selectItems = newOptions;
+        if (childInstance) {
+            const child = childInstance as unknown as {
+                updateSelectItemsForRowAndResetControl?: (
+                    fieldName: string,
+                    rowIndex: number,
+                    items: SelectItem[],
+                ) => void;
+                setSelectItemsForRow?: (
+                    fieldName: string,
+                    rowIndex: number,
+                    items: SelectItem[],
+                ) => void;
+            };
 
-            // 2. Acceder y resetear el control en la fila del formulario que esta en form-array.component.ts
-            if (this.ViewChildFormArrayComponent) {
-                // Usamos nombre de ViewChild
-                const rows = this.ViewChildFormArrayComponent.rows;
+            if (
+                typeof child.updateSelectItemsForRowAndResetControl ===
+                "function"
+            ) {
+                child.updateSelectItemsForRowAndResetControl(
+                    targetFieldName,
+                    rowIndex,
+                    newOptions,
+                );
+            } else if (typeof child.setSelectItemsForRow === "function") {
+                // Fallback: set per-row items and reset from parent if helper not available
+                child.setSelectItemsForRow(
+                    targetFieldName,
+                    rowIndex,
+                    newOptions,
+                );
 
-                if (rows.length > rowIndex) {
+                const rows = childInstance.rows;
+                if (rows && rows.length > rowIndex) {
                     const rowGroup = rows.at(rowIndex) as FormGroup;
-                    // Resetear el valor del campo objetivo a null/vacío
                     rowGroup.get(targetFieldName)?.setValue(null);
                 }
             }
+        } else {
+            // Child not yet available or not found; warn to aid debugging.
+            console.warn(
+                "updateSelectOptionsAndReset: target FormArrayComponent not found",
+                { targetFieldName, rowIndex },
+            );
         }
-
-        // 3. Forzar la detección de cambios: Crear una nueva referencia del Input.
-        this.formArrayWithChangeEvent = [...this.formArrayWithChangeEvent];
-        console.log(
-            "Configuración actualizada:",
-            this.formArrayWithChangeEvent,
-        );
     }
 
     private _loadData(): void {

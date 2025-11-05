@@ -21,12 +21,7 @@ export class ProvincesService {
     }
 
     getProvincesByCountry(countryId: number): Observable<Province[]> {
-        // Construye la URL de consulta: ".../provinces?countryId=X"
         const url = `${this.apiUrl}?countryId=${countryId}`;
-
-        console.log(`[ProvincesService] Llamando a la URL: ${url}`); // Para depuración
-
-        // JSON Server devolverá automáticamente un array de provincias que coincidan.
         return this._httpClient.get<Province[]>(url);
     }
 }

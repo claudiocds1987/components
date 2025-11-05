@@ -26,6 +26,7 @@ import {
     Validators,
 } from "@angular/forms";
 import { debounceTime, Subscription } from "rxjs";
+import { ChangeDetectorRef } from "@angular/core";
 import {
     FormArrayConfig,
     ValidationKey,
@@ -38,10 +39,7 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatRadioModule } from "@angular/material/radio";
 import { MatSelectModule } from "@angular/material/select";
-import { RequiredValidationDirective } from "../../directives/required-validation.directive";
 import { SkeletonDirective } from "../../directives/skeleton.directive";
-import { AlertComponent } from "../alert/alert.component";
-import { BreadcrumbComponent } from "../breadcrumb/breadcrumb.component";
 import { DateInputComponent } from "../date-input/date-input.component";
 import { MatIcon } from "@angular/material/icon";
 import { ReadOnlyDirective } from "../../directives/read-only.directive";
@@ -66,11 +64,8 @@ import { FeedbackComponent } from "../feedback/feedback.component";
         MatNativeDateModule,
         MatSelectModule,
         MatIcon,
-        BreadcrumbComponent,
-        AlertComponent,
         MatRadioModule,
         SkeletonDirective,
-        RequiredValidationDirective,
         ReadOnlyDirective,
         CustomValidationMessageDirective,
         FeedbackComponent,
@@ -80,6 +75,7 @@ import { FeedbackComponent } from "../feedback/feedback.component";
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
+    @Input() id?: string | number;
     @Input() formArrayConfig: FormArrayConfig[] = []; // Configuración de los campos que viene del componente padre
     @Input() data: unknown[] | null = null; // INPUT data: es la data que recibe por ejemplo del backend para llenar el FormArray (ej: Empleados)
     @Input() maxRows!: number | null;
@@ -118,9 +114,13 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
 
     // Mapa para almacenar los items originales de los 'select' (necesario para el filtrado)
     private _originalSelectItemsMap = new Map<string, SelectItem[]>();
+    // Mapa para overrides por fila: fieldName -> (rowIndex -> SelectItem[])
+    private _perRowSelectItems = new Map<string, Map<number, SelectItem[]>>();
 
     // Inyección de FormBuilder usando inject()
     private _fb = inject(FormBuilder);
+    // ChangeDetectorRef para forzar re-render en OnPush cuando actualizamos internamente
+    private _cdr = inject(ChangeDetectorRef);
 
     constructor() {
         this._createFormArray();
@@ -133,12 +133,14 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
 
         // 1. Inicializar la estructura la primera vez que la configuración llega
         if (configReceived && !this.isInitialized) {
+            console.log("NG ON CHANGE 1: ", this.formArrayConfig);
             this._initFormStructure();
             this.isInitialized = true;
         } else if (this.isInitialized) {
             // 2. Lógica de actualización si la configuración o los datos iniciales cambian
 
             if (configReceived) {
+                console.log("NG ON CHANGE 2");
                 this.initializeSelectMaps();
 
                 // Volver a aplicar el validador de unicidad al FormArray si la configuración cambia.
@@ -150,6 +152,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
 
             // Si los datos iniciales cambian después de la inicialización, repoblamos el FormArray.
             if (dataReceived) {
+                console.log("NG ON CHANGE 3");
                 this._resetAndLoadRows(this.data || []);
             }
 
@@ -194,10 +197,22 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         );
         const available = this.availableOptionsMap().get(fieldName) || [];
 
+        // Índice y posibles items específicos por fila
+        const index = this.rows.controls.indexOf(group);
+        const perRowMap = this._perRowSelectItems.get(fieldName);
+        const perRowItems = perRowMap ? perRowMap.get(index) : undefined;
+
+        // Si existen items override por fila, devolverlos directamente (caso típico: provincias cargadas por fila)
+        if (perRowItems && perRowItems.length > 0) {
+            return perRowItems;
+        }
+
+        // Si es repetible o el valor actual es null, devolver el conjunto calculado por unicidad (available)
         if (fieldConfig?.isRepeated || currentValue === null) {
             return available;
         }
 
+        // Para campos únicos: calcular disponibilidad respecto a selecciones globales
         const globallySelected = this._selectedValuesByField()[fieldName] || [];
         const occurrenceCount = globallySelected.filter(
             (val): boolean => val === currentValue,
@@ -228,9 +243,57 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         return available;
     }
 
+    /*(ESTA FUNCION SE LLAMA DESDE EL PADRE SOLO PARA CUANDO EN LA CONFIGURACION EN EL PADRE LA PROP emitChangeToParent:true)
+     * API pública: (SOLO PARA CUANDO EN LA CONFIGURACION EN EL PADRE LA PROP emitChangeToParent:true)
+     * ESTA FUNCION SE LLAMA DESDE EL PADRE actualizar las opciones de un select para una fila específica
+     * Esto evita tener que reemplazar toda la configuración desde el padre.
+     */
+    public setSelectItemsForRow(
+        fieldName: string,
+        rowIndex: number,
+        items: SelectItem[],
+    ): void {
+        let map = this._perRowSelectItems.get(fieldName);
+        if (!map) {
+            map = new Map<number, SelectItem[]>();
+            this._perRowSelectItems.set(fieldName, map);
+        }
+        map.set(rowIndex, items);
+
+        // Recalcula las opciones disponibles
+        this._calculateSelectAvailableOptions();
+    }
+
+    /*(ESTA FUNCION SE LLAMNA DESDE EL PADRE SOLO PARA CUANDO EN LA CONFIGURACION EN EL PADRE LA PROP emitChangeToParent:true)
+     * Helper público (SOLO PARA CUANDO EN LA CONFIGURACION EN EL PADRE LA PROP emitChangeToParent:true)
+     * actualiza las opciones por fila y resetea el control
+     * dentro del propio componente hijo para evitar races entre padre/hijo.
+     */
+    public updateSelectItemsForRowAndResetControl(
+        fieldName: string,
+        rowIndex: number,
+        items: SelectItem[],
+    ): void {
+        // 1. Guardar override por fila
+        this.setSelectItemsForRow(fieldName, rowIndex, items);
+
+        // 2. Resetear el control en la fila correspondiente (si existe)
+        // try {
+        const rowsArray = this.rows;
+        if (rowsArray && rowsArray.length > rowIndex) {
+            const rowGroup = rowsArray.at(rowIndex) as FormGroup;
+            const control = rowGroup.get(fieldName) as FormControl | null;
+            if (control) {
+                control.setValue(null);
+            }
+        }
+
+        // 3. Recalcular opciones disponibles para propagar cambios
+        this._calculateSelectAvailableOptions();
+    }
+
     // Crea un nuevo FormGroup (una "fila") basándose en la configuración de datos.
     // Recibe opcionalmente un objeto con los valores iniciales para precargar los controles.
-
     createRowGroup(
         initialValues: Record<string, any> = {},
         indexRow?: number,
@@ -447,6 +510,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
             }),
         );
         // 2. Suscripción para emitir el valor del FormArray al componente padre SOLO cuando es VÁLIDO
+
         this._valueChangesSubscription.add(
             this.rows.statusChanges
                 .pipe(
@@ -455,11 +519,9 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
                 )
                 .subscribe((status: string): void => {
                     if (status === "VALID") {
-                        console.log("emitFormArrayValue - válido");
                         // Emite el valor completo del FormArray si es válido
                         this.emitFormArrayValue.emit(this.rows.value);
                     } else {
-                        console.log("emitFormArrayValue - inválido");
                         // Emite null si es inválido (o si cambia de válido a inválido)
                         this.emitFormArrayValue.emit(null);
                     }
