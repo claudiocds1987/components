@@ -79,19 +79,21 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     @Input() formArrayConfig: FormArrayConfig[] = []; // Configuración de los campos que viene del componente padre
     @Input() data: unknown[] | null = null; // INPUT data: es la data que recibe por ejemplo del backend para llenar el FormArray (ej: Empleados)
     @Input() maxRows!: number | null;
-    // INPUT: Recibe la data dinámica calculada en el padre
+    // INPUT selectItemsOverrides: Usado por el Padre para enviar opciones cargadas en cascada (ej. Provincias) para un campo específico en una fila del FormArray.
     @Input() selectItemsOverrides: Record<string, Map<number, SelectItem[]>> =
         {};
-    // INPUT: Para saber qué fila y campo se actualizaron por última vez.
+    // INPUT lastOverride: Para saber qué fila y campo se actualizaron por última vez.
     @Input() lastOverride: { fieldName: string; rowIndex: number } | null =
         null;
     isLoadingSig = input<boolean>(true);
 
+    // OUTPUT emitFormArrayValue: emite el valor completo del FormArray al componente padre cuando es VÁLIDO.
     @Output() emitFormArrayValue: EventEmitter<any[] | null> = new EventEmitter<
         any[] | null
     >();
 
-    // El evento emitirá: el nombre del campo, su nuevo valor y el índice de la fila.
+    // OUTPUT fieldChange: si en la configuracion algùn campo tiene la prop. emitChangeToParent = true, el evento emitirá: el nombre del campo, su nuevo valor y el índice de la fila.
+    // para que el componente padre pueda reaccionar a este cambio (ej. cargar las provincias correspondientes al pais).
     @Output() fieldChange = new EventEmitter<{
         fieldName: string;
         value: any;
@@ -120,13 +122,9 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
 
     // Mapa para almacenar los items originales de los 'select' (necesario para el filtrado)
     private _originalSelectItemsMap = new Map<string, SelectItem[]>();
-    // Mapa para overrides por fila: fieldName -> (rowIndex -> SelectItem[])
-    // private _perRowSelectItems = new Map<string, Map<number, SelectItem[]>>();
 
     // Inyección de FormBuilder usando inject()
     private _fb = inject(FormBuilder);
-    // ChangeDetectorRef para forzar re-render en OnPush cuando actualizamos internamente
-    private _cdr = inject(ChangeDetectorRef);
 
     constructor() {
         this._createFormArray();
@@ -137,20 +135,18 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
             changes["formArrayConfig"] && this.formArrayConfig.length > 0;
         const dataReceived = changes["data"]; // Comprobar si initialData ha llegado/cambiado
 
-        // 🟢 ACTUALIZADO: Capturamos el cambio en las opciones o en la instrucción de reseteo.
+        // Aca Capturamos el cambio en las opciones o en la instrucción de reseteo.
         const hasOverrideChanged = changes["selectItemsOverrides"];
         const hasLastOverrideChanged = changes["lastOverride"];
 
         // 1. Inicializar la estructura la primera vez que la configuración llega
         if (configReceived && !this.isInitialized) {
-            console.log("NG ON CHANGE 1: ", this.formArrayConfig);
             this._initFormStructure();
             this.isInitialized = true;
         } else if (this.isInitialized) {
             // 2. Lógica de actualización si la configuración o los datos iniciales cambian
 
             if (configReceived) {
-                console.log("NG ON CHANGE 2");
                 this.initializeSelectMaps();
 
                 // Volver a aplicar el validador de unicidad al FormArray si la configuración cambia.
@@ -162,7 +158,6 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
 
             // Si los datos iniciales cambian después de la inicialización, repoblamos el FormArray.
             if (dataReceived) {
-                console.log("NG ON CHANGE 3");
                 this._resetAndLoadRows(this.data || []);
             }
 
@@ -201,8 +196,19 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         return this.mainForm.valid;
     }
 
-    // Lógica para mostrar opciones disponibles y re-introducir el valor actual (si no es duplicado)
-    //
+    /**
+     * getOptionsForField(fieldName: string, group: AbstractControl,): SelectItem[]
+     *
+     * Determina el conjunto final de opciones disponibles (SelectItem[]) para un selector.
+     *
+     * Esta función es el punto de control que aplica:
+     * 1. La lógica de cascada: Si hay opciones específicas por fila (Overrides, ej. Provincias).
+     * 2. La lógica de unicidad: Restringe las opciones si el campo no es repetible.
+     *
+     * @param fieldName El nombre del campo (ej. 'province').
+     * @param group El FormGroup de la fila actual (para obtener el índice).
+     * @returns Un array de SelectItem[] que debe mostrar el selector.
+     */
     getOptionsForField(
         fieldName: string,
         group: AbstractControl,
@@ -217,7 +223,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         // Índice de la fila actual
         const index = this.rows.controls.indexOf(group);
 
-        // 🟢 NUEVO: Obtener los items de anulación (override) usando el Input
+        // Aca se Obtienen los items de anulación (override) usando el Input
         const perRowItems =
             this.selectItemsOverrides[fieldName]?.get(index) ?? undefined;
 
@@ -262,7 +268,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         return available;
     }
 
-    // Crea un nuevo FormGroup (una "fila") basándose en la configuración de datos.
+    // createRowGroup() Crea un nuevo FormGroup (una "fila") basándose en la configuración de datos.
     // Recibe opcionalmente un objeto con los valores iniciales para precargar los controles.
     createRowGroup(
         initialValues: Record<string, any> = {},
@@ -334,7 +340,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         return group;
     }
 
-    // Añade una nueva fila (FormGroup) al FormArray.
+    // addRow(): Añade una nueva fila (FormGroup) al FormArray.
     addRow(): void {
         // Si el input maxRows (si se establecio un max de rows desde el padre) es >= a la cantidad de rows del formArray no se pueden seguir agregando
         if (this.maxRows !== null && this.rows.length >= this.maxRows) {
@@ -365,12 +371,22 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         this.rows.markAsDirty();
     }
 
+    /**
+     * _initFormStructure(): Inicializa la estructura del FormArray y sus propiedades de soporte.
+     *
+     * Esta función se ejecuta una sola vez al inicio (en ngOnChanges) y realiza
+     * las siguientes tareas:
+     * 1. Prepara los mapas de opciones iniciales para los selects.
+     * 2. Establece el validador de unicidad global (para evitar duplicados en todo el FormArray).
+     * 3. Carga los datos iniciales ('this.data') o agrega una fila vacía si no hay datos.
+     * 4. Calcula el conjunto inicial de opciones disponibles para todos los selects.
+     */
     private _initFormStructure(): void {
         // 1. Inicializa los mapas de opciones
         this.initializeSelectMaps();
 
         // 2. La diferencia de "checkDuplicatedInEntireFormArray()" es que valida en todas las filas del formArray
-        // de esta forma se asegura que no haya duplicados en ningun campo marcado como isRepeated: false
+        // de esta forma se asegura que no haya duplicados en ningun campo marcado en lña configuración del Padre como isRepeated: false
         // en todo el FormArray completo.
         const dateValidator = checkDuplicatedInEntireFormArray(
             this.formArrayConfig,
@@ -378,7 +394,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         this.rows.setValidators(dateValidator);
         this.rows.updateValueAndValidity(); // Ejecutar el validador inmediatamente
 
-        // 3. Si hay datos iniciales, usarlos para poblar el FormArray
+        // 3. Si hay datos iniciales, usarlos para cargar el FormArray
         if (this.data && this.data.length > 0) {
             this._resetAndLoadRows(this.data);
         } else if (this.rows.length === 0) {
@@ -428,9 +444,27 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         this.mainForm.markAsPristine();
     }
 
-    // _flattenObject() Aplana un objeto anidado para extraer todas las propiedades
-    // de los sub-objetos y colocarlas en un solo objeto.
-    // El componente padre va a recibir este objeto plano y es quien tiene que armar/mapear el objeto que necesita el backend para guardar.
+    /**
+     * _flattenObject(): Record<string, any>
+     *
+     * Transforma un objeto de datos anidado (generalmente el valor de una fila proveniente del backend,
+     * via @Input() data) en un objeto de un solo nivel (plano).
+     *
+     * Utilidad: Esta función es necesaria para "deshacer" cualquier anidamiento que la data del backend
+     * pueda tener (ej. { empleado: { nombre: 'A' } }) y convertirlo a un formato simple
+     * ({ nombre: 'A' }) que el FormGroup pueda asignar correctamente. Esto asegura que todos los
+     * FormControls, independientemente de su estructura original, se mapeen correctamente al cargar el FormArray.
+     *
+     * NOTA:
+     *  - Los arrays (incluyendo los FormArrays) y los valores primitivos se mantienen intactos.
+     *  - Esta función maneja solo un nivel de anidamiento. Si hay múltiples niveles,.
+     *  - El componente padre va a recibir este objeto plano y es quien tiene que armar/mapear el objeto que necesita el backend para guardar.
+     *
+     * @param obj El objeto anidado (ej. una fila de 'data') a aplanar.
+     * @returns Un nuevo objeto plano listo para ser asignado a un FormGroup de la fila.
+     *
+     */
+
     private _flattenObject(obj: Record<string, any>): Record<string, any> {
         const flattened: Record<string, any> = {};
 

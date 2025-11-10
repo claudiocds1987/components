@@ -150,16 +150,13 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
         console.log("Valor FormArray con evento de cambio:", _value);
     }
 
-    // La funcion handleFieldChange() se tiene que hacer manualmente cuando un campo en la configuracion tiene la propiedad
-    // emitChangeToParent: true. Esta funcion obtiene el campo que ha cambiado, su nuevo valor y el índice de la fila.
-    // siempre y cuando en la configuración se haya establecido la propiedad emitChangeToParent: true
-    // esta funcion es ideal para cargar opciones dependientes en selects anidados. Ejemplo: país -> provincia
-    // un selector de país que al cambiar su valor recarga las opciones del selector de provincia.
-    // En EmployeeFormArrayComponent (Padre)
-
     /**
-     * Maneja el cambio de valor en cualquier campo del FormArray,
-     * En este caso solo para gestionar la carga de opciones dependientes (País -> Provincia).
+     * la funciòn  handleFieldChange() Maneja el evento de cambio emitido por el FormArrayComponent (hijo) cuando un
+     * campo tiene la propiedad 'emitChangeToParent: true'.
+     *
+     * Esta función es responsable de implementar la lógica de dependencia de datos
+     * (e.j., país cambia, lo que dispara la carga de opciones para provincia).
+     * * @param event Contiene el nombre del campo que cambió, su nuevo valor y el índice de la fila.
      */
     handleFieldChange(event: {
         fieldName: string;
@@ -440,6 +437,7 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
                 fieldType: "email",
                 label: "Email",
                 placeHolder: "Ej: usuario@dominio.com",
+                validations: [{ type: ValidationKey.email }],
                 isRepeated: false,
                 isReadOnly: true,
             },
