@@ -1,0 +1,1 @@
+import{_ as e,k as i}from"./chunk-Y3ZRIA3V.js";var n=(()=>{class t{constructor(){this._isLoading$$=new i(!1),this.isLoading$=this._isLoading$$.asObservable()}show(){this._isLoading$$.next(!0)}hide(){this._isLoading$$.next(!1)}static{this.\u0275fac=function(o){return new(o||t)}}static{this.\u0275prov=e({token:t,factory:t.\u0275fac,providedIn:"root"})}}return t})();export{n as a};
