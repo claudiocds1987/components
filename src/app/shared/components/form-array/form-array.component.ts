@@ -79,6 +79,12 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     @Input() formArrayConfig: FormArrayConfig[] = []; // Configuración de los campos que viene del componente padre
     @Input() data: unknown[] | null = null; // INPUT data: es la data que recibe por ejemplo del backend para llenar el FormArray (ej: Empleados)
     @Input() maxRows!: number | null;
+    // INPUT: Recibe la data dinámica calculada en el padre
+    @Input() selectItemsOverrides: Record<string, Map<number, SelectItem[]>> =
+        {};
+    // INPUT: Para saber qué fila y campo se actualizaron por última vez.
+    @Input() lastOverride: { fieldName: string; rowIndex: number } | null =
+        null;
     isLoadingSig = input<boolean>(true);
 
     @Output() emitFormArrayValue: EventEmitter<any[] | null> = new EventEmitter<
@@ -115,7 +121,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     // Mapa para almacenar los items originales de los 'select' (necesario para el filtrado)
     private _originalSelectItemsMap = new Map<string, SelectItem[]>();
     // Mapa para overrides por fila: fieldName -> (rowIndex -> SelectItem[])
-    private _perRowSelectItems = new Map<string, Map<number, SelectItem[]>>();
+    // private _perRowSelectItems = new Map<string, Map<number, SelectItem[]>>();
 
     // Inyección de FormBuilder usando inject()
     private _fb = inject(FormBuilder);
@@ -130,6 +136,10 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         const configReceived =
             changes["formArrayConfig"] && this.formArrayConfig.length > 0;
         const dataReceived = changes["data"]; // Comprobar si initialData ha llegado/cambiado
+
+        // 🟢 ACTUALIZADO: Capturamos el cambio en las opciones o en la instrucción de reseteo.
+        const hasOverrideChanged = changes["selectItemsOverrides"];
+        const hasLastOverrideChanged = changes["lastOverride"];
 
         // 1. Inicializar la estructura la primera vez que la configuración llega
         if (configReceived && !this.isInitialized) {
@@ -156,11 +166,17 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
                 this._resetAndLoadRows(this.data || []);
             }
 
+            // 🟢 NUEVA LÓGICA: Si el padre envió nuevas opciones dependientes O la instrucción de reseteo
+            if (hasOverrideChanged || hasLastOverrideChanged) {
+                // Llama a la función de reseteo. El reseteo (setValue(null)) SÓLO ocurre
+                // si 'lastOverride' tiene información de la fila que cambió.
+                this._applyOverridesAndResetControls();
+            }
+
             // Recalcula las opciones del select en cualquier caso de actualización.
             this._calculateSelectAvailableOptions();
 
-            // Re-validar las filas después de cualquier cambio (ejecuta tanto el validador de unicidad del FormArray
-            // como el validador de rango del FormGroup de cada fila).
+            // Re-validar las filas después de cualquier cambio (ejecuta validador de unicidad/rango).
             this.rows.updateValueAndValidity();
         }
     }
@@ -186,6 +202,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     // Lógica para mostrar opciones disponibles y re-introducir el valor actual (si no es duplicado)
+    //
     getOptionsForField(
         fieldName: string,
         group: AbstractControl,
@@ -197,12 +214,14 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         );
         const available = this.availableOptionsMap().get(fieldName) || [];
 
-        // Índice y posibles items específicos por fila
+        // Índice de la fila actual
         const index = this.rows.controls.indexOf(group);
-        const perRowMap = this._perRowSelectItems.get(fieldName);
-        const perRowItems = perRowMap ? perRowMap.get(index) : undefined;
 
-        // Si existen items override por fila, devolverlos directamente (caso típico: provincias cargadas por fila)
+        // 🟢 NUEVO: Obtener los items de anulación (override) usando el Input
+        const perRowItems =
+            this.selectItemsOverrides[fieldName]?.get(index) ?? undefined;
+
+        // Si existen items override por fila (ej: provincias o ciudades cargadas dinámicamente)
         if (perRowItems && perRowItems.length > 0) {
             return perRowItems;
         }
@@ -241,55 +260,6 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         }
 
         return available;
-    }
-
-    /*(ESTA FUNCION SE LLAMA DESDE EL PADRE SOLO PARA CUANDO EN LA CONFIGURACION EN EL PADRE LA PROP emitChangeToParent:true)
-     * API pública: (SOLO PARA CUANDO EN LA CONFIGURACION EN EL PADRE LA PROP emitChangeToParent:true)
-     * ESTA FUNCION SE LLAMA DESDE EL PADRE actualizar las opciones de un select para una fila específica
-     * Esto evita tener que reemplazar toda la configuración desde el padre.
-     */
-    public setSelectItemsForRow(
-        fieldName: string,
-        rowIndex: number,
-        items: SelectItem[],
-    ): void {
-        let map = this._perRowSelectItems.get(fieldName);
-        if (!map) {
-            map = new Map<number, SelectItem[]>();
-            this._perRowSelectItems.set(fieldName, map);
-        }
-        map.set(rowIndex, items);
-
-        // Recalcula las opciones disponibles
-        this._calculateSelectAvailableOptions();
-    }
-
-    /*(ESTA FUNCION SE LLAMNA DESDE EL PADRE SOLO PARA CUANDO EN LA CONFIGURACION EN EL PADRE LA PROP emitChangeToParent:true)
-     * Helper público (SOLO PARA CUANDO EN LA CONFIGURACION EN EL PADRE LA PROP emitChangeToParent:true)
-     * actualiza las opciones por fila y resetea el control
-     * dentro del propio componente hijo para evitar races entre padre/hijo.
-     */
-    public updateSelectItemsForRowAndResetControl(
-        fieldName: string,
-        rowIndex: number,
-        items: SelectItem[],
-    ): void {
-        // 1. Guardar override por fila
-        this.setSelectItemsForRow(fieldName, rowIndex, items);
-
-        // 2. Resetear el control en la fila correspondiente (si existe)
-        // try {
-        const rowsArray = this.rows;
-        if (rowsArray && rowsArray.length > rowIndex) {
-            const rowGroup = rowsArray.at(rowIndex) as FormGroup;
-            const control = rowGroup.get(fieldName) as FormControl | null;
-            if (control) {
-                control.setValue(null);
-            }
-        }
-
-        // 3. Recalcular opciones disponibles para propagar cambios
-        this._calculateSelectAvailableOptions();
     }
 
     // Crea un nuevo FormGroup (una "fila") basándose en la configuración de datos.
@@ -614,5 +584,27 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
             }
         }
         return fieldValidators;
+    }
+
+    private _applyOverridesAndResetControls(): void {
+        const rowsArray = this.rows;
+        const lastOverride = this.lastOverride;
+
+        if (!lastOverride) {
+            return; // No hay información de cambio, no hay nada que resetear.
+        }
+
+        const { fieldName, rowIndex } = lastOverride;
+
+        // Solo reseteamos el campo afectado en la fila afectada
+        if (rowsArray && rowsArray.length > rowIndex) {
+            const rowGroup = rowsArray.at(rowIndex) as FormGroup;
+            const control = rowGroup.get(fieldName) as FormControl | null;
+
+            // Resetear el control para limpiar el valor obsoleto (ej. Provincia).
+            if (control) {
+                control.setValue(null);
+            }
+        }
     }
 }

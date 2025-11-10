@@ -3,13 +3,11 @@ import {
     ChangeDetectionStrategy,
     OnInit,
     OnDestroy,
-    ViewChildren,
-    QueryList,
     signal,
     inject,
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { FormGroup } from "@angular/forms";
+
 import { forkJoin, Observable, of, catchError } from "rxjs";
 
 import { FormArrayComponent } from "../../shared/components/form-array/form-array.component";
@@ -35,10 +33,14 @@ import { BreadcrumbService } from "../../shared/services/breadcrumb.service";
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
-    // Obtener referencias a todas las instancias del componente hijo y elegir la correcta
-    @ViewChildren(FormArrayComponent)
-    formArrayChildren!: QueryList<FormArrayComponent>;
     isLoadingSig = signal(true);
+
+    selectItemsOverridesSig = signal<Record<string, Map<number, SelectItem[]>>>(
+        {},
+    );
+    lastOverrideSig = signal<{ fieldName: string; rowIndex: number } | null>(
+        null,
+    );
     formArrayConfig1: FormArrayConfig[] = [];
     formArrayConfig2: FormArrayConfig[] = [];
     formArrayConfig3: FormArrayConfig[] = [];
@@ -153,19 +155,27 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
     // siempre y cuando en la configuración se haya establecido la propiedad emitChangeToParent: true
     // esta funcion es ideal para cargar opciones dependientes en selects anidados. Ejemplo: país -> provincia
     // un selector de país que al cambiar su valor recarga las opciones del selector de provincia.
+    // En EmployeeFormArrayComponent (Padre)
+
+    /**
+     * Maneja el cambio de valor en cualquier campo del FormArray,
+     * En este caso solo para gestionar la carga de opciones dependientes (País -> Provincia).
+     */
     handleFieldChange(event: {
         fieldName: string;
         value: unknown;
         indexRow: number;
     }): void {
-        if (event.fieldName === "country") {
-            const countryId = event.value as number;
-            const rowIndex = event.indexRow;
+        const { fieldName, value, indexRow } = event;
 
+        // --- Lógica: País (country) cambia ---
+        if (fieldName === "country") {
+            const countryId = value as number;
+
+            // 1. Obtener Provincias
             this._provinceService
                 .getProvincesByCountry(countryId)
                 .subscribe((provinces: Province[]): void => {
-                    // 1. Mapear la respuesta del servicio (Province[]) a SelectItem[]
                     const newProvinceOptions: SelectItem[] = provinces.map(
                         (province: Province): SelectItem => ({
                             id: province.id,
@@ -173,83 +183,37 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
                         }),
                     );
 
-                    // 2. Aplicar la actualización de la configuración con la función genérica
-                    // Pasamos el índice, el nombre del campo objetivo ('province') y las nuevas opciones.
-                    this.updateSelectOptionsAndReset(
-                        rowIndex,
-                        "province", // Campo a actualizar mismo nombre que s epuso en la configuracion
-                        newProvinceOptions,
+                    // 2. Actualizar el mapa de Overrides para 'province'
+                    // Mètodo del signal 'update' para asegurar la inmutabilidad y que Angular detecte el cambio en la Signal.
+                    // selectItemsOverridesSig se envia por Input al componente hijo FormArrayComponent
+                    this.selectItemsOverridesSig.update(
+                        (
+                            currentOverrides,
+                        ): Record<string, Map<number, SelectItem[]>> => {
+                            const provinceMap = currentOverrides["province"]
+                                ? new Map(currentOverrides["province"])
+                                : new Map<number, SelectItem[]>();
+
+                            provinceMap.set(indexRow, newProvinceOptions);
+
+                            return {
+                                ...currentOverrides,
+                                province: provinceMap,
+                            };
+                        },
                     );
+
+                    // 3. Notifica al hijo qué campo debe resetear (province)
+                    // Fundamental para que el hijo solo borre el valor de la provincia en esta fila.
+                    // el signal lastOverrideSig se envia por Input al componente hijo FormArrayComponent
+                    this.lastOverrideSig.set({
+                        fieldName: "province",
+                        rowIndex: indexRow,
+                    });
                 });
         }
-        // Si tuviese que preguntar por más campos que emitan eventos de cambio, se pueden agregar más condiciones aquí.
-        // Ejemplo: if (event.fieldName === 'otroCampo') { ...  ... }
-    }
 
-    /**
-     * Función genérica para actualizar las opciones de un SelectField
-     * y resetear su valor en una fila específica.
-     * @param rowIndex El índice de la fila del FormArray.
-     * @param targetFieldName El nombre del campo cuyas opciones se van a actualizar (ej: 'province').
-     * @param newOptions La nueva lista de opciones (SelectItem[]).
-     */
-    updateSelectOptionsAndReset(
-        rowIndex: number,
-        targetFieldName: string, //  Nombre del campo a actualizar
-        newOptions: SelectItem[],
-    ): void {
-        // Use ViewChildren to find the specific child bound to `formArrayWithChangeEvent`.
-        const childInstance = this.formArrayChildren
-            ? this.formArrayChildren.find(
-                  (c: FormArrayComponent): boolean =>
-                      c.id === this.formArrayWithChangeId,
-              )
-            : undefined;
-
-        if (childInstance) {
-            const child = childInstance as unknown as {
-                updateSelectItemsForRowAndResetControl?: (
-                    fieldName: string,
-                    rowIndex: number,
-                    items: SelectItem[],
-                ) => void;
-                setSelectItemsForRow?: (
-                    fieldName: string,
-                    rowIndex: number,
-                    items: SelectItem[],
-                ) => void;
-            };
-
-            if (
-                typeof child.updateSelectItemsForRowAndResetControl ===
-                "function"
-            ) {
-                child.updateSelectItemsForRowAndResetControl(
-                    targetFieldName,
-                    rowIndex,
-                    newOptions,
-                );
-            } else if (typeof child.setSelectItemsForRow === "function") {
-                // Fallback: set per-row items and reset from parent if helper not available
-                child.setSelectItemsForRow(
-                    targetFieldName,
-                    rowIndex,
-                    newOptions,
-                );
-
-                const rows = childInstance.rows;
-                if (rows && rows.length > rowIndex) {
-                    const rowGroup = rows.at(rowIndex) as FormGroup;
-                    rowGroup.get(targetFieldName)?.setValue(null);
-                }
-            }
-        } else {
-            // Child not yet available or not found; warn to aid debugging.
-            console.warn(
-                "updateSelectOptionsAndReset: target FormArrayComponent not found",
-                { targetFieldName, rowIndex },
-            );
-        }
+        // Si por ejemplo hubiese más lógica de dependencia (ej. Provincia -> Ciudad), se agrega aca.
     }
 
     private _loadData(): void {
