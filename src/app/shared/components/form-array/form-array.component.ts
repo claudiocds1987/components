@@ -79,10 +79,10 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     @Input() formArrayConfig: FormArrayConfig[] = []; // Configuración de los campos que viene del componente padre
     @Input() data: unknown[] | null = null; // INPUT data: es la data que recibe por ejemplo del backend para llenar el FormArray (ej: Empleados)
     @Input() maxRows!: number | null;
-    // INPUT selectItemsOverrides: Usado por el Padre para enviar opciones cargadas en cascada (ej. Provincias) para un campo específico en una fila del FormArray.
+    // INPUT selectItemsOverrides: (ESTE INPUT SOLO SE USA CUANDO EN EL PADRE LA PROP. emitChangeToParent: true) Usado por el Padre para enviar opciones cargadas en cascada (ej. Provincias) para un campo específico en una fila del FormArray.
     @Input() selectItemsOverrides: Record<string, Map<number, SelectItem[]>> =
         {};
-    // INPUT lastOverride: Para saber qué fila y campo se actualizaron por última vez.
+    // INPUT lastOverride: (ESTE INPUT SOLO SE USA CUANDO EN EL PADRE LA PROP. emitChangeToParent: true) Para saber qué fila y campo se actualizaron por última vez.
     @Input() lastOverride: { fieldName: string; rowIndex: number } | null =
         null;
     isLoadingSig = input<boolean>(true);

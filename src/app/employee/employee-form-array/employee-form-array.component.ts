@@ -112,6 +112,7 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
     private _countryServices = inject(CountryService);
     private _alertService = inject(AlertService);
     private _breadcrumbService = inject(BreadcrumbService);
+    private _provinceService = inject(ProvincesService);
 
     private _positions: SelectItem[] = [];
     private _countries: SelectItem[] = [];
@@ -120,8 +121,6 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
         { id: 1, description: "Masculino" },
         { id: 2, description: "Femenino" },
     ];
-
-    private _provinceService = inject(ProvincesService);
 
     constructor() {
         this._alertService.clearAlerts();
