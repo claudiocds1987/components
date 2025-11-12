@@ -1,6 +1,11 @@
 <app-spinner></app-spinner>
 <div class="banner">
-    <a href="/login">
+    <a
+        (click)="onLogout()"
+        (keydown.enter)="onLogout()"
+        tabindex="0"
+        style="cursor: pointer"
+    >
         <img src="assets/favicon.ico" alt="Logo de Angular" />
     </a>
     <h1>Componentes dinámicos</h1>
