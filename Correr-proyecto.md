@@ -90,7 +90,7 @@ ESTOS PASOS SOLO SE HACEN UNA VEZ (YA SE HICIERON)
 Nota: uso npx
 
 1. npx ng add angular-cli-ghpages (se ejecuta solo una vez, si ya fue ejecutado no hay que volverlo a hacer)
-2. npx ng deploy --base-href=/components/
+2. Para cada actualización en github pages: npx ng deploy --base-href=/components/
 3. ir a mi repositorio github a settings -> Pages:
    Dejar la configuracion como esta, deberia decir asi:
    BUILD AND DEPLOYMENT
