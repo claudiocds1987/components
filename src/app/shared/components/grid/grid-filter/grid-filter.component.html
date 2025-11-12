@@ -1,7 +1,8 @@
 <div class="filter-panel" [class.collapsed]="isCollapsedSig()">
-    <form [formGroup]="filterFormSig()" class="form">
+    <form [formGroup]="filterFormSig()" class="form" (ngSubmit)="applyFilter()">
         <div class="form-header">
             <button
+                type="button"
                 mat-icon-button
                 class="toggle-button"
                 (click)="toggleCollapse()"
@@ -85,9 +86,9 @@
 
             <div class="filter-actions">
                 <button
+                    type="submit"
                     mat-raised-button
                     color="primary"
-                    (click)="applyFilter()"
                     [disabled]="isReadyToApply()"
                 >
                     Aplicar Filtro
