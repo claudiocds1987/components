@@ -26,7 +26,6 @@ import {
     Validators,
 } from "@angular/forms";
 import { debounceTime, Subscription } from "rxjs";
-import { ChangeDetectorRef } from "@angular/core";
 import {
     FormArrayConfig,
     ValidationKey,
@@ -79,12 +78,16 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     @Input() formArrayConfig: FormArrayConfig[] = []; // Configuración de los campos que viene del componente padre
     @Input() data: unknown[] | null = null; // INPUT data: es la data que recibe por ejemplo del backend para llenar el FormArray (ej: Empleados)
     @Input() maxRows!: number | null;
-    // INPUT selectItemsOverrides: (ESTE INPUT SOLO SE USA CUANDO EN EL PADRE LA PROP. emitChangeToParent: true) Usado por el Padre para enviar opciones cargadas en cascada (ej. Provincias) para un campo específico en una fila del FormArray.
-    @Input() selectItemsOverrides: Record<string, Map<number, SelectItem[]>> =
-        {};
-    // INPUT lastOverride: (ESTE INPUT SOLO SE USA CUANDO EN EL PADRE LA PROP. emitChangeToParent: true) Para saber qué fila y campo se actualizaron por última vez.
-    @Input() lastOverride: { fieldName: string; rowIndex: number } | null =
-        null;
+
+    // INPUT SIGNAL selectItemsOverridesSig: (ESTE INPUT SOLO SE USA CUANDO EN EL PADRE LA PROP. emitChangeToParent: true) Usado por el Padre para enviar opciones cargadas en cascada (ej. Provincias) para un campo específico en una fila del FormArray.
+    selectItemsOverridesSig = input<Record<string, Map<number, SelectItem[]>>>(
+        {},
+    );
+    // INPUT SIGNAL lastOverrideSig: (ESTE INPUT SOLO SE USA CUANDO EN EL PADRE LA PROP. emitChangeToParent: true) Para saber qué fila y campo se actualizaron por última vez.
+    lastOverrideSig = input<{ fieldName: string; rowIndex: number } | null>(
+        null,
+    );
+    // INPUT SIGNAL isLoadingSig: indica si el FormArray está en estado de carga (por ejemplo, esperando datos del backend).
     isLoadingSig = input<boolean>(true);
 
     // OUTPUT emitFormArrayValue: emite el valor completo del FormArray al componente padre cuando es VÁLIDO.
@@ -103,27 +106,24 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
     // Formulario principal que contendrá el FormArray
     mainForm!: FormGroup;
 
-    // Signal que contiene las opciones disponibles después de aplicar la lógica de unicidad
+    // Signal availableOptionsMapSig: Contiene las opciones disponibles después de aplicar la lógica de unicidad
     // (Solo contiene las opciones que NADIE ha seleccionado)
-    availableOptionsMap = signal<Map<string, SelectItem[]>>(new Map());
+    availableOptionsMapSig = signal<Map<string, SelectItem[]>>(new Map());
 
     // getter para Acceso fácil al FormArray 'rows' en el html
     get rows(): FormArray {
         return this.mainForm.get("rows") as FormArray;
     }
 
-    // NUEVA SIGNAL: Contiene TODOS los valores seleccionados (incluyendo duplicados) por campo único.
+    // SIGNAL _selectedValuesByFieldSig: Contiene TODOS los valores seleccionados (incluyendo duplicados) por campo único.
     // Clave: fieldName (string), Valor: lista de IDs seleccionados (string[] | number[])
-    private _selectedValuesByField = signal<
+    private _selectedValuesByFieldSig = signal<
         Record<string, (string | number)[]>
     >({});
+
     private _valueChangesSubscription: Subscription = new Subscription();
     private isInitialized = false; // Bandera para controlar la inicialización
-
-    // Mapa para almacenar los items originales de los 'select' (necesario para el filtrado)
-    private _originalSelectItemsMap = new Map<string, SelectItem[]>();
-
-    // Inyección de FormBuilder usando inject()
+    private _originalSelectItemsMap = new Map<string, SelectItem[]>(); // Mapa para almacenar los items originales de los 'select' (necesario para el filtrado)
     private _fb = inject(FormBuilder);
 
     constructor() {
@@ -134,11 +134,6 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         const configReceived =
             changes["formArrayConfig"] && this.formArrayConfig.length > 0;
         const dataReceived = changes["data"]; // Comprobar si initialData ha llegado/cambiado
-
-        // Aca Capturamos el cambio en las opciones o en la instrucción de reseteo.
-        const hasOverrideChanged = changes["selectItemsOverrides"];
-        const hasLastOverrideChanged = changes["lastOverride"];
-
         // 1. Inicializar la estructura la primera vez que la configuración llega
         if (configReceived && !this.isInitialized) {
             this._initFormStructure();
@@ -148,7 +143,6 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
 
             if (configReceived) {
                 this.initializeSelectMaps();
-
                 // Volver a aplicar el validador de unicidad al FormArray si la configuración cambia.
                 const uniquenessValidator = checkDuplicatedInEntireFormArray(
                     this.formArrayConfig,
@@ -161,12 +155,10 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
                 this._resetAndLoadRows(this.data || []);
             }
 
-            // 🟢 NUEVA LÓGICA: Si el padre envió nuevas opciones dependientes O la instrucción de reseteo
-            if (hasOverrideChanged || hasLastOverrideChanged) {
-                // Llama a la función de reseteo. El reseteo (setValue(null)) SÓLO ocurre
-                // si 'lastOverride' tiene información de la fila que cambió.
-                this._applyOverridesAndResetControls();
-            }
+            // Verificamos si los valores de las signals han cambiado
+            // Llama a la función de reseteo. El reseteo (setValue(null)) SÓLO ocurre
+            // si 'lastOverride()' tiene información de la fila que cambió.
+            this._applyOverridesAndResetControls();
 
             // Recalcula las opciones del select en cualquier caso de actualización.
             this._calculateSelectAvailableOptions();
@@ -175,6 +167,12 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
             this.rows.updateValueAndValidity();
         }
     }
+
+    // Usamos 'lastOverride()' y 'selectItemsOverrides()' directamente en el ngOnInit/constructor
+    // o en funciones llamadas desde el template o subscriptions.
+    // Para simplificar, la lógica dependiente de estas signals se integró en ngOnChanges
+    // al no depender de observables, pero la lógica que estaba en ngOnChanges ahora se puede
+    // simplificar, ya que no dependemos del objeto `changes`.
 
     ngOnInit(): void {
         this.setupValueChangeSubscription();
@@ -218,14 +216,14 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         const fieldConfig = this.formArrayConfig.find(
             (f: FormArrayConfig): boolean => f.fieldName === fieldName,
         );
-        const available = this.availableOptionsMap().get(fieldName) || [];
+        const available = this.availableOptionsMapSig().get(fieldName) || [];
 
         // Índice de la fila actual
         const index = this.rows.controls.indexOf(group);
 
-        // Aca se Obtienen los items de anulación (override) usando el Input
+        // Aca se Obtienen los items de anulación (override) usando el input signal
         const perRowItems =
-            this.selectItemsOverrides[fieldName]?.get(index) ?? undefined;
+            this.selectItemsOverridesSig()[fieldName]?.get(index) ?? undefined;
 
         // Si existen items override por fila (ej: provincias o ciudades cargadas dinámicamente)
         if (perRowItems && perRowItems.length > 0) {
@@ -238,7 +236,8 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
         }
 
         // Para campos únicos: calcular disponibilidad respecto a selecciones globales
-        const globallySelected = this._selectedValuesByField()[fieldName] || [];
+        const globallySelected =
+            this._selectedValuesByFieldSig()[fieldName] || [];
         const occurrenceCount = globallySelected.filter(
             (val): boolean => val === currentValue,
         ).length;
@@ -456,9 +455,9 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
      * FormControls, independientemente de su estructura original, se mapeen correctamente al cargar el FormArray.
      *
      * NOTA:
-     *  - Los arrays (incluyendo los FormArrays) y los valores primitivos se mantienen intactos.
-     *  - Esta función maneja solo un nivel de anidamiento. Si hay múltiples niveles,.
-     *  - El componente padre va a recibir este objeto plano y es quien tiene que armar/mapear el objeto que necesita el backend para guardar.
+     * - Los arrays (incluyendo los FormArrays) y los valores primitivos se mantienen intactos.
+     * - Esta función maneja solo un nivel de anidamiento. Si hay múltiples niveles,.
+     * - El componente padre va a recibir este objeto plano y es quien tiene que armar/mapear el objeto que necesita el backend para guardar.
      *
      * @param obj El objeto anidado (ej. una fila de 'data') a aplanar.
      * @returns Un nuevo objeto plano listo para ser asignado a un FormGroup de la fila.
@@ -550,7 +549,7 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
             }
         });
 
-        this._selectedValuesByField.set(newSelectedValues);
+        this._selectedValuesByFieldSig.set(newSelectedValues);
 
         this.formArrayConfig.forEach((field: FormArrayConfig): void => {
             const originalItems = this._originalSelectItemsMap.get(
@@ -572,14 +571,14 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
             }
         });
 
-        this.availableOptionsMap.set(newAvailableOptionsMap);
+        this.availableOptionsMapSig.set(newAvailableOptionsMap);
     }
 
     private _getValidators(field: FormArrayConfig): any[] {
         const fieldValidators: any[] = [];
         if (field.validations) {
             for (const validation of field.validations) {
-                //  1. IGNORAR: El validador de rango cruzado se aplica a nivel de FormGroup (en createRowGroup), no de FormControl.
+                // 1. IGNORAR: El validador de rango cruzado se aplica a nivel de FormGroup (en createRowGroup), no de FormControl.
                 if (validation.type === ValidationKey.validateRange) {
                     continue;
                 }
@@ -622,7 +621,8 @@ export class FormArrayComponent implements OnChanges, OnInit, OnDestroy {
 
     private _applyOverridesAndResetControls(): void {
         const rowsArray = this.rows;
-        const lastOverride = this.lastOverride;
+        // 🟢 USANDO lastOverride()
+        const lastOverride = this.lastOverrideSig(); // Leer el valor de la signal
 
         if (!lastOverride) {
             return; // No hay información de cambio, no hay nada que resetear.

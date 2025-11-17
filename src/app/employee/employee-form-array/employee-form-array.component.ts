@@ -46,8 +46,7 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
     formArrayConfig3: FormArrayConfig[] = [];
     formArrayConfig4: FormArrayConfig[] = [];
     formArrayWithChangeEvent: FormArrayConfig[] = [];
-    // Id assigned to the instance that emits change events and should receive province updates
-    formArrayWithChangeId = "formWithChange";
+    formArrayWithChangeId = "formWithChange"; // ID asignado a la instancia que emite eventos de cambio y que debe recibir las actualizaciones de provincia.
 
     employeeData1: unknown[] = [
         { country: 1, gender: 1, position: 1, email: "juan.perez@empresa.com" },
@@ -150,7 +149,7 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * la funciòn  handleFieldChange() Maneja el evento de cambio emitido por el FormArrayComponent (hijo) cuando un
+     * la función handleFieldChange() Maneja el evento de cambio emitido por el FormArrayComponent (hijo) cuando un
      * campo tiene la propiedad 'emitChangeToParent: true'.
      *
      * Esta función es responsable de implementar la lógica de dependencia de datos
