@@ -14,6 +14,17 @@ import { GridComponent } from "./grid.component";
 
         fixture = TestBed.createComponent(GridComponent);
         component = fixture.componentInstance;
+        // Provide required input signals before change detection to avoid NG0950
+        (component as any).gridConfigSig.set({
+            columns: [],
+            paginator: { isServerSide: false },
+            hasInfiniteScroll: false,
+            hasSorting: { isServerSide: false },
+        } as any);
+        (component as any).gridDataSig.set([]);
+        (component as any).isLoadingSig.set(false);
+        (component as any).chipsSig.set([]);
+
         fixture.detectChanges();
     });
 

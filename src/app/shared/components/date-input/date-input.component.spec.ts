@@ -1,4 +1,8 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { RouterTestingModule } from "@angular/router/testing";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
 
 import { DateInputComponent } from "./date-input.component";
 
@@ -8,7 +12,13 @@ describe("DateInputComponent", (): void => {
 
     beforeEach(async (): Promise<void> => {
         await TestBed.configureTestingModule({
-            imports: [DateInputComponent],
+            imports: [
+                DateInputComponent,
+                NoopAnimationsModule,
+                HttpClientTestingModule,
+                RouterTestingModule,
+                MatSnackBarModule,
+            ],
         }).compileComponents();
 
         fixture = TestBed.createComponent(DateInputComponent);
