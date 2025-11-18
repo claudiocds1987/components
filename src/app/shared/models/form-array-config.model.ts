@@ -5,7 +5,7 @@ export interface FormArrayConfig {
     fieldName: string;
     fieldType: "text" | "select" | "date" | "number" | "email";
     label?: string;
-    placeHolder: string;
+    placeHolder?: string;
     selectItems?: SelectItem[]; // Requerido solo para 'select'
     validations?: { type: ValidationKey; value?: number | string }[];
     isReadOnly?: boolean;

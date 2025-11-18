@@ -3,11 +3,9 @@
 import {
     ChangeDetectionStrategy,
     Component,
-    EventEmitter,
     Input,
     OnDestroy,
     OnInit,
-    Output,
     inject,
     input,
 } from "@angular/core";
@@ -69,8 +67,7 @@ export class DateInputComponent
     @Input() label = "Fecha";
     @Input() placeholder = "";
     @Input() isDisabled = false;
-    @Output()
-    //@Input() isReadOnly = false;
+    // isReadOnly is an input signal, not an Output
     isReadOnly = input<boolean>(false);
 
     /*-----------------------------------------------------------------------------------------------------

@@ -9,20 +9,20 @@ import * as XLSX from "xlsx";
 export class ExportService {
     private _http = inject(HttpClient);
 
-    exportToExcel(data: any[], fileName: string): void {
+    exportToExcel(data: Record<string, unknown>[], fileName: string): void {
         const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
         const workbook: XLSX.WorkBook = {
             Sheets: { data: worksheet },
             SheetNames: ["data"],
         };
-        const excelBuffer: any = XLSX.write(workbook, {
+        const excelBuffer: ArrayBuffer = XLSX.write(workbook, {
             bookType: "xlsx",
             type: "array",
         });
         this._saveAsExcelFile(excelBuffer, fileName);
     }
 
-    private _saveAsExcelFile(buffer: any, fileName: string): void {
+    private _saveAsExcelFile(buffer: ArrayBuffer, fileName: string): void {
         const data: Blob = new Blob([buffer], {
             type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
         });

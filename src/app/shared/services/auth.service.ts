@@ -11,7 +11,7 @@ import {
 
 export type UserRole = "ADMIN" | "USUARIO_NORMAL" | "GERENTE" | "INVITADO";
 
-interface UserRecord {
+export interface UserRecord {
     id: number;
     username: string;
     password: string; // Requerido para la validación del mock

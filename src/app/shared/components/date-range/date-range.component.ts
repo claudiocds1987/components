@@ -1,16 +1,5 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-import {
-    Component,
-    Input,
-    forwardRef,
-    ChangeDetectionStrategy,
-} from "@angular/core";
-import {
-    FormGroup,
-    NG_VALIDATORS,
-    NG_VALUE_ACCESSOR,
-    ReactiveFormsModule,
-} from "@angular/forms";
+import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
+import { FormGroup, ReactiveFormsModule } from "@angular/forms";
 
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { CommonModule } from "@angular/common";
