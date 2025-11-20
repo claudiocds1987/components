@@ -168,6 +168,41 @@
                                         alt="img"
                                     />
                                 }
+
+                                @case ("actionButton") {
+                                    @if (col.actionButton) {
+                                        <button
+                                            [class]="
+                                                col.actionButton.class || ''
+                                            "
+                                            [style]="col.actionButton.style"
+                                            (click)="
+                                                col.actionButton.action &&
+                                                    col.actionButton.action(
+                                                        row.id
+                                                    )
+                                            "
+                                            [matTooltip]="
+                                                col.actionButton.tooltip || ''
+                                            "
+                                        >
+                                            @if (col.actionButton.icon) {
+                                                <img
+                                                    [src]="
+                                                        col.actionButton.icon
+                                                    "
+                                                    alt="icon"
+                                                />
+                                            }
+                                            @if (col.actionButton.text) {
+                                                <span>
+                                                    {{ col.actionButton.text }}
+                                                </span>
+                                            }
+                                        </button>
+                                    }
+                                }
+
                                 @case ("elipsis") {
                                     <button
                                         mat-icon-button

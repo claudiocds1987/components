@@ -16,7 +16,7 @@ export interface ActionButton {
     class?: string;
     type?: "download";
     tooltip?: string;
-    action?: () => void;
+    action?: (id?: number | string) => void;
 }
 
 export interface Column {
@@ -34,8 +34,8 @@ export interface Column {
     // si "type" es "img" grid.component se encarga de agregar un la etiqueta img en su html
     // para que muestra una imagen como en el caso de las imagenes el empleado
     // si "type" es "component" lalogica del html va estar preparada para llamar a un componente en el html.
-    type?: "img" | "elipsis" | "component" | "date";
-    //actionButton?: ActionButton;
+    type?: "img" | "elipsis" | "component" | "date" | "actionButton";
+    actionButton?: ActionButton;
 }
 
 export interface PaginationConfig {
@@ -128,7 +128,7 @@ export const createDefaultGridConfiguration = (
             type: col.type ?? undefined,
             class: col.class ?? undefined,
             // Incluye la configuración del botón de acción en la columna si existe
-            //actionButton: col.actionButton ?? undefined,
+            actionButton: col.actionButton ?? undefined,
         }),
     );
 

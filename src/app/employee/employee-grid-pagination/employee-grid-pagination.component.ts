@@ -703,6 +703,26 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                     align: "center",
                     width: "75px",
                 },
+                /* {
+                    // Configuración del botón de acción en la columna
+                    name: "actions",
+                    width: "200px",
+                    type: "actionButton",
+                    isSortable: false,
+                    hasHeader: false,
+                    actionButton: {
+                        class: "primary-button",
+                        icon: "assets/person.svg",
+                        text: "Agregar",
+                        tooltip: "Abrir el perfil completo del empleado",
+                        action: (id: number | string | undefined): void => {
+                            console.log(
+                                `Action Button "Ver Detalle" clickeado para el ID: ${id}`,
+                            );
+                            // Aquí iría la lógica para abrir el detalle, usando el ID recibido.
+                        },
+                    },
+                }, */
                 {
                     name: "elipsisActions",
                     width: "100px",
