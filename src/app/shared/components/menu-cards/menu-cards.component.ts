@@ -19,7 +19,7 @@ import {
     UserProfile,
     UserRole,
 } from "../../services/auth.service";
-import { filter, map, Observable, Subscription, tap } from "rxjs";
+import { filter, map, Observable, startWith, Subscription, tap } from "rxjs";
 import { SkeletonDirective } from "../../directives/skeleton.directive";
 
 @Component({
@@ -55,6 +55,8 @@ export class MenuCardsComponent implements OnInit, OnDestroy {
         this.skeletonIterations = Array.from({
             length: this.cards.length > 0 ? this.cards.length : 20,
         });
+        // Resetear el estado de loading al inicializar
+        this.isLoadingSig.set(true);
         // En visibleCards$ obtengo se define que menúes se van a mostrar
         // Asumo que ItemCard está definido y tienes los imports correctos (filter, tap, map)
         this.visibleCards$ = this._authService.userProfileData$.pipe(
