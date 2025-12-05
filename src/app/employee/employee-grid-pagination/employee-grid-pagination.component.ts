@@ -42,6 +42,8 @@ import { BreadcrumbService } from "../../shared/services/breadcrumb.service";
 import { AlertComponent } from "../../shared/components/alert/alert.component";
 import { AlertService } from "../../shared/services/alert.service";
 import { Router } from "@angular/router";
+import { FeedbackDialogService } from "../../shared/services/feedback-dialog.service";
+import { SnackbarService } from "../../shared/services/snackbar.service";
 
 interface DateRangeValue {
     startDate: string | null;
@@ -106,6 +108,8 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     private _spinnerService = inject(SpinnerService);
     private _breadcrumbService = inject(BreadcrumbService);
     private _alertService = inject(AlertService);
+    private _feedbackDialogService = inject(FeedbackDialogService);
+    private _snackbarService = inject(SnackbarService);
 
     private _defaultPaginatorOptions: PaginationConfig = {
         pageIndex: 0,
@@ -390,6 +394,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     }
 
     private _setEmployeeFilterParameters(): void {
+        this._employeeFilterParams = {};
         this._employeeFilterParams.page = 1;
         this._employeeFilterParams.limit = 25;
         this._employeeFilterParams.sortColumn = "id";
@@ -582,8 +587,25 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
     }
 
     private _deleteEmployee(id: number): void {
-        // no eliminar pasasr el empleado de activo a inactivo
-        console.log(`Intentando eliminar empleado con ID: ${id}`);
+        this._openConfirmationDialog().subscribe((confirmed: boolean): void => {
+            if (confirmed) {
+                this._employeeServices.deleteEmployee(id).subscribe({
+                    next: (): void => {
+                        this._showSnackbar();
+                        // Resetear filtros y parámetros de búsqueda
+                        this._setEmployeeFilterParameters();
+                        this._createChips(this._defaultChips);
+                        this._initializeGridFilter();
+                        this._reloadGridData();
+                    },
+                    error: (): void => {
+                        this._alertService.showDanger(
+                            "Error al eliminar el empleado.",
+                        );
+                    },
+                });
+            }
+        });
     }
 
     private _updateGridConfigOnSortChange(sortEvent: Sort): void {
@@ -839,6 +861,25 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
 
         // ACTUALIZA SIGNAL DEL FORMULARIO
         this.gridFilterFormSig.set(new FormGroup(formControls));
+    }
+
+    private _openConfirmationDialog(): Observable<boolean> {
+        const dialogRef = this._feedbackDialogService.openFeedbackDialog({
+            type: "warning",
+            title: "El registro se eliminará.",
+            message: " ¿Está seguro/a que desea Eliminar?",
+            showButtons: true,
+            cancelButtonText: "Cancelar",
+            acceptButtonText: "Aceptar",
+        });
+
+        return dialogRef
+            .afterClosed()
+            .pipe(map((result: any): boolean => !!result));
+    }
+
+    private _showSnackbar(): void {
+        this._snackbarService.show({ message: "¡Eliminado con éxito!" });
     }
 
     private _setBreadcrumb(): void {

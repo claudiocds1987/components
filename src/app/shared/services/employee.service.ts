@@ -28,6 +28,11 @@ export class EmployeeService {
         return this._http.get<Employee>(`${this.apiUrl}/${id}`);
     }
 
+    deleteEmployee(id: number): Observable<void> {
+        const url = `${this.apiUrl}/${id}`;
+        return this._http.delete<void>(url);
+    }
+
     getEmployees(
         params: EmployeeFilterParams,
     ): Observable<PaginatedList<Employee>> {
