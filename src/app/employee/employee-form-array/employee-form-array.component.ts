@@ -454,7 +454,7 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
                 fieldName: "name",
                 fieldType: "text",
                 label: "Nombre",
-                isRepeated: false,
+                isRepeated: true,
                 validations: [{ type: ValidationKey.required }],
             },
             {
@@ -476,7 +476,7 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
                 ],
 
                 validations: [{ type: ValidationKey.required }],
-                isRepeated: false,
+                isRepeated: true,
             },
         ];
     }
