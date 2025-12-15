@@ -168,6 +168,26 @@
                                             </mat-select>
                                         </mat-form-field>
                                     }
+                                    @if (field.fieldType === "radio-button") {
+                                        <div class="radio-container">
+                                            <mat-radio-group
+                                                [appReadOnly]="field.isReadOnly"
+                                                [formControlName]="
+                                                    field.fieldName
+                                                "
+                                                appCustomValidationMessage
+                                            >
+                                                <mat-radio-button
+                                                    *ngFor="
+                                                        let option of field.radioOptions
+                                                    "
+                                                    [value]="option.value"
+                                                >
+                                                    {{ option.optionName }}
+                                                </mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+                                    }
                                 </div>
                             }
                         </div>

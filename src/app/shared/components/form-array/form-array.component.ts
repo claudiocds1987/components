@@ -36,7 +36,7 @@ import { MatNativeDateModule } from "@angular/material/core";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
-import { MatRadioModule } from "@angular/material/radio";
+import { MatRadioGroup, MatRadioModule } from "@angular/material/radio";
 import { MatSelectModule } from "@angular/material/select";
 import { SkeletonDirective } from "../../directives/skeleton.directive";
 import { DateInputComponent } from "../date-input/date-input.component";
@@ -64,6 +64,7 @@ import { FeedbackComponent } from "../feedback/feedback.component";
         MatSelectModule,
         MatIcon,
         MatRadioModule,
+        MatRadioGroup,
         SkeletonDirective,
         ReadOnlyDirective,
         CustomValidationMessageDirective,

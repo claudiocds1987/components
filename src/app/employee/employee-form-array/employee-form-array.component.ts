@@ -45,6 +45,7 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
     formArrayConfig2: FormArrayConfig[] = [];
     formArrayConfig3: FormArrayConfig[] = [];
     formArrayConfig4: FormArrayConfig[] = [];
+    formArrayConfig5: FormArrayConfig[] = [];
     formArrayWithChangeEvent: FormArrayConfig[] = [];
     formArrayWithChangeId = "formWithChange"; // ID asignado a la instancia que emite eventos de cambio y que debe recibir las actualizaciones de provincia.
 
@@ -144,6 +145,10 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
         console.log("Valor FormArray 3:", _value);
     }
 
+    getFormArray5Value(_value: unknown): void {
+        console.log("Valor FormArray 5:", _value);
+    }
+
     getFormArrayWithChangeEventValue(_value: unknown): void {
         console.log("Valor FormArray con evento de cambio:", _value);
     }
@@ -228,6 +233,7 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
                 this._setFormArray2();
                 this._setFormArray3();
                 this._setFormArrayWithChangeEvent();
+                this._setFormArrayRadioButton();
                 //this._setFormObjetosAnidados();
                 this.isLoadingSig.set(false);
             },
@@ -438,6 +444,41 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
                 validations: [{ type: ValidationKey.email }],
                 isRepeated: false,
                 isReadOnly: true,
+            },
+        ];
+    }
+
+    private _setFormArrayRadioButton(): void {
+        this.formArrayConfig5 = [
+            {
+                fieldName: "name",
+                fieldType: "text",
+                label: "Nombre",
+                placeHolder: "",
+                isRepeated: false,
+                validations: [{ type: ValidationKey.required }],
+            },
+            {
+                fieldName: "surname",
+                fieldType: "text",
+                label: "Apellido",
+                placeHolder: "",
+                isRepeated: true,
+                validations: [{ type: ValidationKey.required }],
+            },
+            // CONFIGURACIÓN DE RADIO BUTTON
+            {
+                fieldName: "gender",
+                fieldType: "radio-button",
+                label: "Elija un Género *",
+                radioOptions: [
+                    { value: "1", optionName: "Masculino" },
+                    { value: "2", optionName: "Femenino" },
+                    { value: "0", optionName: "Binario" },
+                ],
+
+                validations: [{ type: ValidationKey.required }],
+                isRepeated: false,
             },
         ];
     }

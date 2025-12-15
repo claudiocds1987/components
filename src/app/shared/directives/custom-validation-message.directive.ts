@@ -76,13 +76,18 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
     private _messageElement: HTMLElement | null = null;
     private _matFormField: HTMLElement | null = null;
     private _componentContainer: HTMLElement | null = null;
+    private _radioContainer: HTMLElement | null = null;
     private _subscriptWrapperClass: HTMLElement | null = null;
 
     private _isDomSetupDone = false;
     private _isFirstErrorShown = false;
 
     private get _parentToAppendError(): HTMLElement | null {
-        return this._matFormField || this._componentContainer;
+        return (
+            this._matFormField ||
+            this._componentContainer ||
+            this._radioContainer
+        );
     }
 
     ngOnInit(): void {
@@ -185,8 +190,18 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
             }
         }
 
+        // --- Búsqueda ESPECÍFICA: radio-container ---
+        if (!this._matFormField && !this._componentContainer) {
+            // intenta encontrar un ancestro con la clase 'radio-container'
+            this._radioContainer = container.closest(
+                ".radio-container",
+            ) as HTMLElement | null;
+        }
+
         this._isDomSetupDone =
-            !!this._matFormField || !!this._componentContainer;
+            !!this._matFormField ||
+            !!this._componentContainer ||
+            !!this._radioContainer;
     }
 
     // --- Lógica de Validación y Estilos ---
@@ -231,6 +246,11 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
             }
             if (control.hasError("duplicatedDate")) {
                 errorMessage = "Fecha repetida";
+            }
+            // Validador genérico que usa el nombre 'isDuplicated' para campos
+            // que no encajan en los tipos específicos (ej: radio-button).
+            if (control.hasError("isDuplicated")) {
+                errorMessage = "Valor repetido";
             }
             if (control.hasError("dateLessThan")) {
                 errorMessage = "Fecha hasta no puede ser menor a fecha desde";

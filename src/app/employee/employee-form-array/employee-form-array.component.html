@@ -56,4 +56,14 @@
             [lastOverrideSig]="lastOverrideSig()"
         ></app-form-array>
     </div>
+    <div class="example5">
+        <h5>Configuración: Radio-button.</h5>
+        <app-form-array
+            [id]="'formArrayWithRadioButton'"
+            [formArrayConfig]="formArrayConfig5"
+            [isLoadingSig]="isLoadingSig()"
+            [maxRows]="3"
+            (emitFormArrayValue)="getFormArray5Value($event)"
+        ></app-form-array>
+    </div>
 </div>
