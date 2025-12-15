@@ -76,7 +76,7 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
     private _messageElement: HTMLElement | null = null;
     private _matFormField: HTMLElement | null = null;
     private _componentContainer: HTMLElement | null = null;
-    private _radioContainer: HTMLElement | null = null;
+    private _radioGroupContainer: HTMLElement | null = null;
     private _subscriptWrapperClass: HTMLElement | null = null;
 
     private _isDomSetupDone = false;
@@ -86,7 +86,7 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
         return (
             this._matFormField ||
             this._componentContainer ||
-            this._radioContainer
+            this._radioGroupContainer
         );
     }
 
@@ -190,18 +190,18 @@ export class CustomValidationMessageDirective implements OnInit, OnDestroy {
             }
         }
 
-        // --- Búsqueda ESPECÍFICA: radio-container ---
+        // --- Búsqueda ESPECÍFICA clase: radio-group-container ---
         if (!this._matFormField && !this._componentContainer) {
             // intenta encontrar un ancestro con la clase 'radio-container'
-            this._radioContainer = container.closest(
-                ".radio-container",
+            this._radioGroupContainer = container.closest(
+                ".radio-group-container",
             ) as HTMLElement | null;
         }
 
         this._isDomSetupDone =
             !!this._matFormField ||
             !!this._componentContainer ||
-            !!this._radioContainer;
+            !!this._radioGroupContainer;
     }
 
     // --- Lógica de Validación y Estilos ---
