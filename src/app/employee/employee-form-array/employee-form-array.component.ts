@@ -420,7 +420,7 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
                 fieldName: "startDate",
                 fieldType: "date",
                 label: "Fecha Desde",
-                placeHolder: "",
+                //placeHolder: "", // opcional
                 validations: [{ type: ValidationKey.required }],
                 isRepeated: true,
             },
@@ -428,7 +428,7 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
                 fieldName: "endDate",
                 fieldType: "date",
                 label: "Fecha Hasta",
-                placeHolder: "",
+                //placeHolder: "", // opcional
                 validations: [
                     { type: ValidationKey.required },
 
@@ -454,7 +454,6 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
                 fieldName: "name",
                 fieldType: "text",
                 label: "Nombre",
-                placeHolder: "",
                 isRepeated: false,
                 validations: [{ type: ValidationKey.required }],
             },
@@ -462,7 +461,6 @@ export class EmployeeFormArrayComponent implements OnInit, OnDestroy {
                 fieldName: "surname",
                 fieldType: "text",
                 label: "Apellido",
-                placeHolder: "",
                 isRepeated: true,
                 validations: [{ type: ValidationKey.required }],
             },
