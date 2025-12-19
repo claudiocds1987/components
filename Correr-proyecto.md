@@ -82,6 +82,8 @@ PARA VER EL NUEVO ENDPOINT CREADO POR RENDER
 
 Y ESTE REPOSITORIO ESTA LINKEADO AL SERVIDOR "RENDER" DONDE LEVANTA Y LEE LOS JSON DEL REPOSITORIO json-server-data
 
+Tambien se esta usando https://uptimerobot.com/ que es un sitio que lo que hace es pegarle al endpoint de render para que el servidor render no se apague.
+
 ---
 
 ESTE PROYECTO FRONTEND ESTA EN GITHUB PAGES (ACA SOLO ESTA ALOJADO TODO EL PROYECTO DE ANGULAR):
