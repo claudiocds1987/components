@@ -83,6 +83,8 @@ PARA VER EL NUEVO ENDPOINT CREADO POR RENDER
 Y ESTE REPOSITORIO ESTA LINKEADO AL SERVIDOR "RENDER" DONDE LEVANTA Y LEE LOS JSON DEL REPOSITORIO json-server-data
 
 Tambien se esta usando https://uptimerobot.com/ que es un sitio que lo que hace es pegarle al endpoint de render para que el servidor render no se apague.
+Actualmente esta pausado para que no consuma horas porque render te da 750 horas gratuitas, al estar activado uptimerobot para que despierte el serevidor
+esta gastando esas horas por eso lo pause. Para volver a activarlo entrar a https://uptimerobot.com/ y elegir la opción Resume monitor.
 
 ---
 
