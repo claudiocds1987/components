@@ -171,10 +171,10 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
     onExportToExcel(): void {
         this._spinnerService.show();
         this._employeeServices
-            .getEmployeesForExportJsonServer(this._employeeFilterParams)
+            .getEmployeesFiltered(this._employeeFilterParams)
             .pipe(
                 map((employees: Employee[]): any =>
-                    this._mapEmployeesForExport(employees),
+                    this._mapToExcelRows(employees),
                 ),
             )
             .subscribe({
@@ -198,7 +198,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
             });
     }
 
-    private _mapEmployeesForExport(employees: Employee[]): any[] {
+    private _mapToExcelRows(employees: Employee[]): any[] {
         return employees.map((employee: Employee): any => {
             const birthDateString = employee.birthDate as unknown as string;
             const formattedBirthDate = birthDateString

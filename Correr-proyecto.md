@@ -42,7 +42,8 @@ CASO DE ERROR:
    Tiene que aparecer con un asterisco "\*" la version que se esta ejecutando.
     - 20.12.2 (Currently using 64-bit executable)
 
-7. Abrir proyecto de Angular 17 volver a correr nvm use 20.12.2
+7. Abrir proyecto de Angular 17 volver a correr:
+   nvm use 20.12.2
 8. Arrancar el proyecto con cualquiera de los dos comandos:
    npm run start
    npx ng serve

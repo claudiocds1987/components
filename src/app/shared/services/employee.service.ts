@@ -159,9 +159,7 @@ export class EmployeeService {
         return this._http.get<Employee[]>(this.apiUrl);
     }
 
-    getEmployeesForExportJsonServer(
-        params: EmployeeFilterParams,
-    ): Observable<Employee[]> {
+    getEmployeesFiltered(params: EmployeeFilterParams): Observable<Employee[]> {
         let httpParams = new HttpParams();
         // Filtros
         if (params.id) {

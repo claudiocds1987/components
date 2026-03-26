@@ -105,7 +105,7 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
 
     onExportToExcel(gridData: GridData[]): void {
         this._spinnerService.show();
-        const processedData = this._mapEmployeesForExport(gridData);
+        const processedData = this._mapToExcelRows(gridData);
         const fileName = "Empleados.xlsx";
         setTimeout((): void => {
             this._exportService.exportToExcel(processedData, fileName);
@@ -114,7 +114,7 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
         }, 1500);
     }
 
-    private _mapEmployeesForExport(gridData: GridData[]): any[] {
+    private _mapToExcelRows(gridData: GridData[]): any[] {
         return gridData.map((data: any): any => {
             return {
                 Id: data.id,

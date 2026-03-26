@@ -221,10 +221,10 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
         }
 
         this._employeeServices
-            .getEmployeesForExportJsonServer(exportParams)
+            .getEmployeesFiltered(exportParams)
             .pipe(
                 map((employees: Employee[]): any =>
-                    this._mapEmployeesForExport(employees),
+                    this._mapToExcelRows(employees),
                 ),
             )
             .subscribe({
@@ -369,7 +369,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
         return newChips;
     }
 
-    private _mapEmployeesForExport(employees: Employee[]): any[] {
+    private _mapToExcelRows(employees: Employee[]): any[] {
         return employees.map((employee: Employee): any => {
             const birthDateString = employee.birthDate as unknown as string;
             const formattedBirthDate = birthDateString
