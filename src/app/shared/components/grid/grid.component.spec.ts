@@ -3,36 +3,6 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { GridComponent } from "./grid.component";
 
-/* describe("GridComponent", (): void => {
-    let component: GridComponent;
-    let fixture: ComponentFixture<GridComponent>;
-
-    beforeEach(async (): Promise<void> => {
-        await TestBed.configureTestingModule({
-            imports: [GridComponent],
-        }).compileComponents();
-
-        fixture = TestBed.createComponent(GridComponent);
-        component = fixture.componentInstance;
-        // Provide required input signals before change detection to avoid NG0950
-        (component as any).gridConfigSig.set({
-            columns: [],
-            paginator: { isServerSide: false },
-            hasInfiniteScroll: false,
-            hasSorting: { isServerSide: false },
-        } as any);
-        (component as any).gridDataSig.set([]);
-        (component as any).isLoadingSig.set(false);
-        (component as any).chipsSig.set([]);
-
-        fixture.detectChanges();
-    });
-
-    it("should create", (): void => {
-        expect(component).toBeTruthy();
-    });
-}); */
-
 describe("GridComponent", (): void => {
     let component: GridComponent;
     let fixture: ComponentFixture<GridComponent>;
