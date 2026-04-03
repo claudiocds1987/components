@@ -116,11 +116,13 @@
                                         [disabled]="!col.isSortable"
                                         class="sortable-header"
                                     >
-                                        {{ col.name | titlecase }}
+                                        {{ col.label || col.name | titlecase }}
                                     </span>
                                 } @else {
                                     <span>
-                                        {{ col.name | titlecase }}
+                                        {{
+                                            col.label || (col.name | titlecase)
+                                        }}
                                     </span>
                                 }
                             </div>

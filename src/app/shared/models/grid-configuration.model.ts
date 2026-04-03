@@ -21,6 +21,7 @@ export interface ActionButton {
 
 export interface Column {
     name: string; // "(Nombre de la columna que aparece en el header) Es obligatorio porque en grid.component mat-table requiere que todas las columnas definidas tengan un identificador (matColumnDef)
+    label?: string; // (Opcional) Es el texto que se muestra en el header de la columna. Si no se proporciona, se usará 'name' como label.
     width?: string;
     align?: "left" | "center" | "right";
     isSortable?: boolean;
@@ -118,6 +119,7 @@ export const createDefaultGridConfiguration = (
     const defaultColumns: Column[] = (config.columns || []).map(
         (col: Column): Column => ({
             ...col,
+            label: col.label ?? col.name, // Si no se proporciona un label, usar el nombre de la columna como label
             isSortable: col.isSortable ?? true,
             width: col.width ?? "auto",
             align: col.align ?? "left",

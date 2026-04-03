@@ -700,30 +700,34 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
             columns: [
                 {
                     name: "imgUrl",
+                    label: "Img",
                     width: "100px",
                     type: "img",
                     isSortable: false,
                     hasHeader: false,
                 },
-                { name: "id", width: "100px" },
+                { name: "id", width: "100px", label: "ID" },
                 {
                     name: "name",
+                    label: "Nombre",
                     width: "200px" /*headerTooltip: "nombre completo"*/,
                 },
                 {
                     name: "surname",
+                    label: "Apellido",
                     width: "200px" /*style: "font-weight: bold;"*/,
                 },
-                { name: "birthDate" },
-                { name: "gender", isSortable: false }, // false por que ordenaria por id no alfabeticamente
-                { name: "position", isSortable: false }, // false por que ordenaria por id no alfabeticamente
-                { name: "country", isSortable: false }, // false por que ordenaria por id no alfabeticamente
+                { name: "birthDate", label: "Nacimiento" },
+                { name: "gender", label: "Género", isSortable: false }, // false por que ordenaria por id no alfabeticamente
+                { name: "position", label: "Cargo", isSortable: false }, // false por que ordenaria por id no alfabeticamente
+                { name: "country", label: "País", isSortable: false }, // false por que ordenaria por id no alfabeticamente
                 {
                     name: "active",
+                    label: "Estado",
                     //headerIcon: "/assets/person.svg", si el nombre de la columna aparece cortado darle mas width
                     class: "status-circle",
                     align: "center",
-                    width: "75px",
+                    width: "100px",
                 },
                 /* {
                     // Configuración del botón de acción en la columna
