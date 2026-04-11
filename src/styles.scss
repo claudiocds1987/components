@@ -26,3 +26,98 @@ body {
 * {
     font-family: "Montserrat", Arial, Helvetica, sans-serif;
 }
+
+// ─── Overrides globales para mat-form-field outline ──────────────────────────
+// Se definen acá (y no en el componente) porque Angular Material renderiza
+// parte del DOM de MDC fuera del encapsulamiento del componente hijo.
+
+// ─── Altura y padding interno ─────────────────────────────────────────────────
+
+.mat-mdc-form-field-infix {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+    min-height: 44px;
+}
+
+.mat-mdc-text-field-wrapper {
+    padding: 0 12px;
+}
+
+// ─── Tipografía del label en reposo ───────────────────────────────────────────
+
+.mat-mdc-floating-label {
+    font-size: 13px !important;
+    font-weight: 400;
+    color: #9ca3af !important;
+    letter-spacing: 0.2px;
+}
+
+// ─── Label flotando arriba (campo activo o con valor) ─────────────────────────
+
+.mdc-floating-label--float-above {
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.4px;
+}
+
+// ─── Texto del valor ingresado ────────────────────────────────────────────────
+
+.mat-mdc-input-element {
+    font-size: 13px !important;
+    color: #374151 !important;
+    letter-spacing: 0.1px;
+}
+
+// ─── Texto del valor seleccionado en mat-select ───────────────────────────────
+
+.mat-mdc-select-value-text {
+    font-size: 13px !important;
+    color: #374151 !important;
+}
+
+.mat-mdc-select-placeholder {
+    font-size: 13px;
+    color: #9ca3af !important;
+}
+
+// ─── Bordes del outline en reposo ─────────────────────────────────────────────
+
+.mdc-notched-outline__leading,
+.mdc-notched-outline__notch,
+.mdc-notched-outline__trailing {
+    border-color: #d1d9e0 !important;
+    border-width: 1.5px !important;
+}
+
+// ─── Bordes al hacer focus ────────────────────────────────────────────────────
+
+.mat-mdc-form-field.mat-focused {
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+        border-color: #1a56db !important;
+    }
+}
+
+// ─── Border-radius de las esquinas del outline ────────────────────────────────
+
+.mdc-notched-outline__leading {
+    border-radius: 7px 0 0 7px !important;
+}
+
+.mdc-notched-outline__trailing {
+    border-radius: 0 7px 7px 0 !important;
+}
+
+// ─── Flecha del mat-select ────────────────────────────────────────────────────
+
+.mat-mdc-select-arrow {
+    color: #9ca3af !important;
+}
+
+// ─── Elimina la línea vertical interna del notch (borde flotante del label) ───
+
+.mdc-notched-outline__notch {
+    border-left: none !important;
+    border-right: none !important;
+}
