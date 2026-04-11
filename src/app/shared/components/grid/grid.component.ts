@@ -42,6 +42,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { Chip, ChipsComponent } from "../chips/chips.component";
 import { FeedbackComponent } from "../feedback/feedback.component";
+import { debounceTime, distinctUntilChanged, Subject } from "rxjs";
 
 // --- función para el setear paginador ---
 export function getPaginatorIntl(): MatPaginatorIntl {
@@ -121,6 +122,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
     @Output() createButtonClicked = new EventEmitter<void>();
     @Output() infiniteScroll = new EventEmitter<void>();
     @Output() rowDblClick = new EventEmitter<GridData>();
+    @Output() searchInputValue = new EventEmitter<string>();
     // "computed signal" para transformar o hacer algun calculo en los signal
     dataSource = new MatTableDataSource<GridData>();
     // Aca extrae y devuelve la lista de columnas de la configuración (reactivo).
@@ -151,6 +153,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
     private _previousDataLength = 0;
     private readonly ROW_HEIGHT_PIXELS = 40; // Altura de cada fila configurable (ej. 40px) Basado en el cálculo: scrollTop = scrollHeight - clientHeight - (nuevasFilas * altoFila)
     private _changeDetectorRef = inject(ChangeDetectorRef);
+    private _searchInputSubject = new Subject<string>();
 
     constructor() {
         // Inicialización del Effect para leer cambios en signal data y loading:
@@ -213,6 +216,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
     ngOnInit(): void {
         this._setupSearchFilter();
         this._setSortingAccessor();
+        this.emitSearchInputValue();
     }
 
     ngAfterViewInit(): void {
@@ -280,12 +284,26 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
         return str;
     }
 
+    emitSearchInputValue(): void {
+        this._searchInputSubject
+            .pipe(debounceTime(400), distinctUntilChanged())
+            .subscribe((filterText): void => {
+                this.searchInputValue.emit(filterText);
+            });
+    }
+
     onInputSearch(event: Event): void {
-        // las reglas de como filtrar se establecieron en _setupSearchFilter()
         const filterValue = (event.target as HTMLInputElement).value;
         const filterText = filterValue.trim().toLowerCase();
-        // Actualiza la grilla con el nuevo filtro
-        this.dataSource.filter = filterText;
+
+        if (this.gridConfigSig().paginator.isServerSide) {
+            this._searchInputSubject.next(filterText);
+        } else {
+            // Filtrado local instantáneo
+            // las reglas de como filtrar se establecieron en _setupSearchFilter()
+            // Actualiza la grilla con el nuevo filtro
+            this.dataSource.filter = filterText;
+        }
     }
 
     onRowDblClick(row: GridData): void {

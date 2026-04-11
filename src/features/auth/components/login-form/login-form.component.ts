@@ -72,11 +72,7 @@ export class LoginFormComponent {
             )
             .subscribe({
                 // Se ejecuta si el login es exitoso
-                next: (userProfile): void => {
-                    console.log(
-                        "Login exitoso. Usuario:",
-                        userProfile.username,
-                    );
+                next: (): void => {
                     // 3. Navegar a la página principal tras el éxito (asume que existe la ruta /dashboard)
                     this._router.navigate(["/home"]);
                 },
