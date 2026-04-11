@@ -26,6 +26,7 @@
         justify-content: flex-end;
 
         .buttons-actions {
+            display: flex; // Aseguramos flex para alinear iconos
             align-items: center;
             gap: 10px;
         }
@@ -50,6 +51,42 @@
             align-items: center;
         }
     }
+}
+
+// ─── Botones de acción específicos  ─────────────────────────────
+
+.download-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    box-sizing: border-box;
+    cursor: pointer;
+    user-select: none;
+    background-color: #eef2f7;
+    color: #3f51b5;
+    border: 1px solid #3f51b5;
+    transition: background-color 0.15s ease-in-out;
+
+    img {
+        width: 20px !important;
+        height: 20px !important;
+        object-fit: contain;
+    }
+
+    &:hover {
+        background-color: rgba(63, 81, 181, 0.04);
+    }
+}
+
+// Refuerzo general para cualquier icono en la zona de acciones
+.action-buttons-container .buttons-actions img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
 }
 
 // ─── Contenedor principal de la tabla ─────────────────────────────────────────
@@ -97,7 +134,6 @@
     overflow-y: auto;
     width: 100%;
 
-    // Estilos del scrollbar personalizado (webkit)
     &::-webkit-scrollbar {
         width: 3px;
         height: 3px;
@@ -114,7 +150,6 @@
         background: #a8b4c4;
     }
 
-    // Fallback para navegadores sin soporte webkit (Firefox, etc.)
     @supports not selector(::-webkit-scrollbar) {
         scrollbar-width: thin;
         scrollbar-color: #c8d0dc #f1f4f8;
@@ -329,9 +364,7 @@ td.grid-cell {
     }
 }
 
-// ─── RESPONSIVE: columnas fluidas en pantallas ≤ 1440px ───────────────────────
-// A partir de este breakpoint, las columnas ignoran el width fijo
-// y se adaptan al contenido disponible (min-content).
+// ─── RESPONSIVE ───────────────────────────────────────────────────────────────
 
 @media (max-width: 1440px) {
     th,
