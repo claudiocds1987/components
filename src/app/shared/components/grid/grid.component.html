@@ -9,13 +9,22 @@
         <ng-container [ngTemplateOutlet]="actionButtonsTemplate"></ng-container>
     }
 </div>
+
+@if (gridConfigSig().hasInputSearch) {
+    <div class="input-search-container">
+        <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Buscar</mat-label>
+            <input
+                matInput
+                (input)="onInputSearch($event)"
+                [placeholder]="gridConfigSig().filterByColumn || 'Buscar todo'"
+            />
+        </mat-form-field>
+        <ng-container [ngTemplateOutlet]="actionButtonsTemplate"></ng-container>
+    </div>
+}
+
 @if (isLoadingSig()) {
-    @if (gridConfigSig().hasInputSearch) {
-        <div class="skeleton-search-container">
-            <div class="skeleton-search-label">Buscar</div>
-            <div class="skeleton-search-input"></div>
-        </div>
-    }
     <div class="skeleton-table">
         <div class="skeleton-header-row">
             @for (col of columns(); track col.name) {
@@ -35,54 +44,7 @@
             </div>
         }
     </div>
-}
-@if (!isLoadingSig()) {
-    @if (gridConfigSig().hasInputSearch) {
-        <div class="input-search-container">
-            <mat-form-field appearance="outline" class="search-field">
-                <mat-label>Buscar</mat-label>
-                <input
-                    matInput
-                    (input)="onInputSearch($event)"
-                    [placeholder]="
-                        gridConfigSig().filterByColumn || 'Buscar todo'
-                    "
-                />
-            </mat-form-field>
-            <ng-container
-                [ngTemplateOutlet]="actionButtonsTemplate"
-            ></ng-container>
-        </div>
-    }
-}
-<ng-template #actionButtonsTemplate>
-    @if (gridConfigSig().actionButtons!.length > 0) {
-        <div class="action-buttons-container">
-            @for (button of gridConfigSig().actionButtons; track button.text) {
-                <div class="buttons-actions">
-                    <button
-                        [class]="button.class ?? ''"
-                        [style]="button.style"
-                        (click)="
-                            button.type === 'download'
-                                ? exportToExcel()
-                                : button.action && button.action()
-                        "
-                        [matTooltip]="button.tooltip ?? ''"
-                    >
-                        @if (button.icon) {
-                            <img [src]="button.icon" alt="icon" />
-                        }
-                        @if (button.text) {
-                            <span>{{ button.text }}</span>
-                        }
-                    </button>
-                </div>
-            }
-        </div>
-    }
-</ng-template>
-@if (!isLoadingSig()) {
+} @else {
     <div class="table-container">
         <table
             mat-table
@@ -93,7 +55,6 @@
         >
             @for (col of columns(); track col.name) {
                 <ng-container [matColumnDef]="col.name">
-                    <!--  Encabezado tabla -->
                     <th
                         mat-header-cell
                         *matHeaderCellDef
@@ -136,12 +97,11 @@
                 *matHeaderRowDef="columnNames(); sticky: true"
             ></tr>
         </table>
+
         <div class="table-body-scroll" #scrollContainer>
-            <!--  Contenedor que hace el scroll en el cuerpo de la tabla -->
             <table mat-table [dataSource]="dataSource" class="table-body">
                 @for (col of columns(); track col.name) {
                     <ng-container [matColumnDef]="col.name">
-                        <!-- Columnas de la tabla -->
                         <td
                             mat-cell
                             *matCellDef="let row"
@@ -161,8 +121,7 @@
                                 @case ("img") {
                                     <img
                                         [ngSrc]="
-                                            row['imgUrl'] ||
-                                            'assets/unknown-user.png'
+                                            row['imgUrl'] || '/unknown-user.png'
                                         "
                                         width="40"
                                         height="40"
@@ -170,7 +129,6 @@
                                         alt="img"
                                     />
                                 }
-
                                 @case ("actionButton") {
                                     @if (col.actionButton) {
                                         <button
@@ -197,14 +155,13 @@
                                                 />
                                             }
                                             @if (col.actionButton.text) {
-                                                <span>
-                                                    {{ col.actionButton.text }}
-                                                </span>
+                                                <span>{{
+                                                    col.actionButton.text
+                                                }}</span>
                                             }
                                         </button>
                                     }
                                 }
-
                                 @case ("elipsis") {
                                     <button
                                         mat-icon-button
@@ -295,16 +252,17 @@
                     (dblclick)="onRowDblClick(row)"
                 ></tr>
             </table>
+
             @if (showFeeback()) {
                 <app-feedback
                     class="feedback-container"
-                    [imageUrl]="'assets/no-result.svg'"
+                    [imageUrl]="'icons/no-result.svg'"
                 ></app-feedback>
             }
         </div>
     </div>
 }
-<!-- Paginator -->
+
 @if (paginatorConfig() && !gridConfigSig().hasInfiniteScroll) {
     <mat-paginator
         class="paginator"
@@ -316,6 +274,7 @@
         (page)="onPaginatorPageChange($event)"
     ></mat-paginator>
 }
+
 @if (gridConfigSig().hasInfiniteScroll && paginatorConfig()) {
     <div class="infinite-paginator">
         @if (paginatorConfig()!.totalCount) {
@@ -331,3 +290,31 @@
         }
     </div>
 }
+
+<ng-template #actionButtonsTemplate>
+    @if (gridConfigSig().actionButtons!.length > 0) {
+        <div class="action-buttons-container">
+            @for (button of gridConfigSig().actionButtons; track button.text) {
+                <div class="buttons-actions">
+                    <button
+                        [class]="button.class ?? ''"
+                        [style]="button.style"
+                        (click)="
+                            button.type === 'download'
+                                ? exportToExcel()
+                                : button.action && button.action()
+                        "
+                        [matTooltip]="button.tooltip ?? ''"
+                    >
+                        @if (button.icon) {
+                            <img [src]="button.icon" alt="icon" />
+                        }
+                        @if (button.text) {
+                            <span>{{ button.text }}</span>
+                        }
+                    </button>
+                </div>
+            }
+        </div>
+    }
+</ng-template>
