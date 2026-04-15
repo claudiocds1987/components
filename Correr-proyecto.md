@@ -21,7 +21,8 @@ LA VERSION DE NODE.JS DE ESTE PROYECTO:
 
 1. Abrir Visual Studio Code como Administrador (clic boton derecho sobre icono de Visuyal Studio Code opcion Ejecutar como administrador)
 
-2. Desde la Terminal de Visual studio code tipiar nvm use 20.12.2
+2. Desde la Terminal de Visual studio code tipiar:
+   nvm use 20.12.2
 
 3. Arrancar proyecto cualquiera de los dos comandos:
    npm run start
