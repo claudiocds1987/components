@@ -31,7 +31,10 @@ import { PageEvent } from "@angular/material/paginator";
 import { Sort } from "@angular/material/sort";
 import { ExportService } from "../../shared/services/export.service";
 import { SpinnerService } from "../../shared/services/spinner.service";
-import { Chip } from "../../shared/components/chips/chips.component";
+import {
+    Chip,
+    ChipsComponent,
+} from "../../shared/components/chips/chips.component";
 import { MatDialogModule } from "@angular/material/dialog";
 
 import { SelectItem } from "../../shared/models/select-item.model";
@@ -61,6 +64,7 @@ interface DateRangeValue {
         MatDialogModule,
         BreadcrumbComponent,
         AlertComponent,
+        ChipsComponent,
     ],
     templateUrl: "./employee-grid-pagination.component.html",
     styleUrl: "./employee-grid-pagination.component.scss",
@@ -772,7 +776,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                     | "asc"
                     | "desc",
             },
-            hasChips: true,
+
             actionButtons: [
                 {
                     class: "primary-button",

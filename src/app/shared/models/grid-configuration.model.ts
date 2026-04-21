@@ -73,7 +73,7 @@ export interface GridConfiguration {
     paginator: PaginationConfig;
     hasInputSearch?: boolean; // Para mostrar o no el input search arriba de la grilla
     filterByColumn?: string; // indica a el input search en que columna hacer la búsqueda
-    hasChips?: boolean; // Muestra o no los chips de filtros aplicados
+
     actionButtons?: ActionButton[];
     OrderBy: OrderBy;
     // hasSorting.isServerSide: Le indica al GridComponent si debe reordenar la dataSource internamente (ordenamiento del cliente) o si debe dejar los datos como están y solo emitir un evento (sortChange) para que el componente padre solicite los datos reordenados al servidor.
@@ -140,7 +140,7 @@ export const createDefaultGridConfiguration = (
         hasInputSearch: config.hasInputSearch ?? false,
         filterByColumn: config.filterByColumn ?? "",
         actionButtons: config.actionButtons ?? [],
-        hasChips: config.hasChips ?? false,
+
         OrderBy: config.OrderBy
             ? { ...defaultOrderBy, ...config.OrderBy }
             : defaultOrderBy,

@@ -10,9 +10,9 @@
     overflow: hidden;
 }
 
-// ─── Contenedor superior: chips + botones de acción ───────────────────────────
+// ─── Contenedor superior: botones de acción ───────────────────────────
 
-.chips-and-buttons-container {
+.buttons-container {
     display: grid;
     align-items: start;
     grid-template-columns: 1fr auto;

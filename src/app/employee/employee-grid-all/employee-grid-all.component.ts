@@ -261,7 +261,6 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
             ],
             filterByColumn: "id",
             hasInputSearch: true,
-            hasChips: false,
             actionButtons: [
                 {
                     class: "primary-button",

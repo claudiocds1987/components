@@ -1,10 +1,4 @@
-<div class="chips-and-buttons-container">
-    @if (gridConfigSig().hasChips) {
-        <app-chips
-            [chips]="chipsSig()"
-            (chipRemoved)="onChipRemoved($event)"
-        ></app-chips>
-    }
+<div class="buttons-container">
     @if (!gridConfigSig().hasInputSearch) {
         <ng-container [ngTemplateOutlet]="actionButtonsTemplate"></ng-container>
     }

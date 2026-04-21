@@ -9,16 +9,19 @@
             ></app-breadcrumb>
             <app-alert class="wrapper__alert-spacing"></app-alert>
 
+            <app-chips
+                [chips]="chipsSig()"
+                (chipRemoved)="onRemoveChip($event)"
+            ></app-chips>
+
             <app-grid
                 class="wrapper__grid-component"
                 [gridConfigSig]="gridConfigSig()"
                 [gridDataSig]="gridDataSig()"
                 [isLoadingSig]="isLoadingGridDataSig()"
-                [chipsSig]="chipsSig()"
                 (pageChange)="onGridPageChange($event)"
                 (sortChange)="onGridSortChange($event)"
                 (exportExcel)="onExportToExcel()"
-                (chipRemoved)="onRemoveChip($event)"
                 (createButtonClicked)="onCreateEmployee()"
                 (rowDblClick)="onRowDblClick($event)"
             ></app-grid>
