@@ -508,7 +508,7 @@ export class EmployeeGridInfiniteComponent implements OnInit, OnDestroy {
             filterByColumn: "",
             actionButtons: [
                 {
-                    class: "primary-button",
+                    class: "action-button-grid",
                     icon: "assets/person.svg",
                     text: "Agregar",
                     action: (): void => this.onCreateEmployee(),

@@ -1,6 +1,6 @@
 @import "./../colors.scss";
 
-.primary-button {
+.action-button-grid {
     /* Propiedades de un botón Material (tamaño, tipografía, etc.) */
     display: inline-flex;
     align-items: center;
@@ -33,11 +33,11 @@
     }
 }
 
-.primary-button:hover {
+.action-button-grid:hover {
     background-color: rgba(63, 81, 181, 0.04);
 }
 
-.primary-button:focus {
+.action-button-grid:focus {
     outline: 2px solid $primary-material-color;
     outline-offset: 2px;
 }

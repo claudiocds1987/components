@@ -741,7 +741,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
                     isSortable: false,
                     hasHeader: false,
                     actionButton: {
-                        class: "primary-button",
+                        class: "action-button-grid",
                         icon: "assets/person.svg",
                         text: "Agregar",
                         tooltip: "Abrir el perfil completo del empleado",
@@ -779,7 +779,7 @@ export class EmployeeGridPaginationComponent implements OnInit, OnDestroy {
 
             actionButtons: [
                 {
-                    class: "primary-button",
+                    class: "action-button-grid",
                     icon: "assets/person.svg",
                     text: "Agregar",
                     action: (): void => this.onCreateEmployee(),

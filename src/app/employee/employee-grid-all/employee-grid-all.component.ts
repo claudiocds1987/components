@@ -263,7 +263,7 @@ export class EmployeeGridAllComponent implements OnInit, OnDestroy {
             hasInputSearch: true,
             actionButtons: [
                 {
-                    class: "primary-button",
+                    class: "action-button-grid",
                     icon: "assets/person.svg",
                     text: "Agregar",
                     action: (): void => this.onCreateEmployee(),
